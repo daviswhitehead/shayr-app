@@ -1,17 +1,17 @@
 /* eslint-disable import/no-unresolved, import/extensions */
 import React, { Component } from 'react';
-import { 
-  ScrollView, 
-  StyleSheet, 
-  Text, 
-  TouchableOpacity, 
-  View, 
-  FlatList, 
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  FlatList,
   TextInput,
   Linking,
   Share,
 } from 'react-native';
-import Swipeable  from './components/Swipeable'
+import Swipeable from './components/Swipeable'
 import Scores from './components/Scores'
 
 /* eslint-enable import/no-unresolved, import/extensions */
@@ -31,7 +31,7 @@ export default class SwipeableExample extends Component {
       {
         key: 'Davis',
         url: 'https://www.youtube.com/watch?v=SM1w9PEQOE8'
-      }, 
+      },
     ],
     text: ''
   };
@@ -58,19 +58,19 @@ export default class SwipeableExample extends Component {
     };
 
     return (
-      <View style={{flex: 1}}>
+      <View style={{ flex: 1 }}>
         <FlatList
-          style={{flex: 5}}
+          style={{ flex: 5 }}
           data={this.state.names}
-          renderItem={({ item }) => <Example2 {...itemProps} text={item.key} url={item.url}/>}
-          ItemSeparatorComponent= {
-            () => <View style={{height: 1, backgroundColor: "#000000",}} />
+          renderItem={({ item }) => <Example2 {...itemProps} text={item.key} url={item.url} />}
+          ItemSeparatorComponent={
+            () => <View style={{ height: 1, backgroundColor: "#000000", }} />
           }
         />
         <TextInput
           style={{ height: 50 }}
           placeholder="Add a link"
-          onSubmitEditing={(event) => this.setState({ names: [...this.state.names, {key: event.nativeEvent.text}] })}
+          onSubmitEditing={(event) => this.setState({ names: [...this.state.names, { key: event.nativeEvent.text }] })}
         />
       </View>
     );
@@ -107,10 +107,10 @@ function openLink(url) {
   Linking.openURL(url).catch(err => console.error('An error occurred', err));
 }
 
-function shareLink(url) {
+function shareLink(linkURL) {
   Share.share({
     message: 'I found this thing',
-    url: url,
+    url: linkURL,
     title: 'Cool Stuff'
   }, {
       // Android only:
@@ -125,7 +125,7 @@ function shareLink(url) {
   //   Share.open({title: 'Stuff', message: 'Look!', url: url, subject: 'Cool'});
 }
 
-function Example2({ onOpen, onClose, text, url}) {
+function Example2({ onOpen, onClose, text, url }) {
   return (
     <Swipeable
       leftButtonWidth={45}
