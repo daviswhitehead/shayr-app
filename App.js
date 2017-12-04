@@ -1,6 +1,7 @@
 /* eslint-disable import/no-unresolved, import/extensions */
 import React, { Component } from 'react';
 import {
+  AppRegistry,
   ScrollView,
   StyleSheet,
   Text,
@@ -9,16 +10,28 @@ import {
   FlatList,
   TextInput,
   Linking,
-  Share,
 } from 'react-native';
+import Share, { ShareSheet, Button } from 'react-native-share';
+import ShareMenu from 'react-native-share-menu';
 import Swipeable from './components/Swipeable'
-import Scores from './components/Scores'
 
 /* eslint-enable import/no-unresolved, import/extensions */
 export default class SwipeableExample extends Component {
+  constructor(props) {
+    super(props);
+  }
 
+  componentWillMount() {
+    var that = this;
+    ShareMenu.getSharedText((text) => {
+      if (text && text.length) {
+        that.setState({ sharedText: text });
+      }
+    })
+  }
   state = {
     currentlyOpenSwipeable: null,
+    sharedText: null,
     names: [
       {
         key: 'Alex',
@@ -33,7 +46,7 @@ export default class SwipeableExample extends Component {
         url: 'https://www.youtube.com/watch?v=SM1w9PEQOE8'
       },
     ],
-    text: ''
+    text: null
   };
 
   handleScroll = () => {
@@ -108,21 +121,21 @@ function openLink(url) {
 }
 
 function shareLink(linkURL) {
-  Share.share({
-    message: 'I found this thing',
-    url: linkURL,
-    title: 'Cool Stuff'
-  }, {
-      // Android only:
-      dialogTitle: 'Share this',
-      // iOS only:
-      excludedActivityTypes: [
-        'com.apple.UIKit.activity.PostToTwitter'
-      ]
-    })
+  // Share.share({
+  //   message: 'I found this thing',
+  //   url: linkURL,
+  //   title: 'Cool Stuff'
+  // }, {
+  //     // Android only:
+  //     dialogTitle: 'Share this',
+  //     // iOS only:
+  //     excludedActivityTypes: [
+  //       'com.apple.UIKit.activity.PostToTwitter'
+  //     ]
+  //   })
 
   // react-native-share
-  //   Share.open({title: 'Stuff', message: 'Look!', url: url, subject: 'Cool'});
+  Share.open({title: 'Stuff', message: 'Look!', url: linkURL, subject: 'Cool'});
 }
 
 function Example2({ onOpen, onClose, text, url }) {
