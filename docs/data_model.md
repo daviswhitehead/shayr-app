@@ -54,6 +54,24 @@ LT
 - tags
 
 
+#### attributes
+**Description**
+PP structure. relates users to additional attributes
+
+attributes
+- id
+- attribute_name
+- created_at
+- updated_at
+- meta
+
+user_attributes
+- id
+- user_id
+- attribute_id
+- created_at
+- updated_at
+
 #### notes
 - how do you handle slightly different urls from shares?
   - map shares to a post based on url matching
