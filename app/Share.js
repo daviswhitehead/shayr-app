@@ -1,12 +1,10 @@
 import React, { Component } from 'react'
-import Modal from 'react-native-modalbox'
 import ShareExtension from 'react-native-share-extension'
 
 import {
   Text,
-  TextInput,
   View,
-  TouchableOpacity
+  StyleSheet,
 } from 'react-native'
 
 export default class Share extends Component {
@@ -43,18 +41,31 @@ export default class Share extends Component {
 
   render() {
     return (
-      <Modal backdrop={false}
-             style={{ backgroundColor: 'transparent' }} position="center" isOpen={this.state.isOpen} onClosed={this.onClose}>
-          <View style={{ alignItems: 'center', justifyContent:'center', flex: 1 }}>
-            <View style={{ borderColor: 'green', borderWidth: 1, backgroundColor: 'white', height: 200, width: 300 }}>
-              <TouchableOpacity onPress={this.closing}>
-                <Text>Close</Text>
-                <Text>type: { this.state.type }</Text>
-                <Text>value: { this.state.value }</Text>
-              </TouchableOpacity>
-            </View>
+      <View style={styles.container}>
+          <View style={styles.widthContainer}>
+              <View style={styles.box}></View>
           </View>
-      </Modal>
+      </View>
     )
   }
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  widthContainer: {
+    flex: 0.8,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  box: {
+    height: 100,
+    width: 100,
+    backgroundColor: 'purple',
+  },
+})

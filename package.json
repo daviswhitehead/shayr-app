@@ -10,7 +10,8 @@
 		"react": "16.0.0",
 		"react-native": "0.51.0",
 		"react-native-modalbox": "^1.4.2",
-		"react-native-share-extension": "^1.2.1"
+		"react-native-share-extension": "^1.2.1",
+		"save": "^2.3.2"
 	},
 	"devDependencies": {
 		"babel-jest": "21.2.0",
