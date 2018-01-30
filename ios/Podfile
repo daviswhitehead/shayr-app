@@ -8,6 +8,7 @@ target 'shayr' do
   # Pods for shayr
   pod 'Firebase/Core'
   pod 'Firebase/Auth'
+  # pod 'Firebase/Firestore'
 
   target 'ShareExtension' do
     inherit! :search_paths

@@ -5,6 +5,7 @@ import {
   Text,
   View,
   StyleSheet,
+  TouchableOpacity,
 } from 'react-native'
 
 export default class Share extends Component {
@@ -43,7 +44,12 @@ export default class Share extends Component {
     return (
       <View style={styles.container}>
           <View style={styles.widthContainer}>
-              <View style={styles.box}></View>
+              <TouchableOpacity
+                style={styles.box}
+                onPress={this.onClose}
+              >
+
+              </TouchableOpacity>
           </View>
       </View>
     )
