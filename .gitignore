@@ -1,6 +1,7 @@
 # OSX
 #
 .DS_Store
+.vscode/*
 
 # Xcode
 #
@@ -51,3 +52,7 @@ buck-out/
 */fastlane/report.xml
 */fastlane/Preview.html
 */fastlane/screenshots
+
+#Secrets
+.firebaserc
+GoogleService-Info.plist

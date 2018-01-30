@@ -1,15 +1,16 @@
 //
-//  MyShareEx.m
-//  Sample1
+//  ShareExtension.m
+//  ShareExtension
 //
-//  Created by Ali Najafizadeh on 2016-06-10.
-//  Copyright © 2016 Facebook. All rights reserved.
+//  Created by Alex Trahey on 1/28/18.
+//  Copyright © 2018 Facebook. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
 #import "ReactNativeShareExtension.h"
-#import "RCTBundleURLProvider.h"
-#import "RCTRootView.h"
+#import <React/RCTBundleURLProvider.h>
+#import <React/RCTRootView.h>
+#import <React/RCTLog.h>
 
 @interface ShareExtension : ReactNativeShareExtension
 @end
@@ -28,6 +29,10 @@ RCT_EXPORT_MODULE();
                                                initialProperties:nil
                                                    launchOptions:nil];
   rootView.backgroundColor = nil;
+  
+  // Uncomment for console output in Xcode console for release mode on device:
+  // RCTSetLogThreshold(RCTLogLevelInfo - 1);
+  
   return rootView;
 }
 
