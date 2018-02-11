@@ -13,6 +13,11 @@ import ContentIcon from '../components/contentIcon/ContentIcon'
 const extractKey = ({id}) => id
 
 export default class List extends Component {
+  constructor() {
+    super();
+    // console.log('hello');
+    // console.log(this.props.items);
+  }
 
   state = {
     rows: [
@@ -72,6 +77,7 @@ export default class List extends Component {
   };
 
   render() {
+    console.log(this.props.items);
     return (
       <FlatList
         style={styles.container}
