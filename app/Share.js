@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import ShareExtension from 'react-native-share-extension'
+// import firebase from 'react-native-firebase'
 
 import {
   Text,
@@ -16,6 +17,9 @@ export default class Share extends Component {
       type: '',
       value: ''
     }
+    // this.posts = firebase.firestore().collection('posts');
+    // console.log(this.posts);
+    // console.log(this.posts.orderBy('created_at').limit(1).get());
   }
 
   async componentDidMount() {

@@ -3,6 +3,7 @@ import {
   View,
   Text,
   StyleSheet,
+  TouchableOpacity,
 } from 'react-native';
 
 import ShayrStatusBar from '../components/StatusBar'
@@ -13,9 +14,9 @@ import firebase from 'react-native-firebase'
 export default class App extends Component {
   constructor() {
     super();
-    this.posts = firebase.firestore().collection('posts');
-    console.log(this.posts);
-    console.log(this.posts.orderBy('created_at').limit(1).get());
+    // this.posts = firebase.firestore().collection('posts');
+    // console.log(this.posts);
+    // console.log(this.posts.orderBy('created_at').limit(1).get());
   }
 
   render() {
