@@ -30,7 +30,7 @@ export default class List extends Component {
     return (
       <View style={styles.card}>
         <Image
-          style={{width: 100, height: 100}}
+          style={styles.image}
           source={{uri: 'https://static01.nyt.com/images/2017/12/11/us/11alabama-alpha/11alabama-alpha-facebookJumbo.jpg'}}
         />
       </View>
@@ -44,6 +44,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center'
+  },
+  image: {
+    width: 100,
+    height: 100,
+
   },
   row: {
     flex: 1,
