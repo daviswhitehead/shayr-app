@@ -1,10 +1,12 @@
 import React, { Component } from 'react'
 import ShareExtension from 'react-native-share-extension'
+// import firebase from 'react-native-firebase'
 
 import {
   Text,
   View,
   StyleSheet,
+  TouchableOpacity,
 } from 'react-native'
 
 export default class Share extends Component {
@@ -15,6 +17,9 @@ export default class Share extends Component {
       type: '',
       value: ''
     }
+    // this.posts = firebase.firestore().collection('posts');
+    // console.log(this.posts);
+    // console.log(this.posts.orderBy('created_at').limit(1).get());
   }
 
   async componentDidMount() {
@@ -43,7 +48,12 @@ export default class Share extends Component {
     return (
       <View style={styles.container}>
           <View style={styles.widthContainer}>
-              <View style={styles.box}></View>
+              <TouchableOpacity
+                style={styles.box}
+                onPress={this.onClose}
+              >
+
+              </TouchableOpacity>
           </View>
       </View>
     )
