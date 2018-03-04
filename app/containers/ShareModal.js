@@ -1,16 +1,6 @@
 import React, { Component } from 'react';
 import { Text, View, Button, Modal, StyleSheet } from 'react-native';
 import firebase from 'react-native-firebase';
-const URL = require('url');
-
-const normalizeUrl = (url) => {
-  const urlData = URL.parse(url);
-
-  return 'https://'.concat(
-    urlData.hostname.replace(/^www\./,''),
-    urlData.pathname
-  )
-};
 
 const getPost = (ref, url) => {
   return ref
@@ -67,10 +57,9 @@ export default class MyComponent extends Component {
       // })
       // this.url = 'https://www.nytimes.com/2017/12/10/us/politics/richard-shelby-roy-moore.html';
       this.url = 'https://motherboard.vice.com/en_us/article/a34g9j/iphone-source-code-iboot-ios-leak';
-      this.normalUrl = normalizeUrl(this.url);
-      this.post = await getPost(this.ref, this.normalUrl);
+      this.post = await getPost(this.ref, this.url);
       if (!this.post) {
-        this.post = await createGetPost(this.ref, this.normalUrl);
+        this.post = await createGetPost(this.ref, this.url);
       }
       if (this.post) {
         this.unsubscribe = this.post.ref.onSnapshot(this.onPostUpdate);
