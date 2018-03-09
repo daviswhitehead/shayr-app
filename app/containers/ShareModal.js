@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Text, View, Button, Modal, StyleSheet } from 'react-native';
 import firebase from 'react-native-firebase';
+import ShareExtensionModal from '../components/shareExtensionModal/ShareExtensionModal';
 
 const createShare = (ref, url) => {
   const ts = firebase.firestore.FieldValue.serverTimestamp();
@@ -12,7 +13,7 @@ const createShare = (ref, url) => {
     })
     .then((ref) => {
       console.log("Document successfully written!");
-      return ref.get()
+      return ref
     })
     .catch((error) => {
       console.error(error);
@@ -26,10 +27,18 @@ export default class MyComponent extends Component {
     this.ref = firebase.firestore().collection('users');
     this.state = {
       modalVisible: true,
+      shareSucces: false,
+      default: 'Sharing...'
     };
+    setInterval(() => {
+      this.setState(previousState => {
+        return { shareSucces: !previousState.shareSucces };
+      });
+    }, 3000);
   }
 
   async componentDidMount() {
+    console.log('hello');
     try {
       // const { type, value } = await ShareExtension.data()
       // this.setState({
@@ -38,8 +47,9 @@ export default class MyComponent extends Component {
       // })
       // this.url = 'https://www.nytimes.com/2017/12/10/us/politics/richard-shelby-roy-moore.html';
       // this.url = 'https://motherboard.vice.com/en_us/article/a34g9j/iphone-source-code-iboot-ios-leak';
-      this.url = 'https://www.washingtonpost.com/news/business/wp/2018/03/02/feature/the-silicon-valley-elites-latest-status-symbol-chickens/?utm_term=.cb69512f5b5b';
-      this.share = await createShare(this.ref, this.url);
+      // this.url = 'https://www.washingtonpost.com/news/business/wp/2018/03/02/feature/the-silicon-valley-elites-latest-status-symbol-chickens/?utm_term=.cb69512f5b5b';
+      // this.share = await createShare(this.ref, this.url);
+      const test = 'hello';
     }
     catch(error) {
       console.log(error);
@@ -55,6 +65,8 @@ export default class MyComponent extends Component {
   }
 
   render() {
+    // let display = this.state.shareSucces ? 'Success' : '...Sharing'; // try again
+    let display = ''
     return (
         <View style={styles.container}>
           <Modal
@@ -64,7 +76,8 @@ export default class MyComponent extends Component {
           >
             <View style={styles.modalContainer}>
               <View style={styles.innerContainer}>
-                <Text>TESTING</Text>
+                <Text>{display}</Text>
+                <ShareExtensionModal/>
                 <Button
                     onPress={() => this.closeModal()}
                     title="Close modal"
