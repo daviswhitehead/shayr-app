@@ -12,6 +12,7 @@
   "dependencies": {
     "firebase-admin": "~5.8.1",
     "firebase-functions": "^0.8.1",
+    "lodash": "^4.17.5",
     "open-graph-scraper": "^3.1.5"
   },
   "devDependencies": {

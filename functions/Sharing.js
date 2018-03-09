@@ -34,36 +34,6 @@ exports.createPost = (url) => {
 }
 
 exports.updatePostWithMeta = (postData, meta) => {
-  // const handlePublisher = (postData, meta) => {
-  //   if (postData.publisher) {
-  //     return {
-  //       name: postData.publisher.name || meta.publisher.name || '',
-  //       logo: postData.publisher.logo || meta.publisher.logo || ''
-  //     }
-  //   }
-  //   else if (meta.publisher) {
-  //     return {
-  //       name: meta.publisher.name || '',
-  //       logo: meta.publisher.logo || ''
-  //     }
-  //   }
-  //   else {
-  //     return {
-  //       name: '',
-  //       logo: ''
-  //     }
-  //   }
-  // }
-  // const publisher = handlePublisher(postData, meta);
-
-  // return {
-  //   updatedAt: admin.firestore.FieldValue.serverTimestamp(),
-  //   title: postData.title || meta.title || '',
-  //   publisher: publisher,
-  //   description: postData.description || meta.description || '',
-  //   image: postData.image || meta.image || '',
-  //   medium: postData.medium || meta.medium || 'article'
-  // }
   return {
     updatedAt: admin.firestore.FieldValue.serverTimestamp(),
     title: _.get(postData, 'title', '') || _.get(meta, 'title', ''),

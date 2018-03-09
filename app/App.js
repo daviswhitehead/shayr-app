@@ -42,7 +42,7 @@ export default class App extends Component {
   render() {
     // facebookLogin();
     return (
-      <Feed/>
+      <ShareModal/>
     )
     // return (
     //   <ShareModal/>

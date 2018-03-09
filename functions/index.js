@@ -60,8 +60,7 @@ exports.newShareResponse = functions.firestore.document('users/{userId}/shares/{
 });
 
 // whenever a new post share is added
-// exports.newPostShareResponse = functions.firestore.document('posts/{postId}/shares/{shareId}')
-exports.newPostShareResponse = functions.firestore.document('posts/postId2/shares/{shareId}')
+exports.newPostShareResponse = functions.firestore.document('posts/{postId}/shares/{shareId}')
   .onCreate(event => {
     // when a new share is created for a post, update the post information
     const newShareUrl = event.data.data().url;
@@ -74,7 +73,7 @@ exports.newPostShareResponse = functions.firestore.document('posts/postId2/share
       ])
       .then((data) => {
         console.log('updating post with meta');
-        console.log(data);      
+        console.log(data);
         return postRef.set(
           sharing.updatePostWithMeta(data[0].data(), data[1]),
           { merge: true }

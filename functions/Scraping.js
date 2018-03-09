@@ -17,7 +17,6 @@ exports.scrape = (url) => {
           image: _.get(result.data, 'ogImage.url', '') || _.get(result.data, 'twitterImage.url', ''),
           medium: _.get(result.data, 'ogType', '')
         }
-        // return result
       }
       else {
         console.log('scraping failure');
