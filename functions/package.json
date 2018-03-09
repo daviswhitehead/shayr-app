@@ -2,7 +2,7 @@
   "name": "functions",
   "description": "Cloud Functions for Firebase",
   "scripts": {
-    "lint": "./node_modules/.bin/eslint .",
+    "lint": "eslint .",
     "serve": "firebase serve --only functions",
     "shell": "firebase experimental:functions:shell",
     "start": "npm run shell",
@@ -12,11 +12,16 @@
   "dependencies": {
     "firebase-admin": "~5.8.1",
     "firebase-functions": "^0.8.1",
-    "url": "^0.11.0"
+    "lodash": "^4.17.5",
+    "open-graph-scraper": "^3.1.5"
   },
   "devDependencies": {
     "eslint": "^4.12.0",
     "eslint-plugin-promise": "^3.6.0"
   },
-  "private": true
+  "private": true,
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "",
+  "license": "ISC"
 }
