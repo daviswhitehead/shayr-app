@@ -23,6 +23,9 @@ export default class ShareExtensionModal extends Component {
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
+    width: undefined,
+    height: undefined,
     backgroundColor:'transparent',
     justifyContent: 'center',
     alignItems: 'center',

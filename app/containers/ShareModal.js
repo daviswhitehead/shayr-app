@@ -1,5 +1,14 @@
 import React, { Component } from 'react';
-import { Text, View, Button, Modal, StyleSheet } from 'react-native';
+import {
+  Text,
+  View,
+  Button,
+  Modal,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+} from 'react-native';
 import firebase from 'react-native-firebase';
 import ShareExtensionModal from '../components/shareExtensionModal/ShareExtensionModal';
 
@@ -27,29 +36,33 @@ export default class MyComponent extends Component {
     this.ref = firebase.firestore().collection('users');
     this.state = {
       modalVisible: true,
-      shareSucces: false,
-      default: 'Sharing...'
+      shareText: 'Shayring...'
     };
-    setInterval(() => {
-      this.setState(previousState => {
-        return { shareSucces: !previousState.shareSucces };
-      });
-    }, 3000);
   }
 
   async componentDidMount() {
-    console.log('hello');
     try {
       // const { type, value } = await ShareExtension.data()
       // this.setState({
       //   type,
       //   value
       // })
-      // this.url = 'https://www.nytimes.com/2017/12/10/us/politics/richard-shelby-roy-moore.html';
-      // this.url = 'https://motherboard.vice.com/en_us/article/a34g9j/iphone-source-code-iboot-ios-leak';
-      // this.url = 'https://www.washingtonpost.com/news/business/wp/2018/03/02/feature/the-silicon-valley-elites-latest-status-symbol-chickens/?utm_term=.cb69512f5b5b';
-      // this.share = await createShare(this.ref, this.url);
-      const test = 'hello';
+      this.url = 'https://stratechery.com/2018/the-facebook-brand/?utm_source=feedly&utm_medium=webfeeds';
+      this.share = await createShare(this.ref, this.url);
+      if (this.share) {
+        setTimeout(
+          () => {this.setState({shareText: 'Success!'})},
+          1000
+        )
+
+      }
+      else {
+        setTimeout(
+          () => {this.setState({shareText: 'Failed.'})},
+          3000
+        )
+
+      }
     }
     catch(error) {
       console.log(error);
@@ -65,32 +78,33 @@ export default class MyComponent extends Component {
   }
 
   render() {
-    // let display = this.state.shareSucces ? 'Success' : '...Sharing'; // try again
-    let display = ''
     return (
-        <View style={styles.container}>
-          <Modal
-              visible={this.state.modalVisible}
-              animationType={'slide'}
-              onRequestClose={() => this.closeModal()}
+        <Modal
+            visible={this.state.modalVisible}
+            animationType={'slide'}
+            onRequestClose={() => this.closeModal()}
+            transparent={true}
+        >
+          <TouchableWithoutFeedback
+            onPress={() => {this.closeModal()}}
           >
-            <View style={styles.modalContainer}>
-              <View style={styles.innerContainer}>
-                <Text>{display}</Text>
-                <ShareExtensionModal/>
-                <Button
-                    onPress={() => this.closeModal()}
-                    title="Close modal"
-                >
-                </Button>
-              </View>
+            <View style={styles.container}>
+              <TouchableOpacity
+                onPress={() => {}}
+                style={styles.modal}
+              >
+                <Image
+                  source={require('../components/shareExtensionModal/ShareExtensionLogo.png')}
+                  style={styles.logo}
+                  >
+                </Image>
+                <Text style={styles.text}>
+                  {this.state.shareText}
+                </Text>
+              </TouchableOpacity>
             </View>
-          </Modal>
-          <Button
-              onPress={() => this.openModal()}
-              title="Open modal"
-          />
-        </View>
+          </TouchableWithoutFeedback>
+        </Modal>
     );
   }
 }
@@ -98,19 +112,25 @@ export default class MyComponent extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
   },
-  modalContainer: {
-    flex: 1,
+  modal: {
+    backgroundColor: '#F2C94C',
+    height: 60,
+    width: 60*4,
+    marginBottom: 100,
+    borderRadius: 60,
+    flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',
-    backgroundColor: '#989898',
   },
-  innerContainer: {
-    alignItems: 'center',
-    backgroundColor: 'white',
-    width: '95%',
-    height: '40%',
-    top: 100,
+  logo: {
+    height: 60,
+    width: 60,
+  },
+  text: {
+    textAlign: 'center',
+    fontSize: 30,
   },
 });
