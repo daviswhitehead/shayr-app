@@ -19,14 +19,16 @@ export default class List extends Component {
         id: 0,
         image: 'https://static01.nyt.com/images/2017/12/11/us/11alabama-alpha/11alabama-alpha-facebookJumbo.jpg',
         title: 'liberal outsiders pour into alabama senate race, treading lightly',
-        publisher: 'nytimes',
+        publisher: {
+          logo: '',
+          name: 'nytimes'
+        },
         sharer: 'davis'
       }
     ]
   }
 
   render() {
-    console.log(this.props.items);
     return (
       <View style={styles.card}>
         <Image
