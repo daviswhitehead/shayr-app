@@ -25,18 +25,31 @@ export default class List extends Component {
       },
       shareCount: _.get(payload, 'shareCount', '')
     }
-    if (data.friend.firstName && data.friend.lastName && data.shareCount) {
-      data['sharedBy'] = 'Shared by ' + data.friend.firstName + ' ' + data.friend.lastName + ' and ' + data.shareCount + ' others'
+    if (data['friend']['firstName'] && data['friend']['lastName']) {
+      data['sharedByFriend'] = data['friend']['firstName'] + ' ' + data['friend']['lastName']
+      data['shareCount'] = data['shareCount'] - 1
+    } else {
+      data['sharedByFriend'] = false
     }
-    else if (data.friend.firstName && data.friend.lastName && !data.shareCount) {
-      data['sharedBy'] = 'Shared by ' + data.friend.firstName + ' ' + data.friend.lastName
+
+    if (data['shareCount'] > 1) {
+      data['sharedByOther'] = data['shareCount'] + ' others'
+    } else if (data['shareCount'] == 1) {
+      data['sharedByOther'] = data['shareCount'] + ' other'
+    } else if (!data['shareCount'] || data['shareCount'] == 0) {
+      data['sharedByOther'] = false
     }
-    else if ((!data.friend.firstName || !data.friend.lastName) && data.shareCount) {
-      data['sharedBy'] = 'Shared by ' + data.shareCount + ' others'
-    }
-    else {
+
+    if (data['sharedByFriend'] && data['sharedByOther']) {
+      data['sharedBy'] = 'Shared by ' + data['sharedByFriend'] + ' and ' + data['sharedByOther']
+    } else if (data['sharedByFriend'] && !data['sharedByOther']) {
+      data['sharedBy'] = 'Shared by ' + data['sharedByFriend']
+    } else if (!data['sharedByFriend'] && data['sharedByOther']) {
+      data['sharedBy'] = 'Shared by ' + data['sharedByOther']
+    } else {
       data['sharedBy'] = ''
     }
+
     return data
   }
 

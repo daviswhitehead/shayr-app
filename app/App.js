@@ -5,7 +5,7 @@ import {
 } from 'react-native';
 
 import Feed from './containers/Feed';
-// import ShareModal from './containers/ShareModal';
+import ShareModal from './containers/ShareModal';
 // import { AccessToken, LoginManager } from 'react-native-fbsdk';
 import firebase from 'react-native-firebase'
 
