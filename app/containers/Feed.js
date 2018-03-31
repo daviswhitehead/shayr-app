@@ -11,9 +11,10 @@ import ShayrStatusBar from '../components/StatusBar';
 import TitleBar from '../components/TitleBar';
 import List from '../components/List';
 import {
-  getShareUser,
+  getUsers,
+  getUserShares,
+  getPost,
   getPostShares,
-  getPosts,
 } from '../functions/index';
 
 
@@ -26,59 +27,116 @@ export default class App extends Component {
     }
   }
 
-  organizePosts = (posts) => {
+  organizeData = (users, posts) => {
     const data = [];
-    return posts
-      .then((posts) => {
-        for (var postKey in posts) {
-          if (posts.hasOwnProperty(postKey)) {
-
-            const postData = {
-              key: postKey,
-              image: posts[ postKey ][ 'image' ],
-              publisher: posts[ postKey ][ 'publisher' ],
-              title: posts[ postKey ][ 'title' ],
-              url: posts[ postKey ][ 'url' ],
-              updatedAt: posts[ postKey ][ 'updatedAt' ]
+    for (var postId in posts) {
+      if (posts.hasOwnProperty(postId)) {
+        posts[postId]['users'] = [];
+        // console.log(posts[postId]);
+        for (var userId in users) {
+          if (users.hasOwnProperty(userId)) {
+            for (var shareId in users[userId]['shares']) {
+              if (users[userId]['shares'].hasOwnProperty(shareId)) {
+                if (users[userId]['shares'][shareId].post &&
+                users[userId]['shares'][shareId].post.id  == postId) {
+                  posts[postId]['users'].push(users[userId])
+                }
+              }
             }
-
-            posts[ postKey ][ 'shares' ]
-              .then((value) => {
-                const keys = Object.keys(value)
-                postData[ 'shareCount' ] = keys.length
-
-                // value[keys[ Math.round(keys.length * Math.random())]]
-                //   .user
-                //   .then((value) => {
-                //     postData[ 'shareUser' ] = value
-                //   })
-                //   .catch((err) => {
-                //     console.error(err);
-                //   })
-              })
-              .catch((err) => {
-                console.error(err);
-              })
-
-            data.push(postData)
           }
         }
-        console.log(data);
+        let friend = posts[postId]['users'][Math.floor(Math.random() * posts[postId]['users'].length)];
+        if (!friend) {
+          friend = {
+            firstName: '',
+            lastName: ''
+          }
+        }
+        data.push({
+          key: postId,
+          image: posts[postId]['image'],
+          publisher: posts[postId]['publisher'],
+          title: posts[postId]['title'],
+          url: posts[postId]['url'],
+          friend: {
+            firstName: friend.firstName || '',
+            lastName: friend.lastName || ''
+          },
+          shareCount: Object.keys(posts[postId]['shares']).length
+        })
+      }
+    }
+
+    return data
+  }
+
+  loadData = () => {
+    const userData = {};
+    const postData = {};
+
+    // get users
+    getUsers()
+      .then((users) => {
+        return Promise.all(
+          users.map((user) => {
+              userData[user.id] = user.data();
+              userData[user.id]['shares'] = {};
+              return getUserShares(user)
+          })
+        );
+      })
+      // get all user shares
+      .then((users) => {
+        const postRefs = {};
+        users.map((userShares) => {
+          userShares.map((share) => {
+            userData[share.ref.parent.parent.id]['shares'][share.id] = share.data();
+
+            // find all unique posts
+            let post = share.data()['post']
+            if (post && !postRefs.hasOwnProperty(post.id)) {
+              postRefs[post.id] = share.data()['post'];
+            }
+          })
+        })
+        return Promise.all(
+          Object.values(postRefs).map((post) => {
+            return getPost(post)
+          })
+        )
+      })
+      // get all friend posts
+      .then((posts) => {
+        return Promise.all(
+          posts.map((post) => {
+            postData[post.id] = post.data();
+            postData[post.id]['shares'] = {};
+            return getPostShares(post.ref)
+          })
+        )
+      })
+      // get all shares associated with friend posts
+      .then((posts) => {
+        posts.map((postShares) => {
+          postShares.map((share) => {
+            postData[share.ref.parent.parent.id]['shares'][share.id] = share.data()
+          })
+        })
         this.setState((previousState) => {
           return {
-            data: data,
+            data: this.organizeData(userData, postData),
             loading: !previousState.loading
           }
         })
-        console.log(this.state);
       })
       .catch((err) => {
         console.error(err);
       })
+
   }
 
   componentDidMount() {
-    this.organizePosts(getPosts(true));
+    this.loadData()
   }
 
   render() {
@@ -87,8 +145,6 @@ export default class App extends Component {
         <Text>LOADING</Text>
       ) // placeholder for eventual loading visual
     }
-    console.log(this.state.data);
-
     return (
       <View style={styles.container}>
         <ShayrStatusBar/>

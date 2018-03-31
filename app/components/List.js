@@ -9,7 +9,7 @@ import {
 
 import ContentCard from './ContentCard'
 
-const extractKey = ({id}) => id
+const extractKey = ({key}) => key
 
 export default class List extends Component {
   constructor() {
@@ -17,8 +17,6 @@ export default class List extends Component {
   }
 
   renderItem = ({item}) => {
-    const {rows} = this.props.data
-
     return (
       <View style={styles.box}>
         <ContentCard
@@ -35,24 +33,16 @@ export default class List extends Component {
   };
 
   render() {
-    console.log(this.state);
-    console.log(this.props);
     return (
-      <ContentCard
+      <FlatList
+        style={styles.container}
+        data={this.props.data}
+        renderItem={this.renderItem}
+        keyExtractor={extractKey}
+        ItemSeparatorComponent={this.renderSeparator}
       />
     );
   }
-  // render() {
-  //   return (
-  //     <FlatList
-  //       style={styles.container}
-  //       data={this.props.data}
-  //       renderItem={this.renderItem}
-  //       keyExtractor={extractKey}
-  //       ItemSeparatorComponent={this.renderSeparator}
-  //     />
-  //   );
-  // }
 }
 
 const styles = StyleSheet.create({

@@ -1,5 +1,39 @@
 import firebase from 'react-native-firebase';
 
+export const getUsers = () => {
+  return firebase.firestore().collection('users').get()
+    .then((query) => {
+      return query.docs
+    })
+    .catch((err) => {
+      console.error(err);
+      return false
+    })
+};
+
+export const getUserShares = (user) => {
+  return user.ref.collection('shares').get()
+    .then((query) => {
+      return query.docs
+    })
+    .catch((err) => {
+      console.error(err);
+      return false
+    })
+};
+
+export const getPost = (post) => {
+  return post.get()
+    .then((doc) => {
+      return doc
+    })
+    .catch((err) => {
+      console.error(err);
+      return false
+    })
+};
+
+
 export const getShareUser = (share) => {
   return share.data().user.get()
     .then((doc) => {
@@ -11,18 +45,10 @@ export const getShareUser = (share) => {
     })
 };
 
-export const getPostShares = (post, getUser) => {
-  return post.collection('shares')
-    .get()
+export const getPostShares = (post) => {
+  return post.collection('shares').get()
     .then((query) => {
-      const shares = {};
-      query.forEach((share) => {
-        shares[ share.id ] = share.data()
-        if (getUser) {
-          shares[ share.id ][ 'user' ] = getShareUser(share);
-        }
-      })
-      return shares
+      return query.docs
     })
     .catch((err) => {
       console.error(err);
