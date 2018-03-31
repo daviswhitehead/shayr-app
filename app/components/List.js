@@ -5,9 +5,11 @@ import {
   StyleSheet,
   View,
   TouchableOpacity,
+  TouchableHighlight,
 } from 'react-native';
 
-import ContentCard from './ContentCard'
+import SwipeCard from './SwipeCard';
+
 
 const extractKey = ({key}) => key
 
@@ -19,8 +21,12 @@ export default class List extends Component {
   renderItem = ({item}) => {
     return (
       <View style={styles.box}>
-        <ContentCard
+        <SwipeCard
           payload={item}
+          swipeLeftToRightAction={this.props.swipeLeftToRightAction}
+          swipeRightToLeftAction={this.props.swipeRightToLeftAction}
+          swipeLeftToRightUI={this.props.swipeLeftToRightUI}
+          swipeRightToLeftUI={this.props.swipeRightToLeftUI}
         />
       </View>
     )
@@ -33,6 +39,7 @@ export default class List extends Component {
   };
 
   render() {
+    console.log(this.props);
     return (
       <FlatList
         style={styles.container}

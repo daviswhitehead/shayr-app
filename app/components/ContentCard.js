@@ -1,15 +1,13 @@
 import React, { Component } from 'react';
 import {
-  FlatList,
   Text,
   StyleSheet,
   View,
-  TouchableOpacity,
   Image
 } from 'react-native';
 import _ from 'lodash';
 
-export default class List extends Component {
+export default class ContentCard extends Component {
   constructor() {
     super();
   }

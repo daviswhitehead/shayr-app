@@ -5,7 +5,6 @@ import {
   StyleSheet,
   TouchableOpacity,
 } from 'react-native';
-
 import firebase from 'react-native-firebase';
 import ShayrStatusBar from '../components/StatusBar';
 import TitleBar from '../components/TitleBar';
@@ -17,8 +16,15 @@ import {
   getPostShares,
 } from '../functions/index';
 
+// renders list of cards
+// actions (mvp)
+// // swipe leftToRight: add to queue
+// // swipe rightToLeft: none
+// // tap on card: open url
+// // scroll up and down
 
-export default class App extends Component {
+
+export default class Feed extends Component {
   constructor() {
     super();
     this.state = {
@@ -139,21 +145,44 @@ export default class App extends Component {
     this.loadData()
   }
 
-  render() {
+  addToQueue = () => {
+    console.log('meow');
+  }
+
+  addToQueueUI = () => {
+    return (
+      <View>
+        <Text>MEOW</Text>
+      </View>
+    )
+  }
+
+  loading = () => {
     if (this.state.loading) {
       return (
         <Text>LOADING</Text>
-      ) // placeholder for eventual loading visual
+      ); // placeholder for eventual loading visual
     }
+    return (
+      <List
+        data={this.state.data}
+        swipeLeftToRightAction={() => this.addToQueue}
+        swipeRightToLeftAction={false}
+        swipeLeftToRightUI={() => this.addToQueueUI}
+        swipeRightToLeftUI={false}
+      >
+      </List>
+    );
+  }
+
+  render() {
     return (
       <View style={styles.container}>
         <ShayrStatusBar/>
         <TitleBar>FEED</TitleBar>
-        <List
-          data={this.state.data}>
-        </List>
+        <this.loading/>
       </View>
-    )
+    );
   }
 }
 
