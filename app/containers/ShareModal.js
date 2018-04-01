@@ -47,7 +47,7 @@ export default class MyComponent extends Component {
       //   type,
       //   value
       // })
-      this.url = 'https://stratechery.com/2018/the-facebook-brand/?utm_source=feedly&utm_medium=webfeeds';
+      this.url = 'https://www.washingtonpost.com/politics/from-mueller-to-stormy-to-emoluments-trumps-business-is-under-siege/2018/03/30/1d128526-337b-11e8-8abc-22a366b72f2d_story.html?utm_term=.58cb1bf43d03';
       this.share = await createShare(this.ref, this.url);
       if (this.share) {
         setTimeout(
