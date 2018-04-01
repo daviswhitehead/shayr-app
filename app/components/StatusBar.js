@@ -9,7 +9,7 @@ export default class ShayrStatusBar extends Component {
   render() {
     return (
       <StatusBar style={styles.container}
-        barStyle="light-content"
+        barStyle='dark-content'
       />
     )
   }

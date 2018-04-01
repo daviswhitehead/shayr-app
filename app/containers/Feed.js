@@ -14,20 +14,17 @@ import {
   getUserShares,
   getPost,
   getPostShares,
-} from '../functions/index';
-
-// renders list of cards
-// actions (mvp)
-// // swipe leftToRight: add to queue
-// // swipe rightToLeft: none
-// // tap on card: open url
-// // scroll up and down
-
+} from '../functions/pull';
+import {
+  savePostToUser,
+} from '../functions/push'
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 export default class Feed extends Component {
   constructor() {
     super();
     this.state = {
+      userId: 'testUser',
       loading: true,
       data: []
     }
@@ -128,6 +125,8 @@ export default class Feed extends Component {
             postData[share.ref.parent.parent.id]['shares'][share.id] = share.data()
           })
         })
+        console.log(userData);
+        console.log(postData);
         this.setState((previousState) => {
           return {
             data: this.organizeData(userData, postData),
@@ -145,16 +144,17 @@ export default class Feed extends Component {
     this.loadData()
   }
 
-  addToQueue = () => {
-    console.log('meow');
+  addToQueue = (payload) => {
+    // build function to add content to queue
+    savePostToUser(this.state.userId, payload['key'])
   }
 
   addToQueueUI = () => {
     return (
-      <View>
-        <Text>MEOW</Text>
+      <View style={styles.leftSwipeItem}>
+        <Icon name='add' size={50} color='white' />
       </View>
-    )
+    );
   }
 
   loading = () => {
@@ -166,16 +166,16 @@ export default class Feed extends Component {
     return (
       <List
         data={this.state.data}
-        swipeLeftToRightAction={() => this.addToQueue}
-        swipeRightToLeftAction={false}
-        swipeLeftToRightUI={() => this.addToQueueUI}
-        swipeRightToLeftUI={false}
+        swipeLeftToRightUI={this.addToQueueUI}
+        swipeLeftToRightAction={this.addToQueue}
       >
       </List>
     );
   }
 
   render() {
+    console.log(this.state);
+    console.log(this.props);
     return (
       <View style={styles.container}>
         <ShayrStatusBar/>
@@ -189,5 +189,13 @@ export default class Feed extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  leftSwipeItem: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    paddingRight: 25,
+    backgroundColor: '#27AE60',
   },
 })

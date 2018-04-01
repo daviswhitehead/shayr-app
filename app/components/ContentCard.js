@@ -3,7 +3,9 @@ import {
   Text,
   StyleSheet,
   View,
-  Image
+  Image,
+  Linking,
+  TouchableWithoutFeedback,
 } from 'react-native';
 import _ from 'lodash';
 
@@ -51,33 +53,48 @@ export default class ContentCard extends Component {
     return data
   }
 
+  tap = (payload) => {
+    const url = payload['url']
+    Linking.canOpenURL(url).then(supported => {
+      if (!supported) {
+        console.log('Can\'t handle url: ' + url);
+      } else {
+        return Linking.openURL(url);
+      }
+    }).catch(err => console.error('An error occurred', err));
+  }
+
   render() {
     const data = this.sanitizeData(this.props.payload);
     return (
-      <View style={styles.card}>
-        <Image
-          style={styles.image}
-          source={{uri: data.image}}
-        />
-        <View style={styles.textBox}>
-          <View style={styles.titlePublisherBox}>
-            <Text
-              style={styles.titleText}>
-              {data.title}
-            </Text>
-            <Text
-              style={styles.publisherText}>
-              {data.publisherName}
-            </Text>
-          </View>
-          <View style={styles.sharedByBox}>
-            <Text
-              style={styles.sharedByText}>
-              {data.sharedBy}
-            </Text>
+      <TouchableWithoutFeedback
+        onPress={() => this.tap(this.props.payload)}
+      >
+        <View style={styles.card}>
+          <Image
+            style={styles.image}
+            source={{uri: data.image}}
+          />
+          <View style={styles.textBox}>
+            <View style={styles.titlePublisherBox}>
+              <Text
+                style={styles.titleText}>
+                {data.title}
+              </Text>
+              <Text
+                style={styles.publisherText}>
+                {data.publisherName}
+              </Text>
+            </View>
+            <View style={styles.sharedByBox}>
+              <Text
+                style={styles.sharedByText}>
+                {data.sharedBy}
+              </Text>
+            </View>
           </View>
         </View>
-      </View>
+      </TouchableWithoutFeedback>
     );
   }
 }

@@ -19,14 +19,20 @@ export default class List extends Component {
   }
 
   renderItem = ({item}) => {
+    const {
+      swipeLeftToRightUI,
+      swipeLeftToRightAction,
+      swipeRightToLeftUI,
+      swipeRightToLeftAction
+    } = this.props
     return (
       <View style={styles.box}>
         <SwipeCard
           payload={item}
-          swipeLeftToRightAction={this.props.swipeLeftToRightAction}
-          swipeRightToLeftAction={this.props.swipeRightToLeftAction}
-          swipeLeftToRightUI={this.props.swipeLeftToRightUI}
-          swipeRightToLeftUI={this.props.swipeRightToLeftUI}
+          swipeLeftToRightUI={swipeLeftToRightUI}
+          swipeLeftToRightAction={swipeLeftToRightAction}
+          swipeRightToLeftUI={swipeRightToLeftUI}
+          swipeRightToLeftAction={swipeRightToLeftAction}
         />
       </View>
     )
@@ -39,7 +45,6 @@ export default class List extends Component {
   };
 
   render() {
-    console.log(this.props);
     return (
       <FlatList
         style={styles.container}
