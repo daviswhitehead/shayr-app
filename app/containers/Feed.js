@@ -6,8 +6,6 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import firebase from 'react-native-firebase';
-import ShayrStatusBar from '../components/StatusBar';
-import TitleBar from '../components/TitleBar';
 import List from '../components/List';
 import {
   getUsers,
@@ -19,6 +17,7 @@ import {
   savePostToUser,
 } from '../functions/push'
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import HamburgerMenu from '../components/HamburgerMenu';
 
 export default class Feed extends Component {
   constructor() {
@@ -29,6 +28,16 @@ export default class Feed extends Component {
       data: []
     }
   }
+
+  static navigationOptions = ({ navigation, screenProps }) => ({
+    drawerLabel: 'FEED',
+    title: 'FEED',
+    headerLeft: (
+      <HamburgerMenu
+        nav={navigation}
+      />
+    )
+  });
 
   organizeData = (users, posts) => {
     const data = [];
@@ -178,8 +187,6 @@ export default class Feed extends Component {
     console.log(this.props);
     return (
       <View style={styles.container}>
-        <ShayrStatusBar/>
-        <TitleBar>FEED</TitleBar>
         <this.loading/>
       </View>
     );
