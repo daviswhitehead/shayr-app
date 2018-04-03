@@ -18,6 +18,7 @@ export default class DrawerMenu extends Component {
       })
     );
   }
+
   render() {
     return (
       <View style={styles.container}>
@@ -47,7 +48,7 @@ const styles = StyleSheet.create({
   menuItem: {
     padding: 10,
     justifyContent: 'center',
-    backgroundColor: 'rgba(12, 12, 12, 0.2)',
+    backgroundColor: '#F2C94C',
     marginBottom: 2
   },
   menuItemText: {
