@@ -13,7 +13,6 @@ export default class SwipeCard extends Component {
 
   render() {
     const {payload, swipeLeftToRightUI, swipeLeftToRightAction} = this.props;
-    console.log(swipeLeftToRightAction);
     return (
       <Swipeable
         leftActionActivationDistance={100}

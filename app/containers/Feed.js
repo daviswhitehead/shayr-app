@@ -34,7 +34,7 @@ export default class Feed extends Component {
     title: 'FEED',
     headerLeft: (
       <HamburgerMenu
-        nav={navigation}
+        navigation={navigation}
       />
     )
   });
@@ -113,6 +113,7 @@ export default class Feed extends Component {
         })
         return Promise.all(
           Object.values(postRefs).map((post) => {
+            console.log(post);
             return getPost(post)
           })
         )
@@ -134,8 +135,8 @@ export default class Feed extends Component {
             postData[share.ref.parent.parent.id]['shares'][share.id] = share.data()
           })
         })
-        console.log(userData);
-        console.log(postData);
+        // console.log(userData);
+        // console.log(postData);
         this.setState((previousState) => {
           return {
             data: this.organizeData(userData, postData),
@@ -150,7 +151,7 @@ export default class Feed extends Component {
   }
 
   componentDidMount() {
-    this.loadData()
+    // this.loadData()
   }
 
   addToQueue = (payload) => {

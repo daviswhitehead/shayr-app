@@ -6,11 +6,27 @@ import {
   TouchableOpacity,
   Image
 } from 'react-native';
+import firebase from 'react-native-firebase';
+import List from '../components/List';
+import {
+  getUserSavedPosts,
+  getPost,
+  getPostShares,
+} from '../functions/pull';
+import {
+  savePostToUser,
+} from '../functions/push'
+import Icon from 'react-native-vector-icons/MaterialIcons';
 import HamburgerMenu from '../components/HamburgerMenu';
 
 export default class Queue extends Component {
   constructor() {
     super();
+    this.state = {
+      userId: 'testUser',
+      loading: true,
+      data: []
+    }
   }
 
   static navigationOptions = ({ navigation, screenProps }) => ({
@@ -18,12 +34,14 @@ export default class Queue extends Component {
     title: 'QUEUE',
     headerLeft: (
       <HamburgerMenu
-        nav={navigation}
+        navigation={navigation}
       />
     )
   });
 
   render() {
+    console.log(this.state);
+    console.log(this.props);
     return (
       <View style={styles.container}>
         <Image source={require('../components/Article.png')} />
