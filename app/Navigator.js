@@ -14,8 +14,7 @@ import Feed from './containers/Feed';
 import Queue from './containers/Queue';
 import DrawerMenu from './DrawerMenu';
 
-
-const RootStack = StackNavigator(
+const Stack = StackNavigator(
   {
     Feed: { screen: Feed },
     Queue: { screen: Queue }
@@ -35,9 +34,12 @@ const RootStack = StackNavigator(
 
 export default DrawerNavigator(
   {
-    Main: { screen: RootStack }
-  }, {
+    Main: {
+      screen: Stack
+    }
+  },
+  {
     contentComponent: DrawerMenu,
-    drawerWidth: 300
+    drawerWidth: 200
   }
 );

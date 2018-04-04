@@ -10,6 +10,10 @@ import {
 import { NavigationActions } from 'react-navigation';
 
 export default class DrawerMenu extends Component {
+  constructor() {
+    super();
+  }
+
   _navigate(route) {
     return this.props.navigation.dispatch(
       NavigationActions.reset({
@@ -25,13 +29,17 @@ export default class DrawerMenu extends Component {
         <TouchableOpacity
           style={styles.menuItem}
           onPress={() =>
-            this._navigate('Feed', { isStatusBarHidden: false })}
+            this._navigate('Feed', {
+              isStatusBarHidden: false,
+            })}
         >
           <Text style={styles.menuItemText}>FEED</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.menuItem}
-          onPress={() => this._navigate('Queue', { isStatusBarHidden: false })}
+          onPress={() => this._navigate('Queue', {
+            isStatusBarHidden: false
+          })}
         >
           <Text style={styles.menuItemText}>QUEUE</Text>
         </TouchableOpacity>

@@ -1,5 +1,17 @@
 import firebase from 'react-native-firebase';
 
+export const getUserSavedPosts = (userId) => {
+  return firebase.firestore().collection('users').doc(userId)
+    .collection('savedPosts').orderBy('createdAt', 'desc').limit(50).get()
+    .then((query) => {
+      return query.docs
+    })
+    .catch((err) => {
+      console.error(err);
+      return false
+    })
+};
+
 export const getUsers = () => {
   return firebase.firestore().collection('users').get()
     .then((query) => {
@@ -23,7 +35,14 @@ export const getUserShares = (user) => {
 };
 
 export const getPost = (post) => {
-  return post.get()
+  let ref
+  if (typeof post == 'string') {
+    ref = firebase.firestore().collection('posts').doc(post)
+  }
+  else {
+    ref = post
+  }
+  return ref.get()
     .then((doc) => {
       return doc
     })

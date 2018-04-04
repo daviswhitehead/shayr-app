@@ -12,10 +12,12 @@ export default class HamburgerMenu extends Component {
   }
 
   render() {
+    console.log(this.state);
+    console.log(this.props);
     return (
       <View style={{ paddingHorizontal: 10 }}>
         <TouchableOpacity
-          onPress={() => this.props.nav.navigate('DrawerOpen')}
+          onPress={() => this.props.navigation.navigate('DrawerOpen')}
         >
           <Icon name='menu' size={30} color='black' />
         </TouchableOpacity>
