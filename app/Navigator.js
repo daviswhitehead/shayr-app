@@ -12,34 +12,23 @@ import {
 } from 'react-native';
 import Feed from './containers/Feed';
 import Queue from './containers/Queue';
-import DrawerMenu from './DrawerMenu';
 
-const Stack = StackNavigator(
+export default StackNavigator(
   {
     Feed: { screen: Feed },
     Queue: { screen: Queue }
   },
   {
-    initialRouteName: 'Queue',
-    navigationOptions: {
+    initialRouteName: 'Feed',
+    navigationOptions: ({ navigation }) => ({
       headerStyle: {
         backgroundColor: '#F2C94C',
       },
       headerTitleStyle: {
-        fontWeight: 'bold',
-      }
-    }
-  }
-);
-
-export default DrawerNavigator(
-  {
-    Main: {
-      screen: Stack
-    }
-  },
-  {
-    contentComponent: DrawerMenu,
-    drawerWidth: 200
+        fontWeight: '800',
+      },
+      headerTintColor: 'black',
+      headerBackTitle: null
+    })
   }
 );

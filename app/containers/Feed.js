@@ -4,6 +4,7 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
+  LayoutAnimation,
 } from 'react-native';
 import firebase from 'react-native-firebase';
 import List from '../components/List';
@@ -17,7 +18,7 @@ import {
   savePostToUser,
 } from '../functions/push'
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import HamburgerMenu from '../components/HamburgerMenu';
+import ActionButton from '../components/ActionButton';
 
 export default class Feed extends Component {
   constructor() {
@@ -25,19 +26,18 @@ export default class Feed extends Component {
     this.state = {
       userId: 'testUser',
       loading: true,
-      data: []
+      data: [],
+      isActionButtonVisible: true
     }
   }
 
-  static navigationOptions = ({ navigation, screenProps }) => ({
-    drawerLabel: 'FEED',
-    title: 'FEED',
-    headerLeft: (
-      <HamburgerMenu
-        navigation={navigation}
-      />
-    )
-  });
+  static navigationOptions = ({ navigation }) => {
+    const { params } = navigation.state;
+
+    return {
+      title: 'FEED'
+    }
+  }
 
   organizeData = (users, posts) => {
     const data = [];
@@ -135,8 +135,6 @@ export default class Feed extends Component {
             postData[share.ref.parent.parent.id]['shares'][share.id] = share.data()
           })
         })
-        // console.log(userData);
-        // console.log(postData);
         this.setState((previousState) => {
           return {
             data: this.organizeData(userData, postData),
@@ -150,8 +148,8 @@ export default class Feed extends Component {
 
   }
 
-  componentDidMount() {
-    // this.loadData()
+  componentWillMount() {
+    this.loadData()
   }
 
   addToQueue = (payload) => {
@@ -167,6 +165,31 @@ export default class Feed extends Component {
     );
   }
 
+  _listViewOffset = 0
+  
+  _onScroll = (event) => {
+    // Simple fade-in / fade-out animation
+    const CustomLayoutLinear = {
+      duration: 100,
+      create: { type: LayoutAnimation.Types.linear, property: LayoutAnimation.Properties.opacity },
+      update: { type: LayoutAnimation.Types.linear, property: LayoutAnimation.Properties.opacity },
+      delete: { type: LayoutAnimation.Types.linear, property: LayoutAnimation.Properties.opacity }
+    }
+    // Check if the user is scrolling up or down by confronting the new scroll position with your own one
+    const currentOffset = event.nativeEvent.contentOffset.y
+    const direction = (currentOffset > 0 && currentOffset > this._listViewOffset)
+      ? 'down'
+      : 'up'
+    // If the user is scrolling down (and the action-button is still visible) hide it
+    const isActionButtonVisible = direction === 'up'
+    if (isActionButtonVisible !== this.state.isActionButtonVisible) {
+      LayoutAnimation.configureNext(CustomLayoutLinear)
+      this.setState({ isActionButtonVisible })
+    }
+    // Update your scroll position
+    this._listViewOffset = currentOffset
+  }
+
   loading = () => {
     if (this.state.loading) {
       return (
@@ -178,6 +201,7 @@ export default class Feed extends Component {
         data={this.state.data}
         swipeLeftToRightUI={this.addToQueueUI}
         swipeLeftToRightAction={this.addToQueue}
+        onScroll={this._onScroll}
       >
       </List>
     );
@@ -189,6 +213,13 @@ export default class Feed extends Component {
     return (
       <View style={styles.container}>
         <this.loading/>
+        {
+          this.state.isActionButtonVisible ?
+          <ActionButton
+            action={() => this.props.navigation.navigate('Queue', this.state)}
+          /> :
+          null
+        }
       </View>
     );
   }
@@ -197,6 +228,7 @@ export default class Feed extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    alignItems: 'center'
   },
   leftSwipeItem: {
     flex: 1,

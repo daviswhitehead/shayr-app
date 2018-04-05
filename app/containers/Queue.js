@@ -16,8 +16,7 @@ import {
 import {
   savePostToUser,
 } from '../functions/push'
-import Icon from 'react-native-vector-icons/MaterialIcons';
-import HamburgerMenu from '../components/HamburgerMenu';
+import ActionButton from '../components/ActionButton';
 
 export default class Queue extends Component {
   constructor() {
@@ -29,22 +28,22 @@ export default class Queue extends Component {
     }
   }
 
-  static navigationOptions = ({ navigation, screenProps }) => ({
-    drawerLabel: 'QUEUE',
-    title: 'QUEUE',
-    headerLeft: (
-      <HamburgerMenu
-        navigation={navigation}
-      />
-    )
-  });
+  static navigationOptions = ({ navigation }) => {
+    const { params } = navigation.state;
+
+    return {
+      title: 'QUEUE'
+    }
+  }
 
   render() {
     console.log(this.state);
     console.log(this.props);
     return (
       <View style={styles.container}>
-        <Image source={require('../components/Article.png')} />
+        <ActionButton
+          action={() => this.props.navigation.navigate('Feed', this.state)}
+        />
       </View>
     );
   }
