@@ -18,15 +18,27 @@ export const createShare = (ref, url) => {
 
 export const savePostToUser = (userId, postId) => {
   const ts = firebase.firestore.FieldValue.serverTimestamp();
-  return firebase.firestore().collection('users').doc(userId)
+  const ref = firebase.firestore().collection('users').doc(userId)
     .collection('savedPosts').doc(postId)
-    .set({
-      createdAt: ts,
-      updatedAt: ts,
-      doneAt: null,
-      deletedAt: null
-    })
-    .then((ref) => {
+  return ref
+    .get()
+    .then((doc) => {
+      if (!doc.exists) {
+        ref.set({
+          createdAt: ts,
+          updatedAt: ts,
+          doneAt: null,
+          deletedAt: null
+        })
+      } else {
+        ref.set({
+          updatedAt: ts,
+          doneAt: null,
+          deletedAt: null
+        }, {
+          merge: true
+        })
+      }
       console.log("Document successfully written!");
     })
     .catch((error) => {

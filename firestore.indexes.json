@@ -1,0 +1,12 @@
+{
+  "indexes": [
+    {
+      "collectionId": "savedPosts",
+      "fields": [
+        { "fieldPath": "doneAt", "mode": "DESCENDING"},
+        { "fieldPath": "deletedAt", "mode": "DESCENDING"},
+        { "fieldPath": "updatedAt", "mode": "DESCENDING"}
+      ]
+    }
+  ]
+}
