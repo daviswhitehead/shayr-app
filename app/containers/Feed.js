@@ -1,33 +1,37 @@
 import React, { Component } from 'react';
 import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  LayoutAnimation,
+  View, Text, StyleSheet, TouchableOpacity, LayoutAnimation
 } from 'react-native';
 import firebase from 'react-native-firebase';
 import List from '../components/List';
 import {
-  getUsers,
-  getUserShares,
-  getPost,
-  getPostShares,
+  getUsers, getUserShares, getPost, getPostShares
 } from '../functions/pull';
 import {
   savePostToUser,
 } from '../functions/push'
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import ActionButton from '../components/ActionButton';
+import _ from 'lodash';
 
 export default class Feed extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       userId: 'testUser',
-      loading: true,
-      data: [],
       isActionButtonVisible: true
+    }
+
+    const navigationParams = _.get(this.props, 'navigation.state.params', null)
+    if (navigationParams) {
+      this.state = {...this.state, ...navigationParams};
+      if (navigationParams.feedData) {
+        this.state = {...this.state, loading: false};
+      } else {
+        this.state = {...this.state, loading: true};
+      }
+    } else {
+      this.state = {...this.state, loading: true};
     }
   }
 
@@ -91,8 +95,11 @@ export default class Feed extends Component {
       .then((users) => {
         return Promise.all(
           users.map((user) => {
-              userData[user.id] = user.data();
-              userData[user.id]['shares'] = {};
+              userData[user.id] = {
+                ...user.data(),
+                doc: user,
+                shares: {}
+              };
               return getUserShares(user)
           })
         );
@@ -102,7 +109,10 @@ export default class Feed extends Component {
         const postRefs = {};
         users.map((userShares) => {
           userShares.map((share) => {
-            userData[share.ref.parent.parent.id]['shares'][share.id] = share.data();
+            userData[share.ref.parent.parent.id]['shares'][share.id] = {
+              ...share.data(),
+              doc: share
+            };
 
             // find all unique posts
             let post = share.data()['post']
@@ -113,7 +123,6 @@ export default class Feed extends Component {
         })
         return Promise.all(
           Object.values(postRefs).map((post) => {
-            console.log(post);
             return getPost(post)
           })
         )
@@ -122,8 +131,11 @@ export default class Feed extends Component {
       .then((posts) => {
         return Promise.all(
           posts.map((post) => {
-            postData[post.id] = post.data();
-            postData[post.id]['shares'] = {};
+            postData[post.id] = {
+              ...post.data(),
+              doc: post,
+              shares: {}
+            };
             return getPostShares(post.ref)
           })
         )
@@ -132,13 +144,19 @@ export default class Feed extends Component {
       .then((posts) => {
         posts.map((postShares) => {
           postShares.map((share) => {
-            postData[share.ref.parent.parent.id]['shares'][share.id] = share.data()
+            postData[share.ref.parent.parent.id]['shares'][share.id] = {
+              ...share.data(),
+              doc: share
+            };
           })
         })
         this.setState((previousState) => {
           return {
-            data: this.organizeData(userData, postData),
-            loading: !previousState.loading
+            ...previousState,
+            feedData: this.organizeData(userData, postData),
+            loading: false,
+            userData: userData,
+            postData: postData
           }
         })
       })
@@ -149,7 +167,9 @@ export default class Feed extends Component {
   }
 
   componentWillMount() {
-    this.loadData()
+    if (!this.state.feedData) {
+      this.loadData()
+    }
   }
 
   addToQueue = (payload) => {
@@ -166,7 +186,7 @@ export default class Feed extends Component {
   }
 
   _listViewOffset = 0
-  
+
   _onScroll = (event) => {
     // Simple fade-in / fade-out animation
     const CustomLayoutLinear = {
@@ -198,7 +218,7 @@ export default class Feed extends Component {
     }
     return (
       <List
-        data={this.state.data}
+        data={this.state.feedData}
         swipeLeftToRightUI={this.addToQueueUI}
         swipeLeftToRightAction={this.addToQueue}
         onScroll={this._onScroll}
@@ -208,8 +228,6 @@ export default class Feed extends Component {
   }
 
   render() {
-    console.log(this.state);
-    console.log(this.props);
     return (
       <View style={styles.container}>
         <this.loading/>
@@ -228,7 +246,8 @@ export default class Feed extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center'
+    alignItems: 'center',
+    justifyContent: 'center'
   },
   leftSwipeItem: {
     flex: 1,

@@ -11,8 +11,6 @@ export default class ActionButton extends Component {
   }
 
   render() {
-    console.log(this.state);
-    console.log(this.props);
     const { action } = this.props;
     return (
       <TouchableOpacity
@@ -36,6 +34,7 @@ const styles = StyleSheet.create({
     height: 56,
     alignItems: 'center',
     justifyContent: 'center',
+    right: 24,
     bottom: 24,
     backgroundColor: '#F2C94C',
     borderRadius: 50,
