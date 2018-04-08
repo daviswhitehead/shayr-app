@@ -10,7 +10,6 @@ import {
   TouchableWithoutFeedback,
 } from 'react-native';
 import firebase from 'react-native-firebase';
-import ShareExtensionModal from '../components/shareExtensionModal/ShareExtensionModal';
 
 const createShare = (ref, url) => {
   const ts = firebase.firestore.FieldValue.serverTimestamp();
@@ -47,7 +46,7 @@ export default class MyComponent extends Component {
       //   type,
       //   value
       // })
-      this.url = 'https://www.washingtonpost.com/politics/from-mueller-to-stormy-to-emoluments-trumps-business-is-under-siege/2018/03/30/1d128526-337b-11e8-8abc-22a366b72f2d_story.html?utm_term=.58cb1bf43d03';
+      this.url = 'https://www.nytimes.com/2018/04/03/business/media/spotifys-wall-street-debut-is-a-success.html';
       this.share = await createShare(this.ref, this.url);
       if (this.share) {
         setTimeout(
@@ -94,7 +93,7 @@ export default class MyComponent extends Component {
                 style={styles.modal}
               >
                 <Image
-                  source={require('../components/shareExtensionModal/ShareExtensionLogo.png')}
+                  source={require('../components/ShareExtensionLogo.png')}
                   style={styles.logo}
                   >
                 </Image>

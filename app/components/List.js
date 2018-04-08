@@ -5,7 +5,7 @@ import {
   StyleSheet,
   View,
   TouchableOpacity,
-  TouchableHighlight,
+  TouchableHighlight
 } from 'react-native';
 
 import SwipeCard from './SwipeCard';
@@ -52,6 +52,7 @@ export default class List extends Component {
         renderItem={this.renderItem}
         keyExtractor={extractKey}
         ItemSeparatorComponent={this.renderSeparator}
+        onScroll={this.props.onScroll}
       />
     );
   }

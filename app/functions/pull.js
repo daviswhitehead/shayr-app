@@ -4,6 +4,7 @@ export const getUserSavedPosts = (userId) => {
   return firebase.firestore().collection('users').doc(userId)
     .collection('savedPosts').orderBy('createdAt', 'desc').limit(50).get()
     .then((query) => {
+      console.log(query);
       return query.docs
     })
     .catch((err) => {
