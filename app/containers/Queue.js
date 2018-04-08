@@ -27,7 +27,6 @@ export default class Queue extends Component {
 
     if (navigationParams) {
       this.state = {...this.state, ...navigationParams};
-      delete this.state.postData['Tw7Q8oDMniF8Y9s3UuPQ']
       if (navigationParams.queueData) {
         this.state = {...this.state, loading: false};
       } else {
@@ -37,10 +36,13 @@ export default class Queue extends Component {
       this.state = {...this.state, loading: true};
     }
 
-    this.ref = firebase.firestore().collection('users').doc(this.state.userId).collection('savedPosts')
+    this.ref = firebase.firestore()
+      .collection('users')
+      .doc(this.state.userId)
+      .collection('savedPosts')
       .where('doneAt', '==', null)
-      // .orderBy('updatedAt', 'desc')
-    console.log(this.ref);
+      .where('deletedAt', '==', null)
+      .orderBy('updatedAt', 'desc')
     this.unsubscribe = null;
   }
 
@@ -95,7 +97,6 @@ export default class Queue extends Component {
   }
 
   onCollectionUpdate = (querySnapshot) => {
-    console.log('here');
     const savedPostData = {};
     const queuePostData = {};
 
@@ -160,14 +161,25 @@ export default class Queue extends Component {
   }
 
   markAsDone = (payload) => {
-    // build function to add content to queue
     markSavedPostAsDone(this.state.userId, payload['key'])
   }
 
   markAsDoneUI = () => {
     return (
       <View style={styles.leftSwipeItem}>
-        <Icon name='add' size={50} color='white' />
+        <Icon name='check' size={50} color='white' />
+      </View>
+    );
+  }
+
+  removeFromQueue = (payload) => {
+    deleteSavedPost(this.state.userId, payload['key'])
+  }
+
+  removeFromQueueUI = () => {
+    return (
+      <View style={styles.rightSwipeItem}>
+        <Icon name='close' size={50} color='white' />
       </View>
     );
   }
@@ -203,11 +215,15 @@ export default class Queue extends Component {
         <Text>LOADING</Text>
       ); // placeholder for eventual loading visual
     }
+    console.log(this.removeFromQueueUI);
+    console.log(this.removeFromQueue);
     return (
       <List
         data={this.state.queueData}
         swipeLeftToRightUI={this.markAsDoneUI}
         swipeLeftToRightAction={this.markAsDone}
+        swipeRightToLeftUI={this.removeFromQueueUI}
+        swipeRightToLeftAction={this.removeFromQueue}
         onScroll={this._onScroll}
       >
       </List>
@@ -243,5 +259,13 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     paddingRight: 25,
     backgroundColor: '#27AE60',
+  },
+  rightSwipeItem: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    paddingLeft: 25,
+    backgroundColor: '#F5402F',
   },
 });

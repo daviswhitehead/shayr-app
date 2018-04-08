@@ -12,12 +12,33 @@ export default class SwipeCard extends Component {
   }
 
   render() {
-    const {payload, swipeLeftToRightUI, swipeLeftToRightAction} = this.props;
+    const {
+      payload, swipeLeftToRightUI, swipeLeftToRightAction, swipeRightToLeftUI,
+      swipeRightToLeftAction
+    } = this.props;
+    let swipeableOptions = {};
+
+    if (swipeLeftToRightUI && swipeLeftToRightAction) {
+      swipeableOptions = {
+        ...swipeableOptions,
+        leftActionActivationDistance: 100,
+        leftContent: swipeLeftToRightUI(),
+        onLeftActionRelease: () => swipeLeftToRightAction(payload),
+      }
+    }
+
+    if (swipeRightToLeftUI && swipeRightToLeftAction) {
+      swipeableOptions = {
+        ...swipeableOptions,
+        rightActionActivationDistance: 100,
+        rightContent: swipeRightToLeftUI(),
+        onRightActionRelease: () => swipeRightToLeftAction(payload),
+      }
+    }
+
     return (
       <Swipeable
-        leftActionActivationDistance={100}
-        leftContent={swipeLeftToRightUI()}
-        onLeftActionRelease={() => swipeLeftToRightAction(payload)}
+        {...swipeableOptions}
       >
         <ContentCard payload={payload} />
       </Swipeable>

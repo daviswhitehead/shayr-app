@@ -28,7 +28,8 @@ export default StackNavigator(
         fontWeight: '800',
       },
       headerTintColor: 'black',
-      headerBackTitle: null
+      headerBackTitle: null,
+      headerLeft: null
     })
   }
 );
