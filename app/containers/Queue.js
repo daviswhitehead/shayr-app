@@ -18,8 +18,9 @@ import _ from 'lodash';
 export default class Queue extends Component {
   constructor(props) {
     super(props);
+    const user = firebase.auth().currentUser;
     this.state = {
-      userId: 'testUser',
+      userId: user.uid,
       isActionButtonVisible: true
     }
 
@@ -149,7 +150,7 @@ export default class Queue extends Component {
     })
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.unsubscribe = this.ref.onSnapshot(
       // options={includeDocumentMetadataChanges: true},
       this.onCollectionUpdate

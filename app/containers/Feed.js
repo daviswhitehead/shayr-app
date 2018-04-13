@@ -17,8 +17,9 @@ import _ from 'lodash';
 export default class Feed extends Component {
   constructor(props) {
     super(props);
+    const user = firebase.auth().currentUser;
     this.state = {
-      userId: 'testUser',
+      userId: user.uid,
       isActionButtonVisible: true
     }
 
@@ -166,7 +167,7 @@ export default class Feed extends Component {
 
   }
 
-  componentWillMount() {
+  componentDidMount() {
     if (!this.state.feedData) {
       this.loadData()
     }
@@ -228,6 +229,7 @@ export default class Feed extends Component {
   }
 
   render() {
+    console.log(firebase.auth().currentUser);
     return (
       <View style={styles.container}>
         <this.loading/>

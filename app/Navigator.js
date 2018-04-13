@@ -1,19 +1,22 @@
 import React, { Component } from 'react';
 import {
   StackNavigator,
-  DrawerNavigator
+  DrawerNavigator,
+  SwitchNavigator
 } from 'react-navigation';
 import {
   View,
   Text,
   StyleSheet,
   TouchableOpacity,
-  Image
+  Image,
 } from 'react-native';
 import Feed from './containers/Feed';
 import Queue from './containers/Queue';
+import LoginScreen from './containers/LoginScreen';
 
-export default StackNavigator(
+const AuthStack = StackNavigator({ LoginScreen: LoginScreen });
+const AppStack = StackNavigator(
   {
     Feed: { screen: Feed },
     Queue: { screen: Queue }
@@ -31,5 +34,15 @@ export default StackNavigator(
       headerBackTitle: null,
       headerLeft: null
     })
+  }
+);
+
+export default SwitchNavigator(
+  {
+    App: AppStack,
+    Auth: AuthStack,
+  },
+  {
+    initialRouteName: 'Auth',
   }
 );
