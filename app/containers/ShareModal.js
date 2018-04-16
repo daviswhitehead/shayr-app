@@ -10,6 +10,7 @@ import {
   TouchableWithoutFeedback,
 } from 'react-native';
 import firebase from 'react-native-firebase';
+import { RNSKBucket } from 'react-native-swiss-knife';
 
 const createShare = (ref, url) => {
   const ts = firebase.firestore.FieldValue.serverTimestamp();
@@ -46,22 +47,30 @@ export default class MyComponent extends Component {
       //   type,
       //   value
       // })
-      this.url = 'https://www.nytimes.com/2018/04/03/business/media/spotifys-wall-street-debut-is-a-success.html';
-      this.share = await createShare(this.ref, this.url);
-      if (this.share) {
-        setTimeout(
-          () => {this.setState({shareText: 'Success!'})},
-          1000
-        )
+      const myGroup = 'group.shayr'
+      let val = await RNSKBucket.get('test', myGroup).then((value) => {
+        console.log(value);
+        return value
+      });
+      console.log(val);
+      this.setState({shareText: val})
 
-      }
-      else {
-        setTimeout(
-          () => {this.setState({shareText: 'Failed.'})},
-          3000
-        )
-
-      }
+      // this.url = 'https://www.nytimes.com/2018/04/03/business/media/spotifys-wall-street-debut-is-a-success.html';
+      // this.share = await createShare(this.ref, this.url);
+      // if (this.share) {
+      //   setTimeout(
+      //     () => {this.setState({shareText: 'Success!'})},
+      //     1000
+      //   )
+      //
+      // }
+      // else {
+      //   setTimeout(
+      //     () => {this.setState({shareText: 'Failed.'})},
+      //     3000
+      //   )
+      //
+      // }
     }
     catch(error) {
       console.log(error);
@@ -77,6 +86,7 @@ export default class MyComponent extends Component {
   }
 
   render() {
+    console.log(this.state);
     return (
         <Modal
             visible={this.state.modalVisible}
@@ -113,6 +123,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-end',
     alignItems: 'center',
+    backgroundColor: 'white'
   },
   modal: {
     backgroundColor: '#F2C94C',

@@ -13,6 +13,7 @@ import {
     StatusBar,
     AsyncStorage
 } from 'react-native';
+import { RNSKBucket } from 'react-native-swiss-knife';
 
 // Components to display when the user is LoggedIn and LoggedOut
 // Screens for logged in/out - outside the scope of this tutorial
@@ -23,6 +24,9 @@ export default class LoginScreen extends React.Component {
         this.state = {
             loading: true,
         };
+        const myGroup = 'group.shayr'
+        RNSKBucket.set('test', 'myValue', myGroup)
+        console.log(myGroup);
     }
     /**
      * When the App component mounts, we listen for any authentication
