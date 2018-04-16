@@ -64,6 +64,9 @@
 		58B59254201E8E96005CC7F4 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 58B5923B201E8CA1005CC7F4 /* Info.plist */; };
 		5E181381C6B0478B9CD50353 /* Octicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C2C0912B82C644C6AD24C98A /* Octicons.ttf */; };
 		5E9157361DD0AC6A00FF2AA8 /* libRCTAnimation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E9157331DD0AC6500FF2AA8 /* libRCTAnimation.a */; };
+		614DBD442084CDEF007ADF34 /* libRNFirebase.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 58B5922E201E8B53005CC7F4 /* libRNFirebase.a */; };
+		614DBD7D2084D2E6007ADF34 /* libPods-shayr-ShareExtension.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 614DBD7C2084D2E6007ADF34 /* libPods-shayr-ShareExtension.a */; };
+		614DBDB62084F857007ADF34 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 614DBD8D2084F857007ADF34 /* GoogleService-Info.plist */; };
 		68A0A023BA22424480FB79D2 /* libRNFirebase.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A9607AF0E98D40738D630F1B /* libRNFirebase.a */; };
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
 		A1864BA6D2C14F439BB471D9 /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C6EF825C6BF744E6AD2A52C9 /* Zocial.ttf */; };
@@ -71,7 +74,6 @@
 		B6E70E45327A4A958A945D3D /* MaterialCommunityIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 45DAA99AC48B45108B9CD8ED /* MaterialCommunityIcons.ttf */; };
 		C1D2FBC59D06470BAFDA3192 /* libReactNativeShareExtension.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 94D833A123694906B6671BB7 /* libReactNativeShareExtension.a */; };
 		C39665C0686445D4818AC81E /* Foundation.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9A770284447140E8B6683F7C /* Foundation.ttf */; };
-		C99F11949672B1431D89334E /* libPods-ShareExtension.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BEACD25A3A1B44959D847DAC /* libPods-ShareExtension.a */; };
 		D5EE61512052B830F47F5B76 /* libPods-shayrTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BED01574AC272FAE93E3C858 /* libPods-shayrTests.a */; };
 		E0CAD0B08649821375F97618 /* libPods-shayr.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 537D3934A25AC11F6A1F5327 /* libPods-shayr.a */; };
 		E5E466780A314E7C98EE0AC1 /* FontAwesome.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9F745B6E90804517BE1EB668 /* FontAwesome.ttf */; };
@@ -443,6 +445,8 @@
 		59829FF4EA3F4202BC340604 /* RNFirebase.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNFirebase.xcodeproj; path = "../node_modules/react-native-firebase/ios/RNFirebase.xcodeproj"; sourceTree = "<group>"; };
 		5BE6B98523534F0397866D4D /* Entypo.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Entypo.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Entypo.ttf"; sourceTree = "<group>"; };
 		5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTAnimation.xcodeproj; path = "../node_modules/react-native/Libraries/NativeAnimation/RCTAnimation.xcodeproj"; sourceTree = "<group>"; };
+		614DBD7C2084D2E6007ADF34 /* libPods-shayr-ShareExtension.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = "libPods-shayr-ShareExtension.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		614DBD8D2084F857007ADF34 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		617A845D20829E9F00CEE7C0 /* shayr.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = shayr.entitlements; path = shayr/shayr.entitlements; sourceTree = "<group>"; };
 		617A845E20829EAF00CEE7C0 /* ShareExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ShareExtension.entitlements; sourceTree = "<group>"; };
 		61AE8ADA20203CDC001F00ED /* libgRPC.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libgRPC.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -535,6 +539,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				614DBD7D2084D2E6007ADF34 /* libPods-shayr-ShareExtension.a in Frameworks */,
+				614DBD442084CDEF007ADF34 /* libRNFirebase.a in Frameworks */,
 				58B59245201E8E14005CC7F4 /* libRCTActionSheet.a in Frameworks */,
 				58B59246201E8E14005CC7F4 /* libRCTAnimation.a in Frameworks */,
 				58B59247201E8E14005CC7F4 /* libRCTBlob.a in Frameworks */,
@@ -548,7 +554,6 @@
 				58B59250201E8E14005CC7F4 /* libRCTWebSocket.a in Frameworks */,
 				2DF0FFEE2056DD460020B375 /* libReact.a in Frameworks */,
 				58B59252201E8E14005CC7F4 /* libReactNativeShareExtension.a in Frameworks */,
-				C99F11949672B1431D89334E /* libPods-ShareExtension.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -676,6 +681,7 @@
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				614DBD7C2084D2E6007ADF34 /* libPods-shayr-ShareExtension.a */,
 				61AE8ADA20203CDC001F00ED /* libgRPC.a */,
 				58B591CE201E8812005CC7F4 /* Bolts.framework */,
 				58B59197201E8812005CC7F4 /* FBSDKCoreKit.framework */,
@@ -728,6 +734,7 @@
 		58B59234201E8CA1005CC7F4 /* ShareExtension */ = {
 			isa = PBXGroup;
 			children = (
+				614DBD8D2084F857007ADF34 /* GoogleService-Info.plist */,
 				617A845E20829EAF00CEE7C0 /* ShareExtension.entitlements */,
 				58B59238201E8CA1005CC7F4 /* MainInterface.storyboard */,
 				58B5923B201E8CA1005CC7F4 /* Info.plist */,
@@ -1430,6 +1437,7 @@
 			files = (
 				58B59254201E8E96005CC7F4 /* Info.plist in Resources */,
 				58B5923A201E8CA1005CC7F4 /* MainInterface.storyboard in Resources */,
+				614DBDB62084F857007ADF34 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1569,7 +1577,7 @@
 			);
 			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-ShareExtension-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-shayr-ShareExtension-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -1582,7 +1590,7 @@
 			files = (
 			);
 			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-ShareExtension/Pods-ShareExtension-resources.sh",
+				"${SRCROOT}/Pods/Target Support Files/Pods-shayr-ShareExtension/Pods-shayr-ShareExtension-resources.sh",
 				"${PODS_CONFIGURATION_BUILD_DIR}/gRPC/gRPCCertificates.bundle",
 			);
 			name = "[CP] Copy Pods Resources";
@@ -1591,7 +1599,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-ShareExtension/Pods-ShareExtension-resources.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-shayr-ShareExtension/Pods-shayr-ShareExtension-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		B9485A58F4E2761D0B2786CA /* [CP] Copy Pods Resources */ = {
@@ -2030,7 +2038,7 @@
 		};
 		58B59240201E8CA1005CC7F4 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 36F72CC4A5A1DAD008BD2786 /* Pods-ShareExtension.debug.xcconfig */;
+			baseConfigurationReference = B43CD3C867C8DB7B79285F4B /* Pods-shayr-ShareExtension.debug.xcconfig */;
 			buildSettings = {
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
@@ -2062,14 +2070,15 @@
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native/React/**",
 					"$(SRCROOT)/../node_modules/react-native-share-extension/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-firebase/ios/RNFirebase/**",
 				);
 				INFOPLIST_FILE = ShareExtension/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				OTHER_LDFLAGS = (
+					"$(inherited)",
 					"-ObjC",
 					"-lc++",
-					"$(inherited)",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.daviswhitehead.shayr.ios.ShareExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -2081,7 +2090,7 @@
 		};
 		58B59241201E8CA1005CC7F4 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 6C1A33E0E31F3431EF9DB745 /* Pods-ShareExtension.release.xcconfig */;
+			baseConfigurationReference = ADD346E2D1A9D2A058723341 /* Pods-shayr-ShareExtension.release.xcconfig */;
 			buildSettings = {
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
@@ -2113,14 +2122,15 @@
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native/React/**",
 					"$(SRCROOT)/../node_modules/react-native-share-extension/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-firebase/ios/RNFirebase/**",
 				);
 				INFOPLIST_FILE = ShareExtension/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				OTHER_LDFLAGS = (
+					"$(inherited)",
 					"-ObjC",
 					"-lc++",
-					"$(inherited)",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.daviswhitehead.shayr.ios.ShareExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";

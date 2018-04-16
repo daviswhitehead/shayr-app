@@ -23,7 +23,7 @@ RCT_EXPORT_MODULE();
 - (UIView*) shareView {
   NSURL *jsCodeLocation;
   
-//  [FIRApp configure];
+  [FIRApp configure];
   
   jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index" fallbackResource:nil];
   
