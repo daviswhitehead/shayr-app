@@ -16,6 +16,7 @@
     "react-native-firebase": "4.0.0",
     "react-native-share-extension": "^1.2.1",
     "react-native-swipeable": "^0.6.0",
+    "react-native-swiss-knife": "0.0.5",
     "react-native-vector-icons": "^4.5.0",
     "react-navigation": "^1.5.9"
   },

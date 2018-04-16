@@ -13,20 +13,15 @@ target 'shayr' do
   # pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
 
   target 'ShareExtension' do
-    inherit! :search_paths
-    # pod 'Firebase/Core'
-    # pod 'Firebase/Auth'
-    # pod 'Firebase/Firestore'
+    inherit! :complete
   end
 
   target 'shayr-tvOSTests' do
     inherit! :search_paths
-    # Pods for testing
   end
 
   target 'shayrTests' do
     inherit! :search_paths
-    # Pods for testing
   end
 
 end

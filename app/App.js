@@ -4,13 +4,44 @@ import {
   Text,
 } from 'react-native';
 
+// import Navigator from './Navigator';
+//
+// export default class App extends Component {
+//   render() {
+//     return (
+//       <Navigator/>
+//     );
+//   }
+// }
+
 // import ShareModal from './containers/ShareModal';
-import Navigator from './Navigator';
+
+// export default class App extends Component {
+//   render() {
+//     return (
+//       <ShareModal/>
+//     );
+//   }
+// }
+import ShareModal from './containers/ShareModal';
+import DevMenu from './lib/DevMenu';
 
 export default class App extends Component {
   render() {
     return (
-      <Navigator/>
+      <View>
+        <ShareModal/>
+        <DevMenu/>
+      </View>
     );
   }
 }
+
+//
+// export default class App extends Component {
+//   render() {
+//     return (
+//       <DevMenu/>
+//     );
+//   }
+// }
