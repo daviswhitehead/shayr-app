@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import {
   Text,
   View,
-  Button,
   Modal,
   StyleSheet,
   Image,
@@ -10,79 +9,106 @@ import {
   TouchableWithoutFeedback,
 } from 'react-native';
 import firebase from 'react-native-firebase';
-import { RNSKBucket } from 'react-native-swiss-knife';
-
-const createShare = (ref, url) => {
-  const ts = firebase.firestore.FieldValue.serverTimestamp();
-  return ref.doc("testUser").collection('shares')
-    .add({
-      createdAt: ts,
-      updatedAt: ts,
-      url: url
-    })
-    .then((ref) => {
-      console.log("Document successfully written!");
-      return ref
-    })
-    .catch((error) => {
-      console.error(error);
-      return false
-    });
-}
+import {
+  createShare,
+} from '../functions/push';
+import {
+  retrieveAccessToken,
+  getAuthCredential,
+  getCurrentUser,
+ } from '../functions/Auth';
+ import ShareExtension from 'react-native-share-extension';
 
 export default class MyComponent extends Component {
   constructor() {
     super();
-    this.ref = firebase.firestore().collection('users');
     this.state = {
       modalVisible: true,
+      loading: true,
+      sharing: true,
       shareText: 'Shayring...'
     };
   }
 
   async componentDidMount() {
+    this.authSubscription = firebase.auth().onAuthStateChanged((user) => {
+      this.setState((previousState) => {
+        return {
+          ...previousState,
+          loading: false,
+          user: user,
+        }
+      })
+    });
     try {
-      // const { type, value } = await ShareExtension.data()
-      // this.setState({
-      //   type,
-      //   value
-      // })
-      const myGroup = 'group.shayr'
-      let val = await RNSKBucket.get('test', myGroup).then((value) => {
-        console.log(value);
-        return value
-      });
-      console.log(val);
-      this.setState({shareText: val})
+      // authenticating
+      let token = await retrieveAccessToken();
 
-      // this.url = 'https://www.nytimes.com/2018/04/03/business/media/spotifys-wall-street-debut-is-a-success.html';
-      // this.share = await createShare(this.ref, this.url);
-      // if (this.share) {
-      //   setTimeout(
-      //     () => {this.setState({shareText: 'Success!'})},
-      //     1000
-      //   )
-      //
-      // }
-      // else {
-      //   setTimeout(
-      //     () => {this.setState({shareText: 'Failed.'})},
-      //     3000
-      //   )
-      //
-      // }
+      const credential = getAuthCredential(token);
+
+      const currentUser = await getCurrentUser(credential);
+      if (!currentUser) {
+        throw new Error('unable to authenticate');
+      }
+
+      const ref = firebase.firestore().collection('users').doc(currentUser.user.uid);
+
+      // sharing
+      const { type, value } = await ShareExtension.data()
+
+      const share = await createShare(ref, value);
+
+      if (share) {
+        setTimeout(
+          () => {this.setState((previousState) => {
+              return {
+                ...previousState,
+                shareText: 'Success!',
+              }
+            });
+          },
+          1000
+        );
+      }
+      else {
+        setTimeout(
+          () => {this.setState((previousState) => {
+              return {
+                ...previousState,
+                shareText: 'Failed.',
+              }
+            });
+          },
+          3000
+        );
+      }
     }
     catch(error) {
       console.log(error);
     }
   }
 
+  componentWillUnmount() {
+    this.authSubscription();
+  }
+
   openModal() {
-    this.setState({modalVisible:true});
+    this.setState((previousState) => {
+      return {
+        ...previousState,
+        modalVisible: true,
+      }
+    });
   }
 
   closeModal() {
-    this.setState({modalVisible:false});
+    this.setState((previousState) => {
+      return {
+        ...previousState,
+        modalVisible: false,
+      }
+    });
+    ShareExtension.close()
   }
 
   render() {
@@ -123,7 +149,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-end',
     alignItems: 'center',
-    backgroundColor: 'white'
   },
   modal: {
     backgroundColor: '#F2C94C',

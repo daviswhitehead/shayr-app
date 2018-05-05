@@ -13,9 +13,19 @@ import {
 } from 'react-native';
 import Feed from './containers/Feed';
 import Queue from './containers/Queue';
-import LoginScreen from './containers/LoginScreen';
+import Share from './containers/Share';
+import Login from './containers/Login';
 
-const AuthStack = StackNavigator({ LoginScreen: LoginScreen });
+const AuthStack = StackNavigator(
+  {
+    Login: Login
+  },
+  {
+    navigationOptions: ({ navigation }) => ({
+      header: null
+    })
+  }
+);
 const AppStack = StackNavigator(
   {
     Feed: { screen: Feed },
@@ -36,7 +46,6 @@ const AppStack = StackNavigator(
     })
   }
 );
-
 export default SwitchNavigator(
   {
     App: AppStack,

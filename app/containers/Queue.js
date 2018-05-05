@@ -18,9 +18,8 @@ import _ from 'lodash';
 export default class Queue extends Component {
   constructor(props) {
     super(props);
-    const user = firebase.auth().currentUser;
     this.state = {
-      userId: user.uid,
+      user: firebase.auth().currentUser,
       isActionButtonVisible: true
     }
 
@@ -39,7 +38,7 @@ export default class Queue extends Component {
 
     this.ref = firebase.firestore()
       .collection('users')
-      .doc(this.state.userId)
+      .doc(this.state.user.uid)
       .collection('savedPosts')
       .where('doneAt', '==', null)
       .where('deletedAt', '==', null)
@@ -162,7 +161,7 @@ export default class Queue extends Component {
   }
 
   markAsDone = (payload) => {
-    markSavedPostAsDone(this.state.userId, payload['key'])
+    markSavedPostAsDone(this.state.user, payload['key'])
   }
 
   markAsDoneUI = () => {
@@ -174,7 +173,7 @@ export default class Queue extends Component {
   }
 
   removeFromQueue = (payload) => {
-    deleteSavedPost(this.state.userId, payload['key'])
+    deleteSavedPost(this.state.user, payload['key'])
   }
 
   removeFromQueueUI = () => {
@@ -214,10 +213,8 @@ export default class Queue extends Component {
     if (this.state.loading) {
       return (
         <Text>LOADING</Text>
-      ); // placeholder for eventual loading visual
+      );
     }
-    console.log(this.removeFromQueueUI);
-    console.log(this.removeFromQueue);
     return (
       <List
         data={this.state.queueData}
