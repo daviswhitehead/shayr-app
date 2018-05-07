@@ -1,11 +1,18 @@
 import React, { Component } from 'react';
 import {
-  View, Text, StyleSheet, TouchableOpacity, LayoutAnimation
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  LayoutAnimation,
 } from 'react-native';
 import firebase from 'react-native-firebase';
 import List from '../components/List';
 import {
-  getUsers, getUserShares, getPost, getPostShares
+  getUsers,
+  getUserShares,
+  getPost,
+  getPostShares,
 } from '../functions/pull';
 import {
   savePostToUser,
@@ -17,9 +24,8 @@ import _ from 'lodash';
 export default class Feed extends Component {
   constructor(props) {
     super(props);
-    const user = firebase.auth().currentUser;
     this.state = {
-      userId: user.uid,
+      user: firebase.auth().currentUser,
       isActionButtonVisible: true
     }
 
@@ -49,7 +55,6 @@ export default class Feed extends Component {
     for (var postId in posts) {
       if (posts.hasOwnProperty(postId)) {
         posts[postId]['users'] = [];
-        // console.log(posts[postId]);
         for (var userId in users) {
           if (users.hasOwnProperty(userId)) {
             for (var shareId in users[userId]['shares']) {
@@ -174,8 +179,7 @@ export default class Feed extends Component {
   }
 
   addToQueue = (payload) => {
-    // build function to add content to queue
-    savePostToUser(this.state.userId, payload['key'])
+    savePostToUser(this.state.user, payload['key'])
   }
 
   addToQueueUI = () => {
@@ -229,7 +233,6 @@ export default class Feed extends Component {
   }
 
   render() {
-    console.log(firebase.auth().currentUser);
     return (
       <View style={styles.container}>
         <this.loading/>
