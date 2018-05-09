@@ -84,12 +84,30 @@ export default class Feed extends Component {
             firstName: friend.firstName || '',
             lastName: friend.lastName || ''
           },
-          shareCount: Object.keys(posts[postId]['shares']).length
+          shareCount: Object.keys(posts[postId]['shares']).length,
+          updatedAt: posts[postId]['updatedAt']
         })
       }
     }
+    const compare = (a,b) => {
+      console.log(a);
+      console.log(b);
+      if (a.updatedAt < b.updatedAt)
+        console.log('a less b');
+        return -1;
+      if (a.updatedAt > b.updatedAt)
+        console.log('b less a');
+        return 1;
+      return 0;
+    }
 
-    return data
+    console.log(data);
+
+    console.log(data.sort(compare));
+
+    // return data
+    return data.sort(function(a,b) {return (a.updatedAt > b.updatedAt) ? -1 : ((b.updatedAt > a.updatedAt) ? 1 : 0);} );
+
   }
 
   loadData = () => {
