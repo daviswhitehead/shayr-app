@@ -16,6 +16,8 @@
  *
  */
 
+#include <grpc/support/port_platform.h>
+
 #include "src/core/lib/iomgr/port.h"
 
 #ifdef GRPC_POSIX_SOCKET
@@ -168,10 +170,8 @@ grpc_error* grpc_tcp_server_prepare_socket(int fd,
   err = grpc_set_socket_no_sigpipe_if_possible(fd);
   if (err != GRPC_ERROR_NONE) goto error;
 
-  GPR_ASSERT(addr->len < ~(socklen_t)0);
-  if (bind(fd,
-           reinterpret_cast<struct sockaddr*>(const_cast<char*>(addr->addr)),
-           static_cast<socklen_t>(addr->len)) < 0) {
+  if (bind(fd, reinterpret_cast<grpc_sockaddr*>(const_cast<char*>(addr->addr)),
+           addr->len) < 0) {
     err = GRPC_OS_ERROR(errno, "bind");
     goto error;
   }
@@ -181,10 +181,10 @@ grpc_error* grpc_tcp_server_prepare_socket(int fd,
     goto error;
   }
 
-  sockname_temp.len = sizeof(struct sockaddr_storage);
+  sockname_temp.len = static_cast<socklen_t>(sizeof(struct sockaddr_storage));
 
-  if (getsockname(fd, reinterpret_cast<struct sockaddr*>(sockname_temp.addr),
-                  reinterpret_cast<socklen_t*>(&sockname_temp.len)) < 0) {
+  if (getsockname(fd, reinterpret_cast<grpc_sockaddr*>(sockname_temp.addr),
+                  &sockname_temp.len) < 0) {
     err = GRPC_OS_ERROR(errno, "getsockname");
     goto error;
   }

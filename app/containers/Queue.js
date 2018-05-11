@@ -12,8 +12,10 @@ import {
   deleteSavedPost
 } from '../functions/push'
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import ActionButton from '../components/ActionButton';
 import _ from 'lodash';
+import ActionButton from 'react-native-action-button';
+
+import { LoginManager } from 'react-native-fbsdk';
 
 export default class Queue extends Component {
   constructor(props) {
@@ -50,7 +52,7 @@ export default class Queue extends Component {
     const { params } = navigation.state;
 
     return {
-      title: 'QUEUE'
+      title: 'queue'
     }
   }
 
@@ -228,15 +230,37 @@ export default class Queue extends Component {
     );
   }
 
+  logout = async () => {
+    try {
+      await firebase.auth().signOut();
+      await LoginManager.logOut();
+      this.props.navigation.navigate('Login', this.state);
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
   render() {
     return (
       <View style={styles.container}>
         <this.loading/>
         {
           this.state.isActionButtonVisible ?
-          <ActionButton
-            action={() => this.props.navigation.navigate('Feed', this.state)}
-          /> :
+          <ActionButton>
+            <ActionButton.Item
+              title="feed"
+              onPress={() => this.props.navigation.navigate('Feed', this.state)}
+            >
+              <Icon name='add' size={50} color='white' />
+            </ActionButton.Item>
+            <ActionButton.Item
+              title="logout"
+              onPress={() => this.logout()}
+            >
+              <Icon name='add' size={50} color='white' />
+            </ActionButton.Item>
+          </ActionButton>
+           :
           null
         }
       </View>

@@ -16,6 +16,8 @@
  *
  */
 
+#include <grpc/support/port_platform.h>
+
 #include "src/core/ext/filters/client_channel/lb_policy/grpclb/load_balancer_api.h"
 #include <nanopb/pb_decode.h>
 #include <nanopb/pb_encode.h>

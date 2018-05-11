@@ -5,7 +5,6 @@
 	};
 	objectVersion = 46;
 	objects = {
-
 /* Begin PBXBuildFile section */
 		00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302AC1ABCB8CE00DB3ED1 /* libRCTActionSheet.a */; };
 		00C302E71ABCBA2D00DB3ED1 /* libRCTGeolocation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302BA1ABCB90400DB3ED1 /* libRCTGeolocation.a */; };
@@ -23,23 +22,12 @@
 		140ED2AC1D01E1AD002B40FF /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
 		146834051AC3E58100842450 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
 		2C2B77A161484920B65085F4 /* Feather.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7D5DCBF1E4C446F8904729CF /* Feather.ttf */; };
-		2D02E4BC1E0B4A80006451C7 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
-		2D02E4BD1E0B4A84006451C7 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
-		2D02E4BF1E0B4AB3006451C7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
-		2D02E4C21E0B4AEC006451C7 /* libRCTAnimation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E9157351DD0AC6500FF2AA8 /* libRCTAnimation.a */; };
-		2D02E4C31E0B4AEC006451C7 /* libRCTImage-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DAD3E841DF850E9000B6D8A /* libRCTImage-tvOS.a */; };
-		2D02E4C41E0B4AEC006451C7 /* libRCTLinking-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DAD3E881DF850E9000B6D8A /* libRCTLinking-tvOS.a */; };
-		2D02E4C51E0B4AEC006451C7 /* libRCTNetwork-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DAD3E8C1DF850E9000B6D8A /* libRCTNetwork-tvOS.a */; };
-		2D02E4C61E0B4AEC006451C7 /* libRCTSettings-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DAD3E901DF850E9000B6D8A /* libRCTSettings-tvOS.a */; };
-		2D02E4C71E0B4AEC006451C7 /* libRCTText-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DAD3E941DF850E9000B6D8A /* libRCTText-tvOS.a */; };
-		2D02E4C81E0B4AEC006451C7 /* libRCTWebSocket-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DAD3E991DF850E9000B6D8A /* libRCTWebSocket-tvOS.a */; };
-		2D16E6881FA4F8E400B85C8A /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2D16E6891FA4F8E400B85C8A /* libReact.a */; };
-		2DCD954D1E0B4F2C00145EB5 /* shayrTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* shayrTests.m */; };
 		2DF0FFEE2056DD460020B375 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DAD3EA31DF850E9000B6D8A /* libReact.a */; };
 		3042DFBB8E7C4EB0A7AD2A91 /* Ionicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2633A0E7BE4145E59C93AD9B /* Ionicons.ttf */; };
 		3438A631ECEC4F0B9EB65FBB /* MaterialIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 69AB6B62A5614E80A8D734AB /* MaterialIcons.ttf */; };
 		4AB8EA4CBD564A93A57C0990 /* Entypo.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5BE6B98523534F0397866D4D /* Entypo.ttf */; };
-		519F8DB00FABAFDB6CC71DF1 /* libPods-shayr-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8BC783E6252ABFC22B9EFA92 /* libPods-shayr-tvOSTests.a */; };
+		4E05D798A31C8A9CFB549DB2 /* libPods-shayr.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6A453C1884671475DEB0C848 /* libPods-shayr.a */; };
+		56C00D74811CADC0B159936E /* libPods-ShareExtension.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 27C611E8C01FC28352517093 /* libPods-ShareExtension.a */; };
 		56FF90D2058941408F7639C9 /* SimpleLineIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5900C1B783014F7CAD78688D /* SimpleLineIcons.ttf */; };
 		58B591D0201E8812005CC7F4 /* FBSDKCoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 58B59197201E8812005CC7F4 /* FBSDKCoreKit.framework */; };
 		58B591D1201E8812005CC7F4 /* FBSDKLoginKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 58B591CD201E8812005CC7F4 /* FBSDKLoginKit.framework */; };
@@ -65,7 +53,6 @@
 		5E181381C6B0478B9CD50353 /* Octicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C2C0912B82C644C6AD24C98A /* Octicons.ttf */; };
 		5E9157361DD0AC6A00FF2AA8 /* libRCTAnimation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E9157331DD0AC6500FF2AA8 /* libRCTAnimation.a */; };
 		614DBD442084CDEF007ADF34 /* libRNFirebase.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 58B5922E201E8B53005CC7F4 /* libRNFirebase.a */; };
-		614DBD7D2084D2E6007ADF34 /* libPods-shayr-ShareExtension.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 614DBD7C2084D2E6007ADF34 /* libPods-shayr-ShareExtension.a */; };
 		614DBDB62084F857007ADF34 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 614DBD8D2084F857007ADF34 /* GoogleService-Info.plist */; };
 		614DBE3B20855A82007ADF34 /* libRNSKBucket.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 614DBDF1208501EE007ADF34 /* libRNSKBucket.a */; };
 		68A0A023BA22424480FB79D2 /* libRNFirebase.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A9607AF0E98D40738D630F1B /* libRNFirebase.a */; };
@@ -76,8 +63,6 @@
 		B8BEAC3C9F9B4B2BABB254CA /* libRNSKBucket.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 03C5B41A61BC438C8E55E72B /* libRNSKBucket.a */; };
 		C1D2FBC59D06470BAFDA3192 /* libReactNativeShareExtension.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 94D833A123694906B6671BB7 /* libReactNativeShareExtension.a */; };
 		C39665C0686445D4818AC81E /* Foundation.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9A770284447140E8B6683F7C /* Foundation.ttf */; };
-		D5EE61512052B830F47F5B76 /* libPods-shayrTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BED01574AC272FAE93E3C858 /* libPods-shayrTests.a */; };
-		E0CAD0B08649821375F97618 /* libPods-shayr.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 537D3934A25AC11F6A1F5327 /* libPods-shayr.a */; };
 		E5E466780A314E7C98EE0AC1 /* FontAwesome.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9F745B6E90804517BE1EB668 /* FontAwesome.ttf */; };
 		F0C07303A4E649C8989A5474 /* libRCTFBSDK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 83FD7310BE994B37B547CBC0 /* libRCTFBSDK.a */; };
 		F595D1109E2C4FEFB840AFD0 /* EvilIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B557653982A94201B72DAE23 /* EvilIcons.ttf */; };
@@ -146,13 +131,6 @@
 			proxyType = 2;
 			remoteGlobalIDString = 83CBBA2E1A601D0E00E9B192;
 			remoteInfo = React;
-		};
-		2D02E4911E0B4A5D006451C7 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 83CBB9F71A601CBA00E9B192 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 2D02E47A1E0B4A5D006451C7;
-			remoteInfo = "shayr-tvOS";
 		};
 		2D16E6711FA4F8DC00B85C8A /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -419,9 +397,9 @@
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* shayrTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = shayrTests.m; sourceTree = "<group>"; };
 		03C5B41A61BC438C8E55E72B /* libRNSKBucket.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNSKBucket.a; sourceTree = "<group>"; };
-		0AD8FBD4ECDB518FBA3D25FB /* Pods-shayr-tvOSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-shayr-tvOSTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-shayr-tvOSTests/Pods-shayr-tvOSTests.release.xcconfig"; sourceTree = "<group>"; };
+		0C46302F39485DE3C4D80A10 /* Pods-ShareExtension.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ShareExtension.release.xcconfig"; path = "Pods/Target Support Files/Pods-ShareExtension/Pods-ShareExtension.release.xcconfig"; sourceTree = "<group>"; };
 		0F9D3E28994F4C8C8A0B07A6 /* RNSKBucket.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNSKBucket.xcodeproj; path = "../node_modules/react-native-swiss-knife/ios/RNSKBucket.xcodeproj"; sourceTree = "<group>"; };
-		10F285FF3BBF2615F8B772F4 /* Pods-shayrTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-shayrTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-shayrTests/Pods-shayrTests.debug.xcconfig"; sourceTree = "<group>"; };
+		11F0326D7E68BF4EEB095D46 /* Pods-ShareExtension.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ShareExtension.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ShareExtension/Pods-ShareExtension.debug.xcconfig"; sourceTree = "<group>"; };
 		139105B61AF99BAD00B5F7CC /* RCTSettings.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTSettings.xcodeproj; path = "../node_modules/react-native/Libraries/Settings/RCTSettings.xcodeproj"; sourceTree = "<group>"; };
 		139FDEE61B06529A00C62182 /* RCTWebSocket.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTWebSocket.xcodeproj; path = "../node_modules/react-native/Libraries/WebSocket/RCTWebSocket.xcodeproj"; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* shayr.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = shayr.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -432,17 +410,11 @@
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = shayr/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = shayr/main.m; sourceTree = "<group>"; };
 		146833FF1AC3E56700842450 /* React.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = React.xcodeproj; path = "../node_modules/react-native/React/React.xcodeproj"; sourceTree = "<group>"; };
-		227446657C141344CDEF2A7B /* Pods-shayr.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-shayr.release.xcconfig"; path = "Pods/Target Support Files/Pods-shayr/Pods-shayr.release.xcconfig"; sourceTree = "<group>"; };
-		240924F56AD64BE8DC0496F7 /* libPods-shayr-ShareExtension.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-shayr-ShareExtension.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2633A0E7BE4145E59C93AD9B /* Ionicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Ionicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Ionicons.ttf"; sourceTree = "<group>"; };
-		285539F24BA4F4CEE7145A16 /* Pods-shayr.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-shayr.debug.xcconfig"; path = "Pods/Target Support Files/Pods-shayr/Pods-shayr.debug.xcconfig"; sourceTree = "<group>"; };
-		2D02E47B1E0B4A5D006451C7 /* shayr-tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "shayr-tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		2D02E4901E0B4A5D006451C7 /* shayr-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "shayr-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		27C611E8C01FC28352517093 /* libPods-ShareExtension.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ShareExtension.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D16E6891FA4F8E400B85C8A /* libReact.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libReact.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		30B87247B9B864B9813690AF /* Pods-shayrTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-shayrTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-shayrTests/Pods-shayrTests.release.xcconfig"; sourceTree = "<group>"; };
-		36F72CC4A5A1DAD008BD2786 /* Pods-ShareExtension.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ShareExtension.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ShareExtension/Pods-ShareExtension.debug.xcconfig"; sourceTree = "<group>"; };
 		45DAA99AC48B45108B9CD8ED /* MaterialCommunityIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialCommunityIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf"; sourceTree = "<group>"; };
-		537D3934A25AC11F6A1F5327 /* libPods-shayr.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-shayr.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		495F85D20064965F39D0922A /* Pods-shayr.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-shayr.debug.xcconfig"; path = "Pods/Target Support Files/Pods-shayr/Pods-shayr.debug.xcconfig"; sourceTree = "<group>"; };
 		58B59197201E8812005CC7F4 /* FBSDKCoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FBSDKCoreKit.framework; sourceTree = "<group>"; };
 		58B591CD201E8812005CC7F4 /* FBSDKLoginKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FBSDKLoginKit.framework; sourceTree = "<group>"; };
 		58B591CE201E8812005CC7F4 /* Bolts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Bolts.framework; sourceTree = "<group>"; };
@@ -456,31 +428,25 @@
 		59829FF4EA3F4202BC340604 /* RNFirebase.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNFirebase.xcodeproj; path = "../node_modules/react-native-firebase/ios/RNFirebase.xcodeproj"; sourceTree = "<group>"; };
 		5BE6B98523534F0397866D4D /* Entypo.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Entypo.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Entypo.ttf"; sourceTree = "<group>"; };
 		5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTAnimation.xcodeproj; path = "../node_modules/react-native/Libraries/NativeAnimation/RCTAnimation.xcodeproj"; sourceTree = "<group>"; };
-		614DBD7C2084D2E6007ADF34 /* libPods-shayr-ShareExtension.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = "libPods-shayr-ShareExtension.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		614DBD8D2084F857007ADF34 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		617A845D20829E9F00CEE7C0 /* shayr.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = shayr.entitlements; path = shayr/shayr.entitlements; sourceTree = "<group>"; };
 		617A845E20829EAF00CEE7C0 /* ShareExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ShareExtension.entitlements; sourceTree = "<group>"; };
 		61AE8ADA20203CDC001F00ED /* libgRPC.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libgRPC.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		69AB6B62A5614E80A8D734AB /* MaterialIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialIcons.ttf"; sourceTree = "<group>"; };
-		6C1A33E0E31F3431EF9DB745 /* Pods-ShareExtension.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ShareExtension.release.xcconfig"; path = "Pods/Target Support Files/Pods-ShareExtension/Pods-ShareExtension.release.xcconfig"; sourceTree = "<group>"; };
-		6DC4F4115E84E0F1DD019C08 /* Pods-shayr-tvOSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-shayr-tvOSTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-shayr-tvOSTests/Pods-shayr-tvOSTests.debug.xcconfig"; sourceTree = "<group>"; };
+		6A453C1884671475DEB0C848 /* libPods-shayr.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-shayr.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		6B5E60EF1A3040E1500073C1 /* Pods-shayr.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-shayr.release.xcconfig"; path = "Pods/Target Support Files/Pods-shayr/Pods-shayr.release.xcconfig"; sourceTree = "<group>"; };
 		6FD32C9BD54E4886BCB07C17 /* ReactNativeShareExtension.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = ReactNativeShareExtension.xcodeproj; path = "../node_modules/react-native-share-extension/ios/ReactNativeShareExtension.xcodeproj"; sourceTree = "<group>"; };
 		78C398B01ACF4ADC00677621 /* RCTLinking.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTLinking.xcodeproj; path = "../node_modules/react-native/Libraries/LinkingIOS/RCTLinking.xcodeproj"; sourceTree = "<group>"; };
 		7ABAAC345F3D4454AD96E50E /* RCTFBSDK.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RCTFBSDK.xcodeproj; path = "../node_modules/react-native-fbsdk/ios/RCTFBSDK.xcodeproj"; sourceTree = "<group>"; };
 		7D5DCBF1E4C446F8904729CF /* Feather.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Feather.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Feather.ttf"; sourceTree = "<group>"; };
 		832341B01AAA6A8300B99B32 /* RCTText.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTText.xcodeproj; path = "../node_modules/react-native/Libraries/Text/RCTText.xcodeproj"; sourceTree = "<group>"; };
 		83FD7310BE994B37B547CBC0 /* libRCTFBSDK.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRCTFBSDK.a; sourceTree = "<group>"; };
-		8BC783E6252ABFC22B9EFA92 /* libPods-shayr-tvOSTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-shayr-tvOSTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		94D833A123694906B6671BB7 /* libReactNativeShareExtension.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libReactNativeShareExtension.a; sourceTree = "<group>"; };
 		9A770284447140E8B6683F7C /* Foundation.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Foundation.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Foundation.ttf"; sourceTree = "<group>"; };
 		9F745B6E90804517BE1EB668 /* FontAwesome.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome.ttf"; sourceTree = "<group>"; };
 		A9607AF0E98D40738D630F1B /* libRNFirebase.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNFirebase.a; sourceTree = "<group>"; };
 		ADBDB91F1DFEBF0600ED6528 /* RCTBlob.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTBlob.xcodeproj; path = "../node_modules/react-native/Libraries/Blob/RCTBlob.xcodeproj"; sourceTree = "<group>"; };
-		ADD346E2D1A9D2A058723341 /* Pods-shayr-ShareExtension.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-shayr-ShareExtension.release.xcconfig"; path = "Pods/Target Support Files/Pods-shayr-ShareExtension/Pods-shayr-ShareExtension.release.xcconfig"; sourceTree = "<group>"; };
-		B43CD3C867C8DB7B79285F4B /* Pods-shayr-ShareExtension.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-shayr-ShareExtension.debug.xcconfig"; path = "Pods/Target Support Files/Pods-shayr-ShareExtension/Pods-shayr-ShareExtension.debug.xcconfig"; sourceTree = "<group>"; };
 		B557653982A94201B72DAE23 /* EvilIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = EvilIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/EvilIcons.ttf"; sourceTree = "<group>"; };
-		BEACD25A3A1B44959D847DAC /* libPods-ShareExtension.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ShareExtension.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		BED01574AC272FAE93E3C858 /* libPods-shayrTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-shayrTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C2C0912B82C644C6AD24C98A /* Octicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Octicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Octicons.ttf"; sourceTree = "<group>"; };
 		C6EF825C6BF744E6AD2A52C9 /* Zocial.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Zocial.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Zocial.ttf"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -491,7 +457,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				140ED2AC1D01E1AD002B40FF /* libReact.a in Frameworks */,
-				D5EE61512052B830F47F5B76 /* libPods-shayrTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -516,34 +481,11 @@
 				58B591D3201E8812005CC7F4 /* FBSDKShareKit.framework in Frameworks */,
 				139FDEF61B0652A700C62182 /* libRCTWebSocket.a in Frameworks */,
 				58B591D1201E8812005CC7F4 /* FBSDKLoginKit.framework in Frameworks */,
-				E0CAD0B08649821375F97618 /* libPods-shayr.a in Frameworks */,
 				F0C07303A4E649C8989A5474 /* libRCTFBSDK.a in Frameworks */,
 				68A0A023BA22424480FB79D2 /* libRNFirebase.a in Frameworks */,
 				C1D2FBC59D06470BAFDA3192 /* libReactNativeShareExtension.a in Frameworks */,
 				B8BEAC3C9F9B4B2BABB254CA /* libRNSKBucket.a in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		2D02E4781E0B4A5D006451C7 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				2D16E6881FA4F8E400B85C8A /* libReact.a in Frameworks */,
-				2D02E4C21E0B4AEC006451C7 /* libRCTAnimation.a in Frameworks */,
-				2D02E4C31E0B4AEC006451C7 /* libRCTImage-tvOS.a in Frameworks */,
-				2D02E4C41E0B4AEC006451C7 /* libRCTLinking-tvOS.a in Frameworks */,
-				2D02E4C51E0B4AEC006451C7 /* libRCTNetwork-tvOS.a in Frameworks */,
-				2D02E4C61E0B4AEC006451C7 /* libRCTSettings-tvOS.a in Frameworks */,
-				2D02E4C71E0B4AEC006451C7 /* libRCTText-tvOS.a in Frameworks */,
-				2D02E4C81E0B4AEC006451C7 /* libRCTWebSocket-tvOS.a in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		2D02E48D1E0B4A5D006451C7 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				519F8DB00FABAFDB6CC71DF1 /* libPods-shayr-tvOSTests.a in Frameworks */,
+				4E05D798A31C8A9CFB549DB2 /* libPods-shayr.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -552,7 +494,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				614DBE3B20855A82007ADF34 /* libRNSKBucket.a in Frameworks */,
-				614DBD7D2084D2E6007ADF34 /* libPods-shayr-ShareExtension.a in Frameworks */,
 				614DBD442084CDEF007ADF34 /* libRNFirebase.a in Frameworks */,
 				58B59245201E8E14005CC7F4 /* libRCTActionSheet.a in Frameworks */,
 				58B59246201E8E14005CC7F4 /* libRCTAnimation.a in Frameworks */,
@@ -567,6 +508,7 @@
 				58B59250201E8E14005CC7F4 /* libRCTWebSocket.a in Frameworks */,
 				2DF0FFEE2056DD460020B375 /* libReact.a in Frameworks */,
 				58B59252201E8E14005CC7F4 /* libReactNativeShareExtension.a in Frameworks */,
+				56C00D74811CADC0B159936E /* libPods-ShareExtension.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -694,18 +636,14 @@
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				614DBD7C2084D2E6007ADF34 /* libPods-shayr-ShareExtension.a */,
 				61AE8ADA20203CDC001F00ED /* libgRPC.a */,
 				58B591CE201E8812005CC7F4 /* Bolts.framework */,
 				58B59197201E8812005CC7F4 /* FBSDKCoreKit.framework */,
 				58B591CD201E8812005CC7F4 /* FBSDKLoginKit.framework */,
 				58B591CF201E8812005CC7F4 /* FBSDKShareKit.framework */,
 				2D16E6891FA4F8E400B85C8A /* libReact.a */,
-				537D3934A25AC11F6A1F5327 /* libPods-shayr.a */,
-				8BC783E6252ABFC22B9EFA92 /* libPods-shayr-tvOSTests.a */,
-				BED01574AC272FAE93E3C858 /* libPods-shayrTests.a */,
-				BEACD25A3A1B44959D847DAC /* libPods-ShareExtension.a */,
-				240924F56AD64BE8DC0496F7 /* libPods-shayr-ShareExtension.a */,
+				27C611E8C01FC28352517093 /* libPods-ShareExtension.a */,
+				6A453C1884671475DEB0C848 /* libPods-shayr.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -774,23 +712,6 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		67978828D33E09CE9B2FBCCE /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-				285539F24BA4F4CEE7145A16 /* Pods-shayr.debug.xcconfig */,
-				227446657C141344CDEF2A7B /* Pods-shayr.release.xcconfig */,
-				6DC4F4115E84E0F1DD019C08 /* Pods-shayr-tvOSTests.debug.xcconfig */,
-				0AD8FBD4ECDB518FBA3D25FB /* Pods-shayr-tvOSTests.release.xcconfig */,
-				10F285FF3BBF2615F8B772F4 /* Pods-shayrTests.debug.xcconfig */,
-				30B87247B9B864B9813690AF /* Pods-shayrTests.release.xcconfig */,
-				36F72CC4A5A1DAD008BD2786 /* Pods-ShareExtension.debug.xcconfig */,
-				6C1A33E0E31F3431EF9DB745 /* Pods-ShareExtension.release.xcconfig */,
-				B43CD3C867C8DB7B79285F4B /* Pods-shayr-ShareExtension.debug.xcconfig */,
-				ADD346E2D1A9D2A058723341 /* Pods-shayr-ShareExtension.release.xcconfig */,
-			);
-			name = Pods;
-			sourceTree = "<group>";
-		};
 		78C398B11ACF4ADC00677621 /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -841,9 +762,9 @@
 				58B59234201E8CA1005CC7F4 /* ShareExtension */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
-				67978828D33E09CE9B2FBCCE /* Pods */,
 				58B591FA201E8B52005CC7F4 /* Recovered References */,
 				92211C8A2BFE410AAAD26BEA /* Resources */,
+				E37AB53A279EFFC9E0FB856E /* Pods */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -855,8 +776,6 @@
 			children = (
 				13B07F961A680F5B00A75B9A /* shayr.app */,
 				00E356EE1AD99517003FC87E /* shayrTests.xctest */,
-				2D02E47B1E0B4A5D006451C7 /* shayr-tvOS.app */,
-				2D02E4901E0B4A5D006451C7 /* shayr-tvOSTests.xctest */,
 				58B59233201E8CA1005CC7F4 /* ShareExtension.appex */,
 			);
 			name = Products;
@@ -889,6 +808,17 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		E37AB53A279EFFC9E0FB856E /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				11F0326D7E68BF4EEB095D46 /* Pods-ShareExtension.debug.xcconfig */,
+				0C46302F39485DE3C4D80A10 /* Pods-ShareExtension.release.xcconfig */,
+				495F85D20064965F39D0922A /* Pods-shayr.debug.xcconfig */,
+				6B5E60EF1A3040E1500073C1 /* Pods-shayr.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -896,12 +826,9 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "shayrTests" */;
 			buildPhases = (
-				E76152B01DD486474C913F9C /* [CP] Check Pods Manifest.lock */,
 				00E356EA1AD99517003FC87E /* Sources */,
 				00E356EB1AD99517003FC87E /* Frameworks */,
 				00E356EC1AD99517003FC87E /* Resources */,
-				534C013B009B732CD4A0CF5F /* [CP] Embed Pods Frameworks */,
-				25C31B44559F238FDE92AE49 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -917,14 +844,13 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "shayr" */;
 			buildPhases = (
-				22D9A3F09F96C20F6D41A5C2 /* [CP] Check Pods Manifest.lock */,
+				70D8CFEDFDD8193CF725F826 /* [CP] Check Pods Manifest.lock */,
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
-				1410120977E789DB19D32E47 /* [CP] Copy Pods Resources */,
 				58B59242201E8CA1005CC7F4 /* Embed App Extensions */,
-				3D9637E01BDAAD5859EE6510 /* [CP] Embed Pods Frameworks */,
+				0F6C3DAA7B46C5F198EBCFE9 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -936,55 +862,16 @@
 			productReference = 13B07F961A680F5B00A75B9A /* shayr.app */;
 			productType = "com.apple.product-type.application";
 		};
-		2D02E47A1E0B4A5D006451C7 /* shayr-tvOS */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 2D02E4BA1E0B4A5E006451C7 /* Build configuration list for PBXNativeTarget "shayr-tvOS" */;
-			buildPhases = (
-				2D02E4771E0B4A5D006451C7 /* Sources */,
-				2D02E4781E0B4A5D006451C7 /* Frameworks */,
-				2D02E4791E0B4A5D006451C7 /* Resources */,
-				2D02E4CB1E0B4B27006451C7 /* Bundle React Native Code And Images */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = "shayr-tvOS";
-			productName = "shayr-tvOS";
-			productReference = 2D02E47B1E0B4A5D006451C7 /* shayr-tvOS.app */;
-			productType = "com.apple.product-type.application";
-		};
-		2D02E48F1E0B4A5D006451C7 /* shayr-tvOSTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 2D02E4BB1E0B4A5E006451C7 /* Build configuration list for PBXNativeTarget "shayr-tvOSTests" */;
-			buildPhases = (
-				E893B867F88D293C6F5C3319 /* [CP] Check Pods Manifest.lock */,
-				2D02E48C1E0B4A5D006451C7 /* Sources */,
-				2D02E48D1E0B4A5D006451C7 /* Frameworks */,
-				2D02E48E1E0B4A5D006451C7 /* Resources */,
-				FF20A8C950E38CE4DD1406DC /* [CP] Embed Pods Frameworks */,
-				B9485A58F4E2761D0B2786CA /* [CP] Copy Pods Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				2D02E4921E0B4A5D006451C7 /* PBXTargetDependency */,
-			);
-			name = "shayr-tvOSTests";
-			productName = "shayr-tvOSTests";
-			productReference = 2D02E4901E0B4A5D006451C7 /* shayr-tvOSTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
 		58B59232201E8CA1005CC7F4 /* ShareExtension */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 58B5923F201E8CA1005CC7F4 /* Build configuration list for PBXNativeTarget "ShareExtension" */;
 			buildPhases = (
-				9A5D5819F135146B4FF82880 /* [CP] Check Pods Manifest.lock */,
+				9B4A559A574280335150016B /* [CP] Check Pods Manifest.lock */,
 				58B5922F201E8CA1005CC7F4 /* Sources */,
 				58B59230201E8CA1005CC7F4 /* Frameworks */,
 				58B59231201E8CA1005CC7F4 /* Resources */,
-				B3B9E64D253A64607B4A2DF5 /* [CP] Copy Pods Resources */,
 				617A841620827A8D00CEE7C0 /* ShellScript */,
+				4DA8D1C3C46BBD04A198C95A /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -1019,17 +906,6 @@
 								enabled = 1;
 							};
 						};
-					};
-					2D02E47A1E0B4A5D006451C7 = {
-						CreatedOnToolsVersion = 8.2.1;
-						DevelopmentTeam = D5PU696EY8;
-						ProvisioningStyle = Automatic;
-					};
-					2D02E48F1E0B4A5D006451C7 = {
-						CreatedOnToolsVersion = 8.2.1;
-						DevelopmentTeam = D5PU696EY8;
-						ProvisioningStyle = Automatic;
-						TestTargetID = 2D02E47A1E0B4A5D006451C7;
 					};
 					58B59232201E8CA1005CC7F4 = {
 						CreatedOnToolsVersion = 9.2;
@@ -1124,8 +1000,6 @@
 			targets = (
 				13B07F861A680F5B00A75B9A /* shayr */,
 				00E356ED1AD99517003FC87E /* shayrTests */,
-				2D02E47A1E0B4A5D006451C7 /* shayr-tvOS */,
-				2D02E48F1E0B4A5D006451C7 /* shayr-tvOSTests */,
 				58B59232201E8CA1005CC7F4 /* ShareExtension */,
 			);
 		};
@@ -1450,21 +1324,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		2D02E4791E0B4A5D006451C7 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				2D02E4BD1E0B4A84006451C7 /* Images.xcassets in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		2D02E48E1E0B4A5D006451C7 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		58B59231201E8CA1005CC7F4 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1492,7 +1351,7 @@
 			shellPath = /bin/sh;
 			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh";
 		};
-		1410120977E789DB19D32E47 /* [CP] Copy Pods Resources */ = {
+		0F6C3DAA7B46C5F198EBCFE9 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -1510,7 +1369,38 @@
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-shayr/Pods-shayr-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		22D9A3F09F96C20F6D41A5C2 /* [CP] Check Pods Manifest.lock */ = {
+		4DA8D1C3C46BBD04A198C95A /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-ShareExtension/Pods-ShareExtension-resources.sh",
+				"${PODS_CONFIGURATION_BUILD_DIR}/gRPC/gRPCCertificates.bundle",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/gRPCCertificates.bundle",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-ShareExtension/Pods-ShareExtension-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		617A841620827A8D00CEE7C0 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh";
+		};
+		70D8CFEDFDD8193CF725F826 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -1528,79 +1418,7 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		25C31B44559F238FDE92AE49 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-shayrTests/Pods-shayrTests-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		2D02E4CB1E0B4B27006451C7 /* Bundle React Native Code And Images */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Bundle React Native Code And Images";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh";
-		};
-		3D9637E01BDAAD5859EE6510 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-shayr/Pods-shayr-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		534C013B009B732CD4A0CF5F /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-shayrTests/Pods-shayrTests-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		617A841620827A8D00CEE7C0 /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh";
-		};
-		9A5D5819F135146B4FF82880 /* [CP] Check Pods Manifest.lock */ = {
+		9B4A559A574280335150016B /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -1611,95 +1429,11 @@
 			);
 			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-shayr-ShareExtension-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-ShareExtension-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		B3B9E64D253A64607B4A2DF5 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-shayr-ShareExtension/Pods-shayr-ShareExtension-resources.sh",
-				"${PODS_CONFIGURATION_BUILD_DIR}/gRPC/gRPCCertificates.bundle",
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/gRPCCertificates.bundle",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-shayr-ShareExtension/Pods-shayr-ShareExtension-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		B9485A58F4E2761D0B2786CA /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-shayr-tvOSTests/Pods-shayr-tvOSTests-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		E76152B01DD486474C913F9C /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-shayrTests-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		E893B867F88D293C6F5C3319 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-shayr-tvOSTests-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		FF20A8C950E38CE4DD1406DC /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-shayr-tvOSTests/Pods-shayr-tvOSTests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -1722,23 +1456,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		2D02E4771E0B4A5D006451C7 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				2D02E4BF1E0B4AB3006451C7 /* main.m in Sources */,
-				2D02E4BC1E0B4A80006451C7 /* AppDelegate.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		2D02E48C1E0B4A5D006451C7 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				2DCD954D1E0B4F2C00145EB5 /* shayrTests.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		58B5922F201E8CA1005CC7F4 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1754,11 +1471,6 @@
 			isa = PBXTargetDependency;
 			target = 13B07F861A680F5B00A75B9A /* shayr */;
 			targetProxy = 00E356F41AD99517003FC87E /* PBXContainerItemProxy */;
-		};
-		2D02E4921E0B4A5D006451C7 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 2D02E47A1E0B4A5D006451C7 /* shayr-tvOS */;
-			targetProxy = 2D02E4911E0B4A5D006451C7 /* PBXContainerItemProxy */;
 		};
 		58B5923D201E8CA1005CC7F4 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -1790,7 +1502,6 @@
 /* Begin XCBuildConfiguration section */
 		00E356F61AD99517003FC87E /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 10F285FF3BBF2615F8B772F4 /* Pods-shayrTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				DEVELOPMENT_TEAM = D5PU696EY8;
@@ -1827,7 +1538,6 @@
 		};
 		00E356F71AD99517003FC87E /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 30B87247B9B864B9813690AF /* Pods-shayrTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
@@ -1861,7 +1571,7 @@
 		};
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 285539F24BA4F4CEE7145A16 /* Pods-shayr.debug.xcconfig */;
+			baseConfigurationReference = 495F85D20064965F39D0922A /* Pods-shayr.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = shayr/shayr.entitlements;
@@ -1897,7 +1607,7 @@
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 227446657C141344CDEF2A7B /* Pods-shayr.release.xcconfig */;
+			baseConfigurationReference = 6B5E60EF1A3040E1500073C1 /* Pods-shayr.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = shayr/shayr.entitlements;
@@ -1930,169 +1640,9 @@
 			};
 			name = Release;
 		};
-		2D02E4971E0B4A5E006451C7 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_INFINITE_RECURSION = YES;
-				CLANG_WARN_SUSPICIOUS_MOVE = YES;
-				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEVELOPMENT_TEAM = D5PU696EY8;
-				ENABLE_TESTABILITY = YES;
-				GCC_NO_COMMON_BLOCKS = YES;
-				HEADER_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(SRCROOT)/../node_modules/react-native-fbsdk/ios/RCTFBSDK/**",
-					"$(SRCROOT)/../node_modules/react-native-firebase/ios/RNFirebase/**",
-					"$(SRCROOT)/../node_modules/react-native-share-extension/ios",
-					"$(SRCROOT)/../node_modules/react-native-swiss-knife/ios/RNSKText",
-				);
-				INFOPLIST_FILE = "shayr-tvOS/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-				);
-				OTHER_LDFLAGS = (
-					"-ObjC",
-					"-lc++",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.daviswhitehead.shayr-tvOS";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = appletvos;
-				TARGETED_DEVICE_FAMILY = 3;
-				TVOS_DEPLOYMENT_TARGET = 9.2;
-			};
-			name = Debug;
-		};
-		2D02E4981E0B4A5E006451C7 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_INFINITE_RECURSION = YES;
-				CLANG_WARN_SUSPICIOUS_MOVE = YES;
-				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEVELOPMENT_TEAM = D5PU696EY8;
-				GCC_NO_COMMON_BLOCKS = YES;
-				HEADER_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(SRCROOT)/../node_modules/react-native-fbsdk/ios/RCTFBSDK/**",
-					"$(SRCROOT)/../node_modules/react-native-firebase/ios/RNFirebase/**",
-					"$(SRCROOT)/../node_modules/react-native-share-extension/ios",
-					"$(SRCROOT)/../node_modules/react-native-swiss-knife/ios/RNSKText",
-				);
-				INFOPLIST_FILE = "shayr-tvOS/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-				);
-				OTHER_LDFLAGS = (
-					"-ObjC",
-					"-lc++",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.daviswhitehead.shayr-tvOS";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = appletvos;
-				TARGETED_DEVICE_FAMILY = 3;
-				TVOS_DEPLOYMENT_TARGET = 9.2;
-			};
-			name = Release;
-		};
-		2D02E4991E0B4A5E006451C7 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 6DC4F4115E84E0F1DD019C08 /* Pods-shayr-tvOSTests.debug.xcconfig */;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_INFINITE_RECURSION = YES;
-				CLANG_WARN_SUSPICIOUS_MOVE = YES;
-				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEVELOPMENT_TEAM = D5PU696EY8;
-				ENABLE_TESTABILITY = YES;
-				GCC_NO_COMMON_BLOCKS = YES;
-				HEADER_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(SRCROOT)/../node_modules/react-native-swiss-knife/ios/RNSKText",
-				);
-				INFOPLIST_FILE = "shayr-tvOSTests/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-				);
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					"-ObjC",
-					"-lc++",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.facebook.REACT.shayr-tvOSTests";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = appletvos;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/shayr-tvOS.app/shayr-tvOS";
-				TVOS_DEPLOYMENT_TARGET = 10.1;
-			};
-			name = Debug;
-		};
-		2D02E49A1E0B4A5E006451C7 /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 0AD8FBD4ECDB518FBA3D25FB /* Pods-shayr-tvOSTests.release.xcconfig */;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_INFINITE_RECURSION = YES;
-				CLANG_WARN_SUSPICIOUS_MOVE = YES;
-				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEVELOPMENT_TEAM = D5PU696EY8;
-				GCC_NO_COMMON_BLOCKS = YES;
-				HEADER_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(SRCROOT)/../node_modules/react-native-swiss-knife/ios/RNSKText",
-				);
-				INFOPLIST_FILE = "shayr-tvOSTests/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-				);
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					"-ObjC",
-					"-lc++",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.facebook.REACT.shayr-tvOSTests";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = appletvos;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/shayr-tvOS.app/shayr-tvOS";
-				TVOS_DEPLOYMENT_TARGET = 10.1;
-			};
-			name = Release;
-		};
 		58B59240201E8CA1005CC7F4 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = B43CD3C867C8DB7B79285F4B /* Pods-shayr-ShareExtension.debug.xcconfig */;
+			baseConfigurationReference = 11F0326D7E68BF4EEB095D46 /* Pods-ShareExtension.debug.xcconfig */;
 			buildSettings = {
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
@@ -2149,7 +1699,7 @@
 		};
 		58B59241201E8CA1005CC7F4 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = ADD346E2D1A9D2A058723341 /* Pods-shayr-ShareExtension.release.xcconfig */;
+			baseConfigurationReference = 0C46302F39485DE3C4D80A10 /* Pods-ShareExtension.release.xcconfig */;
 			buildSettings = {
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
@@ -2239,7 +1789,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -2276,7 +1826,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -2302,24 +1852,6 @@
 			buildConfigurations = (
 				13B07F941A680F5B00A75B9A /* Debug */,
 				13B07F951A680F5B00A75B9A /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		2D02E4BA1E0B4A5E006451C7 /* Build configuration list for PBXNativeTarget "shayr-tvOS" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				2D02E4971E0B4A5E006451C7 /* Debug */,
-				2D02E4981E0B4A5E006451C7 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		2D02E4BB1E0B4A5E006451C7 /* Build configuration list for PBXNativeTarget "shayr-tvOSTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				2D02E4991E0B4A5E006451C7 /* Debug */,
-				2D02E49A1E0B4A5E006451C7 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

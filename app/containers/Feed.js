@@ -18,8 +18,10 @@ import {
   savePostToUser,
 } from '../functions/push'
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import ActionButton from '../components/ActionButton';
+import ActionButton from 'react-native-action-button';
 import _ from 'lodash';
+
+import { LoginManager } from 'react-native-fbsdk';
 
 export default class Feed extends Component {
   constructor(props) {
@@ -46,7 +48,7 @@ export default class Feed extends Component {
     const { params } = navigation.state;
 
     return {
-      title: 'FEED'
+      title: 'feed'
     }
   }
 
@@ -89,23 +91,7 @@ export default class Feed extends Component {
         })
       }
     }
-    const compare = (a,b) => {
-      console.log(a);
-      console.log(b);
-      if (a.updatedAt < b.updatedAt)
-        console.log('a less b');
-        return -1;
-      if (a.updatedAt > b.updatedAt)
-        console.log('b less a');
-        return 1;
-      return 0;
-    }
 
-    console.log(data);
-
-    console.log(data.sort(compare));
-
-    // return data
     return data.sort(function(a,b) {return (a.updatedAt > b.updatedAt) ? -1 : ((b.updatedAt > a.updatedAt) ? 1 : 0);} );
 
   }
@@ -237,7 +223,7 @@ export default class Feed extends Component {
     if (this.state.loading) {
       return (
         <Text>LOADING</Text>
-      ); // placeholder for eventual loading visual
+      );
     }
     return (
       <List
@@ -250,15 +236,37 @@ export default class Feed extends Component {
     );
   }
 
+  logout = async () => {
+    try {
+      await firebase.auth().signOut();
+      await LoginManager.logOut();
+      this.props.navigation.navigate('Login', this.state);
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
   render() {
     return (
       <View style={styles.container}>
         <this.loading/>
         {
           this.state.isActionButtonVisible ?
-          <ActionButton
-            action={() => this.props.navigation.navigate('Queue', this.state)}
-          /> :
+          <ActionButton>
+            <ActionButton.Item
+              title="queue"
+              onPress={() => this.props.navigation.navigate('Queue', this.state)}
+            >
+              <Icon name='add' size={50} color='white' />
+            </ActionButton.Item>
+            <ActionButton.Item
+              title="logout"
+              onPress={() => this.logout()}
+            >
+              <Icon name='add' size={50} color='white' />
+            </ActionButton.Item>
+          </ActionButton>
+           :
           null
         }
       </View>

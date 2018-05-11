@@ -8,14 +8,14 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
 } from 'react-native';
-import firebase from 'react-native-firebase';
-import {
-  createShare,
-} from '../functions/push';
+// import firebase from 'react-native-firebase';
+// import {
+//   createShare,
+// } from '../functions/push';
 import {
   retrieveAccessToken,
-  getAuthCredential,
-  getCurrentUser,
+  // getAuthCredential,
+  // getCurrentUser,
  } from '../functions/Auth';
  import ShareExtension from 'react-native-share-extension';
 
@@ -31,39 +31,40 @@ export default class MyComponent extends Component {
   }
 
   async componentDidMount() {
-    this.authSubscription = firebase.auth().onAuthStateChanged((user) => {
-      this.setState((previousState) => {
-        return {
-          ...previousState,
-          loading: false,
-          user: user,
-        }
-      })
-    });
+    // this.authSubscription = firebase.auth().onAuthStateChanged((user) => {
+    //   this.setState((previousState) => {
+    //     return {
+    //       ...previousState,
+    //       loading: false,
+    //       user: user,
+    //     }
+    //   })
+    // });
     try {
       // authenticating
       let token = await retrieveAccessToken();
 
-      const credential = getAuthCredential(token);
-
-      const currentUser = await getCurrentUser(credential);
-      if (!currentUser) {
-        throw new Error('unable to authenticate');
-      }
-
-      const ref = firebase.firestore().collection('users').doc(currentUser.user.uid);
-
-      // sharing
+      // const credential = getAuthCredential(token);
+      //
+      // const currentUser = await getCurrentUser(credential);
+      // if (!currentUser) {
+      //   throw new Error('unable to authenticate');
+      // }
+      //
+      // const ref = firebase.firestore().collection('users').doc(currentUser.user.uid);
+      //
+      // // sharing
       const { type, value } = await ShareExtension.data()
 
-      const share = await createShare(ref, value);
+      // const share = await createShare(ref, value);
 
-      if (share) {
+      if (true) {
+      // if (share) {
         setTimeout(
           () => {this.setState((previousState) => {
               return {
                 ...previousState,
-                shareText: 'Success!',
+                shareText: token,
               }
             });
           },
@@ -89,7 +90,7 @@ export default class MyComponent extends Component {
   }
 
   componentWillUnmount() {
-    this.authSubscription();
+    // this.authSubscription();
   }
 
   openModal() {

@@ -19,10 +19,11 @@
 #ifndef GRPC_CORE_EXT_FILTERS_CLIENT_CHANNEL_LB_POLICY_REGISTRY_H
 #define GRPC_CORE_EXT_FILTERS_CLIENT_CHANNEL_LB_POLICY_REGISTRY_H
 
+#include <grpc/support/port_platform.h>
+
 #include "src/core/ext/filters/client_channel/lb_policy_factory.h"
 #include "src/core/lib/gprpp/memory.h"
 #include "src/core/lib/gprpp/orphanable.h"
-#include "src/core/lib/iomgr/exec_ctx.h"
 
 namespace grpc_core {
 
