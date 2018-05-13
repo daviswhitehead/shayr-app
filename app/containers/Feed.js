@@ -18,8 +18,11 @@ import {
   savePostToUser,
 } from '../functions/push'
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import ActionButton from '../components/ActionButton';
 import _ from 'lodash';
+import DynamicActionButton from '../components/DynamicActionButton';
+import { createToast } from '../components/Toaster';
+import { LoginManager } from 'react-native-fbsdk';
+
 
 export default class Feed extends Component {
   constructor(props) {
@@ -46,7 +49,7 @@ export default class Feed extends Component {
     const { params } = navigation.state;
 
     return {
-      title: 'FEED'
+      title: 'feed'
     }
   }
 
@@ -84,12 +87,14 @@ export default class Feed extends Component {
             firstName: friend.firstName || '',
             lastName: friend.lastName || ''
           },
-          shareCount: Object.keys(posts[postId]['shares']).length
+          shareCount: Object.keys(posts[postId]['shares']).length,
+          updatedAt: posts[postId]['updatedAt']
         })
       }
     }
 
-    return data
+    return data.sort(function(a,b) {return (a.updatedAt > b.updatedAt) ? -1 : ((b.updatedAt > a.updatedAt) ? 1 : 0);} );
+
   }
 
   loadData = () => {
@@ -179,7 +184,8 @@ export default class Feed extends Component {
   }
 
   addToQueue = (payload) => {
-    savePostToUser(this.state.user, payload['key'])
+    savePostToUser(this.state.user, payload['key']);
+    let toast = createToast('added to queue');
   }
 
   addToQueueUI = () => {
@@ -219,7 +225,7 @@ export default class Feed extends Component {
     if (this.state.loading) {
       return (
         <Text>LOADING</Text>
-      ); // placeholder for eventual loading visual
+      );
     }
     return (
       <List
@@ -232,15 +238,28 @@ export default class Feed extends Component {
     );
   }
 
+  logout = async () => {
+    try {
+      await firebase.auth().signOut();
+      await LoginManager.logOut();
+      this.props.navigation.navigate('Login', this.state);
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
   render() {
     return (
       <View style={styles.container}>
         <this.loading/>
         {
           this.state.isActionButtonVisible ?
-          <ActionButton
-            action={() => this.props.navigation.navigate('Queue', this.state)}
-          /> :
+          <DynamicActionButton
+            logout={this.logout}
+            feed={false}
+            queue={() => this.props.navigation.navigate('Queue', this.state)}
+          />
+           :
           null
         }
       </View>

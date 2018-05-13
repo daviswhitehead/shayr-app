@@ -36,6 +36,10 @@ const AppStack = StackNavigator(
     navigationOptions: ({ navigation }) => ({
       headerStyle: {
         backgroundColor: '#F2C94C',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 3 },
+        shadowOpacity: 0.35,
+        shadowRadius: 3,
       },
       headerTitleStyle: {
         fontWeight: '800',

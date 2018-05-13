@@ -27,12 +27,13 @@
 #include <grpc/support/log.h>
 #include <grpc/support/time.h>
 #include "src/core/lib/channel/channel_stack.h"
+#include "src/core/lib/channel/channel_trace_registry.h"
 #include "src/core/lib/channel/connected_channel.h"
 #include "src/core/lib/channel/handshaker_registry.h"
 #include "src/core/lib/debug/stats.h"
 #include "src/core/lib/debug/trace.h"
 #include "src/core/lib/gpr/fork.h"
-#include "src/core/lib/gpr/thd.h"
+#include "src/core/lib/gprpp/thd.h"
 #include "src/core/lib/http/parser.h"
 #include "src/core/lib/iomgr/call_combiner.h"
 #include "src/core/lib/iomgr/combiner.h"
@@ -123,11 +124,12 @@ void grpc_init(void) {
   gpr_mu_lock(&g_init_mu);
   if (++g_initializations == 1) {
     gpr_time_init();
-    gpr_thd_init();
+    grpc_core::Thread::Init();
     grpc_stats_init();
     grpc_slice_intern_init();
     grpc_mdctx_global_init();
     grpc_channel_init_init();
+    grpc_channel_trace_registry_init();
     grpc_security_pre_init();
     grpc_core::ExecCtx::GlobalInit();
     grpc_iomgr_init();
@@ -176,6 +178,7 @@ void grpc_shutdown(void) {
       grpc_mdctx_global_shutdown();
       grpc_handshaker_factory_registry_shutdown();
       grpc_slice_intern_shutdown();
+      grpc_channel_trace_registry_shutdown();
       grpc_stats_shutdown();
     }
     grpc_core::ExecCtx::GlobalShutdown();

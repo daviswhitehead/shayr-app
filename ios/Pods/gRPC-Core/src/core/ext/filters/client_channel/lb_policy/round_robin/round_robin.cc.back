@@ -24,6 +24,8 @@
  * updates. Note however that updates will start picking from the beginning of
  * the updated list. */
 
+#include <grpc/support/port_platform.h>
+
 #include <string.h>
 
 #include <grpc/support/alloc.h>
@@ -410,8 +412,8 @@ void RoundRobin::UpdateConnectivityStatusLocked(grpc_lb_subchannel_data* sd,
 }
 
 void RoundRobin::OnConnectivityChangedLocked(void* arg, grpc_error* error) {
-  grpc_lb_subchannel_data* sd = reinterpret_cast<grpc_lb_subchannel_data*>(arg);
-  RoundRobin* p = reinterpret_cast<RoundRobin*>(sd->subchannel_list->policy);
+  grpc_lb_subchannel_data* sd = static_cast<grpc_lb_subchannel_data*>(arg);
+  RoundRobin* p = static_cast<RoundRobin*>(sd->subchannel_list->policy);
   if (grpc_lb_round_robin_trace.enabled()) {
     gpr_log(
         GPR_DEBUG,

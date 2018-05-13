@@ -17,6 +17,7 @@
  */
 
 #include <grpc/support/port_platform.h>
+
 #if GRPC_ARES == 1 && !defined(GRPC_UV)
 
 #include <limits.h>
@@ -26,6 +27,8 @@
 
 #include <grpc/support/alloc.h>
 #include <grpc/support/string_util.h>
+
+#include <address_sorting/address_sorting.h>
 
 #include "src/core/ext/filters/client_channel/http_connect_handshaker.h"
 #include "src/core/ext/filters/client_channel/lb_policy_registry.h"
@@ -294,7 +297,7 @@ void AresDnsResolver::OnResolvedLocked(void* arg, grpc_error* error) {
     size_t num_args_to_add = 0;
     new_args[num_args_to_add++] =
         grpc_lb_addresses_create_channel_arg(r->lb_addresses_);
-    grpc_service_config* service_config = nullptr;
+    grpc_core::UniquePtr<grpc_core::ServiceConfig> service_config;
     char* service_config_string = nullptr;
     if (r->service_config_json_ != nullptr) {
       service_config_string = ChooseServiceConfig(r->service_config_json_);
@@ -305,10 +308,11 @@ void AresDnsResolver::OnResolvedLocked(void* arg, grpc_error* error) {
         args_to_remove[num_args_to_remove++] = GRPC_ARG_SERVICE_CONFIG;
         new_args[num_args_to_add++] = grpc_channel_arg_string_create(
             (char*)GRPC_ARG_SERVICE_CONFIG, service_config_string);
-        service_config = grpc_service_config_create(service_config_string);
+        service_config =
+            grpc_core::ServiceConfig::Create(service_config_string);
         if (service_config != nullptr) {
           const char* lb_policy_name =
-              grpc_service_config_get_lb_policy_name(service_config);
+              service_config->GetLoadBalancingPolicyName();
           if (lb_policy_name != nullptr) {
             args_to_remove[num_args_to_remove++] = GRPC_ARG_LB_POLICY_NAME;
             new_args[num_args_to_add++] = grpc_channel_arg_string_create(
@@ -321,7 +325,6 @@ void AresDnsResolver::OnResolvedLocked(void* arg, grpc_error* error) {
     result = grpc_channel_args_copy_and_add_and_remove(
         r->channel_args_, args_to_remove, num_args_to_remove, new_args,
         num_args_to_add);
-    if (service_config != nullptr) grpc_service_config_destroy(service_config);
     gpr_free(service_config_string);
     grpc_lb_addresses_destroy(r->lb_addresses_);
     // Reset backoff state so that we start from the beginning when the
@@ -439,17 +442,32 @@ class AresDnsResolverFactory : public ResolverFactory {
 
 }  // namespace grpc_core
 
+extern grpc_address_resolver_vtable* grpc_resolve_address_impl;
+static grpc_address_resolver_vtable* default_resolver;
+
+static grpc_error* blocking_resolve_address_ares(
+    const char* name, const char* default_port,
+    grpc_resolved_addresses** addresses) {
+  return default_resolver->blocking_resolve_address(name, default_port,
+                                                    addresses);
+}
+
+static grpc_address_resolver_vtable ares_resolver = {
+    grpc_resolve_address_ares, blocking_resolve_address_ares};
+
 void grpc_resolver_dns_ares_init() {
   char* resolver_env = gpr_getenv("GRPC_DNS_RESOLVER");
   /* TODO(zyc): Turn on c-ares based resolver by default after the address
      sorter and the CNAME support are added. */
   if (resolver_env != nullptr && gpr_stricmp(resolver_env, "ares") == 0) {
+    address_sorting_init();
     grpc_error* error = grpc_ares_init();
     if (error != GRPC_ERROR_NONE) {
       GRPC_LOG_IF_ERROR("ares_library_init() failed", error);
       return;
     }
-    grpc_resolve_address = grpc_resolve_address_ares;
+    default_resolver = grpc_resolve_address_impl;
+    grpc_set_resolver_impl(&ares_resolver);
     grpc_core::ResolverRegistry::Builder::RegisterResolverFactory(
         grpc_core::UniquePtr<grpc_core::ResolverFactory>(
             grpc_core::New<grpc_core::AresDnsResolverFactory>()));
@@ -460,6 +478,7 @@ void grpc_resolver_dns_ares_init() {
 void grpc_resolver_dns_ares_shutdown() {
   char* resolver_env = gpr_getenv("GRPC_DNS_RESOLVER");
   if (resolver_env != nullptr && gpr_stricmp(resolver_env, "ares") == 0) {
+    address_sorting_shutdown();
     grpc_ares_cleanup();
   }
   gpr_free(resolver_env);
