@@ -27,8 +27,9 @@ export default class LoggedOut extends React.Component {
       const credential = getAuthCredential(tokenData.accessToken);
 
       const currentUser = await getCurrentUser(credential);
+      console.log(currentUser);
 
-      await saveUserInfo(currentUser.user);
+      await saveUserInfo(currentUser.user, currentUser.additionalUserInfo.profile);
 
     } catch (e) {
       console.error(e);

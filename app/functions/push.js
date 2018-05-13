@@ -6,22 +6,22 @@ const getUserId = (user) => {
   return user.uid;
 }
 
-export const saveUserInfo = (user) => {
+export const saveUserInfo = (user, data) => {
   const ref = firebase.firestore().collection('users').doc(getUserId(user));
   return ref
     .get()
     .then((doc) => {
+      console.log(data.first_name);
       if (!doc.exists) {
-        const profile = user.additionalUserInfo.profile
         ref.set({
           createdAt: ts,
           updatedAt: ts,
-          firstName: profile.first_name,
-          lastName: profile.last_name,
-          email: profile.email,
-          facebookGender: profile.gender,
-          facebookAgeRange: profile.age_range,
-          facebookProfilePhoto: profile.picture.data.url
+          firstName: data.first_name,
+          lastName: data.last_name,
+          email: data.email,
+          facebookGender: data.gender,
+          facebookAgeRange: data.age_range,
+          facebookProfilePhoto: data.picture.data.url
         })
       } else {
         ref.set({
