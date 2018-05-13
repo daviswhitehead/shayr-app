@@ -16,7 +16,7 @@ export default class ContentCard extends Component {
 
   sanitizeData = (payload) => {
     const data = {
-      image: _.get(payload, 'image', require('./Article.png')),
+      image: _.get(payload, 'image', ''),
       publisherName: _.get(payload, 'publisher.name', 'Error: Missing Publisher'),
       title: _.get(payload, 'title', 'Error: Missing Title'),
       friend: {
@@ -71,10 +71,17 @@ export default class ContentCard extends Component {
         onPress={() => this.tap(this.props.payload)}
       >
         <View style={styles.card}>
-          <Image
-            style={styles.image}
-            source={{uri: data.image}}
-          />
+          <View
+            style={styles.imageBox}
+          >
+            <Image
+              style={styles.image}
+              source={{uri: data.image}}
+            />
+            <View
+              style={styles.triangleCorner}
+            />
+          </View>
           <View style={styles.textBox}>
             <View style={styles.titlePublisherBox}>
               <Text
@@ -107,16 +114,41 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: 'white'
   },
+  imageBox: {
+    width: 110,
+    height: 100,
+    // 70% mask
+  },
   image: {
     width: 100,
     height: 100,
     // 70% mask
   },
+  triangleCorner: {
+    position: 'absolute',
+    width: 0,
+    height: 0,
+    backgroundColor: 'transparent',
+    borderStyle: 'solid',
+    borderRightWidth: 30,
+    borderTopWidth: 100,
+    borderRightColor: 'transparent',
+    borderTopColor: 'white',
+    transform: [
+      {rotate: '180deg'}
+    ],
+    paddingRight: 10,
+    marginLeft: 70,
+    shadowColor: '#000',
+    shadowOffset: { width: 8, height: 0 },
+    shadowOpacity: 0.20,
+    shadowRadius: 3,
+  },
   textBox: {
     flex: 1,
     flexDirection: 'column',
     backgroundColor: 'white',
-    marginLeft: 10,
+    marginLeft: 0,
   },
   titlePublisherBox: {
     flex: 2,

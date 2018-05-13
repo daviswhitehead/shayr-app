@@ -28,7 +28,7 @@ export default class LoggedOut extends React.Component {
 
       const currentUser = await getCurrentUser(credential);
 
-      await saveUserInfo(currentUser.user);
+      await saveUserInfo(currentUser.user, currentUser.additionalUserInfo.profile);
 
     } catch (e) {
       console.error(e);
