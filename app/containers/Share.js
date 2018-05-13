@@ -22,6 +22,7 @@ import {
 export default class MyComponent extends Component {
   constructor() {
     super();
+    console.log('JAVASCRIPT LOADED');
     this.state = {
       modalVisible: true,
       loading: true,
@@ -43,25 +44,26 @@ export default class MyComponent extends Component {
     try {
       // authenticating
       let token = await retrieveAccessToken();
+      console.log('TOKEN LOADED');
 
       const credential = getAuthCredential(token);
+      console.log('CREDENTIAL LOADED');
 
       const currentUser = await getCurrentUser(credential);
+      console.log('CURRENTUSER LOADED');
       if (!currentUser) {
         throw new Error('unable to authenticate');
       }
-      //
+
       const ref = firebase.firestore().collection('users').doc(currentUser.user.uid);
-      //
-      // // sharing
+      console.log('REF LOADED');
+
+      // sharing
       const { type, value } = await ShareExtension.data()
+      console.log('DATA LOADED');
 
-      // console.log('ralphnader');
       const share = await createShare(ref, value);
-      // console.log('baconeggsham');
-      // console.log(share);
 
-      // if (true) {
       if (share) {
         setTimeout(
           () => {this.setState((previousState) => {
@@ -163,6 +165,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 5 },
+    shadowOpacity: 0.35,
+    shadowRadius: 3,
+    elevation: 5,
   },
   logo: {
     height: 60,

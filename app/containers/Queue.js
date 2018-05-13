@@ -13,8 +13,8 @@ import {
 } from '../functions/push'
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import _ from 'lodash';
-import ActionButton from 'react-native-action-button';
-
+import DynamicActionButton from '../components/DynamicActionButton';
+import { createToast } from '../components/Toaster';
 import { LoginManager } from 'react-native-fbsdk';
 
 export default class Queue extends Component {
@@ -163,7 +163,8 @@ export default class Queue extends Component {
   }
 
   markAsDone = (payload) => {
-    markSavedPostAsDone(this.state.user, payload['key'])
+    markSavedPostAsDone(this.state.user, payload['key']);
+    let toast = createToast('marked as done');
   }
 
   markAsDoneUI = () => {
@@ -175,7 +176,8 @@ export default class Queue extends Component {
   }
 
   removeFromQueue = (payload) => {
-    deleteSavedPost(this.state.user, payload['key'])
+    deleteSavedPost(this.state.user, payload['key']);
+    let toast = createToast('deleted');
   }
 
   removeFromQueueUI = () => {
@@ -246,20 +248,11 @@ export default class Queue extends Component {
         <this.loading/>
         {
           this.state.isActionButtonVisible ?
-          <ActionButton>
-            <ActionButton.Item
-              title="feed"
-              onPress={() => this.props.navigation.navigate('Feed', this.state)}
-            >
-              <Icon name='add' size={50} color='white' />
-            </ActionButton.Item>
-            <ActionButton.Item
-              title="logout"
-              onPress={() => this.logout()}
-            >
-              <Icon name='add' size={50} color='white' />
-            </ActionButton.Item>
-          </ActionButton>
+          <DynamicActionButton
+            logout={this.logout}
+            feed={() => this.props.navigation.navigate('Feed', this.state)}
+            queue={false}
+          />
            :
           null
         }

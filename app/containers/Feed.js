@@ -18,10 +18,11 @@ import {
   savePostToUser,
 } from '../functions/push'
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import ActionButton from 'react-native-action-button';
 import _ from 'lodash';
-
+import DynamicActionButton from '../components/DynamicActionButton';
+import { createToast } from '../components/Toaster';
 import { LoginManager } from 'react-native-fbsdk';
+
 
 export default class Feed extends Component {
   constructor(props) {
@@ -183,7 +184,8 @@ export default class Feed extends Component {
   }
 
   addToQueue = (payload) => {
-    savePostToUser(this.state.user, payload['key'])
+    savePostToUser(this.state.user, payload['key']);
+    let toast = createToast('added to queue');
   }
 
   addToQueueUI = () => {
@@ -252,20 +254,11 @@ export default class Feed extends Component {
         <this.loading/>
         {
           this.state.isActionButtonVisible ?
-          <ActionButton>
-            <ActionButton.Item
-              title="queue"
-              onPress={() => this.props.navigation.navigate('Queue', this.state)}
-            >
-              <Icon name='add' size={50} color='white' />
-            </ActionButton.Item>
-            <ActionButton.Item
-              title="logout"
-              onPress={() => this.logout()}
-            >
-              <Icon name='add' size={50} color='white' />
-            </ActionButton.Item>
-          </ActionButton>
+          <DynamicActionButton
+            logout={this.logout}
+            feed={false}
+            queue={() => this.props.navigation.navigate('Queue', this.state)}
+          />
            :
           null
         }

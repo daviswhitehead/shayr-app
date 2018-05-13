@@ -11,7 +11,6 @@ export const saveUserInfo = (user, data) => {
   return ref
     .get()
     .then((doc) => {
-      console.log(data.first_name);
       if (!doc.exists) {
         ref.set({
           createdAt: ts,
