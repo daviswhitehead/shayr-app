@@ -5,4 +5,4 @@ devSettings();
 
 AppRegistry.registerComponent('shayr', () => require('./app/App').default);
 AppRegistry.registerComponent('ShareExtension', () => require('./app/containers/Share').default);
-// AppRegistry.registerComponent('ShareExtension', () => require('./app/containers/SharePurple').default);
+// AppRegistry.registerComponent('ShareExtension', () => require('./app/containers/ShareSquare').default);
