@@ -3,6 +3,11 @@ package com.shayr;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.oblador.vectoricons.VectorIconsPackage;
+import com.github.alinz.rnsk.RNSKPackage;
+import com.alinz.parkerdan.shareextension.SharePackage;
+import io.invertase.firebase.RNFirebasePackage;
+import com.facebook.reactnative.androidsdk.FBSDKPackage;
 import com.github.alinz.rnsk.RNSKPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.alinz.parkerdan.shareextension.SharePackage;
@@ -40,8 +45,8 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
-            new RNSKPackage(),
             new VectorIconsPackage(),
+            new RNSKPackage(),
             new SharePackage(),
             new RNFirebasePackage(),
             new RNFirebaseAuthPackage(),
@@ -64,6 +69,7 @@ public class MainApplication extends Application implements ReactApplication {
   @Override
   public void onCreate() {
     super.onCreate();
+    AppEventsLogger.activateApp(this);
     SoLoader.init(this, /* native exopackage */ false);
   }
 }
