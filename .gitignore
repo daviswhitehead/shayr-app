@@ -30,6 +30,8 @@ build/
 .gradle
 local.properties
 *.iml
+gradle.properties
+shayr-key.jks
 
 # node.js
 #
