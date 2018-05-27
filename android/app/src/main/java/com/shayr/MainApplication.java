@@ -2,10 +2,12 @@ package com.shayr;
 
 import android.app.Application;
 
+import com.crashlytics.android.Crashlytics;
 import com.facebook.react.ReactApplication;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.github.alinz.rnsk.RNSKPackage;
 import com.alinz.parkerdan.shareextension.SharePackage;
+import io.fabric.sdk.android.Fabric;
 import io.invertase.firebase.RNFirebasePackage;
 import com.facebook.reactnative.androidsdk.FBSDKPackage;
 import com.github.alinz.rnsk.RNSKPackage;
@@ -69,6 +71,7 @@ public class MainApplication extends Application implements ReactApplication {
   @Override
   public void onCreate() {
     super.onCreate();
+    Fabric.with(this, new Crashlytics());
     AppEventsLogger.activateApp(this);
     SoLoader.init(this, /* native exopackage */ false);
   }
