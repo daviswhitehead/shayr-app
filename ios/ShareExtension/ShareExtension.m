@@ -27,7 +27,6 @@ RCT_EXPORT_MODULE();
   
   [FIRApp configure];
   [Fabric with:@[[Crashlytics class]]];
-  [[Crashlytics sharedInstance] crash];
   
   jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index" fallbackResource:nil];
   
