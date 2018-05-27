@@ -21,7 +21,7 @@ public class MainActivity extends ReactActivity {
 
         Fabric.with(this, new Crashlytics());
 
-        throw new RuntimeException("test");
+        // throw new RuntimeException("test");
     }
 
     /**
