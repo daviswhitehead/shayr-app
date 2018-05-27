@@ -62,6 +62,8 @@ buck-out/
 .firebaserc
 GoogleService-Info.plist
 google-services.json
+devices.txt
+.env
 # Bundle artifact
 *.jsbundle
 

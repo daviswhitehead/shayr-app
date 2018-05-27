@@ -5,7 +5,9 @@
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "test": "jest",
-    "dsyms": "find ./ios/ -name \"*.dSYM\" | xargs -I {} /Applications/Fabric.app/Contents/MacOS/upload-symbols -a <api-key> -p ios {}"
+    "dsyms": "find ./ios/ -name \"*.dSYM\" | xargs -I {} /Applications/Fabric.app/Contents/MacOS/upload-symbols -a <api-key> -p ios {}",
+    "ios:beta": "fastlane ios beta",
+    "android:beta": "fastlane android beta"
   },
   "dependencies": {
     "eslint": "^4.19.1",
