@@ -55,12 +55,15 @@ buck-out/
 */fastlane/Preview.html
 */fastlane/screenshots
 
-<<<<<<< ours
-#Secrets
+
+# Secrets
+#
 .firebaserc
 GoogleService-Info.plist
 google-services.json
-=======
 # Bundle artifact
 *.jsbundle
->>>>>>> theirs
+
+# Files
+#
+*.mov

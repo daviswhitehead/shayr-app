@@ -12,6 +12,8 @@
 #import <React/RCTRootView.h>
 #import <React/RCTLog.h>
 #import <Firebase.h>
+#import <Fabric/Fabric.h>
+#import <Crashlytics/Crashlytics.h>
 
 @interface ShareExtension : ReactNativeShareExtension
 @end
@@ -24,6 +26,7 @@ RCT_EXPORT_MODULE();
   NSURL *jsCodeLocation;
   
   [FIRApp configure];
+  [Fabric with:@[[Crashlytics class]]];
   
   jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index" fallbackResource:nil];
   

@@ -5,6 +5,7 @@
 	};
 	objectVersion = 46;
 	objects = {
+
 /* Begin PBXBuildFile section */
 		00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302AC1ABCB8CE00DB3ED1 /* libRCTActionSheet.a */; };
 		00C302E71ABCBA2D00DB3ED1 /* libRCTGeolocation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302BA1ABCB90400DB3ED1 /* libRCTGeolocation.a */; };
@@ -851,6 +852,7 @@
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				58B59242201E8CA1005CC7F4 /* Embed App Extensions */,
 				0F6C3DAA7B46C5F198EBCFE9 /* [CP] Copy Pods Resources */,
+				61B2625920AD297300CDA576 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -1398,7 +1400,20 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh";
+			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh\n\"${PODS_ROOT}/Fabric/run\" c12e5c4bb8cd8ca855a8ada44fa3fde413006659 ba048a991e8ea9fb403ca2a51b31d3a80afff44dd4438e37c3bf4420f2906db0";
+		};
+		61B2625920AD297300CDA576 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Fabric/run\" c12e5c4bb8cd8ca855a8ada44fa3fde413006659 ba048a991e8ea9fb403ca2a51b31d3a80afff44dd4438e37c3bf4420f2906db0";
 		};
 		70D8CFEDFDD8193CF725F826 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1590,6 +1605,8 @@
 					"$(SRCROOT)/../node_modules/react-native-firebase/ios/RNFirebase/**",
 					"$(SRCROOT)/../node_modules/react-native-share-extension/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-swiss-knife/ios/RNSKText",
+					"${PODS_ROOT}/Crashlytics/**",
+					"${PODS_ROOT}/Fabric/**",
 				);
 				INFOPLIST_FILE = shayr/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1625,6 +1642,8 @@
 					"$(SRCROOT)/../node_modules/react-native-firebase/ios/RNFirebase/**",
 					"$(SRCROOT)/../node_modules/react-native-share-extension/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-swiss-knife/ios/RNSKText",
+					"${PODS_ROOT}/Crashlytics/**",
+					"${PODS_ROOT}/Fabric/**",
 				);
 				INFOPLIST_FILE = shayr/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";

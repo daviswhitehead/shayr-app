@@ -23,7 +23,6 @@ import DynamicActionButton from '../components/DynamicActionButton';
 import { createToast } from '../components/Toaster';
 import { LoginManager } from 'react-native-fbsdk';
 
-
 export default class Feed extends Component {
   constructor(props) {
     super(props);
@@ -227,6 +226,12 @@ export default class Feed extends Component {
         <Text>LOADING</Text>
       );
     }
+    // throw new Error('testing crashlytics');
+    // firebase.crashlytics().crash();
+    // console.log(firebase);
+    // console.log(firebase.analytics());
+    // firebase.analytics().logEvent('test', {});
+    // firebase.analytics().logEvent('test', {});
     return (
       <List
         data={this.state.feedData}
