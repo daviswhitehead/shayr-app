@@ -42,7 +42,6 @@ export default class DynamicActionButton extends Component {
   }
 
   render() {
-    console.log(this.props);
     let data = {}
     let nav = {}
     if (this.props.feed) {

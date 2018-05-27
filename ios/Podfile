@@ -12,7 +12,6 @@ end
 target 'shayr' do
   shared_pods
   # pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
-  # pod 'ReactNativeFabric', :path => '../node_modules/react-native-fabric'
 
 end
 
