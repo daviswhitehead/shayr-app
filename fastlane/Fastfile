@@ -2,37 +2,41 @@
 # On your CI, add `[sudo] bundle install` as your first build step
 # To update fastlane, just run `[sudo] bundle update fastlane`
 
-fastlane_version '2.53.1'
-require 'dotenv/load'
+fastlane_version '2.96.1'
+fastlane_require 'dotenv/load'
 
 
-before_all do
-  ensure_git_branch
-  ensure_git_status_clean
-  git_pull
-end
+# before_all do
+#   ensure_git_branch
+#   ensure_git_status_clean
+#   git_pull
+# end
 
 platform :ios do
 
-  desc 'fetch certificates and provisioning profiles'
-  lane :certificates do
+  desc 'release certificates and provisioning profiles'
+  lane :release_certificates do
+    match(
+      type: 'appstore',
+      app_identifier: [
+          ENV['SHAYR_BUNDLE_ID'],
+          ENV['SHARE_EXTENSION_BUNDLE_ID']
+        ],
+        readonly: true
+      )
+  end
+
+  desc 'development certificates and provisioning profiles'
+  lane :development_certificates do
     register_devices(
-      devices_file: './devices.txt'
+      devices_file: './devices.txt',
+      username: 'whitehead.davis@gmail.com'
     )
     match(
       type: 'development',
       app_identifier: [
-          'com.daviswhitehead.shayr.ios',
-          'com.daviswhitehead.shayr.ios.ShareExtension'
-        ],
-        readonly: true,
-        force_for_new_devices: true
-      )
-    match(
-      type: 'appstore',
-      app_identifier: [
-          'com.daviswhitehead.shayr.ios',
-          'com.daviswhitehead.shayr.ios.ShareExtension'
+          ENV['SHAYR_BUNDLE_ID'],
+          ENV['SHARE_EXTENSION_BUNDLE_ID']
         ],
         readonly: true,
         force_for_new_devices: true
@@ -41,18 +45,19 @@ platform :ios do
 
   desc 'build ios application'
   private_lane :build do
-    certificates
     increment_build_number(
-      xcodeproj: './ios/shayr.workspace'
+      xcodeproj: './ios/shayr.xcodeproj'
     )
     gym(
       scheme: 'shayr',
-      workspace: './ios/shayr.workspace'
+      workspace: './ios/shayr.xcworkspace'
     )
   end
 
   desc 'ship a beta'
   lane :beta do
+    # release_certificates
+    development_certificates
     build
     crashlytics(
       api_token: ENV['FABRIC_API_KEY'],
@@ -60,7 +65,22 @@ platform :ios do
     )
     commit_version_bump(
       message: 'bump build',
-      xcodeproj: './ios/name.xcodeproj'
+      xcodeproj: './ios/shayr.xcodeproj'
+    )
+    push_to_git_remote
+  end
+
+
+  desc 'ship a release'
+  lane :release do
+    release_certificates
+    # get_push_certificate
+    # capture_screenshots
+    build
+    upload_to_app_store
+    commit_version_bump(
+      message: 'bump build',
+      xcodeproj: './ios/shayr.xcodeproj'
     )
     push_to_git_remote
   end

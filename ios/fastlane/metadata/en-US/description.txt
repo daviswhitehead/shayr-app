@@ -1,9 +1,0 @@
-With shayr, you can share content with friends, view what your friends have shared, and manage your own queue of saved content.
-
-shayr's native share extension allows users to post inbound content for others to consume. Within any native browser, tap on the Share button, then on the shayr icon.
-
-Use Cases
-- Just listened to this awesome Startup podcast episode and I want to share it with my friends. I especially want John to listen to it and want to know what he thinks of it.
-- I'm about to go on vacation and am going to download a book before my flight but need a recommendation.
-- I'm always getting good recommendations from my friends for stuff to watch and read, I want an easy place to keep track of them and find new ones to add.
-- There are some amazing This American Life episodes but a lot of mediocre ones I don't want to sit through. I want a good way of finding out which are the good ones.
