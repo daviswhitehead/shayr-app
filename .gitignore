@@ -22,6 +22,7 @@ DerivedData
 *.ipa
 *.xcuserstate
 project.xcworkspace
+ios/Index/DataStore
 
 # Android/IntelliJ
 #
@@ -54,6 +55,7 @@ buck-out/
 */fastlane/report.xml
 */fastlane/Preview.html
 */fastlane/screenshots
+shayr.app.dSYM.zip
 
 
 # Secrets
@@ -61,8 +63,11 @@ buck-out/
 .firebaserc
 GoogleService-Info.plist
 google-services.json
+devices.txt
+.env
 # Bundle artifact
 *.jsbundle
+Google\ Play\ Android\ Developer-b7a9e408df80.json
 
 # Files
 #

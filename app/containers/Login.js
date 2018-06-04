@@ -7,7 +7,6 @@ import { retrieveAccessToken } from '../functions/Auth';
 export default class LoginScreen extends React.Component {
   constructor(props) {
     super(props);
-    // firebase.auth().signOut()
     this.state = {
       loading: true,
       hasToken: false,

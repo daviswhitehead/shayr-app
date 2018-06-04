@@ -1,0 +1,109 @@
+# Every time you run fastlane, use `bundle exec fastlane [lane]`
+# On your CI, add `[sudo] bundle install` as your first build step
+# To update fastlane, just run `[sudo] bundle update fastlane`
+
+fastlane_version '2.96.1'
+fastlane_require 'dotenv/load'
+
+
+# before_all do
+#   ensure_git_branch
+#   ensure_git_status_clean
+#   git_pull
+# end
+
+platform :ios do
+
+  desc 'release certificates and provisioning profiles'
+  lane :release_certificates do
+    match(
+      type: 'appstore',
+      app_identifier: [
+          ENV['SHAYR_BUNDLE_ID'],
+          ENV['SHARE_EXTENSION_BUNDLE_ID']
+        ],
+        readonly: true
+      )
+  end
+
+  desc 'development certificates and provisioning profiles'
+  lane :development_certificates do
+    register_devices(
+      devices_file: './devices.txt',
+      username: 'whitehead.davis@gmail.com'
+    )
+    match(
+      type: 'development',
+      app_identifier: [
+          ENV['SHAYR_BUNDLE_ID'],
+          ENV['SHARE_EXTENSION_BUNDLE_ID']
+        ],
+        readonly: true,
+        force_for_new_devices: true
+      )
+  end
+
+  desc 'build ios application'
+  private_lane :build do |options|
+    increment_build_number(
+      xcodeproj: './ios/shayr.xcodeproj'
+    )
+    gym(
+      scheme: 'shayr',
+      workspace: './ios/shayr.xcworkspace',
+      export_method: options[:method]
+    )
+  end
+
+  desc 'ship a beta'
+  lane :beta do
+    development_certificates
+    build(method: 'development')
+    crashlytics(
+      api_token: ENV['FABRIC_API_KEY'],
+      build_secret: ENV['FABRIC_BUILD_SECRET']
+    )
+    # commit_version_bump(
+    #   message: 'bump build',
+    #   xcodeproj: './ios/shayr.xcodeproj'
+    # )
+    # push_to_git_remote
+  end
+
+
+  desc 'ship a release'
+  lane :release do
+    release_certificates
+    # get_push_certificate
+    # capture_screenshots
+    build(method: 'app-store')
+    upload_to_app_store
+    # commit_version_bump(
+    #   message: 'bump build',
+    #   xcodeproj: './ios/shayr.xcodeproj'
+    # )
+    # push_to_git_remote
+  end
+end
+
+platform :android do
+
+  desc 'ship a beta'
+  lane :beta do
+    gradle(
+      task: 'clean',
+      project_dir: 'android/'
+    )
+    gradle(
+      task: 'assemble',
+      build_type: 'Release',
+      project_dir: 'android'
+    )
+    upload_to_play_store(track: 'alpha')
+    # supply(track: "alpha", apk: "android/app/build/outputs/apk/app-release.apk")
+    crashlytics(
+      api_token: ENV['FABRIC_API_KEY'],
+      build_secret: ENV['FABRIC_BUILD_SECRET']
+    )
+  end
+end
