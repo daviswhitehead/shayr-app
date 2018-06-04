@@ -5,44 +5,27 @@
     
     
       
-      <testcase classname="fastlane.lanes" name="0: Verifying fastlane version" time="0.012615">
+      <testcase classname="fastlane.lanes" name="0: Verifying fastlane version" time="0.011607">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="1: Switch to ios release_certificates lane" time="0.001232">
+      <testcase classname="fastlane.lanes" name="1: gradle" time="10.091226">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="2: match" time="3.723505">
+      <testcase classname="fastlane.lanes" name="2: gradle" time="137.249215">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="3: Switch to ios build lane" time="0.001112">
+      <testcase classname="fastlane.lanes" name="3: upload_to_play_store" time="12.951934">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="4: increment_build_number" time="2.501732">
-        
-      </testcase>
-    
-      
-      <testcase classname="fastlane.lanes" name="5: gym" time="774.807061">
-        
-      </testcase>
-    
-      
-      <testcase classname="fastlane.lanes" name="6: crashlytics" time="33.367851">
-        
-      </testcase>
-    
-      
-      <testcase classname="fastlane.lanes" name="7: commit_version_bump" time="0.002774">
-        
-          <failure message="/usr/local/lib/ruby/gems/2.5.0/gems/fastlane-2.96.1/fastlane/lib/fastlane/actions/actions_helper.rb:48:in `execute_action'&#10;/usr/local/lib/ruby/gems/2.5.0/gems/fastlane-2.96.1/fastlane/lib/fastlane/runner.rb:236:in `block in execute_action'&#10;/usr/local/lib/ruby/gems/2.5.0/gems/fastlane-2.96.1/fastlane/lib/fastlane/runner.rb:231:in `chdir'&#10;/usr/local/lib/ruby/gems/2.5.0/gems/fastlane-2.96.1/fastlane/lib/fastlane/runner.rb:231:in `execute_action'&#10;/usr/local/lib/ruby/gems/2.5.0/gems/fastlane-2.96.1/fastlane/lib/fastlane/runner.rb:157:in `trigger_action_by_name'&#10;/usr/local/lib/ruby/gems/2.5.0/gems/fastlane-2.96.1/fastlane/lib/fastlane/fast_file.rb:149:in `method_missing'&#10;Fastfile:65:in `block (2 levels) in parsing_binding'&#10;/usr/local/lib/ruby/gems/2.5.0/gems/fastlane-2.96.1/fastlane/lib/fastlane/lane.rb:33:in `call'&#10;/usr/local/lib/ruby/gems/2.5.0/gems/fastlane-2.96.1/fastlane/lib/fastlane/runner.rb:49:in `block in execute'&#10;/usr/local/lib/ruby/gems/2.5.0/gems/fastlane-2.96.1/fastlane/lib/fastlane/runner.rb:45:in `chdir'&#10;/usr/local/lib/ruby/gems/2.5.0/gems/fastlane-2.96.1/fastlane/lib/fastlane/runner.rb:45:in `execute'&#10;/usr/local/lib/ruby/gems/2.5.0/gems/fastlane-2.96.1/fastlane/lib/fastlane/lane_manager.rb:59:in `cruise_lane'&#10;/usr/local/lib/ruby/gems/2.5.0/gems/fastlane-2.96.1/fastlane/lib/fastlane/command_line_handler.rb:36:in `handle'&#10;/usr/local/lib/ruby/gems/2.5.0/gems/fastlane-2.96.1/fastlane/lib/fastlane/commands_generator.rb:107:in `block (2 levels) in run'&#10;/usr/local/lib/ruby/gems/2.5.0/gems/commander-fastlane-4.4.6/lib/commander/command.rb:178:in `call'&#10;/usr/local/lib/ruby/gems/2.5.0/gems/commander-fastlane-4.4.6/lib/commander/command.rb:153:in `run'&#10;/usr/local/lib/ruby/gems/2.5.0/gems/commander-fastlane-4.4.6/lib/commander/runner.rb:476:in `run_active_command'&#10;/usr/local/lib/ruby/gems/2.5.0/gems/fastlane-2.96.1/fastlane_core/lib/fastlane_core/ui/fastlane_runner.rb:75:in `run!'&#10;/usr/local/lib/ruby/gems/2.5.0/gems/commander-fastlane-4.4.6/lib/commander/delegates.rb:15:in `run!'&#10;/usr/local/lib/ruby/gems/2.5.0/gems/fastlane-2.96.1/fastlane/lib/fastlane/commands_generator.rb:332:in `run'&#10;/usr/local/lib/ruby/gems/2.5.0/gems/fastlane-2.96.1/fastlane/lib/fastlane/commands_generator.rb:41:in `start'&#10;/usr/local/lib/ruby/gems/2.5.0/gems/fastlane-2.96.1/fastlane/lib/fastlane/cli_tools_distributor.rb:108:in `take_off'&#10;/usr/local/lib/ruby/gems/2.5.0/gems/fastlane-2.96.1/bin/fastlane:20:in `&lt;top (required)&gt;'&#10;/usr/local/bin/fastlane:23:in `load'&#10;/usr/local/bin/fastlane:23:in `&lt;top (required)&gt;'&#10;/usr/local/Cellar/ruby/2.5.0/lib/ruby/2.5.0/bundler/cli/exec.rb:75:in `load'&#10;/usr/local/Cellar/ruby/2.5.0/lib/ruby/2.5.0/bundler/cli/exec.rb:75:in `kernel_load'&#10;/usr/local/Cellar/ruby/2.5.0/lib/ruby/2.5.0/bundler/cli/exec.rb:28:in `run'&#10;/usr/local/Cellar/ruby/2.5.0/lib/ruby/2.5.0/bundler/cli.rb:424:in `exec'&#10;/usr/local/Cellar/ruby/2.5.0/lib/ruby/2.5.0/bundler/vendor/thor/lib/thor/command.rb:27:in `run'&#10;/usr/local/Cellar/ruby/2.5.0/lib/ruby/2.5.0/bundler/vendor/thor/lib/thor/invocation.rb:126:in `invoke_command'&#10;/usr/local/Cellar/ruby/2.5.0/lib/ruby/2.5.0/bundler/vendor/thor/lib/thor.rb:387:in `dispatch'&#10;/usr/local/Cellar/ruby/2.5.0/lib/ruby/2.5.0/bundler/cli.rb:27:in `dispatch'&#10;/usr/local/Cellar/ruby/2.5.0/lib/ruby/2.5.0/bundler/vendor/thor/lib/thor/base.rb:466:in `start'&#10;/usr/local/Cellar/ruby/2.5.0/lib/ruby/2.5.0/bundler/cli.rb:18:in `start'&#10;/usr/local/bin/bundle:30:in `block in &lt;main&gt;'&#10;/usr/local/Cellar/ruby/2.5.0/lib/ruby/2.5.0/bundler/friendly_errors.rb:122:in `with_friendly_errors'&#10;/usr/local/bin/bundle:22:in `&lt;main&gt;'&#10;&#10;Could not find Xcode project" />
+      <testcase classname="fastlane.lanes" name="4: crashlytics" time="6.64787">
         
       </testcase>
     

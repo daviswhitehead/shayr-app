@@ -6,9 +6,9 @@ for_platform :ios do
 end
 
 for_platform :android do
-
+  json_key_file('./android/Google Play Android Developer-b7a9e408df80.json') # Path to the json secret file - Follow https://docs.fastlane.tools/actions/supply/#setup to get one
+  package_name('com.shayr') # e.g. com.krausefx.app
 end
-
 
 # For more information about the Appfile, see:
 #     https://docs.fastlane.tools/advanced/#appfile

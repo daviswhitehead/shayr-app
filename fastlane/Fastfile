@@ -44,30 +44,30 @@ platform :ios do
   end
 
   desc 'build ios application'
-  private_lane :build do
+  private_lane :build do |options|
     increment_build_number(
       xcodeproj: './ios/shayr.xcodeproj'
     )
     gym(
       scheme: 'shayr',
-      workspace: './ios/shayr.xcworkspace'
+      workspace: './ios/shayr.xcworkspace',
+      export_method: options[:method]
     )
   end
 
   desc 'ship a beta'
   lane :beta do
-    # release_certificates
     development_certificates
-    build
+    build(method: 'development')
     crashlytics(
       api_token: ENV['FABRIC_API_KEY'],
       build_secret: ENV['FABRIC_BUILD_SECRET']
     )
-    commit_version_bump(
-      message: 'bump build',
-      xcodeproj: './ios/shayr.xcodeproj'
-    )
-    push_to_git_remote
+    # commit_version_bump(
+    #   message: 'bump build',
+    #   xcodeproj: './ios/shayr.xcodeproj'
+    # )
+    # push_to_git_remote
   end
 
 
@@ -76,16 +76,34 @@ platform :ios do
     release_certificates
     # get_push_certificate
     # capture_screenshots
-    build
+    build(method: 'app-store')
     upload_to_app_store
-    commit_version_bump(
-      message: 'bump build',
-      xcodeproj: './ios/shayr.xcodeproj'
-    )
-    push_to_git_remote
+    # commit_version_bump(
+    #   message: 'bump build',
+    #   xcodeproj: './ios/shayr.xcodeproj'
+    # )
+    # push_to_git_remote
   end
 end
 
 platform :android do
-  # Android Lanes
+
+  desc 'ship a beta'
+  lane :beta do
+    gradle(
+      task: 'clean',
+      project_dir: 'android/'
+    )
+    gradle(
+      task: 'assemble',
+      build_type: 'Release',
+      project_dir: 'android'
+    )
+    upload_to_play_store(track: 'alpha')
+    # supply(track: "alpha", apk: "android/app/build/outputs/apk/app-release.apk")
+    crashlytics(
+      api_token: ENV['FABRIC_API_KEY'],
+      build_secret: ENV['FABRIC_BUILD_SECRET']
+    )
+  end
 end
