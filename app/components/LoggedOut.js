@@ -46,7 +46,7 @@ export default class LoggedOut extends React.Component {
             >
               <Image
                 style={styles.image}
-                source={require('./VectorLogo.png')}
+                source={require('../assets/VectorLogo.png')}
               />
               <Text style={styles.brand}>shayr</Text>
               <Text style={styles.tagline}>discover together</Text>
