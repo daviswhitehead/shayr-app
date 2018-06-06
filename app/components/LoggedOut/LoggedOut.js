@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { LoginButton } from 'react-native-fbsdk';
 import {
     View,
     Button,
@@ -7,15 +6,20 @@ import {
     Text,
     StyleSheet,
 } from 'react-native';
+
+import styles from './styles';
+import vectorLogo from '../../assets/VectorLogo.png';
 import {
   getFBToken,
   getAuthCredential,
   getCurrentUser,
   storeAccessToken,
- } from '../functions/Auth';
+ } from '../../functions/Auth';
 import {
   saveUserInfo,
-} from '../functions/push';
+} from '../../functions/push';
+
+import { LoginButton } from 'react-native-fbsdk';
 
 export default class LoggedOut extends React.Component {
   async facebookLogin(error, result) {
@@ -35,8 +39,6 @@ export default class LoggedOut extends React.Component {
   }
 
   render() {
-      console.log(this.state);
-      console.log(this.props);
       return (
           <View
             style={styles.container}
@@ -46,7 +48,7 @@ export default class LoggedOut extends React.Component {
             >
               <Image
                 style={styles.image}
-                source={require('../assets/VectorLogo.png')}
+                defaultSource={vectorLogo}
               />
               <Text style={styles.brand}>shayr</Text>
               <Text style={styles.tagline}>discover together</Text>
@@ -63,41 +65,4 @@ export default class LoggedOut extends React.Component {
           </View>
       );
   }
-
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F2C94C'
-  },
-  brandContainer: {
-    flex: 2,
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  image: {
-    resizeMode: 'contain',
-    width: 128,
-    height: 128,
-  },
-  brand: {
-    fontWeight: '900',
-    fontSize: 60,
-    paddingTop: 20,
-  },
-  tagline: {
-    fontWeight: '100',
-    fontSize: 25
-  },
-  loginContainer: {
-    flex: 1,
-    flexDirection: 'column',
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-  },
-});

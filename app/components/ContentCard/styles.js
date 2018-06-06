@@ -35,7 +35,7 @@ export default StyleSheet.create({
     ],
     paddingRight: 10,
     marginLeft: 70,
-    shadowColor: '#000',
+    shadowColor: colors.SHADOW,
     shadowOffset: { width: 8, height: 0 },
     shadowOpacity: 0.20,
     shadowRadius: 3,

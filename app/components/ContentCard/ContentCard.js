@@ -7,8 +7,10 @@ import {
   Linking,
   TouchableWithoutFeedback,
 } from 'react-native';
+import PropTypes from 'prop-types';
 
 import styles from './styles';
+import article from '../../assets/Article.png';
 
 import _ from 'lodash';
 
@@ -16,6 +18,10 @@ export default class ContentCard extends Component {
   constructor() {
     super();
   }
+
+  static propTypes = {
+    payload: PropTypes.object.isRequired
+  };
 
   sanitizeData = (payload) => {
     const data = {
@@ -80,6 +86,7 @@ export default class ContentCard extends Component {
             <Image
               style={styles.image}
               source={{uri: data.image}}
+              defaultSource={article}
             />
             <View
               style={styles.triangleCorner}
