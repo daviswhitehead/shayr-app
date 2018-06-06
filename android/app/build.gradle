@@ -103,7 +103,7 @@ android {
         applicationId "com.shayr"
         minSdkVersion 16
         targetSdkVersion 26
-        versionCode 4
+        versionCode 5
         versionName "1.0.4"
         ndk {
             abiFilters "armeabi-v7a", "x86"

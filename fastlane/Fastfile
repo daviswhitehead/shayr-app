@@ -99,11 +99,11 @@ platform :android do
       build_type: 'Release',
       project_dir: 'android'
     )
-    upload_to_play_store(track: 'alpha')
     # supply(track: "alpha", apk: "android/app/build/outputs/apk/app-release.apk")
     crashlytics(
       api_token: ENV['FABRIC_API_KEY'],
       build_secret: ENV['FABRIC_BUILD_SECRET']
     )
+    upload_to_play_store(track: 'alpha')
   end
 end

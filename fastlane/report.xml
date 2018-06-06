@@ -5,27 +5,42 @@
     
     
       
-      <testcase classname="fastlane.lanes" name="0: Verifying fastlane version" time="0.011607">
+      <testcase classname="fastlane.lanes" name="0: Verifying fastlane version" time="0.011537">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="1: gradle" time="10.091226">
+      <testcase classname="fastlane.lanes" name="1: Switch to ios development_certificates lane" time="0.001487">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="2: gradle" time="137.249215">
+      <testcase classname="fastlane.lanes" name="2: register_devices" time="3.877454">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="3: upload_to_play_store" time="12.951934">
+      <testcase classname="fastlane.lanes" name="3: match" time="2.151709">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="4: crashlytics" time="6.64787">
+      <testcase classname="fastlane.lanes" name="4: Switch to ios build lane" time="0.001293">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="5: increment_build_number" time="2.613666">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="6: gym" time="1176.80683">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="7: crashlytics" time="13.283299">
         
       </testcase>
     
