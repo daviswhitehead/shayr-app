@@ -11,6 +11,7 @@ export default class LoginScreen extends React.Component {
       loading: true,
       hasToken: false,
     };
+    console.log('here');
   }
 
   componentDidMount() {

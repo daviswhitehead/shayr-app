@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   LayoutAnimation,
 } from 'react-native';
+import { connect } from 'react-redux';
 
 import styles from './styles';
 import DynamicActionButton from '../../components/DynamicActionButton';
@@ -23,13 +24,19 @@ import {
   organizeData,
 } from '../../transforms/OrganizePostData';
 
-
 import firebase from 'react-native-firebase';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import _ from 'lodash';
 import { LoginManager } from 'react-native-fbsdk';
 
-export default class Feed extends Component {
+const mapStateToProps = (state) => {
+ return { };
+}
+const mapDispatchToProps = (dispatch) => {
+ return { };
+}
+
+class Feed extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -230,3 +237,5 @@ export default class Feed extends Component {
     );
   }
 }
+
+export default connect(mapStateToProps, mapDispatchToProps)(Feed);

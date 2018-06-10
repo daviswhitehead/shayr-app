@@ -1,61 +1,43 @@
 import React, { Component } from 'react';
 import {
-  StackNavigator,
-  DrawerNavigator,
+  createStackNavigator,
   SwitchNavigator
 } from 'react-navigation';
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  Image,
-} from 'react-native';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { initializeListeners } from 'react-navigation-redux-helpers';
+
 import Feed from './containers/Feed';
 import Queue from './containers/Queue';
-import Share from './containers/Share';
 import Login from './containers/Login';
+import { navigationPropConstructor } from './lib/ReduxNavigation';
 
-const AuthStack = StackNavigator(
-  {
-    Login: Login
-  },
-  {
-    navigationOptions: ({ navigation }) => ({
-      header: null
-    })
+
+export const AppNavigator = createStackNavigator({
+  Login: { screen: Login },
+  Feed: { screen: Feed },
+  Queue: { screen: Queue },
+});
+
+class AppWithNavigationState extends Component {
+  static propTypes = {
+    dispatch: PropTypes.func.isRequired,
+    nav: PropTypes.object.isRequired,
+  };
+
+  componentDidMount() {
+    initializeListeners('root', this.props.nav);
   }
-);
-const AppStack = StackNavigator(
-  {
-    Feed: { screen: Feed },
-    Queue: { screen: Queue }
-  },
-  {
-    initialRouteName: 'Feed',
-    navigationOptions: ({ navigation }) => ({
-      headerStyle: {
-        backgroundColor: '#F2C94C',
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 3 },
-        shadowOpacity: 0.35,
-        shadowRadius: 3,
-      },
-      headerTitleStyle: {
-        fontWeight: '800',
-      },
-      headerTintColor: 'black',
-      headerBackTitle: null,
-      headerLeft: null
-    })
+
+  render() {
+    const { dispatch, nav } = this.props;
+    const navigation = navigationPropConstructor(dispatch, nav);
+    return <AppNavigator navigation={navigation} />;
   }
-);
-export default SwitchNavigator(
-  {
-    App: AppStack,
-    Auth: AuthStack,
-  },
-  {
-    initialRouteName: 'Auth',
-  }
-);
+}
+
+const mapStateToProps = state => ({
+  nav: state.nav,
+});
+
+export default connect(mapStateToProps)(AppWithNavigationState);

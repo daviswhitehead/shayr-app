@@ -1,12 +1,13 @@
 import { combineReducers } from 'redux';
 import { firebaseStateReducer } from 'react-redux-firebase';
 import { reducer as firestoreReducer} from 'redux-firestore';
-
+import nav from './NavReducer';
 
 export const makeRootReducer = (asyncReducers) => {
   return combineReducers({
     firebase: firebaseStateReducer,
     firestore: firestoreReducer,
+    nav: nav,
     ...asyncReducers
   })
 }

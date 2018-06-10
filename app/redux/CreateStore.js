@@ -3,7 +3,8 @@ import { getFirebase, reactReduxFirebase } from 'react-redux-firebase';
 import firebase from 'react-native-firebase';
 import thunk from 'redux-thunk';
 import { reduxFirestore } from 'redux-firestore';
-import makeRootReducer from './Reducers';
+import makeRootReducer from './reducers/Reducers';
+import { navMiddleware } from '../lib/ReduxNavigation';
 // import { composeWithDevTools } from 'redux-devtools-extension/developmentOnly';
 
 export default (initialState = { firebase: {} }) => {
@@ -14,6 +15,7 @@ export default (initialState = { firebase: {} }) => {
 
   const middleware = [
     thunk.withExtraArgument({ getFirebase }),
+    navMiddleware,
   ];
 
   const store = createStore(
