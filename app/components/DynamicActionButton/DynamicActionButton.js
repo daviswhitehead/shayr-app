@@ -24,7 +24,7 @@ export default class DynamicActionButton extends Component {
     return (
       <Image
         style={styles.image}
-        defaultSource={vectorLogo}
+        source={vectorLogo}
       />
     );
   }
