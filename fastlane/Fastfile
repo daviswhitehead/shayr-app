@@ -38,7 +38,7 @@ platform :ios do
           ENV['SHAYR_BUNDLE_ID'],
           ENV['SHARE_EXTENSION_BUNDLE_ID']
         ],
-        readonly: true,
+        readonly: false,
         force_for_new_devices: true
       )
   end

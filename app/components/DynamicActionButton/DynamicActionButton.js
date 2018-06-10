@@ -5,6 +5,11 @@ import {
   StyleSheet,
   Image,
 } from 'react-native';
+
+import styles from './styles';
+import vectorLogo from '../../assets/VectorLogo.png';
+import { colors } from '../../styles/Colors';
+
 import ActionButton from 'react-native-action-button';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -19,7 +24,7 @@ export default class DynamicActionButton extends Component {
     return (
       <Image
         style={styles.image}
-        source={require('./VectorLogo.png')}
+        source={vectorLogo}
       />
     );
   }
@@ -54,7 +59,7 @@ export default class DynamicActionButton extends Component {
     }
     return (
       <ActionButton
-        buttonColor='#F2C94C'
+        buttonColor={colors.YELLOW}
         renderIcon={() => this.ABIcon()}
         degrees={90}
       >
@@ -62,23 +67,15 @@ export default class DynamicActionButton extends Component {
           title={data.title}
           onPress={nav}
         >
-          <MaterialIcons name={data.iconName} size={28} color='black' />
+          <MaterialIcons name={data.iconName} size={28} color={colors.BLACK} />
         </ActionButton.Item>
         <ActionButton.Item
           title='logout'
           onPress={this.props.logout}
         >
-          <MaterialCommunityIcons name='logout' size={28} color='black' />
+          <MaterialCommunityIcons name='logout' size={28} color={colors.BLACK} />
         </ActionButton.Item>
       </ActionButton>
     );
   }
 }
-
-const styles = StyleSheet.create({
-  image: {
-    resizeMode: 'contain',
-    width: 36,
-    height: 36,
-  },
-});

@@ -2,14 +2,25 @@ import React, { Component } from 'react';
 import {
   View,
 } from 'react-native';
+import PropTypes from 'prop-types';
+
+import ContentCard from '../ContentCard';
+
 import Swipeable from 'react-native-swipeable';
-import ContentCard from './ContentCard';
 
 
 export default class SwipeCard extends Component {
   constructor() {
     super();
   }
+
+  static propTypes = {
+    payload: PropTypes.object.isRequired,
+    swipeLeftToRightUI: PropTypes.func,
+    swipeLeftToRightAction: PropTypes.func,
+    swipeRightToLeftUI: PropTypes.func,
+    swipeRightToLeftAction: PropTypes.func,
+  };
 
   render() {
     const {

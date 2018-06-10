@@ -2,28 +2,31 @@ import React, { Component } from 'react';
 import {
   View,
   Text,
-  StyleSheet,
   TouchableOpacity,
-  LayoutAnimation,
+  Image,
+  LayoutAnimation
 } from 'react-native';
-import firebase from 'react-native-firebase';
-import List from '../components/List';
+
+import styles from './styles';
+import DynamicActionButton from '../../components/DynamicActionButton';
+import Toaster from '../../components/Toaster';
+import List from '../../components/List';
 import {
-  getUsers,
-  getUserShares,
+  getUserSavedPosts,
   getPost,
-  getPostShares,
-} from '../functions/pull';
+  getPostShares
+} from '../../functions/pull';
 import {
-  savePostToUser,
-} from '../functions/push'
+  markSavedPostAsDone,
+  deleteSavedPost
+} from '../../functions/push';
+
+import firebase from 'react-native-firebase';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import _ from 'lodash';
-import DynamicActionButton from '../components/DynamicActionButton';
-import { createToast } from '../components/Toaster';
 import { LoginManager } from 'react-native-fbsdk';
 
-export default class Feed extends Component {
+export default class Queue extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -32,9 +35,10 @@ export default class Feed extends Component {
     }
 
     const navigationParams = _.get(this.props, 'navigation.state.params', null)
+
     if (navigationParams) {
       this.state = {...this.state, ...navigationParams};
-      if (navigationParams.feedData) {
+      if (navigationParams.queueData) {
         this.state = {...this.state, loading: false};
       } else {
         this.state = {...this.state, loading: true};
@@ -42,13 +46,22 @@ export default class Feed extends Component {
     } else {
       this.state = {...this.state, loading: true};
     }
+
+    this.ref = firebase.firestore()
+      .collection('users')
+      .doc(this.state.user.uid)
+      .collection('savedPosts')
+      .where('doneAt', '==', null)
+      .where('deletedAt', '==', null)
+      .orderBy('updatedAt', 'desc')
+    this.unsubscribe = null;
   }
 
   static navigationOptions = ({ navigation }) => {
     const { params } = navigation.state;
 
     return {
-      title: 'feed'
+      title: 'queue'
     }
   }
 
@@ -86,111 +99,100 @@ export default class Feed extends Component {
             firstName: friend.firstName || '',
             lastName: friend.lastName || ''
           },
-          shareCount: Object.keys(posts[postId]['shares']).length,
-          updatedAt: posts[postId]['updatedAt']
+          shareCount: Object.keys(posts[postId]['shares']).length
         })
       }
     }
 
-    return data.sort(function(a,b) {return (a.updatedAt > b.updatedAt) ? -1 : ((b.updatedAt > a.updatedAt) ? 1 : 0);} );
-
+    return data
   }
 
-  loadData = () => {
-    const userData = {};
-    const postData = {};
+  onCollectionUpdate = (querySnapshot) => {
+    const savedPostData = {};
+    const queuePostData = {};
 
-    // get users
-    getUsers()
-      .then((users) => {
-        return Promise.all(
-          users.map((user) => {
-              userData[user.id] = {
-                ...user.data(),
-                doc: user,
-                shares: {}
-              };
-              return getUserShares(user)
-          })
-        );
-      })
-      // get all user shares
-      .then((users) => {
-        const postRefs = {};
-        users.map((userShares) => {
-          userShares.map((share) => {
-            userData[share.ref.parent.parent.id]['shares'][share.id] = {
-              ...share.data(),
-              doc: share
-            };
+    querySnapshot.forEach((doc) => {
+      savedPostData[doc.id] = {
+        ...doc.data(),
+        doc: doc
+      };
+    });
 
-            // find all unique posts
-            let post = share.data()['post']
-            if (post && !postRefs.hasOwnProperty(post.id)) {
-              postRefs[post.id] = share.data()['post'];
-            }
-          })
-        })
-        return Promise.all(
-          Object.values(postRefs).map((post) => {
-            return getPost(post)
-          })
-        )
+    Promise.all(
+      Object.keys(savedPostData).map((item) => {
+        return getPost(item)
       })
-      // get all friend posts
-      .then((posts) => {
-        return Promise.all(
-          posts.map((post) => {
-            postData[post.id] = {
-              ...post.data(),
-              doc: post,
-              shares: {}
-            };
-            return getPostShares(post.ref)
-          })
-        )
-      })
-      // get all shares associated with friend posts
-      .then((posts) => {
-        posts.map((postShares) => {
-          postShares.map((share) => {
-            postData[share.ref.parent.parent.id]['shares'][share.id] = {
-              ...share.data(),
-              doc: share
-            };
-          })
+      // get all posts
+    ).then((documentSnapshots) => {
+      return Promise.all(
+        documentSnapshots.map((doc) => {
+          queuePostData[doc.id] = {
+            ...doc.data(),
+            doc: doc,
+            shares: {}
+          };
+          return getPostShares(doc.ref)
         })
-        this.setState((previousState) => {
-          return {
-            ...previousState,
-            feedData: this.organizeData(userData, postData),
-            loading: false,
-            userData: userData,
-            postData: postData
-          }
+      )
+    })
+    // get all shares associated with friend posts
+    .then((postShares) => {
+      postShares.map((documentSnapshots) => {
+        documentSnapshots.map((doc) => {
+          queuePostData[doc.ref.parent.parent.id]['shares'][doc.id] = {
+            ...doc.data(),
+            doc: doc
+          };
         })
       })
-      .catch((err) => {
-        console.error(err);
+      this.setState((previousState) => {
+        return {
+          ...previousState,
+          queueData: this.organizeData(previousState.userData, queuePostData),
+          loading: false,
+          savedPostData: savedPostData,
+          queuePostData: queuePostData
+        }
       })
-
+    })
+    .catch((err) => {
+      console.error(err);
+    })
   }
 
   componentDidMount() {
-    if (!this.state.feedData) {
-      this.loadData()
-    }
+    this.unsubscribe = this.ref.onSnapshot(
+      // options={includeDocumentMetadataChanges: true},
+      this.onCollectionUpdate
+    )
   }
 
-  addToQueue = (payload) => {
-    savePostToUser(this.state.user, payload['key']);
-    let toast = createToast('added to queue');
+  componentWillUnmount() {
+    this.unsubscribe();
   }
 
-  addToQueueUI = () => {
+  markAsDone = (payload) => {
+    markSavedPostAsDone(this.state.user, payload['key']);
+    let toast = Toaster('marked as done');
+  }
+
+  markAsDoneUI = () => {
     return (
       <View style={styles.leftSwipeItem}>
-        <Icon name='add' size={50} color='white' />
+        <Icon name='check' size={50} color='white' />
+      </View>
+    );
+  }
+
+  removeFromQueue = (payload) => {
+    deleteSavedPost(this.state.user, payload['key']);
+    let toast = Toaster('deleted');
+  }
+
+  removeFromQueueUI = () => {
+    return (
+      <View style={styles.rightSwipeItem}>
+        <Icon name='close' size={50} color='white' />
       </View>
     );
   }
@@ -226,17 +228,13 @@ export default class Feed extends Component {
         <Text>LOADING</Text>
       );
     }
-    // throw new Error('testing crashlytics');
-    // firebase.crashlytics().crash();
-    // console.log(firebase);
-    // console.log(firebase.analytics());
-    // firebase.analytics().logEvent('test', {});
-    // firebase.analytics().logEvent('test', {});
     return (
       <List
-        data={this.state.feedData}
-        swipeLeftToRightUI={this.addToQueueUI}
-        swipeLeftToRightAction={this.addToQueue}
+        data={this.state.queueData}
+        swipeLeftToRightUI={this.markAsDoneUI}
+        swipeLeftToRightAction={this.markAsDone}
+        swipeRightToLeftUI={this.removeFromQueueUI}
+        swipeRightToLeftAction={this.removeFromQueue}
         onScroll={this._onScroll}
       >
       </List>
@@ -261,8 +259,8 @@ export default class Feed extends Component {
           this.state.isActionButtonVisible ?
           <DynamicActionButton
             logout={this.logout}
-            feed={false}
-            queue={() => this.props.navigation.navigate('Queue', this.state)}
+            feed={() => this.props.navigation.navigate('Feed', this.state)}
+            queue={false}
           />
            :
           null
@@ -271,19 +269,3 @@ export default class Feed extends Component {
     );
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
-  leftSwipeItem: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'flex-end',
-    paddingRight: 25,
-    backgroundColor: '#27AE60',
-  },
-})

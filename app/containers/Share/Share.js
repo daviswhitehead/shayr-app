@@ -3,20 +3,23 @@ import {
   Text,
   View,
   Modal,
-  StyleSheet,
   Image,
   TouchableOpacity,
   TouchableWithoutFeedback,
 } from 'react-native';
-import firebase from 'react-native-firebase';
+
+import styles from './styles';
+import shareExtensionLogo from '../../assets/ShareExtensionLogo.png';
 import {
   createShare,
-} from '../functions/push';
+} from '../../functions/push';
 import {
   retrieveAccessToken,
   getAuthCredential,
   getCurrentUser,
- } from '../functions/Auth';
+} from '../../functions/Auth';
+
+ import firebase from 'react-native-firebase';
  import ShareExtension from 'react-native-share-extension';
 
 export default class MyComponent extends Component {
@@ -42,7 +45,6 @@ export default class MyComponent extends Component {
       })
     });
     try {
-      // authenticating
       let token = await retrieveAccessToken();
       console.log('TOKEN LOADED');
 
@@ -58,7 +60,6 @@ export default class MyComponent extends Component {
       const ref = firebase.firestore().collection('users').doc(currentUser.user.uid);
       console.log('REF LOADED');
 
-      // sharing
       const { type, value } = await ShareExtension.data()
       console.log('DATA LOADED');
 
@@ -118,7 +119,6 @@ export default class MyComponent extends Component {
   }
 
   render() {
-    console.log(this.state);
     return (
         <Modal
             visible={this.state.modalVisible}
@@ -135,7 +135,7 @@ export default class MyComponent extends Component {
                 style={styles.modal}
               >
                 <Image
-                  source={require('../components/ShareExtensionLogo.png')}
+                  source={shareExtensionLogo}
                   style={styles.logo}
                   >
                 </Image>
@@ -149,34 +149,3 @@ export default class MyComponent extends Component {
     );
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-  },
-  modal: {
-    backgroundColor: '#F2C94C',
-    height: 60,
-    width: 60*4,
-    marginBottom: 100,
-    borderRadius: 60,
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 5 },
-    shadowOpacity: 0.35,
-    shadowRadius: 3,
-    elevation: 5,
-  },
-  logo: {
-    height: 60,
-    width: 60,
-  },
-  text: {
-    textAlign: 'center',
-    fontSize: 30,
-  },
-});

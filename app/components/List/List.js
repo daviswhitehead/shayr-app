@@ -7,36 +7,41 @@ import {
   TouchableOpacity,
   TouchableHighlight
 } from 'react-native';
+import PropTypes from 'prop-types';
 
-import SwipeCard from './SwipeCard';
+import styles from './styles';
+import SwipeCard from '../SwipeCard';
 
-
-const extractKey = ({key}) => key
 
 export default class List extends Component {
   constructor() {
     super();
   }
 
+  static propTypes = {
+    data: PropTypes.array.isRequired,
+    swipeLeftToRightUI: PropTypes.func,
+    swipeLeftToRightAction: PropTypes.func,
+    swipeRightToLeftUI: PropTypes.func,
+    swipeRightToLeftAction: PropTypes.func,
+    onScroll: PropTypes.func,
+  };
+
+  extractKey = ({key}) => key;
+
   renderItem = ({item}) => {
-    const {
-      swipeLeftToRightUI,
-      swipeLeftToRightAction,
-      swipeRightToLeftUI,
-      swipeRightToLeftAction
-    } = this.props
     return (
       <View style={styles.box}>
         <SwipeCard
           payload={item}
-          swipeLeftToRightUI={swipeLeftToRightUI}
-          swipeLeftToRightAction={swipeLeftToRightAction}
-          swipeRightToLeftUI={swipeRightToLeftUI}
-          swipeRightToLeftAction={swipeRightToLeftAction}
+          swipeLeftToRightUI={this.props.swipeLeftToRightUI}
+          swipeLeftToRightAction={this.props.swipeLeftToRightAction}
+          swipeRightToLeftUI={this.props.swipeRightToLeftUI}
+          swipeRightToLeftAction={this.props.swipeRightToLeftAction}
         />
       </View>
     )
-  }
+  };
 
   renderSeparator = () => {
     return (
@@ -50,27 +55,10 @@ export default class List extends Component {
         style={styles.container}
         data={this.props.data}
         renderItem={this.renderItem}
-        keyExtractor={extractKey}
+        keyExtractor={this.extractKey}
         ItemSeparatorComponent={this.renderSeparator}
         onScroll={this.props.onScroll}
       />
     );
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  box: {
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
-    alignItems: 'center'
-  },
-  separator: {
-    height: 1,
-    width: '100%',
-    backgroundColor: '#E8E8E8',
-  },
-})

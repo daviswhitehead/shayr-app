@@ -5,6 +5,8 @@ import {
   StyleSheet,
 } from 'react-native';
 
+import styles from './styles';
+
 export default class ShayrStatusBar extends Component {
   render() {
     return (
@@ -15,10 +17,3 @@ export default class ShayrStatusBar extends Component {
   }
 }
 // may want to add translucent=true for android
-
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: '#F2C94C',
-    height: 20,
-  },
-})
