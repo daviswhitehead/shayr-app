@@ -7,7 +7,8 @@
     "test": "jest",
     "dsyms": "find ./ios/ -name \"*.dSYM\" | xargs -I {} /Applications/Fabric.app/Contents/MacOS/upload-symbols -a <api-key> -p ios {}",
     "ios:beta": "bundle exec fastlane ios beta",
-    "android:beta": "bundle exec fastlane android beta"
+    "android:beta": "bundle exec fastlane android beta",
+    "debugger": "open \"rndebugger://set-debugger-loc?host=localhost&port=8081\""
   },
   "dependencies": {
     "eslint": "^4.19.1",
@@ -25,7 +26,12 @@
     "react-native-swiss-knife": "0.0.5",
     "react-native-vector-icons": "^4.5.0",
     "react-navigation": "^1.5.9",
-    "redux": "^4.0.0"
+    "react-redux": "^5.0.7",
+    "react-redux-firebase": "^2.1.5",
+    "redux": "^4.0.0",
+    "redux-devtools-extension": "^2.13.2",
+    "redux-firestore": "^0.5.4",
+    "redux-thunk": "^2.3.0"
   },
   "devDependencies": {
     "babel-jest": "22.1.0",
