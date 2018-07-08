@@ -1,17 +1,26 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { NavigationActions } from 'react-navigation';
 import firebase from 'react-native-firebase';
 import LoggedIn from '../components/LoggedIn';
 import LoggedOut from '../components/LoggedOut';
 import { retrieveAccessToken } from '../functions/Auth';
+import { authenticationActionTypes, authenticationActions } from '../redux/Actions';
 
-export default class LoginScreen extends React.Component {
+const mapStateToProps = (state) => {
+ return { };
+}
+const mapDispatchToProps = (dispatch) => ({
+  SIGN_IN: () => dispatch({ type: authenticationActionTypes.SIGN_IN }),
+});
+
+class LoginScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
       loading: true,
       hasToken: false,
     };
-    console.log('here');
   }
 
   componentDidMount() {
@@ -45,15 +54,13 @@ export default class LoginScreen extends React.Component {
     }
 
     if (this.state.user && this.state.hasToken) {
-      return (
-        <LoggedIn
-          navigation={this.props.navigation}
-          user={this.props.user}
-        />
-      );
+      // this.props.login()
+      this.props.SIGN_IN()
     }
     return (
       <LoggedOut navigation={this.props.navigation}/>
     );
   }
 }
+
+export default connect(mapStateToProps, mapDispatchToProps)(LoginScreen);

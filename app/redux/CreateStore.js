@@ -5,7 +5,6 @@ import thunk from 'redux-thunk';
 import { reduxFirestore } from 'redux-firestore';
 import makeRootReducer from './reducers/Reducers';
 import { navMiddleware } from '../lib/ReduxNavigation';
-// import { composeWithDevTools } from 'redux-devtools-extension/developmentOnly';
 
 export default (initialState = { firebase: {} }) => {
 

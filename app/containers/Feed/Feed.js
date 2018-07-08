@@ -6,6 +6,7 @@ import {
   LayoutAnimation,
 } from 'react-native';
 import { connect } from 'react-redux';
+import { NavigationActions } from 'react-navigation';
 
 import styles from './styles';
 import DynamicActionButton from '../../components/DynamicActionButton';
@@ -32,9 +33,9 @@ import { LoginManager } from 'react-native-fbsdk';
 const mapStateToProps = (state) => {
  return { };
 }
-const mapDispatchToProps = (dispatch) => {
- return { };
-}
+const mapDispatchToProps = (dispatch) => ({
+  navQueue: () => dispatch(NavigationActions.navigate({ routeName: 'Queue' })),
+});
 
 class Feed extends Component {
   constructor(props) {
@@ -55,14 +56,6 @@ class Feed extends Component {
       }
     } else {
       this.state = {...this.state, loading: true};
-    }
-  }
-
-  static navigationOptions = ({ navigation }) => {
-    const { params } = navigation.state;
-
-    return {
-      title: 'feed'
     }
   }
 
@@ -220,6 +213,8 @@ class Feed extends Component {
   }
 
   render() {
+    // console.log(this.state);
+    // console.log(this.props);
     return (
       <View style={styles.container}>
         <this.loading/>
@@ -228,7 +223,7 @@ class Feed extends Component {
           <DynamicActionButton
             logout={this.logout}
             feed={false}
-            queue={() => this.props.navigation.navigate('Queue', this.state)}
+            queue={this.props.navQueue}
           />
            :
           null

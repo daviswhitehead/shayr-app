@@ -1,31 +1,20 @@
 import React, { Component } from 'react';
 import {
-  StackNavigator,
-  SwitchNavigator
+  createStackNavigator,
 } from 'react-navigation';
-import Feed from './containers/Feed';
-import Queue from './containers/Queue';
-import Share from './containers/Share';
-import Login from './containers/Login';
+import Feed from '../containers/Feed';
+import Queue from '../containers/Queue';
+import Login from '../containers/Login';
 
-const AuthStack = StackNavigator(
+export const RootNavigator = createStackNavigator(
   {
-    Login: Login
+  Login: { screen: Login },
+  Feed: { screen: Feed },
+  Queue: { screen: Queue },
   },
   {
     navigationOptions: ({ navigation }) => ({
-      header: null
-    })
-  }
-);
-const AppStack = StackNavigator(
-  {
-    Feed: { screen: Feed },
-    Queue: { screen: Queue }
-  },
-  {
-    initialRouteName: 'Feed',
-    navigationOptions: ({ navigation }) => ({
+      title: `${navigation.state.routeName}`.toLowerCase(),
       headerStyle: {
         backgroundColor: '#F2C94C',
         shadowColor: '#000',
@@ -40,14 +29,5 @@ const AppStack = StackNavigator(
       headerBackTitle: null,
       headerLeft: null
     })
-  }
-);
-export default SwitchNavigator(
-  {
-    App: AppStack,
-    Auth: AuthStack,
-  },
-  {
-    initialRouteName: 'Auth',
   }
 );
