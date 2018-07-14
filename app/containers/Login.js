@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { NavigationActions } from 'react-navigation';
 import firebase from 'react-native-firebase';
-import LoggedIn from '../components/LoggedIn';
 import LoggedOut from '../components/LoggedOut';
 import { retrieveAccessToken } from '../functions/Auth';
 import { authenticationActionTypes, authenticationActions } from '../redux/Actions';
