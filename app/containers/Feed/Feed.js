@@ -40,6 +40,7 @@ const mapDispatchToProps = (dispatch) => ({
 class Feed extends Component {
   constructor(props) {
     super(props);
+    console.log('feed');
     this.state = {
       user: firebase.auth().currentUser,
       isActionButtonVisible: true

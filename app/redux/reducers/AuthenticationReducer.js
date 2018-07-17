@@ -1,16 +1,34 @@
-import { authenticationActionTypes, authenticationActions } from '../Actions';
+import { types } from '../actions/Authentication';
 
 const initialState = {
   user: false,
-  hasToken: false,
+  accessTokenStored: false,
+  authenticated: false,
+  error: null
 }
 
 function authReducer(state = initialState, action) {
   switch (action.type) {
-    case authenticationActionTypes.SIGN_IN: {
-      console.log('hello world');
+    case types.AUTH_USER: {
       return {
-        ...state
+        ...state,
+        authenticated: true,
+        error: null
+      }
+    }
+    case types.ACCESS_TOKEN_STORED: {
+      console.log(action.payload);
+      return {
+        ...state,
+        accessTokenStored: action.payload,
+        error: null
+      }
+    }
+    case types.FACEBOOK_TOKEN_REQUEST: {
+      console.log('fbook request started');
+      return {
+        ...state,
+        fbtoken: true,
       }
     }
   }
