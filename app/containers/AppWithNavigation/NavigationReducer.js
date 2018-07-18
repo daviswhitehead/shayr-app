@@ -1,20 +1,18 @@
 import { NavigationActions } from 'react-navigation';
 import { RootNavigator } from '../../config/Routes';
-import { types } from '../actions/Authentication';
+import { types } from '../Login/AuthenticationActions';
 
-// const firstAction = RootNavigator.router.getActionForPathAndParams('Feed');
-// const tempNavState = RootNavigator.router.getStateForAction(firstAction);
+const firstAction = RootNavigator.router.getActionForPathAndParams('Feed');
+const tempNavState = RootNavigator.router.getStateForAction(firstAction);
 const secondAction = RootNavigator.router.getActionForPathAndParams('Login');
-// const initialState = RootNavigator.router.getStateForAction(secondAction, tempNavState);
-const initialState = RootNavigator.router.getStateForAction(secondAction);
+const initialState = RootNavigator.router.getStateForAction(secondAction, tempNavState);
+// const initialState = RootNavigator.router.getStateForAction(secondAction);
 
 // this reducer is special to navigation, it doesn't seem to access the full state
 function navigationReducer(state = initialState, action) {
-  console.log(action);
   let nextState;
   switch (action.type) {
-    case types.AUTH_USER:
-      console.log('AUTH_USER');
+    case types.SIGNED_IN:
       nextState = RootNavigator.router.getStateForAction(
         NavigationActions.back(),
         state

@@ -1,8 +1,8 @@
 import { applyMiddleware, compose, createStore } from 'redux';
 import firebase from 'react-native-firebase';
 import thunk from 'redux-thunk';
-import makeRootReducer from './reducers/Reducers';
-import { navMiddleware } from '../lib/ReduxNavigation';
+import makeRootReducer from './Reducers';
+import { navMiddleware } from './ReduxNavigation';
 
 export default (initialState = { }) => {
 

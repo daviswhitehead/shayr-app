@@ -12,12 +12,12 @@ import styles from './styles';
 import shareExtensionLogo from '../../assets/ShareExtensionLogo.png';
 import {
   createShare,
-} from '../../functions/push';
+} from '../../lib/push';
 import {
   retrieveAccessToken,
   getAuthCredential,
   getCurrentUser,
-} from '../../functions/Auth';
+} from '../Login/AuthenticationActions';
 
  import firebase from 'react-native-firebase';
  import ShareExtension from 'react-native-share-extension';

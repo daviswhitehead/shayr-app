@@ -7,18 +7,19 @@ import {
     StyleSheet,
     TouchableWithoutFeedback,
 } from 'react-native';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { NavigationActions } from 'react-navigation';
 import firebase from 'react-native-firebase';
 import { LoginButton } from 'react-native-fbsdk';
-import { retrieveAccessToken } from '../../lib/Authentication';
 import {
   authSubscription,
   signOutUser,
   locateAccessToken,
-  facebookTokenRequest,
-  facebookTokenSuccess
-} from '../../redux/actions/Authentication';
+  facebookAuthTap,
+  facebookAuth,
+  signedIn
+} from './AuthenticationActions';
 import styles from './styles';
 import vectorLogo from '../../assets/VectorLogo.png';
 
@@ -27,13 +28,15 @@ const mapStateToProps = (state) => {
     auth: state.auth
   }
 }
+
 const mapDispatchToProps = (dispatch) => {
   return {
     authSubscription: () => dispatch(authSubscription()),
     signOutUser: () => dispatch(signOutUser()),
     locateAccessToken: () => dispatch(locateAccessToken()),
-    facebookTokenRequest: () => dispatch(facebookTokenRequest()),
-    facebookTokenSuccess: () => dispatch(facebookTokenSuccess()),
+    facebookAuthTap: () => dispatch(facebookAuthTap()),
+    facebookAuth: (error, result) => dispatch(facebookAuth(error, result)),
+    signedIn: () => dispatch(signedIn()),
   }
 }
 
@@ -48,10 +51,13 @@ class Login extends Component {
   }
 
   render() {
-    console.log(this.state);
-    console.log(this.props);
-    if (this.props.auth.user && this.props.auth.accessTokenStored) {
-      console.log('logged in');
+    if (this.props.auth.error) {
+      console.error('authentication error');
+    }
+
+    if (this.props.auth.user && this.props.auth.accessTokenSaved) {
+      this.props.signedIn()
+      // console.log('signedIn');
     }
 
     return (
@@ -66,11 +72,11 @@ class Login extends Component {
         </View>
         <View style={styles.loginContainer}>
           <TouchableWithoutFeedback
-            onPress={this.props.facebookTokenRequest}
+            onPress={this.props.facebookAuthTap}
           >
             <LoginButton
               readPermissions={['public_profile', 'email']}
-              onLoginFinished={this.props.facebookTokenSuccess}
+              onLoginFinished={(error, result) => this.props.facebookAuth(error, result)}
               onLogoutFinished={() => console.log('user logout')}
             />
           </TouchableWithoutFeedback>

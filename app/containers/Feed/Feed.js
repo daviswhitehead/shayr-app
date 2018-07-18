@@ -17,10 +17,10 @@ import {
   getUserShares,
   getPost,
   getPostShares,
-} from '../../functions/pull';
+} from '../../lib/pull';
 import {
   savePostToUser,
-} from '../../functions/push';
+} from '../../lib/push';
 import {
   organizeData,
 } from '../../transforms/OrganizePostData';
@@ -31,34 +31,16 @@ import _ from 'lodash';
 import { LoginManager } from 'react-native-fbsdk';
 
 const mapStateToProps = (state) => {
- return { };
+  return {
+    auth: state.auth
+  }
 }
+
 const mapDispatchToProps = (dispatch) => ({
   navQueue: () => dispatch(NavigationActions.navigate({ routeName: 'Queue' })),
 });
 
 class Feed extends Component {
-  constructor(props) {
-    super(props);
-    console.log('feed');
-    this.state = {
-      user: firebase.auth().currentUser,
-      isActionButtonVisible: true
-    }
-
-    // goes away with redux!
-    const navigationParams = _.get(this.props, 'navigation.state.params', null)
-    if (navigationParams) {
-      this.state = {...this.state, ...navigationParams};
-      if (navigationParams.feedData) {
-        this.state = {...this.state, loading: false};
-      } else {
-        this.state = {...this.state, loading: true};
-      }
-    } else {
-      this.state = {...this.state, loading: true};
-    }
-  }
 
   loadData = () => {
     const userData = {};
@@ -216,6 +198,14 @@ class Feed extends Component {
   render() {
     // console.log(this.state);
     // console.log(this.props);
+
+    // Not signedIn
+    if (!this.props.auth.user || !this.props.auth.accessTokenSaved) {
+      return (
+        null
+      )
+    }
+
     return (
       <View style={styles.container}>
         <this.loading/>

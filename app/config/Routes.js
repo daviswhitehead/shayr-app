@@ -8,7 +8,12 @@ import Login from '../containers/Login';
 
 export const RootNavigator = createStackNavigator(
   {
-  Login: { screen: Login },
+  Login: {
+    screen: Login,
+    navigationOptions: ({ navigation }) => ({
+      header: null
+    })
+  },
   Feed: { screen: Feed },
   Queue: { screen: Queue },
   },

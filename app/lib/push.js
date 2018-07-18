@@ -1,8 +1,8 @@
 import firebase from 'react-native-firebase';
 
-const ts = firebase.firestore.FieldValue.serverTimestamp();
+export const ts = firebase.firestore.FieldValue.serverTimestamp();
 
-const getUserId = (user) => {
+export const getUserId = (user) => {
   return user.uid;
 }
 

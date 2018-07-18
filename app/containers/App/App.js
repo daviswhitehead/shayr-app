@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Provider } from 'react-redux';
-import createStore from '../../redux/CreateStore';
+import createStore from '../../config/CreateStore';
 import AppWithNavigation from '../AppWithNavigation';
 
 const store = createStore();

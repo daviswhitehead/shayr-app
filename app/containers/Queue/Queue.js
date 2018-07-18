@@ -15,11 +15,11 @@ import {
   getUserSavedPosts,
   getPost,
   getPostShares
-} from '../../functions/pull';
+} from '../../lib/pull';
 import {
   markSavedPostAsDone,
   deleteSavedPost
-} from '../../functions/push';
+} from '../../lib/push';
 
 import firebase from 'react-native-firebase';
 import Icon from 'react-native-vector-icons/MaterialIcons';

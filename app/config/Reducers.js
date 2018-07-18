@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux';
-import navigationReducer from './NavigationReducer';
-import authenticationReducer from './AuthenticationReducer';
+import navigationReducer from '../containers/AppWithNavigation/NavigationReducer';
+import authenticationReducer from '../containers/Login/AuthenticationReducer';
 
 export const makeRootReducer = () => {
   return combineReducers({

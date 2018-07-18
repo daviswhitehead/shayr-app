@@ -7,7 +7,7 @@ import {
 import { initializeListeners } from 'react-navigation-redux-helpers';
 
 import { RootNavigator } from '../../config/Routes';
-import { navigationPropConstructor } from '../../lib/ReduxNavigation';
+import { navigationPropConstructor } from '../../config/ReduxNavigation';
 
 
 class AppWithNavigation extends Component {
