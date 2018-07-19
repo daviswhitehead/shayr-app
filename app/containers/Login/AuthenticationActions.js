@@ -74,10 +74,7 @@ export const saveUserInfo = (user, data) => {
           updatedAt: ts,
           firstName: data.first_name,
           lastName: data.last_name,
-          email: data.email,
-          facebookGender: data.gender,
-          facebookAgeRange: data.age_range,
-          facebookProfilePhoto: data.picture.data.url
+          email: data.email
         })
       } else {
         ref.set({
@@ -119,7 +116,6 @@ export function facebookAuth(error, result) {
       dispatch({ type: types.FACEBOOK_AUTH_START });
       const tokenData = await getFBToken(error, result);
       dispatch({ type: types.FACEBOOK_AUTH_SUCCESS });
-      throw new Error('Something went wrong obtaining the users access token');
     } catch (e) {
       console.error(e);
       dispatch({

@@ -1,12 +1,12 @@
-import { types } from './AuthenticationActions';
+import { types } from './FeedActions';
 
 const initialState = {
-  user: null,
-  accessTokenSaved: false,
-  error: null
+  posts: null,
+  lastPost: null,
+  error: null,
 }
 
-function authReducer(state = initialState, action) {
+function feedReducer(state = initialState, action) {
   console.log(action.type);
   // Failure Handling
   if (action.type.substr(action.type.length - 4) === 'FAIL') {
@@ -18,28 +18,29 @@ function authReducer(state = initialState, action) {
 
   // Case Handling
   switch (action.type) {
-    case types.AUTH_SUCCESS: {
+    case types.LOAD_POSTS_SUCCESS: {
       return {
         ...state,
-        user: action.payload
+        posts: action.payload
       }
     }
-    case types.SIGN_OUT_USER: {
+  }
+  switch (action.type) {
+    case types.PAGINATE_POSTS_SUCCESS: {
       return {
         ...state,
-        user: null
+        posts: {
+          ...state.posts,
+          ...action.payload
+        }
       }
     }
-    case types.ACCESS_TOKEN_STATUS: {
+  }
+  switch (action.type) {
+    case types.LAST_POST: {
       return {
         ...state,
-        accessTokenSaved: action.payload
-      }
-    }
-    case types.ACCESS_TOKEN_SAVED: {
-      return {
-        ...state,
-        accessTokenSaved: true
+        lastPost: action.payload
       }
     }
   }
@@ -47,4 +48,4 @@ function authReducer(state = initialState, action) {
   return state
 }
 
-export default authReducer;
+export default feedReducer;

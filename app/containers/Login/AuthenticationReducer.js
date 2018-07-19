@@ -6,8 +6,7 @@ const initialState = {
   error: null
 }
 
-function authReducer(state = initialState, action) {
-  console.log(action.type);
+function authenticationReducer(state = initialState, action) {
   // Failure Handling
   if (action.type.substr(action.type.length - 4) === 'FAIL') {
     return {
@@ -47,4 +46,4 @@ function authReducer(state = initialState, action) {
   return state
 }
 
-export default authReducer;
+export default authenticationReducer;

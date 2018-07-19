@@ -1,208 +1,135 @@
 import firebase from 'react-native-firebase';
-import { AccessToken } from 'react-native-fbsdk';
-import { RNSKBucket } from 'react-native-swiss-knife';
 import {
   ts,
   getUserId,
+  getDocShares,
+  getRefData
 } from '../../lib/FirebaseHelpers';
 
 // Action Types
 export const types = {
-  SIGNED_IN: 'SIGNED_IN',
-  SIGN_OUT_USER: 'SIGN_OUT_USER',
-  AUTH_START: 'AUTH_START',
-  AUTH_SUCCESS: 'AUTH_SUCCESS',
-  // AUTH_FAIL: 'AUTH_FAIL',
-  ACCESS_TOKEN_STATUS: 'ACCESS_TOKEN_STATUS',
-  ACCESS_TOKEN_SAVED: 'ACCESS_TOKEN_SAVED',
-  FACEBOOK_AUTH_TAP: 'FACEBOOK_AUTH_TAP',
-  FACEBOOK_AUTH_START: 'FACEBOOK_AUTH_START',
-  FACEBOOK_AUTH_SUCCESS: 'FACEBOOK_AUTH_SUCCESS',
-  FACEBOOK_AUTH_FAIL: 'FACEBOOK_AUTH_FAIL',
-  AUTH_TOKEN_START: 'AUTH_TOKEN_START',
-  AUTH_TOKEN_SUCCESS: 'AUTH_TOKEN_SUCCESS',
-  AUTH_TOKEN_FAIL: 'AUTH_TOKEN_FAIL',
-  CURRENT_USER_START: 'CURRENT_USER_START',
-  CURRENT_USER_SUCCESS: 'CURRENT_USER_SUCCESS',
-  CURRENT_USER_FAIL: 'CURRENT_USER_FAIL',
-  UPDATE_USER_START: 'UPDATE_USER_START',
-  UPDATE_USER_SUCCESS: 'UPDATE_USER_SUCCESS',
-  UPDATE_USER_FAIL: 'UPDATE_USER_FAIL',
+  LOAD_POSTS_START: 'LOAD_POSTS_START',
+  LOAD_POSTS_SUCCESS: 'LOAD_POSTS_SUCCESS',
+  LOAD_POSTS_FAIL: 'LOAD_POSTS_FAIL',
+  PAGINATE_POSTS_START: 'PAGINATE_POSTS_START',
+  PAGINATE_POSTS_SUCCESS: 'PAGINATE_POSTS_SUCCESS',
+  PAGINATE_POSTS_FAIL: 'PAGINATE_POSTS_FAIL',
+  LOAD_POST_SHARES_START: 'LOAD_POST_SHARES_START',
+  LOAD_POST_SHARES_SUCCESS: 'LOAD_POST_SHARES_SUCCESS',
+  LOAD_POST_SHARES_FAIL: 'LOAD_POST_SHARES_FAIL',
+  LOAD_POST_SHARED_BY_START: 'LOAD_POST_SHARED_BY_START',
+  LOAD_POST_SHARED_BY_SUCCESS: 'LOAD_POST_SHARED_BY_SUCCESS',
+  LOAD_POST_SHARED_BY_FAIL: 'LOAD_POST_SHARED_BY_FAIL',
+  LAST_POST: 'LAST_POST',
 }
 
 // Helper Functions
-const appGroup = 'group.shayr';
+const pageLimter = 20
 
-const storeAccessToken = (token) => {
-  RNSKBucket.set('accessToken', token, appGroup);
+const firstPosts = firebase.firestore().collection('posts')
+  .orderBy('updatedAt', 'desc')
+  .limit(pageLimter)
+
+const nextPosts = (lastPost) => {
+  return firebase.firestore().collection('posts')
+  .orderBy('updatedAt', 'desc')
+  .startAfter(lastPost)
+  .limit(pageLimter)
 }
 
-export const retrieveAccessToken = () => {
-  return RNSKBucket.get('accessToken', appGroup);
-}
+const getPostMeta = async (dispatch, posts, doc) => {
+  posts[doc.id] = doc.data();
 
-export const getFBToken = (error, result) => {
-  if (error) {
-    console.error("login has error: " + result.error);
-  } else if (result.isCancelled) {
-    console.log("login is cancelled.");
-  } else {
-    const tokenData = AccessToken.getCurrentAccessToken();
-    if (!tokenData) {
-      throw new Error('Something went wrong obtaining the users access token');
-    }
-    return tokenData;
+  try {
+    dispatch({ type: types.LOAD_POST_SHARES_START });
+    posts[doc.id]['shares'] = await getDocShares(doc.ref);
+    dispatch({ type: types.LOAD_POST_SHARES_SUCCESS });
+  } catch (e) {
+    console.error(e);
+    dispatch({
+      type: types.LOAD_POST_SHARES_FAIL,
+      payload: e
+    });
+  }
+
+  posts[doc.id]['shareCount'] = posts[doc.id]['shares'].length;
+
+  try {
+    dispatch({ type: types.LOAD_POST_SHARED_BY_START });
+    posts[doc.id]['sharedBy'] = await getRefData(
+      posts[doc.id]['shares'][0].data()['user']
+    )
+    dispatch({ type: types.LOAD_POST_SHARED_BY_SUCCESS });
+  } catch (e) {
+    console.error(e);
+    dispatch({
+      type: types.LOAD_POST_SHARED_BY_FAIL,
+      payload: e
+    });
   }
 }
 
-const getAuthCredential = (token) => {
-  return firebase.auth.FacebookAuthProvider.credential(token);
-}
-
-const getCurrentUser = (credential) => {
-  return firebase.auth().signInAndRetrieveDataWithCredential(credential);
-}
-
-export const saveUserInfo = (user, data) => {
-  const ref = firebase.firestore().collection('users').doc(getUserId(user));
-  return ref
-    .get()
-    .then((doc) => {
-      if (!doc.exists) {
-        ref.set({
-          createdAt: ts,
-          updatedAt: ts,
-          firstName: data.first_name,
-          lastName: data.last_name,
-          email: data.email,
-          facebookGender: data.gender,
-          facebookAgeRange: data.age_range,
-          facebookProfilePhoto: data.picture.data.url
-        })
-      } else {
-        ref.set({
-          updatedAt: ts,
-        }, {
-          merge: true
-        })
-      }
-      console.log('saveUserInfo success');
-    })
-    .catch((error) => {
-      console.error(error);
-    });
-}
 
 // Action Creators
-export function signedIn() {
-  return {
-    type: types.SIGNED_IN
-  }
-}
-
-export function authUser(user) {
-  return {
-    type: types.AUTH_SUCCESS,
-    payload: user
-  }
-}
-
-export function facebookAuthTap() {
-  return {
-    type: types.FACEBOOK_AUTH_TAP
-  }
-}
-
-export function facebookAuth(error, result) {
-  return async function(dispatch) {
-    try {
-      dispatch({ type: types.FACEBOOK_AUTH_START });
-      const tokenData = await getFBToken(error, result);
-      dispatch({ type: types.FACEBOOK_AUTH_SUCCESS });
-      throw new Error('Something went wrong obtaining the users access token');
-    } catch (e) {
-      console.error(e);
-      dispatch({
-        type: types.FACEBOOK_AUTH_FAIL,
-        payload: e
-      });
-    }
-
-    storeAccessToken(tokenData.accessToken);
-    dispatch({ type: types.ACCESS_TOKEN_SAVED });
-
-    try {
-      dispatch({ type: types.AUTH_TOKEN_START });
-      const credential = getAuthCredential(tokenData.accessToken);
-      dispatch({ type: types.AUTH_TOKEN_SUCCESS });
-    } catch (e) {
-      console.error(e);
-      dispatch({
-        type: types.AUTH_TOKEN_FAIL,
-        payload: e
-      });
-    }
-
-    try {
-      dispatch({ type: types.CURRENT_USER_START });
-      const currentUser = await getCurrentUser(credential);
-      dispatch({ type: types.CURRENT_USER_SUCCESS });
-    } catch (e) {
-      console.error(e);
-      dispatch({
-        type: types.CURRENT_USER_SUCCESS,
-        payload: e
-      });
-    }
-
-    try {
-      dispatch({ type: types.UPDATE_USER_START });
-      await saveUserInfo(currentUser.user, currentUser.additionalUserInfo.profile);
-      dispatch({ type: types.UPDATE_USER_SUCCESS });
-    } catch (e) {
-      console.error(e);
-      dispatch({
-        type: types.UPDATE_USER_SUCCESS,
-        payload: e
-      });
-    }
-  }
-}
-
-export function locateAccessToken() {
-  const token = retrieveAccessToken();
-
-  return {
-    type: types.ACCESS_TOKEN_STATUS,
-    payload: token ? true : false
-  }
-}
-
-// export function authError(error) {
-//   return {
-//     type: types.AUTH_FAIL,
-//     payload: error
-//   }
-// }
-
-export function signOutUser() {
+export function loadPosts() {
   return function(dispatch) {
-    firebase.auth().signOut()
-      .then(() =>{
-        dispatch({ type: types.SIGN_OUT_USER });
+    dispatch({ type: types.LOAD_POSTS_START });
+    firstPosts.get()
+      .then((querySnapshot) => {
+        const posts = {};
+        querySnapshot.forEach((doc) => {
+          getPostMeta(dispatch, posts, doc);
+        });
+        dispatch({
+          type: types.LAST_POST,
+          payload: querySnapshot.docs[querySnapshot.docs.length - 1]
+        });
+        dispatch({
+          type: types.LOAD_POSTS_SUCCESS,
+          payload: posts
+        });
+      })
+      .catch((e) => {
+        console.error(e);
+        dispatch({
+          type: types.LOAD_POSTS_FAIL,
+          payload: e
+        });
       });
   }
 }
 
-export function authSubscription() {
+export function paginatePosts(lastPost) {
   return function(dispatch) {
-    dispatch({ type: types.AUTH_START });
-    return firebase.auth().onAuthStateChanged((user) => {
-      if (user) {
-        dispatch(authUser(user))
-      } else {
-        dispatch(signOutUser())
-      }
-    });
+    dispatch({ type: types.PAGINATE_POSTS_START });
+    if (lastPost == 'done') {
+      return
+    }
+    nextPosts(lastPost).get()
+      .then((querySnapshot) => {
+        const posts = {};
+        querySnapshot.forEach((doc) => {
+          getPostMeta(dispatch, posts, doc);
+        });
+        let newLastPost = 'done'
+        if (querySnapshot.docs.length - 1 === pageLimter - 1) {
+          newLastPost = querySnapshot.docs[querySnapshot.docs.length - 1];
+        }
+        dispatch({
+          type: types.LAST_POST,
+          payload: newLastPost
+        });
+        dispatch({
+          type: types.PAGINATE_POSTS_SUCCESS,
+          payload: posts
+        });
+      })
+      .catch((e) => {
+        console.error(e);
+        dispatch({
+          type: types.PAGINATE_POSTS_FAIL,
+          payload: e
+        });
+      });
   }
 }
