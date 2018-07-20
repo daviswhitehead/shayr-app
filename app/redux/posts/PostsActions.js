@@ -19,11 +19,11 @@ export const types = {
   LAST_POST: 'LAST_POST',
   LOAD_POST_SHARES_START: 'LOAD_POST_SHARES_START',
   LOAD_POST_SHARES_SUCCESS: 'LOAD_POST_SHARES_SUCCESS',
-  LOAD_POST_SHARES_FAIL: 'LOAD_POST_SHARES_FAIL',
   LOAD_POST_SHARED_BY_START: 'LOAD_POST_SHARED_BY_START',
   LOAD_POST_SHARED_BY_SUCCESS: 'LOAD_POST_SHARED_BY_SUCCESS',
-  LOAD_POST_SHARED_BY_FAIL: 'LOAD_POST_SHARED_BY_FAIL',
-  LOAD_POST_META: 'LOAD_POST_META',
+  LOAD_POST_META_START: 'LOAD_POST_META_START',
+  LOAD_POST_META_SUCCESS: 'LOAD_POST_META_SUCCESS',
+  LOAD_POST_META_FAIL: 'LOAD_POST_META_FAIL',
 }
 
 // Helper Functions
@@ -61,30 +61,7 @@ const firstPosts = (dispatch) => {
       });
     });
 }
-// const firstPosts = (dispatch) => {
-//   dispatch({ type: types.LOAD_POSTS_START });
-//   return firebase.firestore().collection('posts')
-//     .orderBy('updatedAt', 'desc')
-//     .limit(pageLimter)
-//     .onSnapshot((querySnapshot) => {
-//       const posts = {};
-//       querySnapshot.forEach((doc) => {
-//         getPostMeta(dispatch, posts, doc);
-//       });
-//       let newLastPost = 'done'
-//       if (querySnapshot.docs.length - 1 === pageLimter - 1) {
-//         newLastPost = querySnapshot.docs[querySnapshot.docs.length - 1];
-//       }
-//       dispatch({
-//         type: types.LAST_POST,
-//         payload: newLastPost
-//       });
-//       dispatch({
-//         type: types.LOAD_POSTS_SUCCESS,
-//         payload: posts
-//       });
-//     })
-// }
+
 
 const nextPosts = (dispatch, lastPost) => {
   if (lastPost == 'done') {
@@ -123,23 +100,19 @@ const nextPosts = (dispatch, lastPost) => {
 }
 
 const getPostMeta = async (dispatch, posts, doc) => {
-  posts[doc.id] = doc.data();
+  dispatch({
+    type: types.LOAD_POST_META_START
+  });
 
   try {
+    posts[doc.id] = doc.data();
+
     dispatch({ type: types.LOAD_POST_SHARES_START });
     posts[doc.id]['shares'] = await getDocShares(doc.ref);
     dispatch({ type: types.LOAD_POST_SHARES_SUCCESS });
-  } catch (e) {
-    console.error(e);
-    dispatch({
-      type: types.LOAD_POST_SHARES_FAIL,
-      payload: e
-    });
-  }
 
-  posts[doc.id]['shareCount'] = posts[doc.id]['shares'].length;
+    posts[doc.id]['shareCount'] = posts[doc.id]['shares'].length;
 
-  try {
     dispatch({ type: types.LOAD_POST_SHARED_BY_START });
     posts[doc.id]['sharedBy'] = await getRefData(
       posts[doc.id]['shares'][0].data()['user']
@@ -148,15 +121,15 @@ const getPostMeta = async (dispatch, posts, doc) => {
   } catch (e) {
     console.error(e);
     dispatch({
-      type: types.LOAD_POST_SHARED_BY_FAIL,
+      type: types.LOAD_POST_META_FAIL,
       payload: e
     });
   }
+
   dispatch({
-    type: types.LOAD_POST_META
+    type: types.LOAD_POST_META_SUCCESS
   });
 }
-
 
 // Action Creators
 export function loadPosts() {
@@ -202,3 +175,30 @@ export const flattenPosts = (posts) => {
   // sort by updatedAt
   return data.sort(function(a,b) {return (a.updatedAt > b.updatedAt) ? -1 : ((b.updatedAt > a.updatedAt) ? 1 : 0);} );
 }
+
+
+
+// const firstPosts = (dispatch) => {
+//   dispatch({ type: types.LOAD_POSTS_START });
+//   return firebase.firestore().collection('posts')
+//     .orderBy('updatedAt', 'desc')
+//     .limit(pageLimter)
+//     .onSnapshot((querySnapshot) => {
+//       const posts = {};
+//       querySnapshot.forEach((doc) => {
+//         getPostMeta(dispatch, posts, doc);
+//       });
+//       let newLastPost = 'done'
+//       if (querySnapshot.docs.length - 1 === pageLimter - 1) {
+//         newLastPost = querySnapshot.docs[querySnapshot.docs.length - 1];
+//       }
+//       dispatch({
+//         type: types.LAST_POST,
+//         payload: newLastPost
+//       });
+//       dispatch({
+//         type: types.LOAD_POSTS_SUCCESS,
+//         payload: posts
+//       });
+//     })
+// }

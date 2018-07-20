@@ -49,7 +49,7 @@ function feedReducer(state = initialState, action) {
     }
   }
   switch (action.type) {
-    case types.LOAD_POST_META: {
+    case types.LOAD_POST_META_SUCCESS: {
       return {
         ...state,
         loadedPostMeta: true
