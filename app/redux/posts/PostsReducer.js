@@ -1,8 +1,10 @@
-import { types } from './FeedActions';
+import { types } from './PostsActions';
 
 const initialState = {
   posts: null,
   lastPost: null,
+  refreshing: false,
+  loadedPostMeta: false,
   error: null,
 }
 
@@ -21,7 +23,8 @@ function feedReducer(state = initialState, action) {
     case types.LOAD_POSTS_SUCCESS: {
       return {
         ...state,
-        posts: action.payload
+        posts: action.payload,
+        refreshing: false
       }
     }
   }
@@ -31,7 +34,8 @@ function feedReducer(state = initialState, action) {
         ...state,
         posts: {
           ...state.posts,
-          ...action.payload
+          ...action.payload,
+          refreshing: false
         }
       }
     }
@@ -41,6 +45,23 @@ function feedReducer(state = initialState, action) {
       return {
         ...state,
         lastPost: action.payload
+      }
+    }
+  }
+  switch (action.type) {
+    case types.LOAD_POST_META: {
+      return {
+        ...state,
+        loadedPostMeta: true
+      }
+    }
+  }
+  switch (action.type) {
+    case types.REFRESH: {
+      console.log(state);
+      return {
+        ...state,
+        refreshing: true
       }
     }
   }

@@ -12,22 +12,18 @@ export const types = {
   SIGN_OUT_USER: 'SIGN_OUT_USER',
   AUTH_START: 'AUTH_START',
   AUTH_SUCCESS: 'AUTH_SUCCESS',
-  // AUTH_FAIL: 'AUTH_FAIL',
+  AUTH_FAIL: 'AUTH_FAIL',
   ACCESS_TOKEN_STATUS: 'ACCESS_TOKEN_STATUS',
   ACCESS_TOKEN_SAVED: 'ACCESS_TOKEN_SAVED',
   FACEBOOK_AUTH_TAP: 'FACEBOOK_AUTH_TAP',
   FACEBOOK_AUTH_START: 'FACEBOOK_AUTH_START',
   FACEBOOK_AUTH_SUCCESS: 'FACEBOOK_AUTH_SUCCESS',
-  FACEBOOK_AUTH_FAIL: 'FACEBOOK_AUTH_FAIL',
   AUTH_TOKEN_START: 'AUTH_TOKEN_START',
   AUTH_TOKEN_SUCCESS: 'AUTH_TOKEN_SUCCESS',
-  AUTH_TOKEN_FAIL: 'AUTH_TOKEN_FAIL',
   CURRENT_USER_START: 'CURRENT_USER_START',
   CURRENT_USER_SUCCESS: 'CURRENT_USER_SUCCESS',
-  CURRENT_USER_FAIL: 'CURRENT_USER_FAIL',
   UPDATE_USER_START: 'UPDATE_USER_START',
   UPDATE_USER_SUCCESS: 'UPDATE_USER_SUCCESS',
-  UPDATE_USER_FAIL: 'UPDATE_USER_FAIL',
 }
 
 // Helper Functions
@@ -47,7 +43,7 @@ export const getFBToken = (error, result) => {
   } else if (result.isCancelled) {
     console.log("login is cancelled.");
   } else {
-    const tokenData = AccessToken.getCurrentAccessToken();
+    const tokenData = AccessToken.getCurrentAccessToken()
     if (!tokenData) {
       throw new Error('Something went wrong obtaining the users access token');
     }
@@ -116,49 +112,25 @@ export function facebookAuth(error, result) {
       dispatch({ type: types.FACEBOOK_AUTH_START });
       const tokenData = await getFBToken(error, result);
       dispatch({ type: types.FACEBOOK_AUTH_SUCCESS });
-    } catch (e) {
-      console.error(e);
-      dispatch({
-        type: types.FACEBOOK_AUTH_FAIL,
-        payload: e
-      });
-    }
 
-    storeAccessToken(tokenData.accessToken);
-    dispatch({ type: types.ACCESS_TOKEN_SAVED });
+      storeAccessToken(tokenData.accessToken);
+      dispatch({ type: types.ACCESS_TOKEN_SAVED });
 
-    try {
       dispatch({ type: types.AUTH_TOKEN_START });
       const credential = getAuthCredential(tokenData.accessToken);
       dispatch({ type: types.AUTH_TOKEN_SUCCESS });
-    } catch (e) {
-      console.error(e);
-      dispatch({
-        type: types.AUTH_TOKEN_FAIL,
-        payload: e
-      });
-    }
 
-    try {
       dispatch({ type: types.CURRENT_USER_START });
       const currentUser = await getCurrentUser(credential);
       dispatch({ type: types.CURRENT_USER_SUCCESS });
-    } catch (e) {
-      console.error(e);
-      dispatch({
-        type: types.CURRENT_USER_SUCCESS,
-        payload: e
-      });
-    }
 
-    try {
       dispatch({ type: types.UPDATE_USER_START });
       await saveUserInfo(currentUser.user, currentUser.additionalUserInfo.profile);
       dispatch({ type: types.UPDATE_USER_SUCCESS });
     } catch (e) {
       console.error(e);
       dispatch({
-        type: types.UPDATE_USER_SUCCESS,
+        type: types.AUTH_FAIL,
         payload: e
       });
     }
@@ -174,18 +146,15 @@ export function locateAccessToken() {
   }
 }
 
-// export function authError(error) {
-//   return {
-//     type: types.AUTH_FAIL,
-//     payload: error
-//   }
-// }
-
 export function signOutUser() {
   return function(dispatch) {
     firebase.auth().signOut()
       .then(() =>{
         dispatch({ type: types.SIGN_OUT_USER });
+      })
+      .catch((e) => {
+        console.error(e);
+        return e
       });
   }
 }
@@ -196,8 +165,8 @@ export function authSubscription() {
     return firebase.auth().onAuthStateChanged((user) => {
       if (user) {
         dispatch(authUser(user))
-      } else {
-        dispatch(signOutUser())
+      // } else {
+      //   dispatch(signOutUser())
       }
     });
   }

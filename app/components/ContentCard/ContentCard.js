@@ -28,10 +28,7 @@ export default class ContentCard extends Component {
       image: _.get(payload, 'image', ''),
       publisherName: _.get(payload, 'publisher.name', 'Error: Missing Publisher'),
       title: _.get(payload, 'title', 'Error: Missing Title'),
-      sharedBy: {
-        firstName: _.get(payload, 'sharedBy.firstName', ''),
-        lastName: _.get(payload, 'sharedBy.lastName', '')
-      },
+      sharedBy: _.get(payload, 'sharedBy', ''),
       shareCount: _.get(payload, 'shareCount', '')
     }
     if (data['sharedBy']['firstName'] && data['sharedBy']['lastName']) {

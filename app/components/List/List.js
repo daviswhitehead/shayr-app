@@ -26,6 +26,7 @@ export default class List extends Component {
     swipeRightToLeftAction: PropTypes.func,
     onScroll: PropTypes.func,
     onEndReached: PropTypes.func,
+    onRefresh: PropTypes.func,
   };
 
   extractKey = ({key}) => key;
@@ -60,7 +61,9 @@ export default class List extends Component {
         ItemSeparatorComponent={this.renderSeparator}
         onScroll={this.props.onScroll}
         onEndReached={this.props.onEndReached}
-        onEndThreshold={0.01}
+        onEndThreshold={0.25}
+        onRefresh={this.props.onRefresh}
+        refreshing={this.props.refreshing}
       />
     );
   }

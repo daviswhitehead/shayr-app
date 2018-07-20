@@ -17,7 +17,7 @@ import {
   retrieveAccessToken,
   getAuthCredential,
   getCurrentUser,
-} from '../Login/AuthenticationActions';
+} from '../../redux/authentication/AuthenticationActions';
 
  import firebase from 'react-native-firebase';
  import ShareExtension from 'react-native-share-extension';

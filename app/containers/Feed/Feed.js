@@ -12,7 +12,6 @@ import styles from './styles';
 import DynamicActionButton from '../../components/DynamicActionButton';
 import Toaster from '../../components/Toaster';
 import List from '../../components/List';
-import { flattenPosts } from '../../transforms/Posts';
 
 import firebase from 'react-native-firebase';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -21,12 +20,14 @@ import { LoginManager } from 'react-native-fbsdk';
 import {
   loadPosts,
   paginatePosts,
-} from './FeedActions';
+  flattenPosts,
+  refreshPosts,
+} from '../../redux/posts/PostsActions';
 
 const mapStateToProps = (state) => {
   return {
     auth: state.auth,
-    feed: state.feed
+    posts: state.posts
   }
 }
 
@@ -34,11 +35,17 @@ const mapDispatchToProps = (dispatch) => ({
   navQueue: () => dispatch(NavigationActions.navigate({ routeName: 'Queue' })),
   loadPosts: () => dispatch(loadPosts()),
   paginatePosts: (lastPost) => dispatch(paginatePosts(lastPost)),
+  refreshPosts: () => dispatch(refreshPosts()),
 });
 
 class Feed extends Component {
   componentDidMount() {
-    this.props.loadPosts()
+    this.unsubscribe = this.props.loadPosts();
+    console.log(this.unsubscribe);
+  }
+
+  componentWillUnmount() {
+    this.unsubscribe()
   }
 
   addToQueue = (payload) => {
@@ -55,7 +62,7 @@ class Feed extends Component {
   }
 
   loading = () => {
-    if (!this.props.feed.posts || !this.props.feed.lastPost) {
+    if (!this.props.posts.posts || !this.props.posts.loadedPostMeta) {
       return (
         <Text>LOADING</Text>
       );
@@ -63,10 +70,12 @@ class Feed extends Component {
 
     return (
       <List
-        data={flattenPosts(this.props.feed.posts)}
+        data={flattenPosts(this.props.posts.posts)}
         swipeLeftToRightUI={this.addToQueueUI}
         swipeLeftToRightAction={this.addToQueue}
-        onEndReached={() => this.props.paginatePosts(this.props.feed.lastPost)}
+        onEndReached={() => this.props.paginatePosts(this.props.posts.lastPost)}
+        onRefresh={() => this.props.refreshPosts()}
+        refreshing={this.props.posts.refreshing}
       >
       </List>
     );
@@ -76,13 +85,14 @@ class Feed extends Component {
     try {
       await firebase.auth().signOut();
       await LoginManager.logOut();
-      this.props.navigation.navigate('Login', this.state);
+      this.props.navigation.navigate('Login');
     } catch (e) {
       console.error(e);
     }
   }
 
   render() {
+
     return (
       <View style={styles.container}>
         <this.loading/>

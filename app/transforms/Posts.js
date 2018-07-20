@@ -4,6 +4,9 @@ export const flattenPosts = (posts) => {
   const data = [];
   for (var postId in posts) {
     if (posts.hasOwnProperty(postId)) {
+      console.log(posts[postId]);
+      console.log(posts[postId]['sharedBy']);
+      console.log(posts[postId]['shareCount']);
       data.push({
         key: postId,
         image: posts[postId]['image'],
@@ -17,6 +20,7 @@ export const flattenPosts = (posts) => {
         shareCount: posts[postId]['shareCount'],
         updatedAt: posts[postId]['updatedAt']
       })
+      console.log(data);
     }
   }
 

@@ -7,7 +7,13 @@ import {
 import { initializeListeners } from 'react-navigation-redux-helpers';
 
 import { RootNavigator } from '../../config/Routes';
-import { navigationPropConstructor } from '../../config/ReduxNavigation';
+import { navigationPropConstructor } from '../../redux/ReduxNavigation';
+
+const mapStateToProps = state => {
+  return {
+    nav: state.nav,
+  }
+};
 
 
 class AppWithNavigation extends Component {
@@ -27,10 +33,6 @@ class AppWithNavigation extends Component {
   }
 }
 
-const mapStateToProps = state => {
-  return {
-    nav: state.nav,
-  }
-};
+
 
 export default connect(mapStateToProps)(AppWithNavigation);

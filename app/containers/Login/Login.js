@@ -19,7 +19,7 @@ import {
   facebookAuthTap,
   facebookAuth,
   signedIn
-} from './AuthenticationActions';
+} from '../../redux/authentication/AuthenticationActions';
 import styles from './styles';
 import vectorLogo from '../../assets/VectorLogo.png';
 
@@ -43,6 +43,7 @@ const mapDispatchToProps = (dispatch) => {
 class Login extends Component {
   componentDidMount() {
     this.unsubscribe = this.props.authSubscription()
+    console.log(this.unsubscribe);
     this.props.locateAccessToken()
   }
 
@@ -56,8 +57,8 @@ class Login extends Component {
     }
 
     if (this.props.auth.user && this.props.auth.accessTokenSaved) {
+      // kicking off this navigation within render is causing an error
       this.props.signedIn()
-      // console.log('signedIn');
     }
 
     return (
