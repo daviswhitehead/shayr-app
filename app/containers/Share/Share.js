@@ -74,7 +74,7 @@ export default class MyComponent extends Component {
               }
             });
           },
-          1000
+          500
         );
       }
       else {

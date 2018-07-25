@@ -55,11 +55,11 @@ export const getFBToken = (error, result) => {
   }
 }
 
-const getAuthCredential = (token) => {
+export const getAuthCredential = (token) => {
   return firebase.auth.FacebookAuthProvider.credential(token);
 }
 
-const getCurrentUser = (credential) => {
+export const getCurrentUser = (credential) => {
   return firebase.auth().signInAndRetrieveDataWithCredential(credential);
 }
 

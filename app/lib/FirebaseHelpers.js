@@ -56,20 +56,25 @@ export const addPost = (user, postId) => {
 }
 
 export const donePost = (user, postId) => {
-  return firebase.firestore().collection('users').doc(getUserId(user))
+  const ref = firebase.firestore().collection('users').doc(getUserId(user))
     .collection('postsMeta').doc(postId)
+  return ref
     .get()
     .then((doc) => {
       if (!doc.exists) {
         ref.set({
           doneCreatedAt: ts,
           doneUpdatedAt: ts,
-          doneVisible: true
+          doneVisible: true,
+          addUpdatedAt: ts,
+          addVisible: false,
         })
       } else {
         ref.set({
           doneUpdatedAt: ts,
-          doneVisible: true
+          doneVisible: true,
+          addUpdatedAt: ts,
+          addVisible: false,
         }, {
           merge: true
         })
@@ -84,8 +89,9 @@ export const donePost = (user, postId) => {
 }
 
 export const removeAddedPost = (user, postId) => {
-  return firebase.firestore().collection('users').doc(getUserId(user))
-    .collection('postsMeta').doc(postId)
+  const ref = firebase.firestore().collection('users').doc(getUserId(user))
+    .collection('postsMeta').doc(postId);
+  return ref
     .update({
       addUpdatedAt: ts,
       addVisible: false

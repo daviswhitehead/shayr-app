@@ -215,6 +215,10 @@ export const flattenPosts = (posts) => {
     }
   }
 
-  // sort by updatedAt
-  return data.sort(function(a,b) {return (a.updatedAt > b.updatedAt) ? -1 : ((b.updatedAt > a.updatedAt) ? 1 : 0);} );
+  return data;
 }
+
+// export const sortPosts = (data) => {
+//   // sort by updatedAt
+//   return data.sort(function(a,b) {return (a.updatedAt > b.updatedAt) ? -1 : ((b.updatedAt > a.updatedAt) ? 1 : 0);} );
+// }

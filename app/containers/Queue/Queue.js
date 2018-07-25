@@ -14,10 +14,6 @@ import DynamicActionButton from '../../components/DynamicActionButton';
 import Toaster from '../../components/Toaster';
 import List from '../../components/List';
 import {
-  markSavedPostAsDone,
-  deleteSavedPost
-} from '../../lib/push';
-import {
   donePost,
   removeAddedPost
 } from '../../lib/FirebaseHelpers';
@@ -51,7 +47,7 @@ const mapDispatchToProps = (dispatch) => ({
 
 class Queue extends Component {
   markAsDone = (payload) => {
-    donePost(this.state.user, payload['key']);
+    donePost(this.props.auth.user, payload['key']);
     let toast = Toaster('marked as done');
   }
 
@@ -64,7 +60,7 @@ class Queue extends Component {
   }
 
   removeFromQueue = (payload) => {
-    removeAddedPost(this.state.user, payload['key']);
+    removeAddedPost(this.props.auth.user, payload['key']);
     let toast = Toaster('deleted');
   }
 
