@@ -43,7 +43,6 @@ const mapDispatchToProps = (dispatch) => {
 class Login extends Component {
   componentDidMount() {
     this.unsubscribe = this.props.authSubscription()
-    console.log(this.unsubscribe);
     this.props.locateAccessToken()
   }
 

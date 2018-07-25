@@ -9,12 +9,15 @@ import _ from 'lodash';
 
 // Action Types
 export const types = {
-  LOAD_POSTS_START: 'LOAD_POSTS_START',
-  LOAD_POSTS_SUCCESS: 'LOAD_POSTS_SUCCESS',
-  LOAD_POSTS_FAIL: 'LOAD_POSTS_FAIL',
-  PAGINATE_POSTS_START: 'PAGINATE_POSTS_START',
-  PAGINATE_POSTS_SUCCESS: 'PAGINATE_POSTS_SUCCESS',
-  PAGINATE_POSTS_FAIL: 'PAGINATE_POSTS_FAIL',
+  LOAD_FEED_POSTS_START: 'LOAD_FEED_POSTS_START',
+  LOAD_FEED_POSTS_SUCCESS: 'LOAD_FEED_POSTS_SUCCESS',
+  LOAD_FEED_POSTS_FAIL: 'LOAD_FEED_POSTS_FAIL',
+  LOAD_QUEUE_POSTS_START: 'LOAD_QUEUE_POSTS_START',
+  LOAD_QUEUE_POSTS_SUCCESS: 'LOAD_QUEUE_POSTS_SUCCESS',
+  LOAD_QUEUE_POSTS_FAIL: 'LOAD_QUEUE_POSTS_FAIL',
+  PAGINATE_FEED_POSTS_START: 'PAGINATE_FEED_POSTS_START',
+  PAGINATE_FEED_POSTS_SUCCESS: 'PAGINATE_FEED_POSTS_SUCCESS',
+  PAGINATE_FEED_POSTS_FAIL: 'PAGINATE_FEED_POSTS_FAIL',
   REFRESH: 'REFRESH',
   LAST_POST: 'LAST_POST',
   LOAD_POST_SHARES_START: 'LOAD_POST_SHARES_START',
@@ -29,8 +32,8 @@ export const types = {
 // Helper Functions
 const pageLimter = 20
 
-const firstPosts = (dispatch) => {
-  dispatch({ type: types.LOAD_POSTS_START });
+const firstFeedPosts = (dispatch) => {
+  dispatch({ type: types.LOAD_FEED_POSTS_START });
   return firebase.firestore().collection('posts')
     .orderBy('updatedAt', 'desc')
     .limit(pageLimter)
@@ -49,21 +52,20 @@ const firstPosts = (dispatch) => {
         payload: newLastPost
       });
       dispatch({
-        type: types.LOAD_POSTS_SUCCESS,
+        type: types.LOAD_FEED_POSTS_SUCCESS,
         payload: posts
       });
     })
     .catch((e) => {
       console.error(e);
       dispatch({
-        type: types.LOAD_POSTS_FAIL,
+        type: types.LOAD_FEED_POSTS_FAIL,
         payload: e
       });
     });
 }
 
-
-const nextPosts = (dispatch, lastPost) => {
+const nextFeedPosts = (dispatch, lastPost) => {
   if (lastPost == 'done') {
     return
   }
@@ -86,17 +88,45 @@ const nextPosts = (dispatch, lastPost) => {
         payload: newLastPost
       });
       dispatch({
-        type: types.PAGINATE_POSTS_SUCCESS,
+        type: types.PAGINATE_FEED_POSTS_SUCCESS,
         payload: posts
       });
     })
     .catch((e) => {
       console.error(e);
       dispatch({
-        type: types.PAGINATE_POSTS_FAIL,
+        type: types.PAGINATE_FEED_POSTS_FAIL,
         payload: e
       });
     });
+}
+
+const firstQueuePosts = (dispatch, userId) => {
+  dispatch({ type: types.LOAD_QUEUE_POSTS_START });
+  return firebase.firestore()
+    .collection('users')
+    .doc(userId)
+    .collection('postsMeta')
+    .where('addVisible', '==', true)
+    .orderBy('addUpdatedAt', 'desc')
+    .onSnapshot((querySnapshot) => {
+      const posts = {};
+      querySnapshot.forEach(async (doc) => {
+        const post = await firebase.firestore().collection('posts').doc(doc.id).get()
+        getPostMeta(dispatch, posts, post);
+      });
+      dispatch({
+        type: types.LOAD_QUEUE_POSTS_SUCCESS,
+        payload: posts
+      });
+    })
+    // .catch((e) => {
+    //   console.error(e);
+    //   dispatch({
+    //     type: types.LOAD_QUEUE_POSTS_FAIL,
+    //     payload: e
+    //   });
+    // });
 }
 
 const getPostMeta = async (dispatch, posts, doc) => {
@@ -132,23 +162,36 @@ const getPostMeta = async (dispatch, posts, doc) => {
 }
 
 // Action Creators
-export function loadPosts() {
+export function loadFeedPosts() {
   return function(dispatch) {
-    firstPosts(dispatch);
+    firstFeedPosts(dispatch);
   }
 }
 
-export function paginatePosts(lastPost) {
+export function paginateFeedPosts(lastPost) {
   return function(dispatch) {
-    dispatch({ type: types.PAGINATE_POSTS_START });
-    nextPosts(dispatch, lastPost)
+    dispatch({ type: types.PAGINATE_FEED_POSTS_START });
+    nextFeedPosts(dispatch, lastPost)
   }
 }
 
-export const refreshPosts = () => {
+export const refreshFeedPosts = () => {
   return function(dispatch) {
     dispatch({ type: types.REFRESH });
-    firstPosts(dispatch);
+    firstFeedPosts(dispatch);
+  }
+}
+
+export function loadQueuePosts(userId) {
+  return function(dispatch) {
+    return firstQueuePosts(dispatch, userId);
+  }
+}
+
+export const refreshQueuePosts = (userId) => {
+  return function(dispatch) {
+    dispatch({ type: types.REFRESH });
+    firstQueuePosts(dispatch, userId);
   }
 }
 
@@ -175,30 +218,3 @@ export const flattenPosts = (posts) => {
   // sort by updatedAt
   return data.sort(function(a,b) {return (a.updatedAt > b.updatedAt) ? -1 : ((b.updatedAt > a.updatedAt) ? 1 : 0);} );
 }
-
-
-
-// const firstPosts = (dispatch) => {
-//   dispatch({ type: types.LOAD_POSTS_START });
-//   return firebase.firestore().collection('posts')
-//     .orderBy('updatedAt', 'desc')
-//     .limit(pageLimter)
-//     .onSnapshot((querySnapshot) => {
-//       const posts = {};
-//       querySnapshot.forEach((doc) => {
-//         getPostMeta(dispatch, posts, doc);
-//       });
-//       let newLastPost = 'done'
-//       if (querySnapshot.docs.length - 1 === pageLimter - 1) {
-//         newLastPost = querySnapshot.docs[querySnapshot.docs.length - 1];
-//       }
-//       dispatch({
-//         type: types.LAST_POST,
-//         payload: newLastPost
-//       });
-//       dispatch({
-//         type: types.LOAD_POSTS_SUCCESS,
-//         payload: posts
-//       });
-//     })
-// }

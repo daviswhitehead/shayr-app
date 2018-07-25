@@ -18,11 +18,16 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import _ from 'lodash';
 import { LoginManager } from 'react-native-fbsdk';
 import {
-  loadPosts,
-  paginatePosts,
+  loadFeedPosts,
+  paginateFeedPosts,
   flattenPosts,
-  refreshPosts,
+  refreshFeedPosts,
+  loadQueuePosts,
 } from '../../redux/posts/PostsActions';
+import {
+  signOutUser,
+} from '../../redux/authentication/AuthenticationActions';
+import { addPost } from '../../lib/FirebaseHelpers';
 
 const mapStateToProps = (state) => {
   return {
@@ -33,15 +38,18 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => ({
   navQueue: () => dispatch(NavigationActions.navigate({ routeName: 'Queue' })),
-  loadPosts: () => dispatch(loadPosts()),
-  paginatePosts: (lastPost) => dispatch(paginatePosts(lastPost)),
-  refreshPosts: () => dispatch(refreshPosts()),
+  loadFeedPosts: () => dispatch(loadFeedPosts()),
+  paginateFeedPosts: (lastPost) => dispatch(paginateFeedPosts(lastPost)),
+  refreshFeedPosts: () => dispatch(refreshFeedPosts()),
+  signOutUser: () => dispatch(signOutUser()),
+  loadQueuePosts: (userId) => dispatch(loadQueuePosts(userId)),
 });
 
 class Feed extends Component {
   componentDidMount() {
-    this.unsubscribe = this.props.loadPosts();
-    console.log(this.unsubscribe);
+    console.log('feed mount');
+    this.props.loadFeedPosts();
+    this.unsubscribe = this.props.loadQueuePosts(this.props.auth.user.uid);
   }
 
   componentWillUnmount() {
@@ -49,7 +57,7 @@ class Feed extends Component {
   }
 
   addToQueue = (payload) => {
-    savePostToUser(this.props.auth.user, payload['key']);
+    addPost(this.props.auth.user, payload['key']);
     let toast = Toaster('added to queue');
   }
 
@@ -62,7 +70,7 @@ class Feed extends Component {
   }
 
   loading = () => {
-    if (!this.props.posts.posts || !this.props.posts.loadedPostMeta) {
+    if (!this.props.posts.feedPosts || !this.props.posts.loadedPostMeta) {
       return (
         <Text>LOADING</Text>
       );
@@ -70,25 +78,15 @@ class Feed extends Component {
 
     return (
       <List
-        data={flattenPosts(this.props.posts.posts)}
+        data={flattenPosts(this.props.posts.feedPosts)}
         swipeLeftToRightUI={this.addToQueueUI}
         swipeLeftToRightAction={this.addToQueue}
-        onEndReached={() => this.props.paginatePosts(this.props.posts.lastPost)}
-        onRefresh={() => this.props.refreshPosts()}
+        onEndReached={() => this.props.paginateFeedPosts(this.props.posts.lastPost)}
+        onRefresh={() => this.props.refreshFeedPosts()}
         refreshing={this.props.posts.refreshing}
       >
       </List>
     );
-  }
-
-  logout = async () => {
-    try {
-      await firebase.auth().signOut();
-      await LoginManager.logOut();
-      this.props.navigation.navigate('Login');
-    } catch (e) {
-      console.error(e);
-    }
   }
 
   render() {
@@ -97,7 +95,7 @@ class Feed extends Component {
       <View style={styles.container}>
         <this.loading/>
         <DynamicActionButton
-          logout={this.logout}
+          logout={this.props.signOutUser}
           feed={false}
           queue={this.props.navQueue}
         />

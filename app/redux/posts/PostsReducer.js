@@ -1,7 +1,8 @@
 import { types } from './PostsActions';
 
 const initialState = {
-  posts: null,
+  feedPosts: null,
+  queuePosts: null,
   lastPost: null,
   refreshing: false,
   loadedPostMeta: false,
@@ -20,20 +21,29 @@ function feedReducer(state = initialState, action) {
 
   // Case Handling
   switch (action.type) {
-    case types.LOAD_POSTS_SUCCESS: {
+    case types.LOAD_QUEUE_POSTS_SUCCESS: {
       return {
         ...state,
-        posts: action.payload,
+        queuePosts: action.payload,
         refreshing: false
       }
     }
   }
   switch (action.type) {
-    case types.PAGINATE_POSTS_SUCCESS: {
+    case types.LOAD_FEED_POSTS_SUCCESS: {
       return {
         ...state,
-        posts: {
-          ...state.posts,
+        feedPosts: action.payload,
+        refreshing: false
+      }
+    }
+  }
+  switch (action.type) {
+    case types.PAGINATE_FEED_POSTS_SUCCESS: {
+      return {
+        ...state,
+        feedPosts: {
+          ...state.feedPosts,
           ...action.payload,
           refreshing: false
         }
@@ -58,7 +68,6 @@ function feedReducer(state = initialState, action) {
   }
   switch (action.type) {
     case types.REFRESH: {
-      console.log(state);
       return {
         ...state,
         refreshing: true

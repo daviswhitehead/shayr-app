@@ -1,5 +1,5 @@
 import firebase from 'react-native-firebase';
-import { AccessToken } from 'react-native-fbsdk';
+import { AccessToken, LoginManager } from 'react-native-fbsdk';
 import { RNSKBucket } from 'react-native-swiss-knife';
 import {
   ts,
@@ -24,6 +24,10 @@ export const types = {
   CURRENT_USER_SUCCESS: 'CURRENT_USER_SUCCESS',
   UPDATE_USER_START: 'UPDATE_USER_START',
   UPDATE_USER_SUCCESS: 'UPDATE_USER_SUCCESS',
+  FACEBOOK_SIGN_OUT_START: 'FACEBOOK_SIGN_OUT_START',
+  FACEBOOK_SIGN_OUT_SUCCESS: 'FACEBOOK_SIGN_OUT_SUCCESS',
+  APP_SIGN_OUT_START: 'APP_SIGN_OUT_START',
+  APP_SIGN_OUT_SUCCESS: 'APP_SIGN_OUT_SUCCESS',
 }
 
 // Helper Functions
@@ -137,25 +141,33 @@ export function facebookAuth(error, result) {
   }
 }
 
+export function signOutUser() {
+  return async function(dispatch) {
+    try {
+      dispatch({ type: types.APP_SIGN_OUT_START });
+      await firebase.auth().signOut();
+      dispatch({ type: types.APP_SIGN_OUT_SUCCESS });
+
+      dispatch({ type: types.FACEBOOK_SIGN_OUT_START });
+      await LoginManager.logOut();
+      dispatch({ type: types.FACEBOOK_SIGN_OUT_SUCCESS });
+      dispatch({ type: types.SIGN_OUT_USER });
+    } catch (e) {
+      console.error(e);
+      dispatch({
+        type: types.AUTH_FAIL,
+        payload: e
+      });
+    }
+  }
+}
+
 export function locateAccessToken() {
   const token = retrieveAccessToken();
 
   return {
     type: types.ACCESS_TOKEN_STATUS,
     payload: token ? true : false
-  }
-}
-
-export function signOutUser() {
-  return function(dispatch) {
-    firebase.auth().signOut()
-      .then(() =>{
-        dispatch({ type: types.SIGN_OUT_USER });
-      })
-      .catch((e) => {
-        console.error(e);
-        return e
-      });
   }
 }
 

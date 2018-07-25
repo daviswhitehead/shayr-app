@@ -71,22 +71,16 @@ users/{user} {
     visible (boolean)
   }
 
-  adds/{post} {
-    createdAt (timestamp),
-    updatedAt (timestamp),
-    visible (boolean)
-  }
-
-  dones/{post} {
-    createdAt (timestamp),
-    updatedAt (timestamp),
-    visible (boolean)
-  }
-
-  likes/{post} {
-    createdAt (timestamp),
-    updatedAt (timestamp),
-    visible (boolean)
+  postsMeta/{post} {
+    addCreatedAt (timestamp),
+    addUpdatedAt (timestamp),
+    addVisible (boolean),
+    doneCreatedAt (timestamp),
+    doneUpdatedAt (timestamp),
+    doneVisible (boolean),
+    likeCreatedAt (timestamp),
+    likeUpdatedAt (timestamp),
+    likeVisible (boolean),
   }
 }
 
@@ -133,22 +127,16 @@ posts/{post} {
     visible (boolean)
   }
 
-  adds/{user} {
-    createdAt (timestamp),
-    updatedAt (timestamp),
-    visible (boolean)
-  }
-
-  dones/{user} {
-    createdAt (timestamp),
-    updatedAt (timestamp),
-    visible (boolean)
-  }
-
-  likes/{user} {
-    createdAt (timestamp),
-    updatedAt (timestamp),
-    visible (boolean)
+  usersMeta/{user} {
+    addCreatedAt (timestamp),
+    addUpdatedAt (timestamp),
+    addVisible (boolean),
+    doneCreatedAt (timestamp),
+    doneUpdatedAt (timestamp),
+    doneVisible (boolean),
+    likeCreatedAt (timestamp),
+    likeUpdatedAt (timestamp),
+    likeVisible (boolean),
   }
 }
 ```

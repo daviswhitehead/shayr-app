@@ -27,3 +27,73 @@ export const getRefData = (ref) => {
       return false
     })
 };
+
+export const addPost = (user, postId) => {
+  const ref = firebase.firestore().collection('users').doc(getUserId(user))
+    .collection('postsMeta').doc(postId)
+  return ref
+    .get()
+    .then((doc) => {
+      if (!doc.exists) {
+        ref.set({
+          addCreatedAt: ts,
+          addUpdatedAt: ts,
+          addVisible: true
+        })
+      } else {
+        ref.set({
+          addUpdatedAt: ts,
+          addVisible: true
+        }, {
+          merge: true
+        })
+      }
+      console.log('addPost success');
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+}
+
+export const donePost = (user, postId) => {
+  return firebase.firestore().collection('users').doc(getUserId(user))
+    .collection('postsMeta').doc(postId)
+    .get()
+    .then((doc) => {
+      if (!doc.exists) {
+        ref.set({
+          doneCreatedAt: ts,
+          doneUpdatedAt: ts,
+          doneVisible: true
+        })
+      } else {
+        ref.set({
+          doneUpdatedAt: ts,
+          doneVisible: true
+        }, {
+          merge: true
+        })
+      }
+    })
+    .then((ref) => {
+      console.log('donePost success');
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+}
+
+export const removeAddedPost = (user, postId) => {
+  return firebase.firestore().collection('users').doc(getUserId(user))
+    .collection('postsMeta').doc(postId)
+    .update({
+      addUpdatedAt: ts,
+      addVisible: false
+    })
+    .then((ref) => {
+      console.log('removeAddedPost success');
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+}

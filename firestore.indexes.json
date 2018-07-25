@@ -7,6 +7,14 @@
         { "fieldPath": "deletedAt", "mode": "DESCENDING"},
         { "fieldPath": "updatedAt", "mode": "DESCENDING"}
       ]
+    },
+    {
+      "collectionId": "postsMeta",
+      "fields": [
+        { "fieldPath": "addVisible", "mode": "DESCENDING"},
+        { "fieldPath": "addUpdatedAt", "mode": "DESCENDING"}
+      ]
     }
+
   ]
 }
