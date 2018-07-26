@@ -103,3 +103,19 @@ export const removeAddedPost = (user, postId) => {
       console.error(error);
     });
 }
+
+export const createShare = (ref, url) => {
+  return ref.collection('shares')
+    .add({
+      createdAt: ts,
+      updatedAt: ts,
+      url: url
+    })
+    .then((ref) => {
+      console.log('createShare success');
+      return true
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+}

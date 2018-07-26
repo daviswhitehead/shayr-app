@@ -11,12 +11,10 @@ import {
 import styles from './styles';
 import shareExtensionLogo from '../../assets/ShareExtensionLogo.png';
 import {
-  createShare,
-} from '../../lib/push';
-import {
   retrieveAccessToken,
   getAuthCredential,
   getCurrentUser,
+  createShare,
 } from '../../redux/authentication/AuthenticationActions';
 
  import firebase from 'react-native-firebase';
