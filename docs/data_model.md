@@ -1,76 +1,145 @@
-# Tables
+# Data Model
 
-### posts
-**Description**  
-Data related to content only, agnostic of user actions
+### Current
+```
+users/{user} {
+  createdAt (timestamp),
+  email (string),
+  firstName (string),
+  lastName (string),
+  updatedAt (timestamp)
 
-Core
-- id
-- url
-- created_at
-- updated_at
+  shares/{share} {
+    createdAt (timestamp),
+    post (reference),
+    updatedAt (timestamp),
+    url (string)
+  }
 
-MVP
-- medium
-- icon
-- title
-- summary
+  savedPosts/{post} {
+    createdAt (timestamp),
+    deletedAt (timestamp),
+    doneAt (timestamp),
+    updatedAt (timestamp)
+  }
+}
 
-PP
-- consumption_time
+posts/{post} {
+  createdAt (timestamp),
+  description (string),
+  image (string),
+  medium (string),
+  publisher {
+    logo (string),
+    name (string)
+  },
+  title (string),
+  updatedAt (timestamp),
+  url (string)
 
-LT
+  shares/{share} {
+    createdAt (timestamp),
+    updatedAt (timestamp)
+    url (string),
+    user (reference)
+  }
+}
+```
 
-#### users
-**Description**
+### Future
+```
+users/{user} {
+  createdAt (timestamp),
+  email (string),
+  firstName (string),
+  friends [
+    {user} (reference),
+    {user} (reference)
+  ],
+  lastName (string),
+  updatedAt (timestamp)
 
-Core
-- id
-- email
-- name
-- facebook token
-- google token
-- created_at
-- updated_at
+  shares/{share} {
+    createdAt (timestamp),
+    post (reference),
+    tags [
+      {tag} (reference),
+      {tag} (reference)
+    ],
+    updatedAt (timestamp),
+    url (string),
+    visible (boolean)
+  }
 
+  postsMeta/{post} {
+    addCreatedAt (timestamp),
+    addUpdatedAt (timestamp),
+    addVisible (boolean),
+    doneCreatedAt (timestamp),
+    doneUpdatedAt (timestamp),
+    doneVisible (boolean),
+    likeCreatedAt (timestamp),
+    likeUpdatedAt (timestamp),
+    likeVisible (boolean),
+  }
+}
 
-#### shares
-**Description**
+friends/{friendship} {
+  createdAt (timestamp),
+  deletedAt (timestamp),
+  initiatingUser (reference),
+  receivingUser (reference),
+  status (string) [pending, accepted, rejected],
+  updatedAt (timestamp)
+}
 
-Core
-- id
-- url
-- post_id
-- user_id
-- created_at
-- updated_at
+tags/{tag} {
+  createdAt (timestamp),
+  posts [
+    {post} (reference),
+    {post} (reference)
+  ],
+  updatedAt (timestamp)
+}
 
-PP
-- medium
-- mention
-- comment
+posts/{post} {
+  createdAt (timestamp),
+  description (string),
+  image (string),
+  medium (string),
+  publisher {
+    logo (string),
+    name (string)
+  },
+  title (string),
+  updatedAt (timestamp),
+  url (string)
 
-LT
-- tags
+  shares/{share} {
+    createdAt (timestamp),
+    tags [
+      {tag} (reference),
+      {tag} (reference)
+    ],
+    updatedAt (timestamp),
+    url (string),
+    user (reference),
+    visible (boolean)
+  }
 
-
-#### attributes
-**Description**
-PP structure. relates users to additional attributes
-
-attributes
-- id
-- attribute_name
-- created_at
-- updated_at
-- meta
-
-user_attributes
-- id
-- user_id
-- attribute_id
-- created_at
-- updated_at
+  usersMeta/{user} {
+    addCreatedAt (timestamp),
+    addUpdatedAt (timestamp),
+    addVisible (boolean),
+    doneCreatedAt (timestamp),
+    doneUpdatedAt (timestamp),
+    doneVisible (boolean),
+    likeCreatedAt (timestamp),
+    likeUpdatedAt (timestamp),
+    likeVisible (boolean),
+  }
+}
+```
 
 #### notes
 - how do you handle slightly different urls from shares?

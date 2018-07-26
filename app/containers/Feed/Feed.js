@@ -5,148 +5,59 @@ import {
   TouchableOpacity,
   LayoutAnimation,
 } from 'react-native';
+import { connect } from 'react-redux';
+import { NavigationActions } from 'react-navigation';
 
 import styles from './styles';
 import DynamicActionButton from '../../components/DynamicActionButton';
 import Toaster from '../../components/Toaster';
 import List from '../../components/List';
-import {
-  getUsers,
-  getUserShares,
-  getPost,
-  getPostShares,
-} from '../../functions/pull';
-import {
-  savePostToUser,
-} from '../../functions/push';
-import {
-  organizeData,
-} from '../../transforms/OrganizePostData';
-
 
 import firebase from 'react-native-firebase';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import _ from 'lodash';
 import { LoginManager } from 'react-native-fbsdk';
+import {
+  loadFeedPosts,
+  paginateFeedPosts,
+  flattenPosts,
+  refreshFeedPosts,
+  loadQueuePosts,
+} from '../../redux/posts/PostsActions';
+import {
+  signOutUser,
+} from '../../redux/authentication/AuthenticationActions';
+import { addPost } from '../../lib/FirebaseHelpers';
 
-export default class Feed extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      user: firebase.auth().currentUser,
-      isActionButtonVisible: true
-    }
-
-    // goes away with redux!
-    const navigationParams = _.get(this.props, 'navigation.state.params', null)
-    if (navigationParams) {
-      this.state = {...this.state, ...navigationParams};
-      if (navigationParams.feedData) {
-        this.state = {...this.state, loading: false};
-      } else {
-        this.state = {...this.state, loading: true};
-      }
-    } else {
-      this.state = {...this.state, loading: true};
-    }
+const mapStateToProps = (state) => {
+  return {
+    auth: state.auth,
+    posts: state.posts
   }
+}
 
-  static navigationOptions = ({ navigation }) => {
-    const { params } = navigation.state;
+const mapDispatchToProps = (dispatch) => ({
+  navQueue: () => dispatch(NavigationActions.navigate({ routeName: 'Queue' })),
+  loadFeedPosts: () => dispatch(loadFeedPosts()),
+  paginateFeedPosts: (lastPost) => dispatch(paginateFeedPosts(lastPost)),
+  refreshFeedPosts: () => dispatch(refreshFeedPosts()),
+  signOutUser: () => dispatch(signOutUser()),
+  loadQueuePosts: (userId) => dispatch(loadQueuePosts(userId)),
+});
 
-    return {
-      title: 'feed'
-    }
-  }
-
-  loadData = () => {
-    const userData = {};
-    const postData = {};
-
-    // get users
-    getUsers()
-      .then((users) => {
-        return Promise.all(
-          users.map((user) => {
-              userData[user.id] = {
-                ...user.data(),
-                doc: user,
-                shares: {}
-              };
-              return getUserShares(user)
-          })
-        );
-      })
-      // get all user shares
-      .then((users) => {
-        const postRefs = {};
-        users.map((userShares) => {
-          userShares.map((share) => {
-            userData[share.ref.parent.parent.id]['shares'][share.id] = {
-              ...share.data(),
-              doc: share
-            };
-
-            // find all unique posts
-            let post = share.data()['post']
-            if (post && !postRefs.hasOwnProperty(post.id)) {
-              postRefs[post.id] = share.data()['post'];
-            }
-          })
-        })
-        return Promise.all(
-          Object.values(postRefs).map((post) => {
-            return getPost(post)
-          })
-        )
-      })
-      // get all friend posts
-      .then((posts) => {
-        return Promise.all(
-          posts.map((post) => {
-            postData[post.id] = {
-              ...post.data(),
-              doc: post,
-              shares: {}
-            };
-            return getPostShares(post.ref)
-          })
-        )
-      })
-      // get all shares associated with friend posts
-      .then((posts) => {
-        posts.map((postShares) => {
-          postShares.map((share) => {
-            postData[share.ref.parent.parent.id]['shares'][share.id] = {
-              ...share.data(),
-              doc: share
-            };
-          })
-        })
-        this.setState((previousState) => {
-          return {
-            ...previousState,
-            feedData: organizeData(userData, postData),
-            loading: false,
-            userData: userData,
-            postData: postData
-          }
-        })
-      })
-      .catch((err) => {
-        console.error(err);
-      })
-
-  }
-
+class Feed extends Component {
   componentDidMount() {
-    if (!this.state.feedData) {
-      this.loadData()
-    }
+    console.log('feed mount');
+    this.props.loadFeedPosts();
+    this.unsubscribe = this.props.loadQueuePosts(this.props.auth.user.uid);
+  }
+
+  componentWillUnmount() {
+    this.unsubscribe()
   }
 
   addToQueue = (payload) => {
-    savePostToUser(this.state.user, payload['key']);
+    addPost(this.props.auth.user, payload['key']);
     let toast = Toaster('added to queue');
   }
 
@@ -158,34 +69,8 @@ export default class Feed extends Component {
     );
   }
 
-  _listViewOffset = 0
-
-  // how do i do this with redux??
-  _onScroll = (event) => {
-    // Simple fade-in / fade-out animation
-    const CustomLayoutLinear = {
-      duration: 100,
-      create: { type: LayoutAnimation.Types.linear, property: LayoutAnimation.Properties.opacity },
-      update: { type: LayoutAnimation.Types.linear, property: LayoutAnimation.Properties.opacity },
-      delete: { type: LayoutAnimation.Types.linear, property: LayoutAnimation.Properties.opacity }
-    }
-    // Check if the user is scrolling up or down by confronting the new scroll position with your own one
-    const currentOffset = event.nativeEvent.contentOffset.y
-    const direction = (currentOffset > 0 && currentOffset > this._listViewOffset)
-      ? 'down'
-      : 'up'
-    // If the user is scrolling down (and the action-button is still visible) hide it
-    const isActionButtonVisible = direction === 'up'
-    if (isActionButtonVisible !== this.state.isActionButtonVisible) {
-      LayoutAnimation.configureNext(CustomLayoutLinear)
-      this.setState({ isActionButtonVisible })
-    }
-    // Update your scroll position
-    this._listViewOffset = currentOffset
-  }
-
   loading = () => {
-    if (this.state.loading) {
+    if (!this.props.posts.feedPosts || !this.props.posts.loadedPostMeta) {
       return (
         <Text>LOADING</Text>
       );
@@ -193,40 +78,30 @@ export default class Feed extends Component {
 
     return (
       <List
-        data={this.state.feedData}
+        data={flattenPosts(this.props.posts.feedPosts)}
         swipeLeftToRightUI={this.addToQueueUI}
         swipeLeftToRightAction={this.addToQueue}
-        onScroll={this._onScroll}
+        onEndReached={() => this.props.paginateFeedPosts(this.props.posts.lastPost)}
+        onRefresh={() => this.props.refreshFeedPosts()}
+        refreshing={this.props.posts.refreshing}
       >
       </List>
     );
   }
 
-  logout = async () => {
-    try {
-      await firebase.auth().signOut();
-      await LoginManager.logOut();
-      this.props.navigation.navigate('Login', this.state);
-    } catch (e) {
-      console.error(e);
-    }
-  }
-
   render() {
+
     return (
       <View style={styles.container}>
         <this.loading/>
-        {
-          this.state.isActionButtonVisible ?
-          <DynamicActionButton
-            logout={this.logout}
-            feed={false}
-            queue={() => this.props.navigation.navigate('Queue', this.state)}
-          />
-           :
-          null
-        }
+        <DynamicActionButton
+          logout={this.props.signOutUser}
+          feed={false}
+          queue={this.props.navQueue}
+        />
       </View>
     );
   }
 }
+
+export default connect(mapStateToProps, mapDispatchToProps)(Feed);

@@ -21,6 +21,11 @@ service cloud.firestore {
         allow write: if nestedUser(user);
         allow read: if isSignedIn();
       }
+
+      match /postsMeta/{postMeta} {
+        allow write: if nestedUser(user);
+        allow read: if isSignedIn();
+      }
     }
 
     match /posts/{posts=**} {

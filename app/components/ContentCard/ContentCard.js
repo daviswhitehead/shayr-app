@@ -28,14 +28,11 @@ export default class ContentCard extends Component {
       image: _.get(payload, 'image', ''),
       publisherName: _.get(payload, 'publisher.name', 'Error: Missing Publisher'),
       title: _.get(payload, 'title', 'Error: Missing Title'),
-      friend: {
-        firstName: _.get(payload, 'friend.firstName', ''),
-        lastName: _.get(payload, 'friend.lastName', '')
-      },
+      sharedBy: _.get(payload, 'sharedBy', ''),
       shareCount: _.get(payload, 'shareCount', '')
     }
-    if (data['friend']['firstName'] && data['friend']['lastName']) {
-      data['sharedByFriend'] = data['friend']['firstName'] + ' ' + data['friend']['lastName']
+    if (data['sharedBy']['firstName'] && data['sharedBy']['lastName']) {
+      data['sharedByFriend'] = data['sharedBy']['firstName'] + ' ' + data['sharedBy']['lastName']
       data['shareCount'] = data['shareCount'] - 1
     } else {
       data['sharedByFriend'] = false

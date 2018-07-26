@@ -11,13 +11,11 @@ import {
 import styles from './styles';
 import shareExtensionLogo from '../../assets/ShareExtensionLogo.png';
 import {
-  createShare,
-} from '../../functions/push';
-import {
   retrieveAccessToken,
   getAuthCredential,
   getCurrentUser,
-} from '../../functions/Auth';
+  createShare,
+} from '../../redux/authentication/AuthenticationActions';
 
  import firebase from 'react-native-firebase';
  import ShareExtension from 'react-native-share-extension';
@@ -74,7 +72,7 @@ export default class MyComponent extends Component {
               }
             });
           },
-          1000
+          500
         );
       }
       else {
