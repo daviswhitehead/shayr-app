@@ -11,12 +11,28 @@ import PropTypes from 'prop-types';
 
 import styles from './styles';
 import article from '../../assets/Article.png';
+import isURL from '../../lib/Utils';
 
 import _ from 'lodash';
 
 export default class ContentCard extends Component {
   constructor() {
     super();
+    this.data = {
+      image: article,
+      publisherName: 'Missing',
+      title: 'Missing',
+      sharedByImage: article,
+      sharedByFirstName: 'Missing',
+      sharedByLastName: 'Missing',
+      medium: 'Missing',
+      medium: 'Missing',
+      shareCount: 0,
+      addCount: 0,
+      doneCount: 0,
+      likeCount: 0
+    }
+    this.defaultImage = true
   }
 
   static propTypes = {
@@ -25,35 +41,16 @@ export default class ContentCard extends Component {
 
   sanitizeData = (payload) => {
     const data = {
-      image: _.get(payload, 'image', ''),
-      publisherName: _.get(payload, 'publisher.name', 'Error: Missing Publisher'),
-      title: _.get(payload, 'title', 'Error: Missing Title'),
-      sharedBy: _.get(payload, 'sharedBy', ''),
-      shareCount: _.get(payload, 'shareCount', '')
+      image: _.get(payload, 'image', false),
+      publisherName: _.get(payload, 'publisher.name', false),
+      title: _.get(payload, 'title', false),
+      sharedBy: _.get(payload, 'sharedBy', false),
+      shareCount: _.get(payload, 'shareCount', false)
     }
-    if (data['sharedBy']['firstName'] && data['sharedBy']['lastName']) {
-      data['sharedByFriend'] = data['sharedBy']['firstName'] + ' ' + data['sharedBy']['lastName']
-      data['shareCount'] = data['shareCount'] - 1
-    } else {
-      data['sharedByFriend'] = false
-    }
-
-    if (data['shareCount'] > 1) {
-      data['sharedByOther'] = data['shareCount'] + ' others'
-    } else if (data['shareCount'] == 1) {
-      data['sharedByOther'] = data['shareCount'] + ' other'
-    } else if (!data['shareCount'] || data['shareCount'] == 0) {
-      data['sharedByOther'] = false
-    }
-
-    if (data['sharedByFriend'] && data['sharedByOther']) {
-      data['sharedBy'] = 'Shared by ' + data['sharedByFriend'] + ' and ' + data['sharedByOther']
-    } else if (data['sharedByFriend'] && !data['sharedByOther']) {
-      data['sharedBy'] = 'Shared by ' + data['sharedByFriend']
-    } else if (!data['sharedByFriend'] && data['sharedByOther']) {
-      data['sharedBy'] = 'Shared by ' + data['sharedByOther']
-    } else {
-      data['sharedBy'] = ''
+    for (var item in data) {
+      if (data.hasOwnProperty(item) && !data[item]) {
+        delete data[item]
+      }
     }
 
     return data
@@ -72,6 +69,15 @@ export default class ContentCard extends Component {
 
   render() {
     const data = this.sanitizeData(this.props.payload);
+    console.log(data);
+    this.data = {
+      ...this.data,
+      ...data
+    }
+    console.log(this.data);
+    if (this.data.image) {
+      this.defaultImage = false
+    }
     return (
       <TouchableWithoutFeedback
         onPress={() => this.tap(this.props.payload)}
@@ -80,11 +86,16 @@ export default class ContentCard extends Component {
           <View
             style={styles.imageBox}
           >
-            <Image
-              style={styles.image}
-              source={{uri: data.image}}
-              defaultSource={article}
-            />
+            { this.defaultImage
+              ? <Image
+                style={styles.image}
+                source={article}
+              />
+              : <Image
+                style={styles.image}
+                source={{uri: this.data.image}}
+              />
+            }
             <View
               style={styles.triangleCorner}
             />
@@ -93,17 +104,17 @@ export default class ContentCard extends Component {
             <View style={styles.titlePublisherBox}>
               <Text
                 style={styles.titleText}>
-                {data.title}
+                {this.data.title}
               </Text>
               <Text
                 style={styles.publisherText}>
-                {data.publisherName}
+                {this.data.publisherName}
               </Text>
             </View>
             <View style={styles.sharedByBox}>
               <Text
                 style={styles.sharedByText}>
-                {data.sharedBy}
+                {this.data.sharedByFirstName} {this.data.sharedByFirstName}
               </Text>
             </View>
           </View>

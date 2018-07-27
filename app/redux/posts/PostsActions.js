@@ -30,7 +30,7 @@ export const types = {
 }
 
 // Helper Functions
-const pageLimter = 20
+const pageLimter = 1
 
 const firstFeedPosts = (dispatch) => {
   dispatch({ type: types.LOAD_FEED_POSTS_START });
@@ -201,16 +201,7 @@ export const flattenPosts = (posts) => {
     if (posts.hasOwnProperty(postId)) {
       data.push({
         key: postId,
-        image: posts[postId]['image'],
-        publisher: posts[postId]['publisher'],
-        title: posts[postId]['title'],
-        url: posts[postId]['url'],
-        sharedBy: {
-          firstName: _.get(posts[postId]['sharedBy'], 'firstName', ''),
-          lastName: _.get(posts[postId]['sharedBy'], 'lastName', '')
-        },
-        shareCount: posts[postId]['shareCount'],
-        updatedAt: posts[postId]['updatedAt']
+        ...posts[postId]
       })
     }
   }

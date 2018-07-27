@@ -74,11 +74,16 @@ export const saveUserInfo = (user, data) => {
           updatedAt: ts,
           firstName: data.first_name,
           lastName: data.last_name,
-          email: data.email
+          email: data.email,
+          facebookProfilePhoto: data.picture.data.url,
         })
       } else {
         ref.set({
           updatedAt: ts,
+          firstName: data.first_name,
+          lastName: data.last_name,
+          email: data.email,
+          facebookProfilePhoto: data.picture.data.url,
         }, {
           merge: true
         })
@@ -115,6 +120,7 @@ export function facebookAuth(error, result) {
     try {
       dispatch({ type: types.FACEBOOK_AUTH_START });
       const tokenData = await getFBToken(error, result);
+      console.log(tokenData);
       dispatch({ type: types.FACEBOOK_AUTH_SUCCESS });
 
       storeAccessToken(tokenData.accessToken);
@@ -122,10 +128,12 @@ export function facebookAuth(error, result) {
 
       dispatch({ type: types.AUTH_TOKEN_START });
       const credential = getAuthCredential(tokenData.accessToken);
+      console.log(credential);
       dispatch({ type: types.AUTH_TOKEN_SUCCESS });
 
       dispatch({ type: types.CURRENT_USER_START });
       const currentUser = await getCurrentUser(credential);
+      console.log(currentUser);
       dispatch({ type: types.CURRENT_USER_SUCCESS });
 
       dispatch({ type: types.UPDATE_USER_START });

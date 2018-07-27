@@ -75,7 +75,7 @@ class Feed extends Component {
         <Text>LOADING</Text>
       );
     }
-
+    console.log(this.props.posts.feedPosts);
     return (
       <List
         data={flattenPosts(this.props.posts.feedPosts)}

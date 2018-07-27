@@ -8,12 +8,12 @@ service cloud.firestore {
     }
 
     match /users/{user} {
-      allow create: if true;
+      allow create, update: if nestedUser(user);
       allow get: if true;
       allow read: if isSignedIn();
 
       match /shares/{share} {
-        allow create: if nestedUser(user);
+        allow create, update: if nestedUser(user);
         allow read: if isSignedIn();
       }
 

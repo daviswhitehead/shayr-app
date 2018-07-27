@@ -10,7 +10,7 @@ const initialState = {
 }
 
 function feedReducer(state = initialState, action) {
-  console.log(action.type);
+  // console.log(action.type);
   // Failure Handling
   if (action.type.substr(action.type.length - 4) === 'FAIL') {
     return {
@@ -45,7 +45,6 @@ function feedReducer(state = initialState, action) {
         feedPosts: {
           ...state.feedPosts,
           ...action.payload,
-          refreshing: false
         }
       }
     }
