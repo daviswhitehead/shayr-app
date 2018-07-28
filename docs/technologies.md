@@ -1,6 +1,6 @@
 # Technologies
 ### Core
-- [React Native](#React Native)  
+- [React Native](#react-native)  
 - Xcode  
 - Android Studio  
 - Firebase  
