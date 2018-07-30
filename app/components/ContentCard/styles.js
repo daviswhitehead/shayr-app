@@ -3,58 +3,59 @@ import { StyleSheet } from 'react-native';
 import { colors } from '../../styles/Colors';
 
 export default StyleSheet.create({
-  card: {
+  cardBox: {
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'center',
+    backgroundColor: 'white',
+  },
+  headerBox: {
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',
-    backgroundColor: 'white'
+    // borderColor: 'red',
+    // borderWidth: 1,
+  },
+  profileImageBox: {
+    margin: 10,
+  },
+  profileImage: {
+    height: 30,
+    width: 30,
+    borderRadius: 15,
+  },
+  profileNameBox: {
+  },
+  profileName: {
+  },
+  contentBox: {
+    flex: 3,
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    backgroundColor: 'white',
   },
   imageBox: {
-    width: 110,
-    height: 100,
-    // 70% mask
+    margin: 10,
   },
   image: {
     width: 100,
     height: 100,
-    // 70% mask
+    borderRadius: 10,
   },
-  triangleCorner: {
-    position: 'absolute',
-    width: 0,
-    height: 0,
-    backgroundColor: 'transparent',
-    borderStyle: 'solid',
-    borderRightWidth: 30,
-    borderTopWidth: 100,
-    borderRightColor: 'transparent',
-    borderTopColor: 'white',
-    transform: [
-      {rotate: '180deg'}
-    ],
-    paddingRight: 10,
-    marginLeft: 70,
-    shadowColor: colors.SHADOW,
-    shadowOffset: { width: 8, height: 0 },
-    shadowOpacity: 0.20,
-    shadowRadius: 3,
+  textActionsBox: {
+    flex: 3,
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    backgroundColor: 'white',
   },
   textBox: {
     flex: 1,
     flexDirection: 'column',
     backgroundColor: 'white',
-    marginLeft: 0,
-  },
-  titlePublisherBox: {
-    flex: 2,
-    flexDirection: 'column',
-    justifyContent: 'center',
-  },
-  sharedByBox: {
-    flex: 1,
-    flexDirection: 'column',
-    justifyContent: 'flex-start',
+    marginLeft: 20,
   },
   titleText: {
     fontWeight: 'bold',
@@ -62,9 +63,10 @@ export default StyleSheet.create({
   publisherText: {
     fontWeight: 'normal',
   },
-  sharedByText: {
-    fontStyle: 'italic',
-    fontWeight: 'normal',
-    color: colors.YELLOW,
+  actionsBox: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignContent: 'center',
   },
 })
