@@ -1,6 +1,7 @@
 import { StyleSheet } from 'react-native';
 
 import { colors } from '../../styles/Colors';
+import { layout } from '../../styles/Layout';
 
 export default StyleSheet.create({
   cardBox: {
@@ -14,30 +15,31 @@ export default StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',
-    // borderColor: 'red',
-    // borderWidth: 1,
+    marginLeft: layout.MARGINLEFT,
   },
   profileImageBox: {
-    margin: 10,
+    padding: layout.PADDING,
   },
   profileImage: {
-    height: 30,
-    width: 30,
-    borderRadius: 15,
+    height: 36,
+    width: 36,
+    borderRadius: 18,
   },
   profileNameBox: {
+    padding: layout.PADDING,
   },
   profileName: {
   },
   contentBox: {
-    flex: 3,
     flexDirection: 'row',
     justifyContent: 'flex-end',
     alignItems: 'center',
     backgroundColor: 'white',
+    marginLeft: layout.MARGINLEFT,
   },
   imageBox: {
-    margin: 10,
+    padding: layout.PADDING,
+
   },
   image: {
     width: 100,
@@ -45,17 +47,16 @@ export default StyleSheet.create({
     borderRadius: 10,
   },
   textActionsBox: {
-    flex: 3,
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    backgroundColor: 'white',
-  },
-  textBox: {
     flex: 1,
     flexDirection: 'column',
+    justifyContent: 'flex-start',
     backgroundColor: 'white',
-    marginLeft: 20,
+    padding: layout.PADDING,
+  },
+  textBox: {
+    flex: 100,
+    flexDirection: 'column',
+    backgroundColor: 'white',
   },
   titleText: {
     fontWeight: 'bold',
@@ -68,5 +69,8 @@ export default StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignContent: 'center',
+  },
+  action: {
+    padding: layout.PADDING,
   },
 })
