@@ -25,6 +25,16 @@ RCT_EXPORT_MODULE();
 - (UIView*) shareView {
   NSURL *jsCodeLocation;
   
+  for (NSString* family in [UIFont familyNames])
+  {
+    NSLog(@"%@", family);
+    
+    for (NSString* name in [UIFont fontNamesForFamilyName: family])
+    {
+      NSLog(@"  %@", name);
+    }
+  }
+  
   [FIRApp configure];
   [Fabric with:@[[Crashlytics class]]];
   
