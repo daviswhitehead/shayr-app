@@ -11,6 +11,7 @@ import PropTypes from 'prop-types';
 
 import styles from './styles';
 import article from '../../assets/Article.png';
+import addActive from '../../assets/addActive/addActive.png';
 import isURL from '../../lib/Utils';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
@@ -135,7 +136,7 @@ export default class ContentCard extends Component {
               </View>
               <View style={styles.actionsBox}>
                 <View style={styles.action}>
-                  <Icon name='add' size={24} color='black' />
+                  <Image style={styles.actionImage} source={addActive}/>
                 </View>
                 <View style={styles.action}>
                   <Icon name='add' size={24} color='black' />

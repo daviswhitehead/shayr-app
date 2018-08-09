@@ -2,6 +2,7 @@ import { StyleSheet } from 'react-native';
 
 import { colors } from '../../styles/Colors';
 import { layout } from '../../styles/Layout';
+import { fonts } from '../../styles/Fonts';
 
 export default StyleSheet.create({
   cardBox: {
@@ -29,6 +30,8 @@ export default StyleSheet.create({
     padding: layout.PADDING,
   },
   profileName: {
+    ...fonts.LIGHT,
+    color: 'black',
   },
   contentBox: {
     flexDirection: 'row',
@@ -59,10 +62,12 @@ export default StyleSheet.create({
     backgroundColor: 'white',
   },
   titleText: {
-    fontWeight: 'bold',
+    ...fonts.BOLD,
+    color: 'black',
   },
   publisherText: {
-    fontWeight: 'normal',
+    ...fonts.LIGHT_ITALICS,
+    color: 'grey',
   },
   actionsBox: {
     flex: 1,
@@ -72,5 +77,9 @@ export default StyleSheet.create({
   },
   action: {
     padding: layout.PADDING,
+  },
+  actionImage: {
+    height: 24,
+    width: 24,
   },
 })
