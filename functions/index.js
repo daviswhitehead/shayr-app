@@ -84,3 +84,38 @@ exports.newPostShareResponse = functions.firestore.document('posts/{postId}/shar
         return
       })
 });
+
+exports.sendNewShayrPushNotification = functions.firestore
+  .document("posts/{postId}/shares/{shareId}")
+  .onCreate(event => {
+    // gets standard JavaScript object from the new write
+    const writeData = event.data.data();
+    // access data necessary for push notification
+    const sender = writeData.user.id;
+    const senderName = writeData.user.firstName;
+    // the payload is what will be delivered to the device(s)
+    let payload = {
+      notification: {
+        title: 'New Shayr',
+        body: `${senderName} shayred something new!`,
+        badge: "1",
+        channelId: 'new-shayr-channel'
+      }
+    }
+
+    // or collect them by accessing your database
+    var pushToken = "";
+    return admin
+      .firestore()
+      .collection("users")
+      .where('pushToken', '>=', '')
+      .get()
+      .then(query => {
+        query  
+        .forEach(doc => {
+          pushToken = doc.data().pushToken;
+          // sendToDevice can also accept an array of push tokens
+          return admin.messaging().sendToDevice(pushToken, payload);
+        })
+      })
+  });

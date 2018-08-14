@@ -63,8 +63,32 @@ export const getCurrentUser = (credential) => {
   return firebase.auth().signInAndRetrieveDataWithCredential(credential);
 }
 
+export const pushNotificationListener = () => {
+  return firebase.auth;
+}
+
+export const savePushToken = (user) => {
+  fcm = firebase.messaging();
+  // requests push notification permissions from the user
+  fcm.requestPermission();
+  // gets the device's push token
+  return fcm.getToken().then(token => {
+    console.log('enter token');
+    console.log(token);
+    // stores the token in the user's document
+    return firebase.firestore().collection("users").doc(user.uid).update({ pushToken: token, updatedAt: ts })
+      .then((ref) => {
+        console.log('push token update success');
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  });
+}
+
 export const saveUserInfo = (user, data) => {
   const ref = firebase.firestore().collection('users').doc(getUserId(user));
+  console.log('start saving user');
   return ref
     .get()
     .then((doc) => {
@@ -177,6 +201,7 @@ export function authSubscription() {
     return firebase.auth().onAuthStateChanged((user) => {
       if (user) {
         dispatch(authUser(user))
+        savePushToken(user)
       // } else {
       //   dispatch(signOutUser())
       }
