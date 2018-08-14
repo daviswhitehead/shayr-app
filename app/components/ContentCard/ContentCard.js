@@ -14,6 +14,7 @@ import article from '../../assets/Article.png';
 import addActive from '../../assets/addActive/addActive.png';
 import isURL from '../../lib/Utils';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import ActionCounter from '../ActionCounter';
 
 import _ from 'lodash';
 
@@ -144,9 +145,12 @@ export default class ContentCard extends Component {
                 <View style={styles.action}>
                   <Icon name='add' size={24} color='black' />
                 </View>
-                <View style={styles.action}>
-                  <Icon name='add' size={24} color='black' />
-                </View>
+                <ActionCounter
+                  actionType={'shayr'}
+                  actionCount={0}
+                  actionUser={false}
+                >
+                </ActionCounter>
               </View>
             </View>
           </View>
