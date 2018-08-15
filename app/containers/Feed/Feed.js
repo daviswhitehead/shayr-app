@@ -47,7 +47,6 @@ const mapDispatchToProps = (dispatch) => ({
 
 class Feed extends Component {
   componentDidMount() {
-    console.log('feed mount');
     this.props.loadFeedPosts();
     this.unsubscribe = this.props.loadQueuePosts(this.props.auth.user.uid);
   }
@@ -75,7 +74,7 @@ class Feed extends Component {
         <Text>LOADING</Text>
       );
     }
-    
+
     return (
       <List
         data={flattenPosts(this.props.posts.feedPosts)}

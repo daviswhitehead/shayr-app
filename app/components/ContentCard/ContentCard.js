@@ -41,7 +41,40 @@ export default class ContentCard extends Component {
   }
 
   static propTypes = {
-    payload: PropTypes.object.isRequired
+    payload: PropTypes.shape({
+      image: PropTypes.string.isRequired,
+      title: PropTypes.string.isRequired,
+    }),
+  };
+
+  static defaultProps = {
+    payload: {
+      image: '',
+      publisherName: 'Missing',
+      title: 'Missing',
+      sharedBy: {
+        facebookProfilePhoto: '',
+        firstName: 'Missing',
+        lastName: 'Missing',
+      },
+      medium: 'Missing',
+      shayrs: {
+        count: 0,
+        user: false,
+      },
+      adds: {
+        count: 0,
+        user: false,
+      },
+      dones: {
+        count: 0,
+        user: false,
+      },
+      likes: {
+        count: 0,
+        user: false,
+      },
+    }
   };
 
   sanitizeData = (payload) => {
@@ -85,7 +118,6 @@ export default class ContentCard extends Component {
       ...this.data,
       ...data
     }
-    console.log(this.data);
     return (
       <TouchableWithoutFeedback
         onPress={() => this.tap(this.props.payload)}
@@ -136,21 +168,26 @@ export default class ContentCard extends Component {
                 </Text>
               </View>
               <View style={styles.actionsBox}>
-                <View style={styles.action}>
-                  <Image style={styles.actionImage} source={addActive}/>
-                </View>
-                <View style={styles.action}>
-                  <Icon name='add' size={24} color='black' />
-                </View>
-                <View style={styles.action}>
-                  <Icon name='add' size={24} color='black' />
-                </View>
                 <ActionCounter
                   actionType={'shayr'}
-                  actionCount={0}
+                  actionCount={10}
                   actionUser={false}
-                >
-                </ActionCounter>
+                />
+                <ActionCounter
+                  actionType={'add'}
+                  actionCount={10}
+                  actionUser={false}
+                />
+                <ActionCounter
+                  actionType={'done'}
+                  actionCount={10}
+                  actionUser={false}
+                />
+                <ActionCounter
+                  actionType={'like'}
+                  actionCount={10}
+                  actionUser={false}
+                />
               </View>
             </View>
           </View>

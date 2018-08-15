@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import {
+  Text,
   View,
   Image,
   // TouchableWithoutFeedback, add touching
@@ -24,63 +25,71 @@ import likeActive from '../../assets/likeActive/likeActive.png';
 import likeInactive from '../../assets/likeInactive/likeInactive.png';
 import likeUser from '../../assets/likeUser/likeUser.png';
 
+const icons = {
+  shayr: {
+    active: shayrActive,
+    inactive: shayrInactive,
+    user: shayrUser,
+  },
+  add: {
+    active: addActive,
+    inactive: addInactive,
+    user: addUser,
+  },
+  done: {
+    active: doneActive,
+    inactive: doneInactive,
+    user: doneUser,
+  },
+  like: {
+    active: likeActive,
+    inactive: likeInactive,
+    user: likeUser,
+  },
+};
+
 export default class ActionCounter extends Component {
-  constructor() {
-    super();
-    this.iconLookup = {
-      shayr: {
-        active: shayrActive,
-        inactive: shayrInactive,
-        user: shayrUser,
-      },
-      add: {
-        active: addActive,
-        inactive: addInactive,
-        user: addUser,
-      },
-      done: {
-        active: doneActive,
-        inactive: doneInactive,
-        user: doneUser,
-      },
-      like: {
-        active: likeActive,
-        inactive: likeInactive,
-        user: likeUser,
-      },
-    };
-    this.showCount = false;
-    this.iconState = 'inactive';
-  }
 
   static propTypes = {
     actionType: PropTypes.string.isRequired,
-    actionCount: PropTypes.int.isRequired,
+    actionCount: PropTypes.number.isRequired,
     actionUser: PropTypes.bool.isRequired,
   };
 
-  componentDidMount() {
-    if (this.props.actionCount > 0) {
-      this.iconState = 'active';
-      this.showCount = true;
+  static defaultProps = {
+    actionType: null,
+    actionCount: 0,
+    actionUser: false,
+  };
+
+  getIconState = (count, user) => {
+    let iconState = 'inactive';
+    let showCount = false;
+
+    if (count > 0) {
+      iconState = 'active';
+      showCount = true;
     }
 
-    if (this.props.actionUser) {
-      this.iconState = 'user';
+    if (user) {
+      iconState = 'user';
     }
+
+    return [iconState, showCount]
   }
 
   render() {
-    if (!this.iconLookup.hasOwnProperty(this.props.actionType)) {
+    if (!icons.hasOwnProperty(this.props.actionType)) {
       return (
         <View style={styles.container}>
           <View style={styles.iconLoading}/>
         </View>
       );
     }
+    const [iconState, showCount] = this.getIconState(this.props.actionCount, this.props.actionUser);
 
-    const icon = this.iconLookup[this.props.actionType][this.iconState];
-    const count = this.showCount ? this.props.actionCount : '';
+    const icon = icons[this.props.actionType][iconState];
+    const count = showCount ? this.props.actionCount : '';
 
     return (
       <View style={styles.container}>

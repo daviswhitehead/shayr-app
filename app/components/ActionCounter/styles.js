@@ -6,18 +6,24 @@ import { fonts } from '../../styles/Fonts';
 
 export default StyleSheet.create({
   container: {
-    padding: layout.PADDING,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   icon: {
-    height: 24,
-    width: 24,
+    height: 16,
+    width: 16,
+    resizeMode: 'contain',
   },
   count: {
-    ...fonts.LIGHT,
+    ...fonts.BOLD,
+    color: colors.YELLOW,
+    padding: layout.PADDING,
+    fontSize: 16,
   },
   iconLoading: {
-    height: 24,
-    width: 24,
+    height: 16,
+    width: 16,
     backgroundColor: colors.GRAY,
   },
 })

@@ -1,8 +1,8 @@
 export const colors = {
   YELLOW: '#F2C94C',
-  BLACK: 'black',
+  BLACK: '#000000',
   SHADOW: '#000',
   GREEN: '#27AE60',
   RED: '#F5402F',
-  GRAY: 'gray',
+  GRAY: '#DADADA',
 };

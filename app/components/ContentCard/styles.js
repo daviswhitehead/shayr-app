@@ -25,6 +25,7 @@ export default StyleSheet.create({
     height: 36,
     width: 36,
     borderRadius: 18,
+    resizeMode: 'cover',
   },
   profileNameBox: {
     padding: layout.PADDING,
