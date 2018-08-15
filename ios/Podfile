@@ -7,6 +7,7 @@ def shared_pods
   pod 'Firebase/Firestore', '4.13.0'
   pod 'Fabric', '1.7.5'
   pod 'Crashlytics', '3.10.1'
+  pod 'Firebase/Messaging', '4.13.0'
 end
 
 target 'shayr' do
