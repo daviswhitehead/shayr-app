@@ -93,3 +93,6 @@ Fabric manages our beta testers and adds crash reporting.
 # [Facebook SDK](https://developers.facebook.com/docs/)
 ### Description
 Authentication is set up through Facebook Login.
+
+### Troubleshooting
+If you run into issues with a missing FBSDK file, add the FacebookSDK folder to `~/Documents/`
