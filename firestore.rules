@@ -1,20 +1,34 @@
 service cloud.firestore {
   match /databases/{database}/documents {
+    function authUser() {
+      return request.auth.uid
+    }
     function isSignedIn() {
       return request.auth.uid != null;
     }
     function nestedUser(user) {
       return request.auth.uid == user;
     }
+    function prefix() {
+      return /databases/{database}/documents;
+    }
 
     match /users/{user} {
-      allow create, update: if nestedUser(user);
+      allow create: if true;
       allow get: if true;
       allow read: if isSignedIn();
+      allow update: if nestedUser(user);
 
       match /shares/{share} {
-        allow create, update: if nestedUser(user);
+        allow create: if nestedUser(user);
         allow read: if isSignedIn();
+      }
+
+      match /adds/{add} {
+        allow read: if isSignedIn();
+        allow write: if nestedUser(user) && getAfter(
+          /$(prefix())/posts/$(request.resource.data.post)/adds/$(request.resource.id)
+        ).data.updatedAt == request.time;
       }
 
       match /savedPosts/{savedPost} {
@@ -30,6 +44,13 @@ service cloud.firestore {
 
     match /posts/{posts=**} {
       allow read: if isSignedIn();
+
+      match /adds/{add} {
+        allow read: if isSignedIn();
+        allow write: if isSignedIn() && getAfter(
+          /$(prefix())/users/$(authUser())/adds/$(request.resource.id)
+        ).data.updatedAt == request.time;
+      }
     }
   }
 }
