@@ -25,10 +25,18 @@ service cloud.firestore {
       }
 
       match /adds/{add} {
+        allow create: if nestedUser(user);
         allow read: if isSignedIn();
-        allow write: if nestedUser(user) && getAfter(
-          /$(prefix())/posts/$(request.resource.data.post)/adds/$(request.resource.id)
-        ).data.updatedAt == request.time;
+      }
+
+      match /dones/{done} {
+        allow create: if nestedUser(user);
+        allow read: if isSignedIn();
+      }
+
+      match /likes/{like} {
+        allow create: if nestedUser(user);
+        allow read: if isSignedIn();
       }
 
       match /savedPosts/{savedPost} {
@@ -45,12 +53,6 @@ service cloud.firestore {
     match /posts/{posts=**} {
       allow read: if isSignedIn();
 
-      match /adds/{add} {
-        allow read: if isSignedIn();
-        allow write: if isSignedIn() && getAfter(
-          /$(prefix())/users/$(authUser())/adds/$(request.resource.id)
-        ).data.updatedAt == request.time;
-      }
     }
   }
 }
