@@ -5,54 +5,111 @@ import {
   getDocShares,
   getRefData
 } from '../../lib/FirebaseHelpers';
-import { addPost } from '../../lib/FirebaseHelpers';
 import _ from 'lodash';
 
 // Action Types
 export const types = {
-  SHAYR_START: 'SHAYR_START',
-  SHAYR_SUCCESS: 'SHAYR_SUCCESS',
-  SHAYR_FAIL: 'SHAYR_FAIL',
-  ADD_START: 'ADD_START',
-  ADD_SUCCESS: 'ADD_SUCCESS',
-  ADD_FAIL: 'ADD_FAIL',
-  DONE_START: 'DONE_START',
-  DONE_SUCCESS: 'DONE_SUCCESS',
-  DONE_FAIL: 'DONE_FAIL',
-  LIKE_START: 'LIKE_START',
-  LIKE_SUCCESS: 'LIKE_SUCCESS',
-  LIKE_FAIL: 'LIKE_FAIL',
-
+  NEW_ACTION_START: 'NEW_ACTION_START',
+  NEW_ACTION_SUCCESS: 'NEW_ACTION_SUCCESS',
+  NEW_ACTION_FAIL: 'NEW_ACTION_FAIL',
+  TOGGLE_ACTION_START: 'TOGGLE_ACTION_START',
+  TOGGLE_ACTION_SUCCESS: 'TOGGLE_ACTION_SUCCESS',
+  TOGGLE_ACTION_FAIL: 'TOGGLE_ACTION_FAIL',
 };
 
-addPost(this.props.auth.user, payload['key']);
+const newActionExists = (documentSnapshot) => {
+  documentSnapshot.ref.set({
+    updatedAt: ts,
+    visible: true
+  }, {
+    merge: true
+  })
+}
 
-export const addPost = (user, postId) => {
-  return function(dispatch) {
-    dispatch({ type: types.ADD_START });
-    const ref = firebase.firestore().collection('users').doc(getUserId(user))
-    .collection('postsMeta').doc(postId)
-    return ref
+const toggleActionExists = (documentSnapshot) => {
+  documentSnapshot.ref.set({
+    updatedAt: ts,
+    visible: !documentSnapshot.data().visible
+  }, {
+    merge: true
+  })
+}
+
+const actionWrite = (actionType, userId, postId, writeType) => {
+  const ref = firebase.firestore()
+    .collection('users')
+    .doc(userId)
+    .collection(actionType + 's');
+
+  return ref
+    .where('post', '==', firebase.firestore().collection('posts').doc(postId))
     .get()
-    .then((doc) => {
-      if (!doc.exists) {
-        ref.set({
-          addCreatedAt: ts,
-          addUpdatedAt: ts,
-          addVisible: true
-        })
-      } else {
-        ref.set({
-          addUpdatedAt: ts,
-          addVisible: true
-        }, {
-          merge: true
+    .then((querySnapshot) => {
+      if (querySnapshot.empty) {
+        ref.add({
+          createdAt: ts,
+          post: firebase.firestore().collection('posts').doc(postId),
+          updatedAt: ts,
+          user: firebase.firestore().collection('users').doc(userId),
+          visible: true
         })
       }
-      console.log('addPost success');
+      else if (querySnapshot.size == 1) {
+        querySnapshot.forEach((documentSnapshot) => {
+          if (writeType == 'new') {
+            newActionExists(documentSnapshot)
+          } else if (writeType == 'toggle') {
+            toggleActionExists(documentSnapshot)
+          }
+        })
+      }
     })
-    .catch((error) => {
-      console.error(error);
+}
+
+export const newAction = (actionType, userId, postId) => {
+  return function(dispatch) {
+    dispatch({
+      type: types.NEW_ACTION_START,
+      actionType: actionType
     });
+    return actionWrite(actionType, userId, postId, 'new')
+      .then((value) => {
+        dispatch({
+          type: types.NEW_ACTION_SUCCESS,
+          actionType: actionType
+        });
+      })
+      .catch((e) => {
+        console.error(e);
+        dispatch({
+          type: types.NEW_ACTION_FAIL,
+          actionType: actionType,
+          payload: e
+        });
+      });
+  }
+}
+
+export const toggleAction = (actionType, userId, postId) => {
+  return function(dispatch) {
+    dispatch({
+      type: types.TOGGLE_ACTION_START,
+      actionType: actionType
+    });
+    return actionWrite(actionType, userId, postId, 'toggle')
+      .then((value) => {
+        dispatch({
+          type: types.TOGGLE_ACTION_SUCCESS,
+          actionType: actionType
+        });
+      })
+      .catch((e) => {
+        console.error(e);
+        dispatch({
+          type: types.TOGGLE_ACTION_FAIL,
+          actionType: actionType,
+          payload: e
+        });
+      });
   }
 }

@@ -25,9 +25,12 @@ import {
   loadQueuePosts,
 } from '../../redux/posts/PostsActions';
 import {
+  newAction,
+  toggleAction,
+} from '../../redux/postActions/PostActionsActions';
+import {
   signOutUser,
 } from '../../redux/authentication/AuthenticationActions';
-import { addPost } from '../../lib/FirebaseHelpers';
 
 const mapStateToProps = (state) => {
   return {
@@ -43,6 +46,8 @@ const mapDispatchToProps = (dispatch) => ({
   refreshFeedPosts: () => dispatch(refreshFeedPosts()),
   signOutUser: () => dispatch(signOutUser()),
   loadQueuePosts: (userId) => dispatch(loadQueuePosts(userId)),
+  newAction: (actionType, userId, postId) => dispatch(newAction(actionType, userId, postId)),
+  toggleAction: (actionType, userId, postId) => dispatch(toggleAction(actionType, userId, postId)),
 });
 
 class Feed extends Component {
@@ -56,7 +61,7 @@ class Feed extends Component {
   }
 
   addToQueue = (payload) => {
-    addPost(this.props.auth.user, payload['key']);
+    this.props.toggleAction('add', this.props.auth.user.uid, payload['key']);
     let toast = Toaster('added to queue');
   }
 
