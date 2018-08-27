@@ -1603,7 +1603,7 @@
 				CODE_SIGN_ENTITLEMENTS = shayr/shayr.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 16;
+				CURRENT_PROJECT_VERSION = 18;
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = D5PU696EY8;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1629,7 +1629,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.daviswhitehead.shayr.ios;
 				PRODUCT_NAME = shayr;
-				PROVISIONING_PROFILE = "79422a41-6d0f-4716-a7e8-63a814ca54ea";
+				PROVISIONING_PROFILE = "d65980fc-33cb-4157-be25-8aef89fbec1f";
 				PROVISIONING_PROFILE_SPECIFIER = "match Development com.daviswhitehead.shayr.ios";
 				TARGETED_DEVICE_FAMILY = 1;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -1645,7 +1645,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 16;
+				CURRENT_PROJECT_VERSION = 18;
 				DEVELOPMENT_TEAM = D5PU696EY8;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
