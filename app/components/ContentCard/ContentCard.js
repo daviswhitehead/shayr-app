@@ -95,7 +95,7 @@ export default class ContentCard extends Component {
       this.contentImage = true
     }
     if (_.get(data, 'sharedBy.facebookProfilePhoto', false)) {
-      // this.profileImage = true
+      this.profileImage = true
     }
 
     return data
