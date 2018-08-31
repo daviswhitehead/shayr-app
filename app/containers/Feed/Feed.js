@@ -4,6 +4,7 @@ import {
   Text,
   TouchableOpacity,
   LayoutAnimation,
+  Notification
 } from 'react-native';
 import { connect } from 'react-redux';
 import { NavigationActions } from 'react-navigation';
@@ -50,6 +51,13 @@ class Feed extends Component {
     console.log('feed mount');
     this.props.loadFeedPosts();
     this.unsubscribe = this.props.loadQueuePosts(this.props.auth.user.uid);
+    this.notificationDisplayedListener = firebase.notifications().onNotificationDisplayed((notification) => {
+      // Process your notification as required
+      // ANDROID: Remote notifications do not contain the channel ID. You will have to specify this manually if you'd like to re-display the notification.
+    });
+    this.notificationListener = firebase.notifications().onNotification((notification) => {
+      // Process your notification as required
+    });
   }
 
   componentWillUnmount() {
