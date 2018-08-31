@@ -87,38 +87,42 @@ exports.newPostShareResponse = functions.firestore.document('posts/{postId}/shar
 
 exports.sendNewShayrPushNotification = functions.firestore
   .document("posts/{postId}/shares/{shareId}")
-  .onCreate(async data => {
+  .onCreate(data => {
     // gets standard JavaScript object from the new write
     const writeData = data.data();
     // access data necessary for push notification
-    const senderName = await writeData.user.get()
-      .then((data) => {
-        return data.data().firstName;
-      });
-    // const senderName = sender.firstName;
-    // the payload is what will be delivered to the device(s)
-    let payload = {
-      notification: {
-        title: 'New Shayr',
-        body: `${senderName} shayred something new!`,
-        badge: "1",
-        channelId: 'new-shayr-channel'
-      }
-    }
+    writeData.user.get()
+      .then((user) => {
+        const senderName = user.data().firstName;
+        // const senderName = sender.firstName;
+        // the payload is what will be delivered to the device(s)
+        let payload = {
+          notification: {
+            title: 'New Shayr',
+            body: `${senderName} shayred something new!`,
+            badge: "1",
+            channelId: 'new-shayr-channel'
+          }
+        }
 
-    // or collect them by accessing your database
-    var pushToken = "";
-    return admin
-      .firestore()
-      .collection("users")
-      .where('pushToken', '>=', '')
-      .get()
-      .then(query => {
-        query
-        .forEach(doc => {
-          pushToken = doc.data().pushToken;
-          // sendToDevice can also accept an array of push tokens
-          return admin.messaging().sendToDevice(pushToken, payload);
-        })
+        // or collect them by accessing your database
+        var pushToken = "";
+        return admin
+          .firestore()
+          .collection("users")
+          .where('pushToken', '>=', '')
+          .get()
+          .then(query => {
+            return query
+              .forEach(doc => {
+                pushToken = doc.data().pushToken;
+                // sendToDevice can also accept an array of push tokens
+                return admin.messaging().sendToDevice(pushToken, payload);
+              });
+          })
+
+
       })
+      .catch(error => {console.log(error)});
+
   });
