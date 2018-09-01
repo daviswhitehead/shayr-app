@@ -60,7 +60,7 @@ const firstFeedPosts = (dispatch) => {
       console.error(e);
       dispatch({
         type: types.LOAD_FEED_POSTS_FAIL,
-        payload: e
+        error: e
       });
     });
 }
@@ -96,7 +96,7 @@ const nextFeedPosts = (dispatch, lastPost) => {
       console.error(e);
       dispatch({
         type: types.PAGINATE_FEED_POSTS_FAIL,
-        payload: e
+        error: e
       });
     });
 }
@@ -124,7 +124,7 @@ const firstQueuePosts = (dispatch, userId) => {
     //   console.error(e);
     //   dispatch({
     //     type: types.LOAD_QUEUE_POSTS_FAIL,
-    //     payload: e
+    //     error: e
     //   });
     // });
 }
@@ -152,7 +152,7 @@ const getPostMeta = async (dispatch, posts, doc) => {
     console.error(e);
     dispatch({
       type: types.LOAD_POST_META_FAIL,
-      payload: e
+      error: e
     });
   }
 

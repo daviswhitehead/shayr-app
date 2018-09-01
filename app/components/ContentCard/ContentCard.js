@@ -11,9 +11,7 @@ import PropTypes from 'prop-types';
 
 import styles from './styles';
 import article from '../../assets/Article.png';
-import addActive from '../../assets/addActive/addActive.png';
-import isURL from '../../lib/Utils';
-import Icon from 'react-native-vector-icons/MaterialIcons';
+// import isURL from '../../lib/Utils'; check to make sure url is openable
 import ActionCounter from '../ActionCounter';
 
 import _ from 'lodash';

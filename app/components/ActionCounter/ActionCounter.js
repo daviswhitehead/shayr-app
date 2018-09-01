@@ -7,6 +7,11 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types';
 
+import {
+  newAction,
+  toggleAction,
+} from '../../redux/postActions/PostActionsActions';
+
 import styles from './styles';
 
 import shayrActive from '../../assets/shayrActive/shayrActive.png';
@@ -54,6 +59,8 @@ export default class ActionCounter extends Component {
     actionType: PropTypes.string.isRequired,
     actionCount: PropTypes.number.isRequired,
     actionUser: PropTypes.bool.isRequired,
+    // userId: PropTypes.bool.isRequired,
+    // postId: PropTypes.bool.isRequired,
   };
 
   static defaultProps = {

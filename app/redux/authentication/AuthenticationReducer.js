@@ -3,7 +3,7 @@ import { types } from './AuthenticationActions';
 const initialState = {
   user: null,
   accessTokenSaved: false,
-  error: null
+  error: null,
 }
 
 function authenticationReducer(state = initialState, action) {
@@ -11,7 +11,7 @@ function authenticationReducer(state = initialState, action) {
   if (action.type.substr(action.type.length - 4) === 'FAIL') {
     return {
       ...state,
-      error: action.payload
+      error: action.error
     }
   }
 

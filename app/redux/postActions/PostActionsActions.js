@@ -1,11 +1,5 @@
 import firebase from 'react-native-firebase';
-import {
-  ts,
-  getUserId,
-  getDocShares,
-  getRefData
-} from '../../lib/FirebaseHelpers';
-import _ from 'lodash';
+import { ts } from '../../lib/FirebaseHelpers';
 
 // Action Types
 export const types = {
@@ -84,7 +78,7 @@ export const newAction = (actionType, userId, postId) => {
         dispatch({
           type: types.NEW_ACTION_FAIL,
           actionType: actionType,
-          payload: e
+          error: e
         });
       });
   }
@@ -108,7 +102,7 @@ export const toggleAction = (actionType, userId, postId) => {
         dispatch({
           type: types.TOGGLE_ACTION_FAIL,
           actionType: actionType,
-          payload: e
+          error: e
         });
       });
   }

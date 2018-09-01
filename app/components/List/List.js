@@ -8,6 +8,7 @@ import {
   TouchableHighlight
 } from 'react-native';
 import PropTypes from 'prop-types';
+import ContentCard from '../ContentCard';
 
 import styles from './styles';
 import SwipeCard from '../SwipeCard';
@@ -35,7 +36,7 @@ export default class List extends Component {
     return (
       <View style={styles.box}>
         <SwipeCard
-          payload={item}
+          card={<ContentCard payload={item} />}
           swipeLeftToRightUI={this.props.swipeLeftToRightUI}
           swipeLeftToRightAction={this.props.swipeLeftToRightAction}
           swipeRightToLeftUI={this.props.swipeRightToLeftUI}
@@ -44,6 +45,19 @@ export default class List extends Component {
       </View>
     )
   };
+  // renderItem = ({item}) => {
+  //   return (
+  //     <View style={styles.box}>
+  //       <SwipeCard
+  //         payload={item}
+  //         swipeLeftToRightUI={this.props.swipeLeftToRightUI}
+  //         swipeLeftToRightAction={this.props.swipeLeftToRightAction}
+  //         swipeRightToLeftUI={this.props.swipeRightToLeftUI}
+  //         swipeRightToLeftAction={this.props.swipeRightToLeftAction}
+  //       />
+  //     </View>
+  //   )
+  // };
 
   renderSeparator = () => {
     return (

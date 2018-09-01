@@ -61,7 +61,7 @@ class Feed extends Component {
   }
 
   addToQueue = (payload) => {
-    this.props.toggleAction('add', this.props.auth.user.uid, payload['key']);
+    this.props.newAction('add', this.props.auth.user.uid, payload['key']);
     let toast = Toaster('added to queue');
   }
 

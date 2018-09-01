@@ -143,7 +143,7 @@ export function facebookAuth(error, result) {
       console.error(e);
       dispatch({
         type: types.AUTH_FAIL,
-        payload: e
+        error: e
       });
     }
   }
@@ -164,7 +164,7 @@ export function signOutUser() {
       console.error(e);
       dispatch({
         type: types.AUTH_FAIL,
-        payload: e
+        error: e
       });
     }
   }
