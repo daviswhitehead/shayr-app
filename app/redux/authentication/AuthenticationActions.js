@@ -75,7 +75,7 @@ export const saveUserInfo = (user, data) => {
           firstName: data.first_name,
           lastName: data.last_name,
           email: data.email,
-          facebookProfilePhoto: data.picture.data.url,
+          facebookProfilePhoto: user._user.photoURL,
         })
       } else {
         ref.set({
@@ -83,7 +83,7 @@ export const saveUserInfo = (user, data) => {
           firstName: data.first_name,
           lastName: data.last_name,
           email: data.email,
-          facebookProfilePhoto: data.picture.data.url,
+          facebookProfilePhoto: user._user.photoURL,
         }, {
           merge: true
         })
