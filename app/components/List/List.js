@@ -36,7 +36,10 @@ export default class List extends Component {
     return (
       <View style={styles.box}>
         <SwipeCard
-          card={<ContentCard payload={item} />}
+          card={<ContentCard
+              payload={item}
+              actions={}
+          />}
           swipeLeftToRightUI={this.props.swipeLeftToRightUI}
           swipeLeftToRightAction={this.props.swipeLeftToRightAction}
           swipeRightToLeftUI={this.props.swipeRightToLeftUI}

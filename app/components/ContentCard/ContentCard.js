@@ -42,6 +42,18 @@ export default class ContentCard extends Component {
     payload: PropTypes.shape({
       image: PropTypes.string.isRequired,
       title: PropTypes.string.isRequired,
+      publisherName: PropTypes.string.isRequired,
+      sharedBy: PropTypes.shape({
+        facebookProfilePhoto: PropTypes.string,
+        firstName: PropTypes.string.isRequired,
+        lastName: PropTypes.string.isRequired,
+      }),
+      medium: PropTypes.string.isRequired,
+      shares: PropTypes.shape({
+        count: PropTypes.string,
+        firstName: PropTypes.string.isRequired,
+        lastName: PropTypes.string.isRequired,
+      }),
     }),
   };
 
@@ -93,7 +105,7 @@ export default class ContentCard extends Component {
       this.contentImage = true
     }
     if (_.get(data, 'sharedBy.facebookProfilePhoto', false)) {
-      this.profileImage = true
+      // this.profileImage = true
     }
 
     return data
