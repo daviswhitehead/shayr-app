@@ -8,7 +8,8 @@
     "dsyms": "find ./ios/ -name \"*.dSYM\" | xargs -I {} /Applications/Fabric.app/Contents/MacOS/upload-symbols -a <api-key> -p ios {}",
     "ios:beta": "bundle exec fastlane ios beta",
     "android:beta": "bundle exec fastlane android beta",
-    "debugger": "open \"rndebugger://set-debugger-loc?host=localhost&port=8081\""
+    "debugger": "open \"rndebugger://set-debugger-loc?host=localhost&port=8081\"",
+    "reset_npm": "rm -rf node_modules/ && npm cache verify && npm install"
   },
   "dependencies": {
     "eslint": "^4.19.1",
