@@ -13,8 +13,6 @@
  #import "GPBProtocolBuffers_RuntimeSupport.h"
 #endif
 
-#import <stdatomic.h>
-
 #if GPB_USE_PROTOBUF_FRAMEWORK_IMPORTS
  #import <Protobuf/Struct.pbobjc.h>
 #else
@@ -53,7 +51,7 @@ static GPBFileDescriptor *GPBStructRoot_FileDescriptor(void) {
 #pragma mark - Enum GPBNullValue
 
 GPBEnumDescriptor *GPBNullValue_EnumDescriptor(void) {
-  static _Atomic(GPBEnumDescriptor*) descriptor = nil;
+  static GPBEnumDescriptor *descriptor = NULL;
   if (!descriptor) {
     static const char *valueNames =
         "NullValue\000";
@@ -66,8 +64,7 @@ GPBEnumDescriptor *GPBNullValue_EnumDescriptor(void) {
                                            values:values
                                             count:(uint32_t)(sizeof(values) / sizeof(int32_t))
                                      enumVerifier:GPBNullValue_IsValidValue];
-    GPBEnumDescriptor *expected = nil;
-    if (!atomic_compare_exchange_strong(&descriptor, &expected, worker)) {
+    if (!OSAtomicCompareAndSwapPtrBarrier(nil, worker, (void * volatile *)&descriptor)) {
       [worker release];
     }
   }

@@ -18,7 +18,7 @@
 
 #import "GRXWriter+Transformations.h"
 
-#import "GRXMappingWriter.h"
+#import "transformations/GRXMappingWriter.h"
 
 @implementation GRXWriter (Transformations)
 

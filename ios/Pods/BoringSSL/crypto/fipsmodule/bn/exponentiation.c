@@ -622,8 +622,8 @@ int BN_mod_exp_mont(BIGNUM *rr, const BIGNUM *a, const BIGNUM *p,
 
   // Allocate a montgomery context if it was not supplied by the caller.
   if (mont == NULL) {
-    new_mont = BN_MONT_CTX_new_for_modulus(m, ctx);
-    if (new_mont == NULL) {
+    new_mont = BN_MONT_CTX_new();
+    if (new_mont == NULL || !BN_MONT_CTX_set(new_mont, m, ctx)) {
       goto err;
     }
     mont = new_mont;
@@ -666,7 +666,22 @@ int BN_mod_exp_mont(BIGNUM *rr, const BIGNUM *a, const BIGNUM *p,
     }
   }
 
-  if (!bn_one_to_montgomery(r, mont, ctx)) {
+  // Set |r| to one in Montgomery form. If the high bit of |m| is set, |m| is
+  // close to R and we subtract rather than perform Montgomery reduction.
+  if (m->d[m->top - 1] & (((BN_ULONG)1) << (BN_BITS2 - 1))) {
+    if (!bn_wexpand(r, m->top)) {
+      goto err;
+    }
+    // r = 2^(top*BN_BITS2) - m
+    r->d[0] = 0 - m->d[0];
+    for (int i = 1; i < m->top; i++) {
+      r->d[i] = ~m->d[i];
+    }
+    r->top = m->top;
+    // The upper words will be zero if the corresponding words of |m| were
+    // 0xfff[...], so call |bn_correct_top|.
+    bn_correct_top(r);
+  } else if (!BN_to_montgomery(r, BN_value_one(), mont, ctx)) {
     goto err;
   }
 
@@ -731,7 +746,8 @@ err:
 int bn_mod_exp_mont_small(BN_ULONG *r, size_t num_r, const BN_ULONG *a,
                           size_t num_a, const BN_ULONG *p, size_t num_p,
                           const BN_MONT_CTX *mont) {
-  size_t num_n = mont->N.width;
+  const BN_ULONG *n = mont->N.d;
+  size_t num_n = mont->N.top;
   if (num_n != num_a || num_n != num_r || num_n > BN_SMALL_MAX_WORDS) {
     OPENSSL_PUT_ERROR(BN, ERR_R_SHOULD_NOT_HAVE_BEEN_CALLED);
     return 0;
@@ -777,7 +793,16 @@ int bn_mod_exp_mont_small(BN_ULONG *r, size_t num_r, const BN_ULONG *a,
     }
   }
 
-  if (!bn_one_to_montgomery_small(r, num_r, mont)) {
+  // Set |r| to one in Montgomery form. If the high bit of |m| is set, |m| is
+  // close to R and we subtract rather than perform Montgomery reduction.
+  if (n[num_n - 1] & (((BN_ULONG)1) << (BN_BITS2 - 1))) {
+    // r = 2^(top*BN_BITS2) - m
+    r[0] = 0 - n[0];
+    for (size_t i = 1; i < num_n; i++) {
+      r[i] = ~n[i];
+    }
+  } else if (!bn_from_montgomery_small(r, num_r, mont->RR.d, mont->RR.top,
+                                       mont)) {
     goto err;
   }
 
@@ -841,7 +866,7 @@ int bn_mod_inverse_prime_mont_small(BN_ULONG *r, size_t num_r,
                                     const BN_ULONG *a, size_t num_a,
                                     const BN_MONT_CTX *mont) {
   const BN_ULONG *p = mont->N.d;
-  size_t num_p = mont->N.width;
+  size_t num_p = mont->N.top;
   if (num_p > BN_SMALL_MAX_WORDS || num_p == 0) {
     OPENSSL_PUT_ERROR(BN, ERR_R_SHOULD_NOT_HAVE_BEEN_CALLED);
     return 0;
@@ -876,8 +901,8 @@ static void copy_to_prebuf(const BIGNUM *b, int top, unsigned char *buf,
   const int width = 1 << window;
   BN_ULONG *table = (BN_ULONG *) buf;
 
-  if (top > b->width) {
-    top = b->width;  // this works because 'buf' is explicitly zeroed
+  if (top > b->top) {
+    top = b->top;  // this works because 'buf' is explicitly zeroed
   }
 
   for (i = 0, j = idx; i < top; i++, j += width)  {
@@ -930,7 +955,8 @@ static int copy_from_prebuf(BIGNUM *b, int top, unsigned char *buf, int idx,
     }
   }
 
-  b->width = top;
+  b->top = top;
+  bn_correct_top(b);
   return 1;
 }
 
@@ -980,7 +1006,8 @@ static int copy_from_prebuf(BIGNUM *b, int top, unsigned char *buf, int idx,
 int BN_mod_exp_mont_consttime(BIGNUM *rr, const BIGNUM *a, const BIGNUM *p,
                               const BIGNUM *m, BN_CTX *ctx,
                               const BN_MONT_CTX *mont) {
-  int i, ret = 0, window, wvalue;
+  int i, bits, ret = 0, window, wvalue;
+  int top;
   BN_MONT_CTX *new_mont = NULL;
 
   int numPowers;
@@ -995,10 +1022,9 @@ int BN_mod_exp_mont_consttime(BIGNUM *rr, const BIGNUM *a, const BIGNUM *p,
     return 0;
   }
 
-  // Use all bits stored in |p|, rather than |BN_num_bits|, so we do not leak
-  // whether the top bits are zero.
-  int max_bits = p->width * BN_BITS2;
-  int bits = max_bits;
+  top = m->top;
+
+  bits = BN_num_bits(p);
   if (bits == 0) {
     // x**0 mod 1 is still zero.
     if (BN_is_one(m)) {
@@ -1010,16 +1036,12 @@ int BN_mod_exp_mont_consttime(BIGNUM *rr, const BIGNUM *a, const BIGNUM *p,
 
   // Allocate a montgomery context if it was not supplied by the caller.
   if (mont == NULL) {
-    new_mont = BN_MONT_CTX_new_for_modulus(m, ctx);
-    if (new_mont == NULL) {
+    new_mont = BN_MONT_CTX_new();
+    if (new_mont == NULL || !BN_MONT_CTX_set(new_mont, m, ctx)) {
       goto err;
     }
     mont = new_mont;
   }
-
-  // Use the width in |mont->N|, rather than the copy in |m|. The assembly
-  // implementation assumes it can use |top| to size R.
-  int top = mont->N.width;
 
   if (a->neg || BN_ucmp(a, m) >= 0) {
     new_a = BN_new();
@@ -1034,14 +1056,15 @@ int BN_mod_exp_mont_consttime(BIGNUM *rr, const BIGNUM *a, const BIGNUM *p,
   // If the size of the operands allow it, perform the optimized
   // RSAZ exponentiation. For further information see
   // crypto/bn/rsaz_exp.c and accompanying assembly modules.
-  if ((16 == a->width) && (16 == p->width) && (BN_num_bits(m) == 1024) &&
+  if ((16 == a->top) && (16 == p->top) && (BN_num_bits(m) == 1024) &&
       rsaz_avx2_eligible()) {
     if (!bn_wexpand(rr, 16)) {
       goto err;
     }
     RSAZ_1024_mod_exp_avx2(rr->d, a->d, p->d, m->d, mont->RR.d, mont->n0[0]);
-    rr->width = 16;
+    rr->top = 16;
     rr->neg = 0;
+    bn_correct_top(rr);
     ret = 1;
     goto err;
   }
@@ -1087,12 +1110,21 @@ int BN_mod_exp_mont_consttime(BIGNUM *rr, const BIGNUM *a, const BIGNUM *p,
   // lay down tmp and am right after powers table
   tmp.d = (BN_ULONG *)(powerbuf + sizeof(m->d[0]) * top * numPowers);
   am.d = tmp.d + top;
-  tmp.width = am.width = 0;
+  tmp.top = am.top = 0;
   tmp.dmax = am.dmax = top;
   tmp.neg = am.neg = 0;
   tmp.flags = am.flags = BN_FLG_STATIC_DATA;
 
-  if (!bn_one_to_montgomery(&tmp, mont, ctx)) {
+// prepare a^0 in Montgomery domain
+// by Shay Gueron's suggestion
+  if (m->d[top - 1] & (((BN_ULONG)1) << (BN_BITS2 - 1))) {
+    // 2^(top*BN_BITS2) - m
+    tmp.d[0] = 0 - m->d[0];
+    for (i = 1; i < top; i++) {
+      tmp.d[i] = ~m->d[i];
+    }
+    tmp.top = top;
+  } else if (!BN_to_montgomery(&tmp, BN_value_one(), mont, ctx)) {
     goto err;
   }
 
@@ -1116,10 +1148,10 @@ int BN_mod_exp_mont_consttime(BIGNUM *rr, const BIGNUM *a, const BIGNUM *p,
 
     // BN_to_montgomery can contaminate words above .top
     // [in BN_DEBUG[_DEBUG] build]...
-    for (i = am.width; i < top; i++) {
+    for (i = am.top; i < top; i++) {
       am.d[i] = 0;
     }
-    for (i = tmp.width; i < top; i++) {
+    for (i = tmp.top; i < top; i++) {
       tmp.d[i] = 0;
     }
 
@@ -1129,7 +1161,7 @@ int BN_mod_exp_mont_consttime(BIGNUM *rr, const BIGNUM *a, const BIGNUM *p,
     }
 
     bn_scatter5(tmp.d, top, powerbuf, 0);
-    bn_scatter5(am.d, am.width, powerbuf, 1);
+    bn_scatter5(am.d, am.top, powerbuf, 1);
     bn_mul_mont(tmp.d, am.d, am.d, np, n0, top);
     bn_scatter5(tmp.d, top, powerbuf, 2);
 
@@ -1185,6 +1217,7 @@ int BN_mod_exp_mont_consttime(BIGNUM *rr, const BIGNUM *a, const BIGNUM *p,
       }
     } else {
       const uint8_t *p_bytes = (const uint8_t *)p->d;
+      int max_bits = p->top * BN_BITS2;
       assert(bits < max_bits);
       // |p = 0| has been handled as a special case, so |max_bits| is at least
       // one word.
@@ -1196,7 +1229,7 @@ int BN_mod_exp_mont_consttime(BIGNUM *rr, const BIGNUM *a, const BIGNUM *p,
       // here is the top bit, inclusive.
       if (bits - 4 >= max_bits - 8) {
         // Read five bits from |bits-4| through |bits|, inclusive.
-        wvalue = p_bytes[p->width * BN_BYTES - 1];
+        wvalue = p_bytes[p->top * BN_BYTES - 1];
         wvalue >>= (bits - 4) & 7;
         wvalue &= 0x1f;
         bits -= 5;
@@ -1215,7 +1248,8 @@ int BN_mod_exp_mont_consttime(BIGNUM *rr, const BIGNUM *a, const BIGNUM *p,
     }
 
     ret = bn_from_montgomery(tmp.d, tmp.d, NULL, np, n0, top);
-    tmp.width = top;
+    tmp.top = top;
+    bn_correct_top(&tmp);
     if (ret) {
       if (!BN_copy(rr, &tmp)) {
         ret = 0;
@@ -1329,8 +1363,8 @@ int BN_mod_exp2_mont(BIGNUM *rr, const BIGNUM *a1, const BIGNUM *p1,
 
   // Allocate a montgomery context if it was not supplied by the caller.
   if (mont == NULL) {
-    new_mont = BN_MONT_CTX_new_for_modulus(m, ctx);
-    if (new_mont == NULL) {
+    new_mont = BN_MONT_CTX_new();
+    if (new_mont == NULL || !BN_MONT_CTX_set(new_mont, m, ctx)) {
       goto err;
     }
     mont = new_mont;

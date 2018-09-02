@@ -411,7 +411,7 @@ static NSArray *NewFieldsArrayForHasIndex(int hasIndex,
 }
 
 - (NSString *)name {
-  return (NSString * _Nonnull)@(name_);
+  return @(name_);
 }
 
 - (GPBFieldDescriptor *)fieldWithNumber:(uint32_t)fieldNumber {
@@ -548,8 +548,7 @@ uint32_t GPBFieldAlternateTag(GPBFieldDescriptor *self) {
         // descriptor structure.
         const uint8_t *bytes = (const uint8_t *)defaultValue_.valueData;
         if (bytes) {
-          uint32_t length;
-          memcpy(&length, bytes, sizeof(length));
+          uint32_t length = *((uint32_t *)bytes);
           length = ntohl(length);
           bytes += sizeof(length);
           defaultValue_.valueData =
@@ -582,7 +581,7 @@ uint32_t GPBFieldAlternateTag(GPBFieldDescriptor *self) {
 }
 
 - (NSString *)name {
-  return (NSString * _Nonnull)@(description_->name);
+  return @(description_->name);
 }
 
 - (BOOL)isRequired {
@@ -964,8 +963,7 @@ uint32_t GPBFieldAlternateTag(GPBFieldDescriptor *self) {
       const uint8_t *bytes =
           (const uint8_t *)description->defaultValue.valueData;
       if (bytes) {
-        uint32_t length;
-        memcpy(&length, bytes, sizeof(length));
+        uint32_t length = *((uint32_t *)bytes);
         // The length is stored in network byte order.
         length = ntohl(length);
         bytes += sizeof(length);
@@ -998,7 +996,7 @@ uint32_t GPBFieldAlternateTag(GPBFieldDescriptor *self) {
 }
 
 - (NSString *)singletonName {
-  return (NSString * _Nonnull)@(description_->singletonName);
+  return @(description_->singletonName);
 }
 
 - (const char *)singletonNameC {

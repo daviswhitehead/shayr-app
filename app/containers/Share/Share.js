@@ -14,9 +14,8 @@ import {
   retrieveAccessToken,
   getAuthCredential,
   getCurrentUser,
+  createShare,
 } from '../../redux/authentication/AuthenticationActions';
-
-import { createShare } from '../../lib/FirebaseHelpers'
 
  import firebase from 'react-native-firebase';
  import ShareExtension from 'react-native-share-extension';
