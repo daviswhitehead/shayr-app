@@ -24,6 +24,9 @@ DerivedData
 project.xcworkspace
 ios/Index/DataStore
 
+# Pods
+ios/Pods/
+
 # Android/IntelliJ
 #
 build/
