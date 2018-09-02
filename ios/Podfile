@@ -5,14 +5,11 @@ def shared_pods
   pod 'Firebase/Core', '4.13.0'
   pod 'Firebase/Auth', '4.13.0'
   pod 'Firebase/Firestore', '4.13.0'
-  pod 'Fabric', '1.7.5'
-  pod 'Crashlytics', '3.10.1'
 end
 
 target 'shayr' do
   shared_pods
   # pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
-
 end
 
 target 'ShareExtension' do
