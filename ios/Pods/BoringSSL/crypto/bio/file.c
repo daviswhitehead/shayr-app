@@ -81,8 +81,6 @@
 #include <openssl/err.h>
 #include <openssl/mem.h>
 
-#include "../internal.h"
-
 
 #define BIO_FP_READ 0x02
 #define BIO_FP_WRITE 0x04

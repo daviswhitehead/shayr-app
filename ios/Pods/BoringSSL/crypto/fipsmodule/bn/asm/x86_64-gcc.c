@@ -52,9 +52,8 @@
 
 #include <openssl/bn.h>
 
-// TODO(davidben): Get this file working on MSVC x64.
-#if !defined(OPENSSL_NO_ASM) && defined(OPENSSL_X86_64) && \
-    (defined(__GNUC__) || defined(__clang__))
+// TODO(davidben): Get this file working on Windows x64.
+#if !defined(OPENSSL_NO_ASM) && defined(OPENSSL_X86_64) && defined(__GNUC__)
 
 #include "../internal.h"
 
@@ -538,4 +537,4 @@ void bn_sqr_comba4(BN_ULONG r[8], const BN_ULONG a[4]) {
 #undef mul_add_c2
 #undef sqr_add_c2
 
-#endif  // !NO_ASM && X86_64 && (__GNUC__ || __clang__)
+#endif  // !NO_ASM && X86_64 && __GNUC__

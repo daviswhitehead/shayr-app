@@ -173,7 +173,10 @@ uint16_t SSLAEADContext::RecordVersion() const {
     return version_;
   }
 
-  return TLS1_2_VERSION;
+  if (ssl_is_resumption_record_version_experiment(version_)) {
+    return TLS1_2_VERSION;
+  }
+  return TLS1_VERSION;
 }
 
 size_t SSLAEADContext::ExplicitNonceLen() const {

@@ -175,9 +175,7 @@ SSL3_STATE::SSL3_STATE()
       send_connection_binding(false),
       tlsext_channel_id_valid(false),
       key_update_pending(false),
-      wpend_pending(false),
-      early_data_accepted(false),
-      draft_downgrade(false) {}
+      wpend_pending(false) {}
 
 SSL3_STATE::~SSL3_STATE() {}
 

@@ -68,7 +68,7 @@
     typeof(self) strongSelf = weakSelf;
     if (strongSelf) {
       BOOL finished = NO;
-      @synchronized(strongSelf) {
+      @synchronized(self) {
         if (!strongSelf->_alreadyFinished) {
           strongSelf->_alreadyFinished = YES;
         } else {
@@ -78,9 +78,9 @@
       if (!finished) {
         // Cancellation is now impossible. None of the other three blocks can run concurrently with
         // this one.
-        [strongSelf.writeable writesFinishedWithError:nil];
+        [self.writeable writesFinishedWithError:nil];
         // Skip any possible message to the wrapped writeable enqueued after this one.
-        strongSelf.writeable = nil;
+        self.writeable = nil;
       }
     }
   });

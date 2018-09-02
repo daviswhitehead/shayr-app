@@ -596,6 +596,39 @@ void GPBDictionaryReadEntry(id mapDictionary,
 //%  NSMutableDictionary *_dictionary;
 //%}
 //%
+//%+ (instancetype)dictionary {
+//%  return [[[self alloc] initWith##VNAME##s:NULL forKeys:NULL count:0] autorelease];
+//%}
+//%
+//%+ (instancetype)dictionaryWith##VNAME##:(VALUE_TYPE)##VNAME_VAR
+//%                      ##VNAME$S##  forKey:(KEY_TYPE##KisP$S##KisP)key {
+//%  // Cast is needed so the compiler knows what class we are invoking initWith##VNAME##s:forKeys:count:
+//%  // on to get the type correct.
+//%  return [[(GPB##KEY_NAME##VALUE_NAME##Dictionary*)[self alloc] initWith##VNAME##s:&##VNAME_VAR
+//%               KEY_NAME$S VALUE_NAME$S                        ##VNAME$S##  forKeys:&key
+//%               KEY_NAME$S VALUE_NAME$S                        ##VNAME$S##    count:1] autorelease];
+//%}
+//%
+//%+ (instancetype)dictionaryWith##VNAME##s:(const VALUE_TYPE [])##VNAME_VAR##s
+//%                      ##VNAME$S##  forKeys:(const KEY_TYPE##KisP$S##KisP [])keys
+//%                      ##VNAME$S##    count:(NSUInteger)count {
+//%  // Cast is needed so the compiler knows what class we are invoking initWith##VNAME##s:forKeys:count:
+//%  // on to get the type correct.
+//%  return [[(GPB##KEY_NAME##VALUE_NAME##Dictionary*)[self alloc] initWith##VNAME##s:##VNAME_VAR##s
+//%               KEY_NAME$S VALUE_NAME$S                               forKeys:keys
+//%               KEY_NAME$S VALUE_NAME$S                                 count:count] autorelease];
+//%}
+//%
+//%+ (instancetype)dictionaryWithDictionary:(GPB##KEY_NAME##VALUE_NAME##Dictionary *)dictionary {
+//%  // Cast is needed so the compiler knows what class we are invoking initWithDictionary:
+//%  // on to get the type correct.
+//%  return [[(GPB##KEY_NAME##VALUE_NAME##Dictionary*)[self alloc] initWithDictionary:dictionary] autorelease];
+//%}
+//%
+//%+ (instancetype)dictionaryWithCapacity:(NSUInteger)numItems {
+//%  return [[[self alloc] initWithCapacity:numItems] autorelease];
+//%}
+//%
 //%- (instancetype)init {
 //%  return [self initWith##VNAME##s:NULL forKeys:NULL count:0];
 //%}
@@ -651,6 +684,54 @@ void GPBDictionaryReadEntry(id mapDictionary,
 //%}
 //%
 //%@synthesize validationFunc = _validationFunc;
+//%
+//%+ (instancetype)dictionary {
+//%  return [[[self alloc] initWithValidationFunction:NULL
+//%                                         rawValues:NULL
+//%                                           forKeys:NULL
+//%                                             count:0] autorelease];
+//%}
+//%
+//%+ (instancetype)dictionaryWithValidationFunction:(GPBEnumValidationFunc)func {
+//%  return [[[self alloc] initWithValidationFunction:func
+//%                                         rawValues:NULL
+//%                                           forKeys:NULL
+//%                                             count:0] autorelease];
+//%}
+//%
+//%+ (instancetype)dictionaryWithValidationFunction:(GPBEnumValidationFunc)func
+//%                                        rawValue:(VALUE_TYPE)rawValue
+//%                                          forKey:(KEY_TYPE##KisP$S##KisP)key {
+//%  // Cast is needed so the compiler knows what class we are invoking initWithValues:forKeys:count:
+//%  // on to get the type correct.
+//%  return [[(GPB##KEY_NAME##VALUE_NAME##Dictionary*)[self alloc] initWithValidationFunction:func
+//%               KEY_NAME$S VALUE_NAME$S                                         rawValues:&rawValue
+//%               KEY_NAME$S VALUE_NAME$S                                           forKeys:&key
+//%               KEY_NAME$S VALUE_NAME$S                                             count:1] autorelease];
+//%}
+//%
+//%+ (instancetype)dictionaryWithValidationFunction:(GPBEnumValidationFunc)func
+//%                                       rawValues:(const VALUE_TYPE [])rawValues
+//%                                         forKeys:(const KEY_TYPE##KisP$S##KisP [])keys
+//%                                           count:(NSUInteger)count {
+//%  // Cast is needed so the compiler knows what class we are invoking initWithValues:forKeys:count:
+//%  // on to get the type correct.
+//%  return [[(GPB##KEY_NAME##VALUE_NAME##Dictionary*)[self alloc] initWithValidationFunction:func
+//%               KEY_NAME$S VALUE_NAME$S                                         rawValues:rawValues
+//%               KEY_NAME$S VALUE_NAME$S                                           forKeys:keys
+//%               KEY_NAME$S VALUE_NAME$S                                             count:count] autorelease];
+//%}
+//%
+//%+ (instancetype)dictionaryWithDictionary:(GPB##KEY_NAME##VALUE_NAME##Dictionary *)dictionary {
+//%  // Cast is needed so the compiler knows what class we are invoking initWithValues:forKeys:count:
+//%  // on to get the type correct.
+//%  return [[(GPB##KEY_NAME##VALUE_NAME##Dictionary*)[self alloc] initWithDictionary:dictionary] autorelease];
+//%}
+//%
+//%+ (instancetype)dictionaryWithValidationFunction:(GPBEnumValidationFunc)func
+//%                                        capacity:(NSUInteger)numItems {
+//%  return [[[self alloc] initWithValidationFunction:func capacity:numItems] autorelease];
+//%}
 //%
 //%- (instancetype)init {
 //%  return [self initWithValidationFunction:NULL rawValues:NULL forKeys:NULL count:0];
@@ -906,6 +987,39 @@ void GPBDictionaryReadEntry(id mapDictionary,
 //% @package
 //%  VALUE_TYPE _values[2];
 //%BOOL_DICT_HAS_STORAGE_##HELPER()}
+//%
+//%+ (instancetype)dictionary {
+//%  return [[[self alloc] initWith##VNAME##s:NULL forKeys:NULL count:0] autorelease];
+//%}
+//%
+//%+ (instancetype)dictionaryWith##VNAME##:(VALUE_TYPE)VNAME_VAR
+//%                      ##VNAME$S##  forKey:(BOOL)key {
+//%  // Cast is needed so the compiler knows what class we are invoking initWith##VNAME##s:forKeys:count:
+//%  // on to get the type correct.
+//%  return [[(GPBBool##VALUE_NAME##Dictionary*)[self alloc] initWith##VNAME##s:&##VNAME_VAR
+//%                    VALUE_NAME$S                        ##VNAME$S##  forKeys:&key
+//%                    VALUE_NAME$S                        ##VNAME$S##    count:1] autorelease];
+//%}
+//%
+//%+ (instancetype)dictionaryWith##VNAME##s:(const VALUE_TYPE [])##VNAME_VAR##s
+//%                      ##VNAME$S##  forKeys:(const BOOL [])keys
+//%                      ##VNAME$S##    count:(NSUInteger)count {
+//%  // Cast is needed so the compiler knows what class we are invoking initWith##VNAME##s:forKeys:count:
+//%  // on to get the type correct.
+//%  return [[(GPBBool##VALUE_NAME##Dictionary*)[self alloc] initWith##VNAME##s:##VNAME_VAR##s
+//%                    VALUE_NAME$S                        ##VNAME$S##  forKeys:keys
+//%                    VALUE_NAME$S                        ##VNAME$S##    count:count] autorelease];
+//%}
+//%
+//%+ (instancetype)dictionaryWithDictionary:(GPBBool##VALUE_NAME##Dictionary *)dictionary {
+//%  // Cast is needed so the compiler knows what class we are invoking initWithDictionary:
+//%  // on to get the type correct.
+//%  return [[(GPBBool##VALUE_NAME##Dictionary*)[self alloc] initWithDictionary:dictionary] autorelease];
+//%}
+//%
+//%+ (instancetype)dictionaryWithCapacity:(NSUInteger)numItems {
+//%  return [[[self alloc] initWithCapacity:numItems] autorelease];
+//%}
 //%
 //%- (instancetype)init {
 //%  return [self initWith##VNAME##s:NULL forKeys:NULL count:0];
@@ -1435,6 +1549,39 @@ void GPBDictionaryReadEntry(id mapDictionary,
   NSMutableDictionary *_dictionary;
 }
 
++ (instancetype)dictionary {
+  return [[[self alloc] initWithUInt32s:NULL forKeys:NULL count:0] autorelease];
+}
+
++ (instancetype)dictionaryWithUInt32:(uint32_t)value
+                              forKey:(uint32_t)key {
+  // Cast is needed so the compiler knows what class we are invoking initWithUInt32s:forKeys:count:
+  // on to get the type correct.
+  return [[(GPBUInt32UInt32Dictionary*)[self alloc] initWithUInt32s:&value
+                                                            forKeys:&key
+                                                              count:1] autorelease];
+}
+
++ (instancetype)dictionaryWithUInt32s:(const uint32_t [])values
+                              forKeys:(const uint32_t [])keys
+                                count:(NSUInteger)count {
+  // Cast is needed so the compiler knows what class we are invoking initWithUInt32s:forKeys:count:
+  // on to get the type correct.
+  return [[(GPBUInt32UInt32Dictionary*)[self alloc] initWithUInt32s:values
+                                                           forKeys:keys
+                                                             count:count] autorelease];
+}
+
++ (instancetype)dictionaryWithDictionary:(GPBUInt32UInt32Dictionary *)dictionary {
+  // Cast is needed so the compiler knows what class we are invoking initWithDictionary:
+  // on to get the type correct.
+  return [[(GPBUInt32UInt32Dictionary*)[self alloc] initWithDictionary:dictionary] autorelease];
+}
+
++ (instancetype)dictionaryWithCapacity:(NSUInteger)numItems {
+  return [[[self alloc] initWithCapacity:numItems] autorelease];
+}
+
 - (instancetype)init {
   return [self initWithUInt32s:NULL forKeys:NULL count:0];
 }
@@ -1616,6 +1763,39 @@ void GPBDictionaryReadEntry(id mapDictionary,
 @implementation GPBUInt32Int32Dictionary {
  @package
   NSMutableDictionary *_dictionary;
+}
+
++ (instancetype)dictionary {
+  return [[[self alloc] initWithInt32s:NULL forKeys:NULL count:0] autorelease];
+}
+
++ (instancetype)dictionaryWithInt32:(int32_t)value
+                             forKey:(uint32_t)key {
+  // Cast is needed so the compiler knows what class we are invoking initWithInt32s:forKeys:count:
+  // on to get the type correct.
+  return [[(GPBUInt32Int32Dictionary*)[self alloc] initWithInt32s:&value
+                                                          forKeys:&key
+                                                            count:1] autorelease];
+}
+
++ (instancetype)dictionaryWithInt32s:(const int32_t [])values
+                             forKeys:(const uint32_t [])keys
+                               count:(NSUInteger)count {
+  // Cast is needed so the compiler knows what class we are invoking initWithInt32s:forKeys:count:
+  // on to get the type correct.
+  return [[(GPBUInt32Int32Dictionary*)[self alloc] initWithInt32s:values
+                                                          forKeys:keys
+                                                            count:count] autorelease];
+}
+
++ (instancetype)dictionaryWithDictionary:(GPBUInt32Int32Dictionary *)dictionary {
+  // Cast is needed so the compiler knows what class we are invoking initWithDictionary:
+  // on to get the type correct.
+  return [[(GPBUInt32Int32Dictionary*)[self alloc] initWithDictionary:dictionary] autorelease];
+}
+
++ (instancetype)dictionaryWithCapacity:(NSUInteger)numItems {
+  return [[[self alloc] initWithCapacity:numItems] autorelease];
 }
 
 - (instancetype)init {
@@ -1801,6 +1981,39 @@ void GPBDictionaryReadEntry(id mapDictionary,
   NSMutableDictionary *_dictionary;
 }
 
++ (instancetype)dictionary {
+  return [[[self alloc] initWithUInt64s:NULL forKeys:NULL count:0] autorelease];
+}
+
++ (instancetype)dictionaryWithUInt64:(uint64_t)value
+                              forKey:(uint32_t)key {
+  // Cast is needed so the compiler knows what class we are invoking initWithUInt64s:forKeys:count:
+  // on to get the type correct.
+  return [[(GPBUInt32UInt64Dictionary*)[self alloc] initWithUInt64s:&value
+                                                            forKeys:&key
+                                                              count:1] autorelease];
+}
+
++ (instancetype)dictionaryWithUInt64s:(const uint64_t [])values
+                              forKeys:(const uint32_t [])keys
+                                count:(NSUInteger)count {
+  // Cast is needed so the compiler knows what class we are invoking initWithUInt64s:forKeys:count:
+  // on to get the type correct.
+  return [[(GPBUInt32UInt64Dictionary*)[self alloc] initWithUInt64s:values
+                                                           forKeys:keys
+                                                             count:count] autorelease];
+}
+
++ (instancetype)dictionaryWithDictionary:(GPBUInt32UInt64Dictionary *)dictionary {
+  // Cast is needed so the compiler knows what class we are invoking initWithDictionary:
+  // on to get the type correct.
+  return [[(GPBUInt32UInt64Dictionary*)[self alloc] initWithDictionary:dictionary] autorelease];
+}
+
++ (instancetype)dictionaryWithCapacity:(NSUInteger)numItems {
+  return [[[self alloc] initWithCapacity:numItems] autorelease];
+}
+
 - (instancetype)init {
   return [self initWithUInt64s:NULL forKeys:NULL count:0];
 }
@@ -1982,6 +2195,39 @@ void GPBDictionaryReadEntry(id mapDictionary,
 @implementation GPBUInt32Int64Dictionary {
  @package
   NSMutableDictionary *_dictionary;
+}
+
++ (instancetype)dictionary {
+  return [[[self alloc] initWithInt64s:NULL forKeys:NULL count:0] autorelease];
+}
+
++ (instancetype)dictionaryWithInt64:(int64_t)value
+                             forKey:(uint32_t)key {
+  // Cast is needed so the compiler knows what class we are invoking initWithInt64s:forKeys:count:
+  // on to get the type correct.
+  return [[(GPBUInt32Int64Dictionary*)[self alloc] initWithInt64s:&value
+                                                          forKeys:&key
+                                                            count:1] autorelease];
+}
+
++ (instancetype)dictionaryWithInt64s:(const int64_t [])values
+                             forKeys:(const uint32_t [])keys
+                               count:(NSUInteger)count {
+  // Cast is needed so the compiler knows what class we are invoking initWithInt64s:forKeys:count:
+  // on to get the type correct.
+  return [[(GPBUInt32Int64Dictionary*)[self alloc] initWithInt64s:values
+                                                          forKeys:keys
+                                                            count:count] autorelease];
+}
+
++ (instancetype)dictionaryWithDictionary:(GPBUInt32Int64Dictionary *)dictionary {
+  // Cast is needed so the compiler knows what class we are invoking initWithDictionary:
+  // on to get the type correct.
+  return [[(GPBUInt32Int64Dictionary*)[self alloc] initWithDictionary:dictionary] autorelease];
+}
+
++ (instancetype)dictionaryWithCapacity:(NSUInteger)numItems {
+  return [[[self alloc] initWithCapacity:numItems] autorelease];
 }
 
 - (instancetype)init {
@@ -2167,6 +2413,39 @@ void GPBDictionaryReadEntry(id mapDictionary,
   NSMutableDictionary *_dictionary;
 }
 
++ (instancetype)dictionary {
+  return [[[self alloc] initWithBools:NULL forKeys:NULL count:0] autorelease];
+}
+
++ (instancetype)dictionaryWithBool:(BOOL)value
+                            forKey:(uint32_t)key {
+  // Cast is needed so the compiler knows what class we are invoking initWithBools:forKeys:count:
+  // on to get the type correct.
+  return [[(GPBUInt32BoolDictionary*)[self alloc] initWithBools:&value
+                                                        forKeys:&key
+                                                          count:1] autorelease];
+}
+
++ (instancetype)dictionaryWithBools:(const BOOL [])values
+                            forKeys:(const uint32_t [])keys
+                              count:(NSUInteger)count {
+  // Cast is needed so the compiler knows what class we are invoking initWithBools:forKeys:count:
+  // on to get the type correct.
+  return [[(GPBUInt32BoolDictionary*)[self alloc] initWithBools:values
+                                                         forKeys:keys
+                                                           count:count] autorelease];
+}
+
++ (instancetype)dictionaryWithDictionary:(GPBUInt32BoolDictionary *)dictionary {
+  // Cast is needed so the compiler knows what class we are invoking initWithDictionary:
+  // on to get the type correct.
+  return [[(GPBUInt32BoolDictionary*)[self alloc] initWithDictionary:dictionary] autorelease];
+}
+
++ (instancetype)dictionaryWithCapacity:(NSUInteger)numItems {
+  return [[[self alloc] initWithCapacity:numItems] autorelease];
+}
+
 - (instancetype)init {
   return [self initWithBools:NULL forKeys:NULL count:0];
 }
@@ -2350,6 +2629,39 @@ void GPBDictionaryReadEntry(id mapDictionary,
   NSMutableDictionary *_dictionary;
 }
 
++ (instancetype)dictionary {
+  return [[[self alloc] initWithFloats:NULL forKeys:NULL count:0] autorelease];
+}
+
++ (instancetype)dictionaryWithFloat:(float)value
+                             forKey:(uint32_t)key {
+  // Cast is needed so the compiler knows what class we are invoking initWithFloats:forKeys:count:
+  // on to get the type correct.
+  return [[(GPBUInt32FloatDictionary*)[self alloc] initWithFloats:&value
+                                                          forKeys:&key
+                                                            count:1] autorelease];
+}
+
++ (instancetype)dictionaryWithFloats:(const float [])values
+                             forKeys:(const uint32_t [])keys
+                               count:(NSUInteger)count {
+  // Cast is needed so the compiler knows what class we are invoking initWithFloats:forKeys:count:
+  // on to get the type correct.
+  return [[(GPBUInt32FloatDictionary*)[self alloc] initWithFloats:values
+                                                          forKeys:keys
+                                                            count:count] autorelease];
+}
+
++ (instancetype)dictionaryWithDictionary:(GPBUInt32FloatDictionary *)dictionary {
+  // Cast is needed so the compiler knows what class we are invoking initWithDictionary:
+  // on to get the type correct.
+  return [[(GPBUInt32FloatDictionary*)[self alloc] initWithDictionary:dictionary] autorelease];
+}
+
++ (instancetype)dictionaryWithCapacity:(NSUInteger)numItems {
+  return [[[self alloc] initWithCapacity:numItems] autorelease];
+}
+
 - (instancetype)init {
   return [self initWithFloats:NULL forKeys:NULL count:0];
 }
@@ -2531,6 +2843,39 @@ void GPBDictionaryReadEntry(id mapDictionary,
 @implementation GPBUInt32DoubleDictionary {
  @package
   NSMutableDictionary *_dictionary;
+}
+
++ (instancetype)dictionary {
+  return [[[self alloc] initWithDoubles:NULL forKeys:NULL count:0] autorelease];
+}
+
++ (instancetype)dictionaryWithDouble:(double)value
+                              forKey:(uint32_t)key {
+  // Cast is needed so the compiler knows what class we are invoking initWithDoubles:forKeys:count:
+  // on to get the type correct.
+  return [[(GPBUInt32DoubleDictionary*)[self alloc] initWithDoubles:&value
+                                                            forKeys:&key
+                                                              count:1] autorelease];
+}
+
++ (instancetype)dictionaryWithDoubles:(const double [])values
+                              forKeys:(const uint32_t [])keys
+                                count:(NSUInteger)count {
+  // Cast is needed so the compiler knows what class we are invoking initWithDoubles:forKeys:count:
+  // on to get the type correct.
+  return [[(GPBUInt32DoubleDictionary*)[self alloc] initWithDoubles:values
+                                                           forKeys:keys
+                                                             count:count] autorelease];
+}
+
++ (instancetype)dictionaryWithDictionary:(GPBUInt32DoubleDictionary *)dictionary {
+  // Cast is needed so the compiler knows what class we are invoking initWithDictionary:
+  // on to get the type correct.
+  return [[(GPBUInt32DoubleDictionary*)[self alloc] initWithDictionary:dictionary] autorelease];
+}
+
++ (instancetype)dictionaryWithCapacity:(NSUInteger)numItems {
+  return [[[self alloc] initWithCapacity:numItems] autorelease];
 }
 
 - (instancetype)init {
@@ -2718,6 +3063,54 @@ void GPBDictionaryReadEntry(id mapDictionary,
 }
 
 @synthesize validationFunc = _validationFunc;
+
++ (instancetype)dictionary {
+  return [[[self alloc] initWithValidationFunction:NULL
+                                         rawValues:NULL
+                                           forKeys:NULL
+                                             count:0] autorelease];
+}
+
++ (instancetype)dictionaryWithValidationFunction:(GPBEnumValidationFunc)func {
+  return [[[self alloc] initWithValidationFunction:func
+                                         rawValues:NULL
+                                           forKeys:NULL
+                                             count:0] autorelease];
+}
+
++ (instancetype)dictionaryWithValidationFunction:(GPBEnumValidationFunc)func
+                                        rawValue:(int32_t)rawValue
+                                          forKey:(uint32_t)key {
+  // Cast is needed so the compiler knows what class we are invoking initWithValues:forKeys:count:
+  // on to get the type correct.
+  return [[(GPBUInt32EnumDictionary*)[self alloc] initWithValidationFunction:func
+                                                                   rawValues:&rawValue
+                                                                     forKeys:&key
+                                                                       count:1] autorelease];
+}
+
++ (instancetype)dictionaryWithValidationFunction:(GPBEnumValidationFunc)func
+                                       rawValues:(const int32_t [])rawValues
+                                         forKeys:(const uint32_t [])keys
+                                           count:(NSUInteger)count {
+  // Cast is needed so the compiler knows what class we are invoking initWithValues:forKeys:count:
+  // on to get the type correct.
+  return [[(GPBUInt32EnumDictionary*)[self alloc] initWithValidationFunction:func
+                                                                   rawValues:rawValues
+                                                                     forKeys:keys
+                                                                       count:count] autorelease];
+}
+
++ (instancetype)dictionaryWithDictionary:(GPBUInt32EnumDictionary *)dictionary {
+  // Cast is needed so the compiler knows what class we are invoking initWithValues:forKeys:count:
+  // on to get the type correct.
+  return [[(GPBUInt32EnumDictionary*)[self alloc] initWithDictionary:dictionary] autorelease];
+}
+
++ (instancetype)dictionaryWithValidationFunction:(GPBEnumValidationFunc)func
+                                        capacity:(NSUInteger)numItems {
+  return [[[self alloc] initWithValidationFunction:func capacity:numItems] autorelease];
+}
 
 - (instancetype)init {
   return [self initWithValidationFunction:NULL rawValues:NULL forKeys:NULL count:0];
@@ -2968,6 +3361,39 @@ void GPBDictionaryReadEntry(id mapDictionary,
   NSMutableDictionary *_dictionary;
 }
 
++ (instancetype)dictionary {
+  return [[[self alloc] initWithObjects:NULL forKeys:NULL count:0] autorelease];
+}
+
++ (instancetype)dictionaryWithObject:(id)object
+                              forKey:(uint32_t)key {
+  // Cast is needed so the compiler knows what class we are invoking initWithObjects:forKeys:count:
+  // on to get the type correct.
+  return [[(GPBUInt32ObjectDictionary*)[self alloc] initWithObjects:&object
+                                                            forKeys:&key
+                                                              count:1] autorelease];
+}
+
++ (instancetype)dictionaryWithObjects:(const id [])objects
+                              forKeys:(const uint32_t [])keys
+                                count:(NSUInteger)count {
+  // Cast is needed so the compiler knows what class we are invoking initWithObjects:forKeys:count:
+  // on to get the type correct.
+  return [[(GPBUInt32ObjectDictionary*)[self alloc] initWithObjects:objects
+                                                           forKeys:keys
+                                                             count:count] autorelease];
+}
+
++ (instancetype)dictionaryWithDictionary:(GPBUInt32ObjectDictionary *)dictionary {
+  // Cast is needed so the compiler knows what class we are invoking initWithDictionary:
+  // on to get the type correct.
+  return [[(GPBUInt32ObjectDictionary*)[self alloc] initWithDictionary:dictionary] autorelease];
+}
+
++ (instancetype)dictionaryWithCapacity:(NSUInteger)numItems {
+  return [[[self alloc] initWithCapacity:numItems] autorelease];
+}
+
 - (instancetype)init {
   return [self initWithObjects:NULL forKeys:NULL count:0];
 }
@@ -3183,6 +3609,39 @@ void GPBDictionaryReadEntry(id mapDictionary,
   NSMutableDictionary *_dictionary;
 }
 
++ (instancetype)dictionary {
+  return [[[self alloc] initWithUInt32s:NULL forKeys:NULL count:0] autorelease];
+}
+
++ (instancetype)dictionaryWithUInt32:(uint32_t)value
+                              forKey:(int32_t)key {
+  // Cast is needed so the compiler knows what class we are invoking initWithUInt32s:forKeys:count:
+  // on to get the type correct.
+  return [[(GPBInt32UInt32Dictionary*)[self alloc] initWithUInt32s:&value
+                                                           forKeys:&key
+                                                             count:1] autorelease];
+}
+
++ (instancetype)dictionaryWithUInt32s:(const uint32_t [])values
+                              forKeys:(const int32_t [])keys
+                                count:(NSUInteger)count {
+  // Cast is needed so the compiler knows what class we are invoking initWithUInt32s:forKeys:count:
+  // on to get the type correct.
+  return [[(GPBInt32UInt32Dictionary*)[self alloc] initWithUInt32s:values
+                                                          forKeys:keys
+                                                            count:count] autorelease];
+}
+
++ (instancetype)dictionaryWithDictionary:(GPBInt32UInt32Dictionary *)dictionary {
+  // Cast is needed so the compiler knows what class we are invoking initWithDictionary:
+  // on to get the type correct.
+  return [[(GPBInt32UInt32Dictionary*)[self alloc] initWithDictionary:dictionary] autorelease];
+}
+
++ (instancetype)dictionaryWithCapacity:(NSUInteger)numItems {
+  return [[[self alloc] initWithCapacity:numItems] autorelease];
+}
+
 - (instancetype)init {
   return [self initWithUInt32s:NULL forKeys:NULL count:0];
 }
@@ -3364,6 +3823,39 @@ void GPBDictionaryReadEntry(id mapDictionary,
 @implementation GPBInt32Int32Dictionary {
  @package
   NSMutableDictionary *_dictionary;
+}
+
++ (instancetype)dictionary {
+  return [[[self alloc] initWithInt32s:NULL forKeys:NULL count:0] autorelease];
+}
+
++ (instancetype)dictionaryWithInt32:(int32_t)value
+                             forKey:(int32_t)key {
+  // Cast is needed so the compiler knows what class we are invoking initWithInt32s:forKeys:count:
+  // on to get the type correct.
+  return [[(GPBInt32Int32Dictionary*)[self alloc] initWithInt32s:&value
+                                                         forKeys:&key
+                                                           count:1] autorelease];
+}
+
++ (instancetype)dictionaryWithInt32s:(const int32_t [])values
+                             forKeys:(const int32_t [])keys
+                               count:(NSUInteger)count {
+  // Cast is needed so the compiler knows what class we are invoking initWithInt32s:forKeys:count:
+  // on to get the type correct.
+  return [[(GPBInt32Int32Dictionary*)[self alloc] initWithInt32s:values
+                                                         forKeys:keys
+                                                           count:count] autorelease];
+}
+
++ (instancetype)dictionaryWithDictionary:(GPBInt32Int32Dictionary *)dictionary {
+  // Cast is needed so the compiler knows what class we are invoking initWithDictionary:
+  // on to get the type correct.
+  return [[(GPBInt32Int32Dictionary*)[self alloc] initWithDictionary:dictionary] autorelease];
+}
+
++ (instancetype)dictionaryWithCapacity:(NSUInteger)numItems {
+  return [[[self alloc] initWithCapacity:numItems] autorelease];
 }
 
 - (instancetype)init {
@@ -3549,6 +4041,39 @@ void GPBDictionaryReadEntry(id mapDictionary,
   NSMutableDictionary *_dictionary;
 }
 
++ (instancetype)dictionary {
+  return [[[self alloc] initWithUInt64s:NULL forKeys:NULL count:0] autorelease];
+}
+
++ (instancetype)dictionaryWithUInt64:(uint64_t)value
+                              forKey:(int32_t)key {
+  // Cast is needed so the compiler knows what class we are invoking initWithUInt64s:forKeys:count:
+  // on to get the type correct.
+  return [[(GPBInt32UInt64Dictionary*)[self alloc] initWithUInt64s:&value
+                                                           forKeys:&key
+                                                             count:1] autorelease];
+}
+
++ (instancetype)dictionaryWithUInt64s:(const uint64_t [])values
+                              forKeys:(const int32_t [])keys
+                                count:(NSUInteger)count {
+  // Cast is needed so the compiler knows what class we are invoking initWithUInt64s:forKeys:count:
+  // on to get the type correct.
+  return [[(GPBInt32UInt64Dictionary*)[self alloc] initWithUInt64s:values
+                                                          forKeys:keys
+                                                            count:count] autorelease];
+}
+
++ (instancetype)dictionaryWithDictionary:(GPBInt32UInt64Dictionary *)dictionary {
+  // Cast is needed so the compiler knows what class we are invoking initWithDictionary:
+  // on to get the type correct.
+  return [[(GPBInt32UInt64Dictionary*)[self alloc] initWithDictionary:dictionary] autorelease];
+}
+
++ (instancetype)dictionaryWithCapacity:(NSUInteger)numItems {
+  return [[[self alloc] initWithCapacity:numItems] autorelease];
+}
+
 - (instancetype)init {
   return [self initWithUInt64s:NULL forKeys:NULL count:0];
 }
@@ -3730,6 +4255,39 @@ void GPBDictionaryReadEntry(id mapDictionary,
 @implementation GPBInt32Int64Dictionary {
  @package
   NSMutableDictionary *_dictionary;
+}
+
++ (instancetype)dictionary {
+  return [[[self alloc] initWithInt64s:NULL forKeys:NULL count:0] autorelease];
+}
+
++ (instancetype)dictionaryWithInt64:(int64_t)value
+                             forKey:(int32_t)key {
+  // Cast is needed so the compiler knows what class we are invoking initWithInt64s:forKeys:count:
+  // on to get the type correct.
+  return [[(GPBInt32Int64Dictionary*)[self alloc] initWithInt64s:&value
+                                                         forKeys:&key
+                                                           count:1] autorelease];
+}
+
++ (instancetype)dictionaryWithInt64s:(const int64_t [])values
+                             forKeys:(const int32_t [])keys
+                               count:(NSUInteger)count {
+  // Cast is needed so the compiler knows what class we are invoking initWithInt64s:forKeys:count:
+  // on to get the type correct.
+  return [[(GPBInt32Int64Dictionary*)[self alloc] initWithInt64s:values
+                                                         forKeys:keys
+                                                           count:count] autorelease];
+}
+
++ (instancetype)dictionaryWithDictionary:(GPBInt32Int64Dictionary *)dictionary {
+  // Cast is needed so the compiler knows what class we are invoking initWithDictionary:
+  // on to get the type correct.
+  return [[(GPBInt32Int64Dictionary*)[self alloc] initWithDictionary:dictionary] autorelease];
+}
+
++ (instancetype)dictionaryWithCapacity:(NSUInteger)numItems {
+  return [[[self alloc] initWithCapacity:numItems] autorelease];
 }
 
 - (instancetype)init {
@@ -3915,6 +4473,39 @@ void GPBDictionaryReadEntry(id mapDictionary,
   NSMutableDictionary *_dictionary;
 }
 
++ (instancetype)dictionary {
+  return [[[self alloc] initWithBools:NULL forKeys:NULL count:0] autorelease];
+}
+
++ (instancetype)dictionaryWithBool:(BOOL)value
+                            forKey:(int32_t)key {
+  // Cast is needed so the compiler knows what class we are invoking initWithBools:forKeys:count:
+  // on to get the type correct.
+  return [[(GPBInt32BoolDictionary*)[self alloc] initWithBools:&value
+                                                       forKeys:&key
+                                                         count:1] autorelease];
+}
+
++ (instancetype)dictionaryWithBools:(const BOOL [])values
+                            forKeys:(const int32_t [])keys
+                              count:(NSUInteger)count {
+  // Cast is needed so the compiler knows what class we are invoking initWithBools:forKeys:count:
+  // on to get the type correct.
+  return [[(GPBInt32BoolDictionary*)[self alloc] initWithBools:values
+                                                        forKeys:keys
+                                                          count:count] autorelease];
+}
+
++ (instancetype)dictionaryWithDictionary:(GPBInt32BoolDictionary *)dictionary {
+  // Cast is needed so the compiler knows what class we are invoking initWithDictionary:
+  // on to get the type correct.
+  return [[(GPBInt32BoolDictionary*)[self alloc] initWithDictionary:dictionary] autorelease];
+}
+
++ (instancetype)dictionaryWithCapacity:(NSUInteger)numItems {
+  return [[[self alloc] initWithCapacity:numItems] autorelease];
+}
+
 - (instancetype)init {
   return [self initWithBools:NULL forKeys:NULL count:0];
 }
@@ -4098,6 +4689,39 @@ void GPBDictionaryReadEntry(id mapDictionary,
   NSMutableDictionary *_dictionary;
 }
 
++ (instancetype)dictionary {
+  return [[[self alloc] initWithFloats:NULL forKeys:NULL count:0] autorelease];
+}
+
++ (instancetype)dictionaryWithFloat:(float)value
+                             forKey:(int32_t)key {
+  // Cast is needed so the compiler knows what class we are invoking initWithFloats:forKeys:count:
+  // on to get the type correct.
+  return [[(GPBInt32FloatDictionary*)[self alloc] initWithFloats:&value
+                                                         forKeys:&key
+                                                           count:1] autorelease];
+}
+
++ (instancetype)dictionaryWithFloats:(const float [])values
+                             forKeys:(const int32_t [])keys
+                               count:(NSUInteger)count {
+  // Cast is needed so the compiler knows what class we are invoking initWithFloats:forKeys:count:
+  // on to get the type correct.
+  return [[(GPBInt32FloatDictionary*)[self alloc] initWithFloats:values
+                                                         forKeys:keys
+                                                           count:count] autorelease];
+}
+
++ (instancetype)dictionaryWithDictionary:(GPBInt32FloatDictionary *)dictionary {
+  // Cast is needed so the compiler knows what class we are invoking initWithDictionary:
+  // on to get the type correct.
+  return [[(GPBInt32FloatDictionary*)[self alloc] initWithDictionary:dictionary] autorelease];
+}
+
++ (instancetype)dictionaryWithCapacity:(NSUInteger)numItems {
+  return [[[self alloc] initWithCapacity:numItems] autorelease];
+}
+
 - (instancetype)init {
   return [self initWithFloats:NULL forKeys:NULL count:0];
 }
@@ -4279,6 +4903,39 @@ void GPBDictionaryReadEntry(id mapDictionary,
 @implementation GPBInt32DoubleDictionary {
  @package
   NSMutableDictionary *_dictionary;
+}
+
++ (instancetype)dictionary {
+  return [[[self alloc] initWithDoubles:NULL forKeys:NULL count:0] autorelease];
+}
+
++ (instancetype)dictionaryWithDouble:(double)value
+                              forKey:(int32_t)key {
+  // Cast is needed so the compiler knows what class we are invoking initWithDoubles:forKeys:count:
+  // on to get the type correct.
+  return [[(GPBInt32DoubleDictionary*)[self alloc] initWithDoubles:&value
+                                                           forKeys:&key
+                                                             count:1] autorelease];
+}
+
++ (instancetype)dictionaryWithDoubles:(const double [])values
+                              forKeys:(const int32_t [])keys
+                                count:(NSUInteger)count {
+  // Cast is needed so the compiler knows what class we are invoking initWithDoubles:forKeys:count:
+  // on to get the type correct.
+  return [[(GPBInt32DoubleDictionary*)[self alloc] initWithDoubles:values
+                                                          forKeys:keys
+                                                            count:count] autorelease];
+}
+
++ (instancetype)dictionaryWithDictionary:(GPBInt32DoubleDictionary *)dictionary {
+  // Cast is needed so the compiler knows what class we are invoking initWithDictionary:
+  // on to get the type correct.
+  return [[(GPBInt32DoubleDictionary*)[self alloc] initWithDictionary:dictionary] autorelease];
+}
+
++ (instancetype)dictionaryWithCapacity:(NSUInteger)numItems {
+  return [[[self alloc] initWithCapacity:numItems] autorelease];
 }
 
 - (instancetype)init {
@@ -4466,6 +5123,54 @@ void GPBDictionaryReadEntry(id mapDictionary,
 }
 
 @synthesize validationFunc = _validationFunc;
+
++ (instancetype)dictionary {
+  return [[[self alloc] initWithValidationFunction:NULL
+                                         rawValues:NULL
+                                           forKeys:NULL
+                                             count:0] autorelease];
+}
+
++ (instancetype)dictionaryWithValidationFunction:(GPBEnumValidationFunc)func {
+  return [[[self alloc] initWithValidationFunction:func
+                                         rawValues:NULL
+                                           forKeys:NULL
+                                             count:0] autorelease];
+}
+
++ (instancetype)dictionaryWithValidationFunction:(GPBEnumValidationFunc)func
+                                        rawValue:(int32_t)rawValue
+                                          forKey:(int32_t)key {
+  // Cast is needed so the compiler knows what class we are invoking initWithValues:forKeys:count:
+  // on to get the type correct.
+  return [[(GPBInt32EnumDictionary*)[self alloc] initWithValidationFunction:func
+                                                                  rawValues:&rawValue
+                                                                    forKeys:&key
+                                                                      count:1] autorelease];
+}
+
++ (instancetype)dictionaryWithValidationFunction:(GPBEnumValidationFunc)func
+                                       rawValues:(const int32_t [])rawValues
+                                         forKeys:(const int32_t [])keys
+                                           count:(NSUInteger)count {
+  // Cast is needed so the compiler knows what class we are invoking initWithValues:forKeys:count:
+  // on to get the type correct.
+  return [[(GPBInt32EnumDictionary*)[self alloc] initWithValidationFunction:func
+                                                                  rawValues:rawValues
+                                                                    forKeys:keys
+                                                                      count:count] autorelease];
+}
+
++ (instancetype)dictionaryWithDictionary:(GPBInt32EnumDictionary *)dictionary {
+  // Cast is needed so the compiler knows what class we are invoking initWithValues:forKeys:count:
+  // on to get the type correct.
+  return [[(GPBInt32EnumDictionary*)[self alloc] initWithDictionary:dictionary] autorelease];
+}
+
++ (instancetype)dictionaryWithValidationFunction:(GPBEnumValidationFunc)func
+                                        capacity:(NSUInteger)numItems {
+  return [[[self alloc] initWithValidationFunction:func capacity:numItems] autorelease];
+}
 
 - (instancetype)init {
   return [self initWithValidationFunction:NULL rawValues:NULL forKeys:NULL count:0];
@@ -4716,6 +5421,39 @@ void GPBDictionaryReadEntry(id mapDictionary,
   NSMutableDictionary *_dictionary;
 }
 
++ (instancetype)dictionary {
+  return [[[self alloc] initWithObjects:NULL forKeys:NULL count:0] autorelease];
+}
+
++ (instancetype)dictionaryWithObject:(id)object
+                              forKey:(int32_t)key {
+  // Cast is needed so the compiler knows what class we are invoking initWithObjects:forKeys:count:
+  // on to get the type correct.
+  return [[(GPBInt32ObjectDictionary*)[self alloc] initWithObjects:&object
+                                                           forKeys:&key
+                                                             count:1] autorelease];
+}
+
++ (instancetype)dictionaryWithObjects:(const id [])objects
+                              forKeys:(const int32_t [])keys
+                                count:(NSUInteger)count {
+  // Cast is needed so the compiler knows what class we are invoking initWithObjects:forKeys:count:
+  // on to get the type correct.
+  return [[(GPBInt32ObjectDictionary*)[self alloc] initWithObjects:objects
+                                                          forKeys:keys
+                                                            count:count] autorelease];
+}
+
++ (instancetype)dictionaryWithDictionary:(GPBInt32ObjectDictionary *)dictionary {
+  // Cast is needed so the compiler knows what class we are invoking initWithDictionary:
+  // on to get the type correct.
+  return [[(GPBInt32ObjectDictionary*)[self alloc] initWithDictionary:dictionary] autorelease];
+}
+
++ (instancetype)dictionaryWithCapacity:(NSUInteger)numItems {
+  return [[[self alloc] initWithCapacity:numItems] autorelease];
+}
+
 - (instancetype)init {
   return [self initWithObjects:NULL forKeys:NULL count:0];
 }
@@ -4931,6 +5669,39 @@ void GPBDictionaryReadEntry(id mapDictionary,
   NSMutableDictionary *_dictionary;
 }
 
++ (instancetype)dictionary {
+  return [[[self alloc] initWithUInt32s:NULL forKeys:NULL count:0] autorelease];
+}
+
++ (instancetype)dictionaryWithUInt32:(uint32_t)value
+                              forKey:(uint64_t)key {
+  // Cast is needed so the compiler knows what class we are invoking initWithUInt32s:forKeys:count:
+  // on to get the type correct.
+  return [[(GPBUInt64UInt32Dictionary*)[self alloc] initWithUInt32s:&value
+                                                            forKeys:&key
+                                                              count:1] autorelease];
+}
+
++ (instancetype)dictionaryWithUInt32s:(const uint32_t [])values
+                              forKeys:(const uint64_t [])keys
+                                count:(NSUInteger)count {
+  // Cast is needed so the compiler knows what class we are invoking initWithUInt32s:forKeys:count:
+  // on to get the type correct.
+  return [[(GPBUInt64UInt32Dictionary*)[self alloc] initWithUInt32s:values
+                                                           forKeys:keys
+                                                             count:count] autorelease];
+}
+
++ (instancetype)dictionaryWithDictionary:(GPBUInt64UInt32Dictionary *)dictionary {
+  // Cast is needed so the compiler knows what class we are invoking initWithDictionary:
+  // on to get the type correct.
+  return [[(GPBUInt64UInt32Dictionary*)[self alloc] initWithDictionary:dictionary] autorelease];
+}
+
++ (instancetype)dictionaryWithCapacity:(NSUInteger)numItems {
+  return [[[self alloc] initWithCapacity:numItems] autorelease];
+}
+
 - (instancetype)init {
   return [self initWithUInt32s:NULL forKeys:NULL count:0];
 }
@@ -5112,6 +5883,39 @@ void GPBDictionaryReadEntry(id mapDictionary,
 @implementation GPBUInt64Int32Dictionary {
  @package
   NSMutableDictionary *_dictionary;
+}
+
++ (instancetype)dictionary {
+  return [[[self alloc] initWithInt32s:NULL forKeys:NULL count:0] autorelease];
+}
+
++ (instancetype)dictionaryWithInt32:(int32_t)value
+                             forKey:(uint64_t)key {
+  // Cast is needed so the compiler knows what class we are invoking initWithInt32s:forKeys:count:
+  // on to get the type correct.
+  return [[(GPBUInt64Int32Dictionary*)[self alloc] initWithInt32s:&value
+                                                          forKeys:&key
+                                                            count:1] autorelease];
+}
+
++ (instancetype)dictionaryWithInt32s:(const int32_t [])values
+                             forKeys:(const uint64_t [])keys
+                               count:(NSUInteger)count {
+  // Cast is needed so the compiler knows what class we are invoking initWithInt32s:forKeys:count:
+  // on to get the type correct.
+  return [[(GPBUInt64Int32Dictionary*)[self alloc] initWithInt32s:values
+                                                          forKeys:keys
+                                                            count:count] autorelease];
+}
+
++ (instancetype)dictionaryWithDictionary:(GPBUInt64Int32Dictionary *)dictionary {
+  // Cast is needed so the compiler knows what class we are invoking initWithDictionary:
+  // on to get the type correct.
+  return [[(GPBUInt64Int32Dictionary*)[self alloc] initWithDictionary:dictionary] autorelease];
+}
+
++ (instancetype)dictionaryWithCapacity:(NSUInteger)numItems {
+  return [[[self alloc] initWithCapacity:numItems] autorelease];
 }
 
 - (instancetype)init {
@@ -5297,6 +6101,39 @@ void GPBDictionaryReadEntry(id mapDictionary,
   NSMutableDictionary *_dictionary;
 }
 
++ (instancetype)dictionary {
+  return [[[self alloc] initWithUInt64s:NULL forKeys:NULL count:0] autorelease];
+}
+
++ (instancetype)dictionaryWithUInt64:(uint64_t)value
+                              forKey:(uint64_t)key {
+  // Cast is needed so the compiler knows what class we are invoking initWithUInt64s:forKeys:count:
+  // on to get the type correct.
+  return [[(GPBUInt64UInt64Dictionary*)[self alloc] initWithUInt64s:&value
+                                                            forKeys:&key
+                                                              count:1] autorelease];
+}
+
++ (instancetype)dictionaryWithUInt64s:(const uint64_t [])values
+                              forKeys:(const uint64_t [])keys
+                                count:(NSUInteger)count {
+  // Cast is needed so the compiler knows what class we are invoking initWithUInt64s:forKeys:count:
+  // on to get the type correct.
+  return [[(GPBUInt64UInt64Dictionary*)[self alloc] initWithUInt64s:values
+                                                           forKeys:keys
+                                                             count:count] autorelease];
+}
+
++ (instancetype)dictionaryWithDictionary:(GPBUInt64UInt64Dictionary *)dictionary {
+  // Cast is needed so the compiler knows what class we are invoking initWithDictionary:
+  // on to get the type correct.
+  return [[(GPBUInt64UInt64Dictionary*)[self alloc] initWithDictionary:dictionary] autorelease];
+}
+
++ (instancetype)dictionaryWithCapacity:(NSUInteger)numItems {
+  return [[[self alloc] initWithCapacity:numItems] autorelease];
+}
+
 - (instancetype)init {
   return [self initWithUInt64s:NULL forKeys:NULL count:0];
 }
@@ -5478,6 +6315,39 @@ void GPBDictionaryReadEntry(id mapDictionary,
 @implementation GPBUInt64Int64Dictionary {
  @package
   NSMutableDictionary *_dictionary;
+}
+
++ (instancetype)dictionary {
+  return [[[self alloc] initWithInt64s:NULL forKeys:NULL count:0] autorelease];
+}
+
++ (instancetype)dictionaryWithInt64:(int64_t)value
+                             forKey:(uint64_t)key {
+  // Cast is needed so the compiler knows what class we are invoking initWithInt64s:forKeys:count:
+  // on to get the type correct.
+  return [[(GPBUInt64Int64Dictionary*)[self alloc] initWithInt64s:&value
+                                                          forKeys:&key
+                                                            count:1] autorelease];
+}
+
++ (instancetype)dictionaryWithInt64s:(const int64_t [])values
+                             forKeys:(const uint64_t [])keys
+                               count:(NSUInteger)count {
+  // Cast is needed so the compiler knows what class we are invoking initWithInt64s:forKeys:count:
+  // on to get the type correct.
+  return [[(GPBUInt64Int64Dictionary*)[self alloc] initWithInt64s:values
+                                                          forKeys:keys
+                                                            count:count] autorelease];
+}
+
++ (instancetype)dictionaryWithDictionary:(GPBUInt64Int64Dictionary *)dictionary {
+  // Cast is needed so the compiler knows what class we are invoking initWithDictionary:
+  // on to get the type correct.
+  return [[(GPBUInt64Int64Dictionary*)[self alloc] initWithDictionary:dictionary] autorelease];
+}
+
++ (instancetype)dictionaryWithCapacity:(NSUInteger)numItems {
+  return [[[self alloc] initWithCapacity:numItems] autorelease];
 }
 
 - (instancetype)init {
@@ -5663,6 +6533,39 @@ void GPBDictionaryReadEntry(id mapDictionary,
   NSMutableDictionary *_dictionary;
 }
 
++ (instancetype)dictionary {
+  return [[[self alloc] initWithBools:NULL forKeys:NULL count:0] autorelease];
+}
+
++ (instancetype)dictionaryWithBool:(BOOL)value
+                            forKey:(uint64_t)key {
+  // Cast is needed so the compiler knows what class we are invoking initWithBools:forKeys:count:
+  // on to get the type correct.
+  return [[(GPBUInt64BoolDictionary*)[self alloc] initWithBools:&value
+                                                        forKeys:&key
+                                                          count:1] autorelease];
+}
+
++ (instancetype)dictionaryWithBools:(const BOOL [])values
+                            forKeys:(const uint64_t [])keys
+                              count:(NSUInteger)count {
+  // Cast is needed so the compiler knows what class we are invoking initWithBools:forKeys:count:
+  // on to get the type correct.
+  return [[(GPBUInt64BoolDictionary*)[self alloc] initWithBools:values
+                                                         forKeys:keys
+                                                           count:count] autorelease];
+}
+
++ (instancetype)dictionaryWithDictionary:(GPBUInt64BoolDictionary *)dictionary {
+  // Cast is needed so the compiler knows what class we are invoking initWithDictionary:
+  // on to get the type correct.
+  return [[(GPBUInt64BoolDictionary*)[self alloc] initWithDictionary:dictionary] autorelease];
+}
+
++ (instancetype)dictionaryWithCapacity:(NSUInteger)numItems {
+  return [[[self alloc] initWithCapacity:numItems] autorelease];
+}
+
 - (instancetype)init {
   return [self initWithBools:NULL forKeys:NULL count:0];
 }
@@ -5846,6 +6749,39 @@ void GPBDictionaryReadEntry(id mapDictionary,
   NSMutableDictionary *_dictionary;
 }
 
++ (instancetype)dictionary {
+  return [[[self alloc] initWithFloats:NULL forKeys:NULL count:0] autorelease];
+}
+
++ (instancetype)dictionaryWithFloat:(float)value
+                             forKey:(uint64_t)key {
+  // Cast is needed so the compiler knows what class we are invoking initWithFloats:forKeys:count:
+  // on to get the type correct.
+  return [[(GPBUInt64FloatDictionary*)[self alloc] initWithFloats:&value
+                                                          forKeys:&key
+                                                            count:1] autorelease];
+}
+
++ (instancetype)dictionaryWithFloats:(const float [])values
+                             forKeys:(const uint64_t [])keys
+                               count:(NSUInteger)count {
+  // Cast is needed so the compiler knows what class we are invoking initWithFloats:forKeys:count:
+  // on to get the type correct.
+  return [[(GPBUInt64FloatDictionary*)[self alloc] initWithFloats:values
+                                                          forKeys:keys
+                                                            count:count] autorelease];
+}
+
++ (instancetype)dictionaryWithDictionary:(GPBUInt64FloatDictionary *)dictionary {
+  // Cast is needed so the compiler knows what class we are invoking initWithDictionary:
+  // on to get the type correct.
+  return [[(GPBUInt64FloatDictionary*)[self alloc] initWithDictionary:dictionary] autorelease];
+}
+
++ (instancetype)dictionaryWithCapacity:(NSUInteger)numItems {
+  return [[[self alloc] initWithCapacity:numItems] autorelease];
+}
+
 - (instancetype)init {
   return [self initWithFloats:NULL forKeys:NULL count:0];
 }
@@ -6027,6 +6963,39 @@ void GPBDictionaryReadEntry(id mapDictionary,
 @implementation GPBUInt64DoubleDictionary {
  @package
   NSMutableDictionary *_dictionary;
+}
+
++ (instancetype)dictionary {
+  return [[[self alloc] initWithDoubles:NULL forKeys:NULL count:0] autorelease];
+}
+
++ (instancetype)dictionaryWithDouble:(double)value
+                              forKey:(uint64_t)key {
+  // Cast is needed so the compiler knows what class we are invoking initWithDoubles:forKeys:count:
+  // on to get the type correct.
+  return [[(GPBUInt64DoubleDictionary*)[self alloc] initWithDoubles:&value
+                                                            forKeys:&key
+                                                              count:1] autorelease];
+}
+
++ (instancetype)dictionaryWithDoubles:(const double [])values
+                              forKeys:(const uint64_t [])keys
+                                count:(NSUInteger)count {
+  // Cast is needed so the compiler knows what class we are invoking initWithDoubles:forKeys:count:
+  // on to get the type correct.
+  return [[(GPBUInt64DoubleDictionary*)[self alloc] initWithDoubles:values
+                                                           forKeys:keys
+                                                             count:count] autorelease];
+}
+
++ (instancetype)dictionaryWithDictionary:(GPBUInt64DoubleDictionary *)dictionary {
+  // Cast is needed so the compiler knows what class we are invoking initWithDictionary:
+  // on to get the type correct.
+  return [[(GPBUInt64DoubleDictionary*)[self alloc] initWithDictionary:dictionary] autorelease];
+}
+
++ (instancetype)dictionaryWithCapacity:(NSUInteger)numItems {
+  return [[[self alloc] initWithCapacity:numItems] autorelease];
 }
 
 - (instancetype)init {
@@ -6214,6 +7183,54 @@ void GPBDictionaryReadEntry(id mapDictionary,
 }
 
 @synthesize validationFunc = _validationFunc;
+
++ (instancetype)dictionary {
+  return [[[self alloc] initWithValidationFunction:NULL
+                                         rawValues:NULL
+                                           forKeys:NULL
+                                             count:0] autorelease];
+}
+
++ (instancetype)dictionaryWithValidationFunction:(GPBEnumValidationFunc)func {
+  return [[[self alloc] initWithValidationFunction:func
+                                         rawValues:NULL
+                                           forKeys:NULL
+                                             count:0] autorelease];
+}
+
++ (instancetype)dictionaryWithValidationFunction:(GPBEnumValidationFunc)func
+                                        rawValue:(int32_t)rawValue
+                                          forKey:(uint64_t)key {
+  // Cast is needed so the compiler knows what class we are invoking initWithValues:forKeys:count:
+  // on to get the type correct.
+  return [[(GPBUInt64EnumDictionary*)[self alloc] initWithValidationFunction:func
+                                                                   rawValues:&rawValue
+                                                                     forKeys:&key
+                                                                       count:1] autorelease];
+}
+
++ (instancetype)dictionaryWithValidationFunction:(GPBEnumValidationFunc)func
+                                       rawValues:(const int32_t [])rawValues
+                                         forKeys:(const uint64_t [])keys
+                                           count:(NSUInteger)count {
+  // Cast is needed so the compiler knows what class we are invoking initWithValues:forKeys:count:
+  // on to get the type correct.
+  return [[(GPBUInt64EnumDictionary*)[self alloc] initWithValidationFunction:func
+                                                                   rawValues:rawValues
+                                                                     forKeys:keys
+                                                                       count:count] autorelease];
+}
+
++ (instancetype)dictionaryWithDictionary:(GPBUInt64EnumDictionary *)dictionary {
+  // Cast is needed so the compiler knows what class we are invoking initWithValues:forKeys:count:
+  // on to get the type correct.
+  return [[(GPBUInt64EnumDictionary*)[self alloc] initWithDictionary:dictionary] autorelease];
+}
+
++ (instancetype)dictionaryWithValidationFunction:(GPBEnumValidationFunc)func
+                                        capacity:(NSUInteger)numItems {
+  return [[[self alloc] initWithValidationFunction:func capacity:numItems] autorelease];
+}
 
 - (instancetype)init {
   return [self initWithValidationFunction:NULL rawValues:NULL forKeys:NULL count:0];
@@ -6464,6 +7481,39 @@ void GPBDictionaryReadEntry(id mapDictionary,
   NSMutableDictionary *_dictionary;
 }
 
++ (instancetype)dictionary {
+  return [[[self alloc] initWithObjects:NULL forKeys:NULL count:0] autorelease];
+}
+
++ (instancetype)dictionaryWithObject:(id)object
+                              forKey:(uint64_t)key {
+  // Cast is needed so the compiler knows what class we are invoking initWithObjects:forKeys:count:
+  // on to get the type correct.
+  return [[(GPBUInt64ObjectDictionary*)[self alloc] initWithObjects:&object
+                                                            forKeys:&key
+                                                              count:1] autorelease];
+}
+
++ (instancetype)dictionaryWithObjects:(const id [])objects
+                              forKeys:(const uint64_t [])keys
+                                count:(NSUInteger)count {
+  // Cast is needed so the compiler knows what class we are invoking initWithObjects:forKeys:count:
+  // on to get the type correct.
+  return [[(GPBUInt64ObjectDictionary*)[self alloc] initWithObjects:objects
+                                                           forKeys:keys
+                                                             count:count] autorelease];
+}
+
++ (instancetype)dictionaryWithDictionary:(GPBUInt64ObjectDictionary *)dictionary {
+  // Cast is needed so the compiler knows what class we are invoking initWithDictionary:
+  // on to get the type correct.
+  return [[(GPBUInt64ObjectDictionary*)[self alloc] initWithDictionary:dictionary] autorelease];
+}
+
++ (instancetype)dictionaryWithCapacity:(NSUInteger)numItems {
+  return [[[self alloc] initWithCapacity:numItems] autorelease];
+}
+
 - (instancetype)init {
   return [self initWithObjects:NULL forKeys:NULL count:0];
 }
@@ -6679,6 +7729,39 @@ void GPBDictionaryReadEntry(id mapDictionary,
   NSMutableDictionary *_dictionary;
 }
 
++ (instancetype)dictionary {
+  return [[[self alloc] initWithUInt32s:NULL forKeys:NULL count:0] autorelease];
+}
+
++ (instancetype)dictionaryWithUInt32:(uint32_t)value
+                              forKey:(int64_t)key {
+  // Cast is needed so the compiler knows what class we are invoking initWithUInt32s:forKeys:count:
+  // on to get the type correct.
+  return [[(GPBInt64UInt32Dictionary*)[self alloc] initWithUInt32s:&value
+                                                           forKeys:&key
+                                                             count:1] autorelease];
+}
+
++ (instancetype)dictionaryWithUInt32s:(const uint32_t [])values
+                              forKeys:(const int64_t [])keys
+                                count:(NSUInteger)count {
+  // Cast is needed so the compiler knows what class we are invoking initWithUInt32s:forKeys:count:
+  // on to get the type correct.
+  return [[(GPBInt64UInt32Dictionary*)[self alloc] initWithUInt32s:values
+                                                          forKeys:keys
+                                                            count:count] autorelease];
+}
+
++ (instancetype)dictionaryWithDictionary:(GPBInt64UInt32Dictionary *)dictionary {
+  // Cast is needed so the compiler knows what class we are invoking initWithDictionary:
+  // on to get the type correct.
+  return [[(GPBInt64UInt32Dictionary*)[self alloc] initWithDictionary:dictionary] autorelease];
+}
+
++ (instancetype)dictionaryWithCapacity:(NSUInteger)numItems {
+  return [[[self alloc] initWithCapacity:numItems] autorelease];
+}
+
 - (instancetype)init {
   return [self initWithUInt32s:NULL forKeys:NULL count:0];
 }
@@ -6860,6 +7943,39 @@ void GPBDictionaryReadEntry(id mapDictionary,
 @implementation GPBInt64Int32Dictionary {
  @package
   NSMutableDictionary *_dictionary;
+}
+
++ (instancetype)dictionary {
+  return [[[self alloc] initWithInt32s:NULL forKeys:NULL count:0] autorelease];
+}
+
++ (instancetype)dictionaryWithInt32:(int32_t)value
+                             forKey:(int64_t)key {
+  // Cast is needed so the compiler knows what class we are invoking initWithInt32s:forKeys:count:
+  // on to get the type correct.
+  return [[(GPBInt64Int32Dictionary*)[self alloc] initWithInt32s:&value
+                                                         forKeys:&key
+                                                           count:1] autorelease];
+}
+
++ (instancetype)dictionaryWithInt32s:(const int32_t [])values
+                             forKeys:(const int64_t [])keys
+                               count:(NSUInteger)count {
+  // Cast is needed so the compiler knows what class we are invoking initWithInt32s:forKeys:count:
+  // on to get the type correct.
+  return [[(GPBInt64Int32Dictionary*)[self alloc] initWithInt32s:values
+                                                         forKeys:keys
+                                                           count:count] autorelease];
+}
+
++ (instancetype)dictionaryWithDictionary:(GPBInt64Int32Dictionary *)dictionary {
+  // Cast is needed so the compiler knows what class we are invoking initWithDictionary:
+  // on to get the type correct.
+  return [[(GPBInt64Int32Dictionary*)[self alloc] initWithDictionary:dictionary] autorelease];
+}
+
++ (instancetype)dictionaryWithCapacity:(NSUInteger)numItems {
+  return [[[self alloc] initWithCapacity:numItems] autorelease];
 }
 
 - (instancetype)init {
@@ -7045,6 +8161,39 @@ void GPBDictionaryReadEntry(id mapDictionary,
   NSMutableDictionary *_dictionary;
 }
 
++ (instancetype)dictionary {
+  return [[[self alloc] initWithUInt64s:NULL forKeys:NULL count:0] autorelease];
+}
+
++ (instancetype)dictionaryWithUInt64:(uint64_t)value
+                              forKey:(int64_t)key {
+  // Cast is needed so the compiler knows what class we are invoking initWithUInt64s:forKeys:count:
+  // on to get the type correct.
+  return [[(GPBInt64UInt64Dictionary*)[self alloc] initWithUInt64s:&value
+                                                           forKeys:&key
+                                                             count:1] autorelease];
+}
+
++ (instancetype)dictionaryWithUInt64s:(const uint64_t [])values
+                              forKeys:(const int64_t [])keys
+                                count:(NSUInteger)count {
+  // Cast is needed so the compiler knows what class we are invoking initWithUInt64s:forKeys:count:
+  // on to get the type correct.
+  return [[(GPBInt64UInt64Dictionary*)[self alloc] initWithUInt64s:values
+                                                          forKeys:keys
+                                                            count:count] autorelease];
+}
+
++ (instancetype)dictionaryWithDictionary:(GPBInt64UInt64Dictionary *)dictionary {
+  // Cast is needed so the compiler knows what class we are invoking initWithDictionary:
+  // on to get the type correct.
+  return [[(GPBInt64UInt64Dictionary*)[self alloc] initWithDictionary:dictionary] autorelease];
+}
+
++ (instancetype)dictionaryWithCapacity:(NSUInteger)numItems {
+  return [[[self alloc] initWithCapacity:numItems] autorelease];
+}
+
 - (instancetype)init {
   return [self initWithUInt64s:NULL forKeys:NULL count:0];
 }
@@ -7226,6 +8375,39 @@ void GPBDictionaryReadEntry(id mapDictionary,
 @implementation GPBInt64Int64Dictionary {
  @package
   NSMutableDictionary *_dictionary;
+}
+
++ (instancetype)dictionary {
+  return [[[self alloc] initWithInt64s:NULL forKeys:NULL count:0] autorelease];
+}
+
++ (instancetype)dictionaryWithInt64:(int64_t)value
+                             forKey:(int64_t)key {
+  // Cast is needed so the compiler knows what class we are invoking initWithInt64s:forKeys:count:
+  // on to get the type correct.
+  return [[(GPBInt64Int64Dictionary*)[self alloc] initWithInt64s:&value
+                                                         forKeys:&key
+                                                           count:1] autorelease];
+}
+
++ (instancetype)dictionaryWithInt64s:(const int64_t [])values
+                             forKeys:(const int64_t [])keys
+                               count:(NSUInteger)count {
+  // Cast is needed so the compiler knows what class we are invoking initWithInt64s:forKeys:count:
+  // on to get the type correct.
+  return [[(GPBInt64Int64Dictionary*)[self alloc] initWithInt64s:values
+                                                         forKeys:keys
+                                                           count:count] autorelease];
+}
+
++ (instancetype)dictionaryWithDictionary:(GPBInt64Int64Dictionary *)dictionary {
+  // Cast is needed so the compiler knows what class we are invoking initWithDictionary:
+  // on to get the type correct.
+  return [[(GPBInt64Int64Dictionary*)[self alloc] initWithDictionary:dictionary] autorelease];
+}
+
++ (instancetype)dictionaryWithCapacity:(NSUInteger)numItems {
+  return [[[self alloc] initWithCapacity:numItems] autorelease];
 }
 
 - (instancetype)init {
@@ -7411,6 +8593,39 @@ void GPBDictionaryReadEntry(id mapDictionary,
   NSMutableDictionary *_dictionary;
 }
 
++ (instancetype)dictionary {
+  return [[[self alloc] initWithBools:NULL forKeys:NULL count:0] autorelease];
+}
+
++ (instancetype)dictionaryWithBool:(BOOL)value
+                            forKey:(int64_t)key {
+  // Cast is needed so the compiler knows what class we are invoking initWithBools:forKeys:count:
+  // on to get the type correct.
+  return [[(GPBInt64BoolDictionary*)[self alloc] initWithBools:&value
+                                                       forKeys:&key
+                                                         count:1] autorelease];
+}
+
++ (instancetype)dictionaryWithBools:(const BOOL [])values
+                            forKeys:(const int64_t [])keys
+                              count:(NSUInteger)count {
+  // Cast is needed so the compiler knows what class we are invoking initWithBools:forKeys:count:
+  // on to get the type correct.
+  return [[(GPBInt64BoolDictionary*)[self alloc] initWithBools:values
+                                                        forKeys:keys
+                                                          count:count] autorelease];
+}
+
++ (instancetype)dictionaryWithDictionary:(GPBInt64BoolDictionary *)dictionary {
+  // Cast is needed so the compiler knows what class we are invoking initWithDictionary:
+  // on to get the type correct.
+  return [[(GPBInt64BoolDictionary*)[self alloc] initWithDictionary:dictionary] autorelease];
+}
+
++ (instancetype)dictionaryWithCapacity:(NSUInteger)numItems {
+  return [[[self alloc] initWithCapacity:numItems] autorelease];
+}
+
 - (instancetype)init {
   return [self initWithBools:NULL forKeys:NULL count:0];
 }
@@ -7594,6 +8809,39 @@ void GPBDictionaryReadEntry(id mapDictionary,
   NSMutableDictionary *_dictionary;
 }
 
++ (instancetype)dictionary {
+  return [[[self alloc] initWithFloats:NULL forKeys:NULL count:0] autorelease];
+}
+
++ (instancetype)dictionaryWithFloat:(float)value
+                             forKey:(int64_t)key {
+  // Cast is needed so the compiler knows what class we are invoking initWithFloats:forKeys:count:
+  // on to get the type correct.
+  return [[(GPBInt64FloatDictionary*)[self alloc] initWithFloats:&value
+                                                         forKeys:&key
+                                                           count:1] autorelease];
+}
+
++ (instancetype)dictionaryWithFloats:(const float [])values
+                             forKeys:(const int64_t [])keys
+                               count:(NSUInteger)count {
+  // Cast is needed so the compiler knows what class we are invoking initWithFloats:forKeys:count:
+  // on to get the type correct.
+  return [[(GPBInt64FloatDictionary*)[self alloc] initWithFloats:values
+                                                         forKeys:keys
+                                                           count:count] autorelease];
+}
+
++ (instancetype)dictionaryWithDictionary:(GPBInt64FloatDictionary *)dictionary {
+  // Cast is needed so the compiler knows what class we are invoking initWithDictionary:
+  // on to get the type correct.
+  return [[(GPBInt64FloatDictionary*)[self alloc] initWithDictionary:dictionary] autorelease];
+}
+
++ (instancetype)dictionaryWithCapacity:(NSUInteger)numItems {
+  return [[[self alloc] initWithCapacity:numItems] autorelease];
+}
+
 - (instancetype)init {
   return [self initWithFloats:NULL forKeys:NULL count:0];
 }
@@ -7775,6 +9023,39 @@ void GPBDictionaryReadEntry(id mapDictionary,
 @implementation GPBInt64DoubleDictionary {
  @package
   NSMutableDictionary *_dictionary;
+}
+
++ (instancetype)dictionary {
+  return [[[self alloc] initWithDoubles:NULL forKeys:NULL count:0] autorelease];
+}
+
++ (instancetype)dictionaryWithDouble:(double)value
+                              forKey:(int64_t)key {
+  // Cast is needed so the compiler knows what class we are invoking initWithDoubles:forKeys:count:
+  // on to get the type correct.
+  return [[(GPBInt64DoubleDictionary*)[self alloc] initWithDoubles:&value
+                                                           forKeys:&key
+                                                             count:1] autorelease];
+}
+
++ (instancetype)dictionaryWithDoubles:(const double [])values
+                              forKeys:(const int64_t [])keys
+                                count:(NSUInteger)count {
+  // Cast is needed so the compiler knows what class we are invoking initWithDoubles:forKeys:count:
+  // on to get the type correct.
+  return [[(GPBInt64DoubleDictionary*)[self alloc] initWithDoubles:values
+                                                          forKeys:keys
+                                                            count:count] autorelease];
+}
+
++ (instancetype)dictionaryWithDictionary:(GPBInt64DoubleDictionary *)dictionary {
+  // Cast is needed so the compiler knows what class we are invoking initWithDictionary:
+  // on to get the type correct.
+  return [[(GPBInt64DoubleDictionary*)[self alloc] initWithDictionary:dictionary] autorelease];
+}
+
++ (instancetype)dictionaryWithCapacity:(NSUInteger)numItems {
+  return [[[self alloc] initWithCapacity:numItems] autorelease];
 }
 
 - (instancetype)init {
@@ -7962,6 +9243,54 @@ void GPBDictionaryReadEntry(id mapDictionary,
 }
 
 @synthesize validationFunc = _validationFunc;
+
++ (instancetype)dictionary {
+  return [[[self alloc] initWithValidationFunction:NULL
+                                         rawValues:NULL
+                                           forKeys:NULL
+                                             count:0] autorelease];
+}
+
++ (instancetype)dictionaryWithValidationFunction:(GPBEnumValidationFunc)func {
+  return [[[self alloc] initWithValidationFunction:func
+                                         rawValues:NULL
+                                           forKeys:NULL
+                                             count:0] autorelease];
+}
+
++ (instancetype)dictionaryWithValidationFunction:(GPBEnumValidationFunc)func
+                                        rawValue:(int32_t)rawValue
+                                          forKey:(int64_t)key {
+  // Cast is needed so the compiler knows what class we are invoking initWithValues:forKeys:count:
+  // on to get the type correct.
+  return [[(GPBInt64EnumDictionary*)[self alloc] initWithValidationFunction:func
+                                                                  rawValues:&rawValue
+                                                                    forKeys:&key
+                                                                      count:1] autorelease];
+}
+
++ (instancetype)dictionaryWithValidationFunction:(GPBEnumValidationFunc)func
+                                       rawValues:(const int32_t [])rawValues
+                                         forKeys:(const int64_t [])keys
+                                           count:(NSUInteger)count {
+  // Cast is needed so the compiler knows what class we are invoking initWithValues:forKeys:count:
+  // on to get the type correct.
+  return [[(GPBInt64EnumDictionary*)[self alloc] initWithValidationFunction:func
+                                                                  rawValues:rawValues
+                                                                    forKeys:keys
+                                                                      count:count] autorelease];
+}
+
++ (instancetype)dictionaryWithDictionary:(GPBInt64EnumDictionary *)dictionary {
+  // Cast is needed so the compiler knows what class we are invoking initWithValues:forKeys:count:
+  // on to get the type correct.
+  return [[(GPBInt64EnumDictionary*)[self alloc] initWithDictionary:dictionary] autorelease];
+}
+
++ (instancetype)dictionaryWithValidationFunction:(GPBEnumValidationFunc)func
+                                        capacity:(NSUInteger)numItems {
+  return [[[self alloc] initWithValidationFunction:func capacity:numItems] autorelease];
+}
 
 - (instancetype)init {
   return [self initWithValidationFunction:NULL rawValues:NULL forKeys:NULL count:0];
@@ -8212,6 +9541,39 @@ void GPBDictionaryReadEntry(id mapDictionary,
   NSMutableDictionary *_dictionary;
 }
 
++ (instancetype)dictionary {
+  return [[[self alloc] initWithObjects:NULL forKeys:NULL count:0] autorelease];
+}
+
++ (instancetype)dictionaryWithObject:(id)object
+                              forKey:(int64_t)key {
+  // Cast is needed so the compiler knows what class we are invoking initWithObjects:forKeys:count:
+  // on to get the type correct.
+  return [[(GPBInt64ObjectDictionary*)[self alloc] initWithObjects:&object
+                                                           forKeys:&key
+                                                             count:1] autorelease];
+}
+
++ (instancetype)dictionaryWithObjects:(const id [])objects
+                              forKeys:(const int64_t [])keys
+                                count:(NSUInteger)count {
+  // Cast is needed so the compiler knows what class we are invoking initWithObjects:forKeys:count:
+  // on to get the type correct.
+  return [[(GPBInt64ObjectDictionary*)[self alloc] initWithObjects:objects
+                                                          forKeys:keys
+                                                            count:count] autorelease];
+}
+
++ (instancetype)dictionaryWithDictionary:(GPBInt64ObjectDictionary *)dictionary {
+  // Cast is needed so the compiler knows what class we are invoking initWithDictionary:
+  // on to get the type correct.
+  return [[(GPBInt64ObjectDictionary*)[self alloc] initWithDictionary:dictionary] autorelease];
+}
+
++ (instancetype)dictionaryWithCapacity:(NSUInteger)numItems {
+  return [[[self alloc] initWithCapacity:numItems] autorelease];
+}
+
 - (instancetype)init {
   return [self initWithObjects:NULL forKeys:NULL count:0];
 }
@@ -8427,6 +9789,39 @@ void GPBDictionaryReadEntry(id mapDictionary,
   NSMutableDictionary *_dictionary;
 }
 
++ (instancetype)dictionary {
+  return [[[self alloc] initWithUInt32s:NULL forKeys:NULL count:0] autorelease];
+}
+
++ (instancetype)dictionaryWithUInt32:(uint32_t)value
+                              forKey:(NSString *)key {
+  // Cast is needed so the compiler knows what class we are invoking initWithUInt32s:forKeys:count:
+  // on to get the type correct.
+  return [[(GPBStringUInt32Dictionary*)[self alloc] initWithUInt32s:&value
+                                                            forKeys:&key
+                                                              count:1] autorelease];
+}
+
++ (instancetype)dictionaryWithUInt32s:(const uint32_t [])values
+                              forKeys:(const NSString * [])keys
+                                count:(NSUInteger)count {
+  // Cast is needed so the compiler knows what class we are invoking initWithUInt32s:forKeys:count:
+  // on to get the type correct.
+  return [[(GPBStringUInt32Dictionary*)[self alloc] initWithUInt32s:values
+                                                           forKeys:keys
+                                                             count:count] autorelease];
+}
+
++ (instancetype)dictionaryWithDictionary:(GPBStringUInt32Dictionary *)dictionary {
+  // Cast is needed so the compiler knows what class we are invoking initWithDictionary:
+  // on to get the type correct.
+  return [[(GPBStringUInt32Dictionary*)[self alloc] initWithDictionary:dictionary] autorelease];
+}
+
++ (instancetype)dictionaryWithCapacity:(NSUInteger)numItems {
+  return [[[self alloc] initWithCapacity:numItems] autorelease];
+}
+
 - (instancetype)init {
   return [self initWithUInt32s:NULL forKeys:NULL count:0];
 }
@@ -8616,6 +10011,39 @@ void GPBDictionaryReadEntry(id mapDictionary,
 @implementation GPBStringInt32Dictionary {
  @package
   NSMutableDictionary *_dictionary;
+}
+
++ (instancetype)dictionary {
+  return [[[self alloc] initWithInt32s:NULL forKeys:NULL count:0] autorelease];
+}
+
++ (instancetype)dictionaryWithInt32:(int32_t)value
+                             forKey:(NSString *)key {
+  // Cast is needed so the compiler knows what class we are invoking initWithInt32s:forKeys:count:
+  // on to get the type correct.
+  return [[(GPBStringInt32Dictionary*)[self alloc] initWithInt32s:&value
+                                                          forKeys:&key
+                                                            count:1] autorelease];
+}
+
++ (instancetype)dictionaryWithInt32s:(const int32_t [])values
+                             forKeys:(const NSString * [])keys
+                               count:(NSUInteger)count {
+  // Cast is needed so the compiler knows what class we are invoking initWithInt32s:forKeys:count:
+  // on to get the type correct.
+  return [[(GPBStringInt32Dictionary*)[self alloc] initWithInt32s:values
+                                                          forKeys:keys
+                                                            count:count] autorelease];
+}
+
++ (instancetype)dictionaryWithDictionary:(GPBStringInt32Dictionary *)dictionary {
+  // Cast is needed so the compiler knows what class we are invoking initWithDictionary:
+  // on to get the type correct.
+  return [[(GPBStringInt32Dictionary*)[self alloc] initWithDictionary:dictionary] autorelease];
+}
+
++ (instancetype)dictionaryWithCapacity:(NSUInteger)numItems {
+  return [[[self alloc] initWithCapacity:numItems] autorelease];
 }
 
 - (instancetype)init {
@@ -8809,6 +10237,39 @@ void GPBDictionaryReadEntry(id mapDictionary,
   NSMutableDictionary *_dictionary;
 }
 
++ (instancetype)dictionary {
+  return [[[self alloc] initWithUInt64s:NULL forKeys:NULL count:0] autorelease];
+}
+
++ (instancetype)dictionaryWithUInt64:(uint64_t)value
+                              forKey:(NSString *)key {
+  // Cast is needed so the compiler knows what class we are invoking initWithUInt64s:forKeys:count:
+  // on to get the type correct.
+  return [[(GPBStringUInt64Dictionary*)[self alloc] initWithUInt64s:&value
+                                                            forKeys:&key
+                                                              count:1] autorelease];
+}
+
++ (instancetype)dictionaryWithUInt64s:(const uint64_t [])values
+                              forKeys:(const NSString * [])keys
+                                count:(NSUInteger)count {
+  // Cast is needed so the compiler knows what class we are invoking initWithUInt64s:forKeys:count:
+  // on to get the type correct.
+  return [[(GPBStringUInt64Dictionary*)[self alloc] initWithUInt64s:values
+                                                           forKeys:keys
+                                                             count:count] autorelease];
+}
+
++ (instancetype)dictionaryWithDictionary:(GPBStringUInt64Dictionary *)dictionary {
+  // Cast is needed so the compiler knows what class we are invoking initWithDictionary:
+  // on to get the type correct.
+  return [[(GPBStringUInt64Dictionary*)[self alloc] initWithDictionary:dictionary] autorelease];
+}
+
++ (instancetype)dictionaryWithCapacity:(NSUInteger)numItems {
+  return [[[self alloc] initWithCapacity:numItems] autorelease];
+}
+
 - (instancetype)init {
   return [self initWithUInt64s:NULL forKeys:NULL count:0];
 }
@@ -8998,6 +10459,39 @@ void GPBDictionaryReadEntry(id mapDictionary,
 @implementation GPBStringInt64Dictionary {
  @package
   NSMutableDictionary *_dictionary;
+}
+
++ (instancetype)dictionary {
+  return [[[self alloc] initWithInt64s:NULL forKeys:NULL count:0] autorelease];
+}
+
++ (instancetype)dictionaryWithInt64:(int64_t)value
+                             forKey:(NSString *)key {
+  // Cast is needed so the compiler knows what class we are invoking initWithInt64s:forKeys:count:
+  // on to get the type correct.
+  return [[(GPBStringInt64Dictionary*)[self alloc] initWithInt64s:&value
+                                                          forKeys:&key
+                                                            count:1] autorelease];
+}
+
++ (instancetype)dictionaryWithInt64s:(const int64_t [])values
+                             forKeys:(const NSString * [])keys
+                               count:(NSUInteger)count {
+  // Cast is needed so the compiler knows what class we are invoking initWithInt64s:forKeys:count:
+  // on to get the type correct.
+  return [[(GPBStringInt64Dictionary*)[self alloc] initWithInt64s:values
+                                                          forKeys:keys
+                                                            count:count] autorelease];
+}
+
++ (instancetype)dictionaryWithDictionary:(GPBStringInt64Dictionary *)dictionary {
+  // Cast is needed so the compiler knows what class we are invoking initWithDictionary:
+  // on to get the type correct.
+  return [[(GPBStringInt64Dictionary*)[self alloc] initWithDictionary:dictionary] autorelease];
+}
+
++ (instancetype)dictionaryWithCapacity:(NSUInteger)numItems {
+  return [[[self alloc] initWithCapacity:numItems] autorelease];
 }
 
 - (instancetype)init {
@@ -9191,6 +10685,39 @@ void GPBDictionaryReadEntry(id mapDictionary,
   NSMutableDictionary *_dictionary;
 }
 
++ (instancetype)dictionary {
+  return [[[self alloc] initWithBools:NULL forKeys:NULL count:0] autorelease];
+}
+
++ (instancetype)dictionaryWithBool:(BOOL)value
+                            forKey:(NSString *)key {
+  // Cast is needed so the compiler knows what class we are invoking initWithBools:forKeys:count:
+  // on to get the type correct.
+  return [[(GPBStringBoolDictionary*)[self alloc] initWithBools:&value
+                                                        forKeys:&key
+                                                          count:1] autorelease];
+}
+
++ (instancetype)dictionaryWithBools:(const BOOL [])values
+                            forKeys:(const NSString * [])keys
+                              count:(NSUInteger)count {
+  // Cast is needed so the compiler knows what class we are invoking initWithBools:forKeys:count:
+  // on to get the type correct.
+  return [[(GPBStringBoolDictionary*)[self alloc] initWithBools:values
+                                                         forKeys:keys
+                                                           count:count] autorelease];
+}
+
++ (instancetype)dictionaryWithDictionary:(GPBStringBoolDictionary *)dictionary {
+  // Cast is needed so the compiler knows what class we are invoking initWithDictionary:
+  // on to get the type correct.
+  return [[(GPBStringBoolDictionary*)[self alloc] initWithDictionary:dictionary] autorelease];
+}
+
++ (instancetype)dictionaryWithCapacity:(NSUInteger)numItems {
+  return [[[self alloc] initWithCapacity:numItems] autorelease];
+}
+
 - (instancetype)init {
   return [self initWithBools:NULL forKeys:NULL count:0];
 }
@@ -9382,6 +10909,39 @@ void GPBDictionaryReadEntry(id mapDictionary,
   NSMutableDictionary *_dictionary;
 }
 
++ (instancetype)dictionary {
+  return [[[self alloc] initWithFloats:NULL forKeys:NULL count:0] autorelease];
+}
+
++ (instancetype)dictionaryWithFloat:(float)value
+                             forKey:(NSString *)key {
+  // Cast is needed so the compiler knows what class we are invoking initWithFloats:forKeys:count:
+  // on to get the type correct.
+  return [[(GPBStringFloatDictionary*)[self alloc] initWithFloats:&value
+                                                          forKeys:&key
+                                                            count:1] autorelease];
+}
+
++ (instancetype)dictionaryWithFloats:(const float [])values
+                             forKeys:(const NSString * [])keys
+                               count:(NSUInteger)count {
+  // Cast is needed so the compiler knows what class we are invoking initWithFloats:forKeys:count:
+  // on to get the type correct.
+  return [[(GPBStringFloatDictionary*)[self alloc] initWithFloats:values
+                                                          forKeys:keys
+                                                            count:count] autorelease];
+}
+
++ (instancetype)dictionaryWithDictionary:(GPBStringFloatDictionary *)dictionary {
+  // Cast is needed so the compiler knows what class we are invoking initWithDictionary:
+  // on to get the type correct.
+  return [[(GPBStringFloatDictionary*)[self alloc] initWithDictionary:dictionary] autorelease];
+}
+
++ (instancetype)dictionaryWithCapacity:(NSUInteger)numItems {
+  return [[[self alloc] initWithCapacity:numItems] autorelease];
+}
+
 - (instancetype)init {
   return [self initWithFloats:NULL forKeys:NULL count:0];
 }
@@ -9571,6 +11131,39 @@ void GPBDictionaryReadEntry(id mapDictionary,
 @implementation GPBStringDoubleDictionary {
  @package
   NSMutableDictionary *_dictionary;
+}
+
++ (instancetype)dictionary {
+  return [[[self alloc] initWithDoubles:NULL forKeys:NULL count:0] autorelease];
+}
+
++ (instancetype)dictionaryWithDouble:(double)value
+                              forKey:(NSString *)key {
+  // Cast is needed so the compiler knows what class we are invoking initWithDoubles:forKeys:count:
+  // on to get the type correct.
+  return [[(GPBStringDoubleDictionary*)[self alloc] initWithDoubles:&value
+                                                            forKeys:&key
+                                                              count:1] autorelease];
+}
+
++ (instancetype)dictionaryWithDoubles:(const double [])values
+                              forKeys:(const NSString * [])keys
+                                count:(NSUInteger)count {
+  // Cast is needed so the compiler knows what class we are invoking initWithDoubles:forKeys:count:
+  // on to get the type correct.
+  return [[(GPBStringDoubleDictionary*)[self alloc] initWithDoubles:values
+                                                           forKeys:keys
+                                                             count:count] autorelease];
+}
+
++ (instancetype)dictionaryWithDictionary:(GPBStringDoubleDictionary *)dictionary {
+  // Cast is needed so the compiler knows what class we are invoking initWithDictionary:
+  // on to get the type correct.
+  return [[(GPBStringDoubleDictionary*)[self alloc] initWithDictionary:dictionary] autorelease];
+}
+
++ (instancetype)dictionaryWithCapacity:(NSUInteger)numItems {
+  return [[[self alloc] initWithCapacity:numItems] autorelease];
 }
 
 - (instancetype)init {
@@ -9766,6 +11359,54 @@ void GPBDictionaryReadEntry(id mapDictionary,
 }
 
 @synthesize validationFunc = _validationFunc;
+
++ (instancetype)dictionary {
+  return [[[self alloc] initWithValidationFunction:NULL
+                                         rawValues:NULL
+                                           forKeys:NULL
+                                             count:0] autorelease];
+}
+
++ (instancetype)dictionaryWithValidationFunction:(GPBEnumValidationFunc)func {
+  return [[[self alloc] initWithValidationFunction:func
+                                         rawValues:NULL
+                                           forKeys:NULL
+                                             count:0] autorelease];
+}
+
++ (instancetype)dictionaryWithValidationFunction:(GPBEnumValidationFunc)func
+                                        rawValue:(int32_t)rawValue
+                                          forKey:(NSString *)key {
+  // Cast is needed so the compiler knows what class we are invoking initWithValues:forKeys:count:
+  // on to get the type correct.
+  return [[(GPBStringEnumDictionary*)[self alloc] initWithValidationFunction:func
+                                                                   rawValues:&rawValue
+                                                                     forKeys:&key
+                                                                       count:1] autorelease];
+}
+
++ (instancetype)dictionaryWithValidationFunction:(GPBEnumValidationFunc)func
+                                       rawValues:(const int32_t [])rawValues
+                                         forKeys:(const NSString * [])keys
+                                           count:(NSUInteger)count {
+  // Cast is needed so the compiler knows what class we are invoking initWithValues:forKeys:count:
+  // on to get the type correct.
+  return [[(GPBStringEnumDictionary*)[self alloc] initWithValidationFunction:func
+                                                                   rawValues:rawValues
+                                                                     forKeys:keys
+                                                                       count:count] autorelease];
+}
+
++ (instancetype)dictionaryWithDictionary:(GPBStringEnumDictionary *)dictionary {
+  // Cast is needed so the compiler knows what class we are invoking initWithValues:forKeys:count:
+  // on to get the type correct.
+  return [[(GPBStringEnumDictionary*)[self alloc] initWithDictionary:dictionary] autorelease];
+}
+
++ (instancetype)dictionaryWithValidationFunction:(GPBEnumValidationFunc)func
+                                        capacity:(NSUInteger)numItems {
+  return [[[self alloc] initWithValidationFunction:func capacity:numItems] autorelease];
+}
 
 - (instancetype)init {
   return [self initWithValidationFunction:NULL rawValues:NULL forKeys:NULL count:0];
@@ -10035,6 +11676,39 @@ void GPBDictionaryReadEntry(id mapDictionary,
   BOOL _valueSet[2];
 }
 
++ (instancetype)dictionary {
+  return [[[self alloc] initWithUInt32s:NULL forKeys:NULL count:0] autorelease];
+}
+
++ (instancetype)dictionaryWithUInt32:(uint32_t)value
+                              forKey:(BOOL)key {
+  // Cast is needed so the compiler knows what class we are invoking initWithUInt32s:forKeys:count:
+  // on to get the type correct.
+  return [[(GPBBoolUInt32Dictionary*)[self alloc] initWithUInt32s:&value
+                                                          forKeys:&key
+                                                            count:1] autorelease];
+}
+
++ (instancetype)dictionaryWithUInt32s:(const uint32_t [])values
+                              forKeys:(const BOOL [])keys
+                                count:(NSUInteger)count {
+  // Cast is needed so the compiler knows what class we are invoking initWithUInt32s:forKeys:count:
+  // on to get the type correct.
+  return [[(GPBBoolUInt32Dictionary*)[self alloc] initWithUInt32s:values
+                                                          forKeys:keys
+                                                            count:count] autorelease];
+}
+
++ (instancetype)dictionaryWithDictionary:(GPBBoolUInt32Dictionary *)dictionary {
+  // Cast is needed so the compiler knows what class we are invoking initWithDictionary:
+  // on to get the type correct.
+  return [[(GPBBoolUInt32Dictionary*)[self alloc] initWithDictionary:dictionary] autorelease];
+}
+
++ (instancetype)dictionaryWithCapacity:(NSUInteger)numItems {
+  return [[[self alloc] initWithCapacity:numItems] autorelease];
+}
+
 - (instancetype)init {
   return [self initWithUInt32s:NULL forKeys:NULL count:0];
 }
@@ -10242,6 +11916,39 @@ void GPBDictionaryReadEntry(id mapDictionary,
  @package
   int32_t _values[2];
   BOOL _valueSet[2];
+}
+
++ (instancetype)dictionary {
+  return [[[self alloc] initWithInt32s:NULL forKeys:NULL count:0] autorelease];
+}
+
++ (instancetype)dictionaryWithInt32:(int32_t)value
+                             forKey:(BOOL)key {
+  // Cast is needed so the compiler knows what class we are invoking initWithInt32s:forKeys:count:
+  // on to get the type correct.
+  return [[(GPBBoolInt32Dictionary*)[self alloc] initWithInt32s:&value
+                                                        forKeys:&key
+                                                          count:1] autorelease];
+}
+
++ (instancetype)dictionaryWithInt32s:(const int32_t [])values
+                             forKeys:(const BOOL [])keys
+                               count:(NSUInteger)count {
+  // Cast is needed so the compiler knows what class we are invoking initWithInt32s:forKeys:count:
+  // on to get the type correct.
+  return [[(GPBBoolInt32Dictionary*)[self alloc] initWithInt32s:values
+                                                        forKeys:keys
+                                                          count:count] autorelease];
+}
+
++ (instancetype)dictionaryWithDictionary:(GPBBoolInt32Dictionary *)dictionary {
+  // Cast is needed so the compiler knows what class we are invoking initWithDictionary:
+  // on to get the type correct.
+  return [[(GPBBoolInt32Dictionary*)[self alloc] initWithDictionary:dictionary] autorelease];
+}
+
++ (instancetype)dictionaryWithCapacity:(NSUInteger)numItems {
+  return [[[self alloc] initWithCapacity:numItems] autorelease];
 }
 
 - (instancetype)init {
@@ -10453,6 +12160,39 @@ void GPBDictionaryReadEntry(id mapDictionary,
   BOOL _valueSet[2];
 }
 
++ (instancetype)dictionary {
+  return [[[self alloc] initWithUInt64s:NULL forKeys:NULL count:0] autorelease];
+}
+
++ (instancetype)dictionaryWithUInt64:(uint64_t)value
+                              forKey:(BOOL)key {
+  // Cast is needed so the compiler knows what class we are invoking initWithUInt64s:forKeys:count:
+  // on to get the type correct.
+  return [[(GPBBoolUInt64Dictionary*)[self alloc] initWithUInt64s:&value
+                                                          forKeys:&key
+                                                            count:1] autorelease];
+}
+
++ (instancetype)dictionaryWithUInt64s:(const uint64_t [])values
+                              forKeys:(const BOOL [])keys
+                                count:(NSUInteger)count {
+  // Cast is needed so the compiler knows what class we are invoking initWithUInt64s:forKeys:count:
+  // on to get the type correct.
+  return [[(GPBBoolUInt64Dictionary*)[self alloc] initWithUInt64s:values
+                                                          forKeys:keys
+                                                            count:count] autorelease];
+}
+
++ (instancetype)dictionaryWithDictionary:(GPBBoolUInt64Dictionary *)dictionary {
+  // Cast is needed so the compiler knows what class we are invoking initWithDictionary:
+  // on to get the type correct.
+  return [[(GPBBoolUInt64Dictionary*)[self alloc] initWithDictionary:dictionary] autorelease];
+}
+
++ (instancetype)dictionaryWithCapacity:(NSUInteger)numItems {
+  return [[[self alloc] initWithCapacity:numItems] autorelease];
+}
+
 - (instancetype)init {
   return [self initWithUInt64s:NULL forKeys:NULL count:0];
 }
@@ -10660,6 +12400,39 @@ void GPBDictionaryReadEntry(id mapDictionary,
  @package
   int64_t _values[2];
   BOOL _valueSet[2];
+}
+
++ (instancetype)dictionary {
+  return [[[self alloc] initWithInt64s:NULL forKeys:NULL count:0] autorelease];
+}
+
++ (instancetype)dictionaryWithInt64:(int64_t)value
+                             forKey:(BOOL)key {
+  // Cast is needed so the compiler knows what class we are invoking initWithInt64s:forKeys:count:
+  // on to get the type correct.
+  return [[(GPBBoolInt64Dictionary*)[self alloc] initWithInt64s:&value
+                                                        forKeys:&key
+                                                          count:1] autorelease];
+}
+
++ (instancetype)dictionaryWithInt64s:(const int64_t [])values
+                             forKeys:(const BOOL [])keys
+                               count:(NSUInteger)count {
+  // Cast is needed so the compiler knows what class we are invoking initWithInt64s:forKeys:count:
+  // on to get the type correct.
+  return [[(GPBBoolInt64Dictionary*)[self alloc] initWithInt64s:values
+                                                        forKeys:keys
+                                                          count:count] autorelease];
+}
+
++ (instancetype)dictionaryWithDictionary:(GPBBoolInt64Dictionary *)dictionary {
+  // Cast is needed so the compiler knows what class we are invoking initWithDictionary:
+  // on to get the type correct.
+  return [[(GPBBoolInt64Dictionary*)[self alloc] initWithDictionary:dictionary] autorelease];
+}
+
++ (instancetype)dictionaryWithCapacity:(NSUInteger)numItems {
+  return [[[self alloc] initWithCapacity:numItems] autorelease];
 }
 
 - (instancetype)init {
@@ -10871,6 +12644,39 @@ void GPBDictionaryReadEntry(id mapDictionary,
   BOOL _valueSet[2];
 }
 
++ (instancetype)dictionary {
+  return [[[self alloc] initWithBools:NULL forKeys:NULL count:0] autorelease];
+}
+
++ (instancetype)dictionaryWithBool:(BOOL)value
+                            forKey:(BOOL)key {
+  // Cast is needed so the compiler knows what class we are invoking initWithBools:forKeys:count:
+  // on to get the type correct.
+  return [[(GPBBoolBoolDictionary*)[self alloc] initWithBools:&value
+                                                      forKeys:&key
+                                                        count:1] autorelease];
+}
+
++ (instancetype)dictionaryWithBools:(const BOOL [])values
+                            forKeys:(const BOOL [])keys
+                              count:(NSUInteger)count {
+  // Cast is needed so the compiler knows what class we are invoking initWithBools:forKeys:count:
+  // on to get the type correct.
+  return [[(GPBBoolBoolDictionary*)[self alloc] initWithBools:values
+                                                      forKeys:keys
+                                                        count:count] autorelease];
+}
+
++ (instancetype)dictionaryWithDictionary:(GPBBoolBoolDictionary *)dictionary {
+  // Cast is needed so the compiler knows what class we are invoking initWithDictionary:
+  // on to get the type correct.
+  return [[(GPBBoolBoolDictionary*)[self alloc] initWithDictionary:dictionary] autorelease];
+}
+
++ (instancetype)dictionaryWithCapacity:(NSUInteger)numItems {
+  return [[[self alloc] initWithCapacity:numItems] autorelease];
+}
+
 - (instancetype)init {
   return [self initWithBools:NULL forKeys:NULL count:0];
 }
@@ -11078,6 +12884,39 @@ void GPBDictionaryReadEntry(id mapDictionary,
  @package
   float _values[2];
   BOOL _valueSet[2];
+}
+
++ (instancetype)dictionary {
+  return [[[self alloc] initWithFloats:NULL forKeys:NULL count:0] autorelease];
+}
+
++ (instancetype)dictionaryWithFloat:(float)value
+                             forKey:(BOOL)key {
+  // Cast is needed so the compiler knows what class we are invoking initWithFloats:forKeys:count:
+  // on to get the type correct.
+  return [[(GPBBoolFloatDictionary*)[self alloc] initWithFloats:&value
+                                                        forKeys:&key
+                                                          count:1] autorelease];
+}
+
++ (instancetype)dictionaryWithFloats:(const float [])values
+                             forKeys:(const BOOL [])keys
+                               count:(NSUInteger)count {
+  // Cast is needed so the compiler knows what class we are invoking initWithFloats:forKeys:count:
+  // on to get the type correct.
+  return [[(GPBBoolFloatDictionary*)[self alloc] initWithFloats:values
+                                                        forKeys:keys
+                                                          count:count] autorelease];
+}
+
++ (instancetype)dictionaryWithDictionary:(GPBBoolFloatDictionary *)dictionary {
+  // Cast is needed so the compiler knows what class we are invoking initWithDictionary:
+  // on to get the type correct.
+  return [[(GPBBoolFloatDictionary*)[self alloc] initWithDictionary:dictionary] autorelease];
+}
+
++ (instancetype)dictionaryWithCapacity:(NSUInteger)numItems {
+  return [[[self alloc] initWithCapacity:numItems] autorelease];
 }
 
 - (instancetype)init {
@@ -11289,6 +13128,39 @@ void GPBDictionaryReadEntry(id mapDictionary,
   BOOL _valueSet[2];
 }
 
++ (instancetype)dictionary {
+  return [[[self alloc] initWithDoubles:NULL forKeys:NULL count:0] autorelease];
+}
+
++ (instancetype)dictionaryWithDouble:(double)value
+                              forKey:(BOOL)key {
+  // Cast is needed so the compiler knows what class we are invoking initWithDoubles:forKeys:count:
+  // on to get the type correct.
+  return [[(GPBBoolDoubleDictionary*)[self alloc] initWithDoubles:&value
+                                                          forKeys:&key
+                                                            count:1] autorelease];
+}
+
++ (instancetype)dictionaryWithDoubles:(const double [])values
+                              forKeys:(const BOOL [])keys
+                                count:(NSUInteger)count {
+  // Cast is needed so the compiler knows what class we are invoking initWithDoubles:forKeys:count:
+  // on to get the type correct.
+  return [[(GPBBoolDoubleDictionary*)[self alloc] initWithDoubles:values
+                                                          forKeys:keys
+                                                            count:count] autorelease];
+}
+
++ (instancetype)dictionaryWithDictionary:(GPBBoolDoubleDictionary *)dictionary {
+  // Cast is needed so the compiler knows what class we are invoking initWithDictionary:
+  // on to get the type correct.
+  return [[(GPBBoolDoubleDictionary*)[self alloc] initWithDictionary:dictionary] autorelease];
+}
+
++ (instancetype)dictionaryWithCapacity:(NSUInteger)numItems {
+  return [[[self alloc] initWithCapacity:numItems] autorelease];
+}
+
 - (instancetype)init {
   return [self initWithDoubles:NULL forKeys:NULL count:0];
 }
@@ -11495,6 +13367,39 @@ void GPBDictionaryReadEntry(id mapDictionary,
 @implementation GPBBoolObjectDictionary {
  @package
   id _values[2];
+}
+
++ (instancetype)dictionary {
+  return [[[self alloc] initWithObjects:NULL forKeys:NULL count:0] autorelease];
+}
+
++ (instancetype)dictionaryWithObject:(id)object
+                              forKey:(BOOL)key {
+  // Cast is needed so the compiler knows what class we are invoking initWithObjects:forKeys:count:
+  // on to get the type correct.
+  return [[(GPBBoolObjectDictionary*)[self alloc] initWithObjects:&object
+                                                          forKeys:&key
+                                                            count:1] autorelease];
+}
+
++ (instancetype)dictionaryWithObjects:(const id [])objects
+                              forKeys:(const BOOL [])keys
+                                count:(NSUInteger)count {
+  // Cast is needed so the compiler knows what class we are invoking initWithObjects:forKeys:count:
+  // on to get the type correct.
+  return [[(GPBBoolObjectDictionary*)[self alloc] initWithObjects:objects
+                                                          forKeys:keys
+                                                            count:count] autorelease];
+}
+
++ (instancetype)dictionaryWithDictionary:(GPBBoolObjectDictionary *)dictionary {
+  // Cast is needed so the compiler knows what class we are invoking initWithDictionary:
+  // on to get the type correct.
+  return [[(GPBBoolObjectDictionary*)[self alloc] initWithDictionary:dictionary] autorelease];
+}
+
++ (instancetype)dictionaryWithCapacity:(NSUInteger)numItems {
+  return [[[self alloc] initWithCapacity:numItems] autorelease];
 }
 
 - (instancetype)init {
@@ -11729,6 +13634,54 @@ void GPBDictionaryReadEntry(id mapDictionary,
 }
 
 @synthesize validationFunc = _validationFunc;
+
++ (instancetype)dictionary {
+  return [[[self alloc] initWithValidationFunction:NULL
+                                         rawValues:NULL
+                                           forKeys:NULL
+                                             count:0] autorelease];
+}
+
++ (instancetype)dictionaryWithValidationFunction:(GPBEnumValidationFunc)func {
+  return [[[self alloc] initWithValidationFunction:func
+                                         rawValues:NULL
+                                           forKeys:NULL
+                                             count:0] autorelease];
+}
+
++ (instancetype)dictionaryWithValidationFunction:(GPBEnumValidationFunc)func
+                                       rawValue:(int32_t)rawValue
+                                          forKey:(BOOL)key {
+  // Cast is needed so the compiler knows what class we are invoking initWithValues:forKeys:count:
+  // on to get the type correct.
+  return [[(GPBBoolEnumDictionary*)[self alloc] initWithValidationFunction:func
+                                                                 rawValues:&rawValue
+                                                                   forKeys:&key
+                                                                     count:1] autorelease];
+}
+
++ (instancetype)dictionaryWithValidationFunction:(GPBEnumValidationFunc)func
+                                       rawValues:(const int32_t [])values
+                                         forKeys:(const BOOL [])keys
+                                           count:(NSUInteger)count {
+  // Cast is needed so the compiler knows what class we are invoking initWithValues:forKeys:count:
+  // on to get the type correct.
+  return [[(GPBBoolEnumDictionary*)[self alloc] initWithValidationFunction:func
+                                                                 rawValues:values
+                                                                   forKeys:keys
+                                                                     count:count] autorelease];
+}
+
++ (instancetype)dictionaryWithDictionary:(GPBBoolEnumDictionary *)dictionary {
+  // Cast is needed so the compiler knows what class we are invoking initWithValues:forKeys:count:
+  // on to get the type correct.
+  return [[(GPBBoolEnumDictionary*)[self alloc] initWithDictionary:dictionary] autorelease];
+}
+
++ (instancetype)dictionaryWithValidationFunction:(GPBEnumValidationFunc)func
+                                        capacity:(NSUInteger)numItems {
+  return [[[self alloc] initWithValidationFunction:func capacity:numItems] autorelease];
+}
 
 - (instancetype)init {
   return [self initWithValidationFunction:NULL rawValues:NULL forKeys:NULL count:0];
@@ -12102,14 +14055,14 @@ void GPBDictionaryReadEntry(id mapDictionary,
   }
 }
 
-- (void)enumerateKeysAndObjectsUsingBlock:(void (NS_NOESCAPE ^)(id key,
+- (void)enumerateKeysAndObjectsUsingBlock:(void (^)(id key,
                                                     id obj,
                                                     BOOL *stop))block {
   [_dictionary enumerateKeysAndObjectsUsingBlock:block];
 }
 
 - (void)enumerateKeysAndObjectsWithOptions:(NSEnumerationOptions)opts
-                                usingBlock:(void (NS_NOESCAPE ^)(id key,
+                                usingBlock:(void (^)(id key,
                                                      id obj,
                                                      BOOL *stop))block {
   [_dictionary enumerateKeysAndObjectsWithOptions:opts usingBlock:block];

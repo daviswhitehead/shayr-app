@@ -74,7 +74,6 @@
 #include <openssl/err.h>
 #include <openssl/mem.h>
 
-#include "../fipsmodule/ec/internal.h"
 #include "../internal.h"
 
 
@@ -82,11 +81,11 @@ int ECDH_compute_key(void *out, size_t outlen, const EC_POINT *pub_key,
                      const EC_KEY *priv_key,
                      void *(*kdf)(const void *in, size_t inlen, void *out,
                                   size_t *outlen)) {
-  if (priv_key->priv_key == NULL) {
+  const BIGNUM *const priv = EC_KEY_get0_private_key(priv_key);
+  if (priv == NULL) {
     OPENSSL_PUT_ERROR(ECDH, ECDH_R_NO_PRIVATE_VALUE);
     return -1;
   }
-  const EC_SCALAR *const priv = &priv_key->priv_key->scalar;
 
   BN_CTX *ctx = BN_CTX_new();
   if (ctx == NULL) {
@@ -105,7 +104,7 @@ int ECDH_compute_key(void *out, size_t outlen, const EC_POINT *pub_key,
     goto err;
   }
 
-  if (!ec_point_mul_scalar(group, tmp, NULL, pub_key, priv, ctx)) {
+  if (!EC_POINT_mul(group, tmp, NULL, pub_key, priv, ctx)) {
     OPENSSL_PUT_ERROR(ECDH, ECDH_R_POINT_ARITHMETIC_FAILURE);
     goto err;
   }

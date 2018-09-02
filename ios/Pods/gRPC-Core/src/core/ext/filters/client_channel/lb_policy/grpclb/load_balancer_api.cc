@@ -18,9 +18,9 @@
 
 #include <grpc/support/port_platform.h>
 
+#include "src/core/ext/filters/client_channel/lb_policy/grpclb/load_balancer_api.h"
 #include <nanopb/pb_decode.h>
 #include <nanopb/pb_encode.h>
-#include "src/core/ext/filters/client_channel/lb_policy/grpclb/load_balancer_api.h"
 
 #include <grpc/support/alloc.h>
 
@@ -29,7 +29,7 @@ static bool count_serverlist(pb_istream_t* stream, const pb_field_t* field,
                              void** arg) {
   grpc_grpclb_serverlist* sl = static_cast<grpc_grpclb_serverlist*>(*arg);
   grpc_grpclb_server server;
-  if (GPR_UNLIKELY(!pb_decode(stream, grpc_lb_v1_Server_fields, &server))) {
+  if (!pb_decode(stream, grpc_lb_v1_Server_fields, &server)) {
     gpr_log(GPR_ERROR, "nanopb error: %s", PB_GET_ERROR(stream));
     return false;
   }
@@ -52,7 +52,7 @@ static bool decode_serverlist(pb_istream_t* stream, const pb_field_t* field,
   GPR_ASSERT(dec_arg->serverlist->num_servers >= dec_arg->decoding_idx);
   grpc_grpclb_server* server =
       static_cast<grpc_grpclb_server*>(gpr_zalloc(sizeof(grpc_grpclb_server)));
-  if (GPR_UNLIKELY(!pb_decode(stream, grpc_lb_v1_Server_fields, server))) {
+  if (!pb_decode(stream, grpc_lb_v1_Server_fields, server)) {
     gpr_free(server);
     gpr_log(GPR_ERROR, "nanopb error: %s", PB_GET_ERROR(stream));
     return false;
@@ -73,7 +73,7 @@ grpc_grpclb_request* grpc_grpclb_request_create(const char* lb_service_name) {
 }
 
 static void populate_timestamp(gpr_timespec timestamp,
-                               grpc_grpclb_timestamp* timestamp_pb) {
+                               struct _grpc_lb_v1_Timestamp* timestamp_pb) {
   timestamp_pb->has_seconds = true;
   timestamp_pb->seconds = timestamp.tv_sec;
   timestamp_pb->has_nanos = true;
@@ -89,16 +89,16 @@ static bool encode_string(pb_ostream_t* stream, const pb_field_t* field,
 
 static bool encode_drops(pb_ostream_t* stream, const pb_field_t* field,
                          void* const* arg) {
-  grpc_core::GrpcLbClientStats::DroppedCallCounts* drop_entries =
-      static_cast<grpc_core::GrpcLbClientStats::DroppedCallCounts*>(*arg);
+  grpc_grpclb_dropped_call_counts* drop_entries =
+      static_cast<grpc_grpclb_dropped_call_counts*>(*arg);
   if (drop_entries == nullptr) return true;
-  for (size_t i = 0; i < drop_entries->size(); ++i) {
+  for (size_t i = 0; i < drop_entries->num_entries; ++i) {
     if (!pb_encode_tag_for_field(stream, field)) return false;
     grpc_lb_v1_ClientStatsPerToken drop_message;
     drop_message.load_balance_token.funcs.encode = encode_string;
-    drop_message.load_balance_token.arg = (*drop_entries)[i].token.get();
+    drop_message.load_balance_token.arg = drop_entries->token_counts[i].token;
     drop_message.has_num_calls = true;
-    drop_message.num_calls = (*drop_entries)[i].count;
+    drop_message.num_calls = drop_entries->token_counts[i].count;
     if (!pb_encode_submessage(stream, grpc_lb_v1_ClientStatsPerToken_fields,
                               &drop_message)) {
       return false;
@@ -108,7 +108,7 @@ static bool encode_drops(pb_ostream_t* stream, const pb_field_t* field,
 }
 
 grpc_grpclb_request* grpc_grpclb_load_report_request_create_locked(
-    grpc_core::GrpcLbClientStats* client_stats) {
+    grpc_grpclb_client_stats* client_stats) {
   grpc_grpclb_request* req = static_cast<grpc_grpclb_request*>(
       gpr_zalloc(sizeof(grpc_grpclb_request)));
   req->has_client_stats = true;
@@ -120,15 +120,13 @@ grpc_grpclb_request* grpc_grpclb_load_report_request_create_locked(
   req->client_stats.has_num_calls_finished_with_client_failed_to_send = true;
   req->client_stats.has_num_calls_finished_known_received = true;
   req->client_stats.calls_finished_with_drop.funcs.encode = encode_drops;
-  grpc_core::UniquePtr<grpc_core::GrpcLbClientStats::DroppedCallCounts>
-      drop_counts;
-  client_stats->GetLocked(
-      &req->client_stats.num_calls_started,
+  grpc_grpclb_client_stats_get_locked(
+      client_stats, &req->client_stats.num_calls_started,
       &req->client_stats.num_calls_finished,
       &req->client_stats.num_calls_finished_with_client_failed_to_send,
-      &req->client_stats.num_calls_finished_known_received, &drop_counts);
-  // Will be deleted in grpc_grpclb_request_destroy().
-  req->client_stats.calls_finished_with_drop.arg = drop_counts.release();
+      &req->client_stats.num_calls_finished_known_received,
+      reinterpret_cast<grpc_grpclb_dropped_call_counts**>(
+          &req->client_stats.calls_finished_with_drop.arg));
   return req;
 }
 
@@ -151,10 +149,10 @@ grpc_slice grpc_grpclb_request_encode(const grpc_grpclb_request* request) {
 
 void grpc_grpclb_request_destroy(grpc_grpclb_request* request) {
   if (request->has_client_stats) {
-    grpc_core::GrpcLbClientStats::DroppedCallCounts* drop_entries =
-        static_cast<grpc_core::GrpcLbClientStats::DroppedCallCounts*>(
+    grpc_grpclb_dropped_call_counts* drop_entries =
+        static_cast<grpc_grpclb_dropped_call_counts*>(
             request->client_stats.calls_finished_with_drop.arg);
-    grpc_core::Delete(drop_entries);
+    grpc_grpclb_dropped_call_counts_destroy(drop_entries);
   }
   gpr_free(request);
 }
@@ -167,8 +165,7 @@ grpc_grpclb_initial_response* grpc_grpclb_initial_response_parse(
                              GRPC_SLICE_LENGTH(encoded_grpc_grpclb_response));
   grpc_grpclb_response res;
   memset(&res, 0, sizeof(grpc_grpclb_response));
-  if (GPR_UNLIKELY(
-          !pb_decode(&stream, grpc_lb_v1_LoadBalanceResponse_fields, &res))) {
+  if (!pb_decode(&stream, grpc_lb_v1_LoadBalanceResponse_fields, &res)) {
     gpr_log(GPR_ERROR, "nanopb error: %s", PB_GET_ERROR(&stream));
     return nullptr;
   }
@@ -198,7 +195,7 @@ grpc_grpclb_serverlist* grpc_grpclb_response_parse_serverlist(
   res.server_list.servers.funcs.decode = count_serverlist;
   res.server_list.servers.arg = sl;
   bool status = pb_decode(&stream, grpc_lb_v1_LoadBalanceResponse_fields, &res);
-  if (GPR_UNLIKELY(!status)) {
+  if (!status) {
     gpr_free(sl);
     gpr_log(GPR_ERROR, "nanopb error: %s", PB_GET_ERROR(&stream));
     return nullptr;
@@ -214,7 +211,7 @@ grpc_grpclb_serverlist* grpc_grpclb_response_parse_serverlist(
     res.server_list.servers.arg = &decode_arg;
     status = pb_decode(&stream_at_start, grpc_lb_v1_LoadBalanceResponse_fields,
                        &res);
-    if (GPR_UNLIKELY(!status)) {
+    if (!status) {
       grpc_grpclb_destroy_serverlist(sl);
       gpr_log(GPR_ERROR, "nanopb error: %s", PB_GET_ERROR(&stream));
       return nullptr;
