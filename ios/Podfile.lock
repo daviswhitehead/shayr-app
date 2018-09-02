@@ -1,13 +1,10 @@
 PODS:
-  - BoringSSL (10.0.3):
-    - BoringSSL/Implementation (= 10.0.3)
-    - BoringSSL/Interface (= 10.0.3)
-  - BoringSSL/Implementation (10.0.3):
-    - BoringSSL/Interface (= 10.0.3)
-  - BoringSSL/Interface (10.0.3)
-  - Crashlytics (3.10.1):
-    - Fabric (~> 1.7.5)
-  - Fabric (1.7.5)
+  - BoringSSL (10.0.6):
+    - BoringSSL/Implementation (= 10.0.6)
+    - BoringSSL/Interface (= 10.0.6)
+  - BoringSSL/Implementation (10.0.6):
+    - BoringSSL/Interface (= 10.0.6)
+  - BoringSSL/Interface (10.0.6)
   - Firebase/Auth (4.13.0):
     - Firebase/Core
     - FirebaseAuth (= 4.6.1)
@@ -46,37 +43,37 @@ PODS:
     - GoogleToolboxForMac/Defines (= 2.1.4)
     - "GoogleToolboxForMac/NSString+URLArguments (= 2.1.4)"
   - "GoogleToolboxForMac/NSString+URLArguments (2.1.4)"
-  - gRPC (1.12.0):
-    - gRPC-RxLibrary (= 1.12.0)
-    - gRPC/Main (= 1.12.0)
-  - gRPC-Core (1.12.0):
-    - gRPC-Core/Implementation (= 1.12.0)
-    - gRPC-Core/Interface (= 1.12.0)
-  - gRPC-Core/Implementation (1.12.0):
+  - gRPC (1.14.1):
+    - gRPC-RxLibrary (= 1.14.1)
+    - gRPC/Main (= 1.14.1)
+  - gRPC-Core (1.14.1):
+    - gRPC-Core/Implementation (= 1.14.1)
+    - gRPC-Core/Interface (= 1.14.1)
+  - gRPC-Core/Implementation (1.14.1):
     - BoringSSL (~> 10.0)
-    - gRPC-Core/Interface (= 1.12.0)
+    - gRPC-Core/Interface (= 1.14.1)
     - nanopb (~> 0.3)
-  - gRPC-Core/Interface (1.12.0)
-  - gRPC-ProtoRPC (1.12.0):
-    - gRPC (= 1.12.0)
-    - gRPC-RxLibrary (= 1.12.0)
+  - gRPC-Core/Interface (1.14.1)
+  - gRPC-ProtoRPC (1.14.1):
+    - gRPC-ProtoRPC/Main (= 1.14.1)
+  - gRPC-ProtoRPC/Main (1.14.1):
+    - gRPC (= 1.14.1)
+    - gRPC-RxLibrary (= 1.14.1)
     - Protobuf (~> 3.0)
-  - gRPC-RxLibrary (1.12.0)
-  - gRPC/Main (1.12.0):
-    - gRPC-Core (= 1.12.0)
-    - gRPC-RxLibrary (= 1.12.0)
-  - GTMSessionFetcher/Core (1.1.15)
+  - gRPC-RxLibrary (1.14.1)
+  - gRPC/Main (1.14.1):
+    - gRPC-Core (= 1.14.1)
+    - gRPC-RxLibrary (= 1.14.1)
+  - GTMSessionFetcher/Core (1.2.0)
   - leveldb-library (1.20)
   - nanopb (0.3.8):
     - nanopb/decode (= 0.3.8)
     - nanopb/encode (= 0.3.8)
   - nanopb/decode (0.3.8)
   - nanopb/encode (0.3.8)
-  - Protobuf (3.5.0)
+  - Protobuf (3.6.1)
 
 DEPENDENCIES:
-  - Crashlytics (= 3.10.1)
-  - Fabric (= 1.7.5)
   - Firebase/Auth (= 4.13.0)
   - Firebase/Core (= 4.13.0)
   - Firebase/Firestore (= 4.13.0)
@@ -84,8 +81,6 @@ DEPENDENCIES:
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
     - BoringSSL
-    - Crashlytics
-    - Fabric
     - Firebase
     - FirebaseAnalytics
     - FirebaseAuth
@@ -103,9 +98,7 @@ SPEC REPOS:
     - Protobuf
 
 SPEC CHECKSUMS:
-  BoringSSL: c46efb47593135382bc0934196f16d2f726f5f36
-  Crashlytics: aee1a064cbbf99b32efa3f056a5f458d846bc8ff
-  Fabric: ae7146a5f505ea370a1e44820b4b1dc8890e2890
+  BoringSSL: e10f92a27043805c01071fe815a5cd98ae8212e7
   Firebase: 5ec5e863d269d82d66b4bf56856726f8fb8f0fb3
   FirebaseAnalytics: 7ef69e76a5142f643aeb47c780e1cdce4e23632e
   FirebaseAuth: bf22cacf22c60ab454bf2636f556d8892b10b53f
@@ -113,15 +106,15 @@ SPEC CHECKSUMS:
   FirebaseFirestore: e92a096ce80c7b4b905d4e9d41dbd944adc9d2a5
   FirebaseInstanceID: 8d20d890d65c917f9f7d9950b6e10a760ad34321
   GoogleToolboxForMac: 91c824d21e85b31c2aae9bb011c5027c9b4e738f
-  gRPC: 9362451032695e2dfb7bafcd3740e3a27939e4ff
-  gRPC-Core: 9696b220565b283e021cf2722d473a4a74b7622a
-  gRPC-ProtoRPC: a1bd56fb1991a8dae4581250d7259eddabb66779
-  gRPC-RxLibrary: 1ed5314e8b38cd6e55c9bfa048387136ae925ce9
-  GTMSessionFetcher: 5fa5b80fd20e439ef5f545fb2cb3ca6c6714caa2
+  gRPC: 65fa2a50c4fd61940b76f4962d75c239c92c6a8d
+  gRPC-Core: e3ace1e1161e75903135de8d8231bb69c9d35721
+  gRPC-ProtoRPC: 78f976fc6a1eafc0e1f4965c255c313aa0859b1e
+  gRPC-RxLibrary: c4c826507ad3c8c8fab6887f153938eb04b86d59
+  GTMSessionFetcher: 0c4baf0a73acd0041bf9f71ea018deedab5ea84e
   leveldb-library: 08cba283675b7ed2d99629a4bc5fd052cd2bb6a5
   nanopb: 5601e6bca2dbf1ed831b519092ec110f66982ca3
-  Protobuf: 8a9838fba8dae3389230e1b7f8c104aa32389c03
+  Protobuf: 1eb9700044745f00181c136ef21b8ff3ad5a0fd5
 
-PODFILE CHECKSUM: 0db9ef8f841c53f0733e951f97c958d0bab722b2
+PODFILE CHECKSUM: aafd7f81a85ee7d6d8bec236afb27c041d0bcac2
 
 COCOAPODS: 1.5.2
