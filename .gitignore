@@ -23,6 +23,12 @@ DerivedData
 *.xcuserstate
 project.xcworkspace
 ios/Index/DataStore
+ios/Index/
+
+# Pods
+ios/Pods/
+ios/Pods/*
+Pods/
 
 # Android/IntelliJ
 #
