@@ -7,10 +7,10 @@ const sharing = require('./Sharing');
 
 // whenever a new user share is created
 exports.newShareResponse = functions.firestore.document('users/{userId}/shares/{shareId}')
-  .onCreate(data => {
-    const userRef = data.ref.parent.parent;
-    const newShareRef = data.ref;
-    const newShareUrl = data.data().url;
+  .onCreate(event => {
+    const userRef = event.data.ref.parent.parent;
+    const newShareRef = event.data.ref;
+    const newShareUrl = event.data.data().url;
     const normalUrl = utility.normalizeUrl(newShareUrl);
 
     // find posts matching normalUrl
@@ -61,10 +61,10 @@ exports.newShareResponse = functions.firestore.document('users/{userId}/shares/{
 
 // whenever a new post share is added
 exports.newPostShareResponse = functions.firestore.document('posts/{postId}/shares/{shareId}')
-  .onCreate(data => {
+  .onCreate(event => {
     // when a new share is created for a post, update the post information
-    const newShareUrl = data.data().url;
-    const postRef = data.ref.parent.parent;
+    const newShareUrl = event.data.data().url;
+    const postRef = event.data.ref.parent.parent;
 
     console.log('getting post data and scraping meta');
     return Promise.all([
@@ -84,45 +84,3 @@ exports.newPostShareResponse = functions.firestore.document('posts/{postId}/shar
         return
       })
 });
-
-exports.sendNewShayrPushNotification = functions.firestore
-  .document("posts/{postId}/shares/{shareId}")
-  .onCreate(data => {
-    // gets standard JavaScript object from the new write
-    const writeData = data.data();
-    // access data necessary for push notification
-    writeData.user.get()
-      .then((user) => {
-        const senderName = user.data().firstName;
-        // const senderName = sender.firstName;
-        // the payload is what will be delivered to the device(s)
-        let payload = {
-          notification: {
-            title: 'New Shayr',
-            body: `${senderName} shayred something new!`,
-            badge: "1",
-            channelId: 'new-shayr-channel'
-          }
-        }
-
-        // or collect them by accessing your database
-        var pushToken = "";
-        return admin
-          .firestore()
-          .collection("users")
-          .where('pushToken', '>=', '')
-          .get()
-          .then(query => {
-            return query
-              .forEach(doc => {
-                pushToken = doc.data().pushToken;
-                // sendToDevice can also accept an array of push tokens
-                return admin.messaging().sendToDevice(pushToken, payload);
-              });
-          })
-
-
-      })
-      .catch(error => {console.log(error)});
-
-  });
