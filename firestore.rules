@@ -11,6 +11,7 @@ service cloud.firestore {
       allow create: if true;
       allow get: if true;
       allow read: if isSignedIn();
+      allow update: if nestedUser(user);
 
       match /shares/{share} {
         allow create: if nestedUser(user);

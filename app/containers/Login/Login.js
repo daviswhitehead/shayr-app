@@ -11,7 +11,9 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { NavigationActions } from 'react-navigation';
 import firebase from 'react-native-firebase';
+import { registerAppListener } from '../../components/Listener';
 import { LoginButton } from 'react-native-fbsdk';
+import { AsyncStorage } from 'react-native';
 import {
   authSubscription,
   signOutUser,
@@ -44,6 +46,34 @@ class Login extends Component {
   componentDidMount() {
     this.unsubscribe = this.props.authSubscription()
     this.props.locateAccessToken()
+    // Build a channel
+    const channel = new firebase.notifications.Android.Channel('new-shayr-channel', 'Test Channel', firebase.notifications.Android.Importance.Max)
+      .setDescription('My apps test channel');
+    // Create the channel
+    firebase.notifications().android.createChannel(channel);
+    registerAppListener(this.props.navigation);
+    firebase.notifications().getInitialNotification()
+      .then((notificationOpen) => {
+        if (notificationOpen) {
+          // Get information about the notification that was opened
+          const notif = notificationOpen.notification;
+          this.setState({
+            initNotif: notif.data
+          })
+          if (notif && notif.targetScreen === 'detail') {
+            setTimeout(() => {
+              this.props.navigation.navigate('Detail')
+            }, 500)
+          }
+        }
+      });
+    const offline = AsyncStorage.getItem('headless')
+    if (offline) {
+      this.setState({
+        offlineNotif: offline
+      });
+      AsyncStorage.removeItem('headless');
+    }
   }
 
   componentWillUnmount() {
