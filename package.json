@@ -14,10 +14,7 @@
     "eslint": "^4.19.1",
     "fb": "^2.0.0",
     "fbjs": "^0.8.16",
-    "firebase-admin": "^6.0.0",
-    "firebase-functions": "^2.0.4",
     "lodash": "^4.17.5",
-    "open-graph-scraper": "^3.5.0",
     "react": "16.3.1",
     "react-native": "^0.55.1",
     "react-native-action-button": "^2.8.4",
@@ -31,9 +28,7 @@
     "react-navigation": "^2.2.5",
     "react-navigation-redux-helpers": "^1.1.2",
     "react-redux": "^5.0.7",
-    "react-redux-firebase": "^2.1.5",
     "redux": "^4.0.0",
-    "redux-firestore": "^0.5.4",
     "redux-thunk": "^2.3.0"
   },
   "devDependencies": {
