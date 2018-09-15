@@ -12,4 +12,4 @@ rm -rf ios/build
 rm -rf android/build
 
 # link
-react-native link
+# react-native link
