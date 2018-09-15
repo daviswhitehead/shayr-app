@@ -10,8 +10,8 @@
     "logs": "firebase functions:log"
   },
   "dependencies": {
-    "firebase-admin": "~5.8.1",
-    "firebase-functions": "^0.8.1",
+    "firebase-admin": "^6.0.0",
+    "firebase-functions": "^2.0.5",
     "lodash": "^4.17.5",
     "open-graph-scraper": "^3.1.5"
   },
@@ -23,5 +23,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "engines": {
+    "node": "8"
+  }
 }
