@@ -1,0 +1,84 @@
+{
+  Feed: {
+    List: { SwipeCard, ContentCard, ActionCounter}
+      SwipeCard: {
+        ContentCard: {
+          ActionCounter: {
+            data: {
+              actionType: PropTypes.string.isRequired,
+              actionCount: PropTypes.number.isRequired,
+              actionUser: PropTypes.bool.isRequired,
+              userId: PropTypes.bool.isRequired,
+              postId: PropTypes.bool.isRequired,
+            }
+          },
+          data: {
+            payload: PropTypes.shape({
+              image: PropTypes.string.isRequired,
+              title: PropTypes.string.isRequired,
+            }),
+          }
+        },
+        data: {
+          payload: PropTypes.object.isRequired,
+          swipeLeftToRightUI: PropTypes.func,
+          swipeLeftToRightAction: PropTypes.func,
+          swipeRightToLeftUI: PropTypes.func,
+          swipeRightToLeftAction: PropTypes.func,
+        }
+      },
+      data: {
+        data: PropTypes.array.isRequired,
+        swipeLeftToRightUI: PropTypes.func,
+        swipeLeftToRightAction: PropTypes.func,
+        swipeRightToLeftUI: PropTypes.func,
+        swipeRightToLeftAction: PropTypes.func,
+        onScroll: PropTypes.func,
+        onEndReached: PropTypes.func,
+        onRefresh: PropTypes.func,
+      }
+    }
+  }
+}
+
+
+
+ContentList: {
+  data: PropTypes.array.isRequired, // list of content payloads
+  swipeLeftToRightUI: PropTypes.func,
+  swipeLeftToRightAction: PropTypes.func,
+  swipeRightToLeftUI: PropTypes.func,
+  swipeRightToLeftAction: PropTypes.func,
+  onScroll: PropTypes.func,
+  onEndReached: PropTypes.func,
+  onRefresh: PropTypes.func,
+}
+
+ContentPayload: {
+  image: '',
+  publisherName: 'Missing',
+  title: 'Missing',
+  sharedBy: {
+    facebookProfilePhoto: '',
+    firstName: 'Missing',
+    lastName: 'Missing',
+  },
+  medium: 'Missing',
+  shayrs: {
+    count: 0,
+    user: false,
+  },
+  adds: {
+    count: 0,
+    user: false,
+  },
+  dones: {
+    count: 0,
+    user: false,
+  },
+  likes: {
+    count: 0,
+    user: false,
+  },
+
+}
