@@ -1,6 +1,7 @@
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
-admin.initializeApp(functions.config().firebase);
+admin.initializeApp();
+
 const utility = require('./Utility');
 const scraping = require('./Scraping');
 const sharing = require('./Sharing');
@@ -122,3 +123,19 @@ exports.sendNewShayrPushNotification = functions.firestore
        })
       .catch(error => {console.log(error)});
    });
+
+// Take the text parameter passed to this HTTP endpoint and insert it into the
+// Realtime Database under the path /messages/:pushId/original
+exports.test = functions.firestore
+  .document("posts/{postId}/shares/{shareId}")
+  .onWrite((change, context) => {
+    console.log(change);
+    console.log(context);
+    admin.auth().getUserByEmail('whitehead.davis@gmail.com').then((value) => {
+      console.log(value);
+      return value
+    }).catch((err) => {
+      console.error(err);
+      return err
+    });
+  });
