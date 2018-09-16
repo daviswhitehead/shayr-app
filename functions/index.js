@@ -1,13 +1,15 @@
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 admin.initializeApp();
+var db = admin.firestore()
 
 const utility = require('./Utility');
 const scraping = require('./Scraping');
 const sharing = require('./Sharing');
+const counters = require('./Counters');
 
-// whenever a new user share is created
-exports.newShareResponse = functions.firestore.document('users/{userId}/shares/{shareId}')
+// whenever a user share is created
+exports.createdUserShare = functions.firestore.document('users/{userId}/shares/{shareId}')
   .onCreate(data => {
     const userRef = data.ref.parent.parent;
     const newShareRef = data.ref;
@@ -15,7 +17,7 @@ exports.newShareResponse = functions.firestore.document('users/{userId}/shares/{
     const normalUrl = utility.normalizeUrl(newShareUrl);
 
     // find posts matching normalUrl
-    return admin.firestore().collection('posts')
+    return db.collection('posts')
       .where('url', '==', normalUrl).get()
 
       // returns post DocumentReference
@@ -31,7 +33,7 @@ exports.newShareResponse = functions.firestore.document('users/{userId}/shares/{
         // if there's not a matching post
         } else {
           console.log('no post found, creating a new post');
-          return admin.firestore().collection('posts').add(
+          return db.collection('posts').add(
             sharing.createPost(normalUrl)
           )
         }
@@ -60,8 +62,8 @@ exports.newShareResponse = functions.firestore.document('users/{userId}/shares/{
       });
 });
 
-// whenever a new post share is added
-exports.newPostShareResponse = functions.firestore.document('posts/{postId}/shares/{shareId}')
+// whenever a post share is created
+exports.createdPostShare = functions.firestore.document('posts/{postId}/shares/{shareId}')
   .onCreate(data => {
     // when a new share is created for a post, update the post information
     const newShareUrl = data.data().url;
@@ -86,8 +88,7 @@ exports.newPostShareResponse = functions.firestore.document('posts/{postId}/shar
       })
 });
 
-exports.sendNewShayrPushNotification = functions.firestore
-  .document("posts/{postId}/shares/{shareId}")
+exports.sendNewShayrPushNotification = functions.firestore.document("posts/{postId}/shares/{shareId}")
   .onCreate(data => {
     // gets standard JavaScript object from the new write
     const writeData = data.data();
@@ -124,18 +125,24 @@ exports.sendNewShayrPushNotification = functions.firestore
       .catch(error => {console.log(error)});
    });
 
-// Take the text parameter passed to this HTTP endpoint and insert it into the
-// Realtime Database under the path /messages/:pushId/original
-exports.test = functions.firestore
-  .document("posts/{postId}/shares/{shareId}")
+// whenever a user (share, add, done, like) is written (created, updated, deleted)
+// writtenUserShare({before: {}, after: {post: 'posts/jbMxqSSlgv5JcTBiO3jh', user: 'users/hD1cMtlBHZfvrrRjIcdTEyfqixG3', active: true}})
+exports.writtenUserShare = functions.firestore.document('users/{userId}/shares/{shareId}')
   .onWrite((change, context) => {
-    console.log(change);
-    console.log(context);
-    admin.auth().getUserByEmail('whitehead.davis@gmail.com').then((value) => {
-      console.log(value);
-      return value
-    }).catch((err) => {
-      console.error(err);
-      return err
-    });
+    return counters.updateCounter(change, context, db, 'shareCount')
+  });
+
+exports.writtenUserAdd = functions.firestore.document('users/{userId}/adds/{addId}')
+  .onWrite((change, context) => {
+    return counters.updateCounter(change, context, db, 'addCount')
+  });
+
+exports.writtenUserDone = functions.firestore.document('users/{userId}/dones/{doneId}')
+  .onWrite((change, context) => {
+    return counters.updateCounter(change, context, db, 'doneCount')
+  });
+
+exports.writtenUserLike = functions.firestore.document('users/{userId}/likes/{likeId}')
+  .onWrite((change, context) => {
+    return counters.updateCounter(change, context, db, 'likeCount')
   });
