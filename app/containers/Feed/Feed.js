@@ -12,6 +12,10 @@ import styles from './styles';
 import DynamicActionButton from '../../components/DynamicActionButton';
 import Toaster from '../../components/Toaster';
 import List from '../../components/List';
+import listStyles from '../../components/List/styles';
+// import SwipeCard from '../SwipeCard';
+import Swipeable from 'react-native-swipeable';
+import ContentCard from '../../components/ContentCard';
 
 import firebase from 'react-native-firebase';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -25,6 +29,9 @@ import {
   loadQueuePosts,
 } from '../../redux/posts/PostsActions';
 import {
+  loadFriends,
+} from '../../redux/social/SocialActions';
+import {
   newAction,
   toggleAction,
 } from '../../redux/postActions/PostActionsActions';
@@ -35,7 +42,8 @@ import {
 const mapStateToProps = (state) => {
   return {
     auth: state.auth,
-    posts: state.posts
+    posts: state.posts,
+    social: state.social
   }
 }
 
@@ -48,10 +56,12 @@ const mapDispatchToProps = (dispatch) => ({
   loadQueuePosts: (userId) => dispatch(loadQueuePosts(userId)),
   newAction: (actionType, userId, postId) => dispatch(newAction(actionType, userId, postId)),
   toggleAction: (actionType, userId, postId) => dispatch(toggleAction(actionType, userId, postId)),
+  loadFriends: () => dispatch(loadFriends()),
 });
 
 class Feed extends Component {
   componentDidMount() {
+    this.props.loadFriends();
     this.props.loadFeedPosts();
     this.unsubscribe = this.props.loadQueuePosts(this.props.auth.user.uid);
   }
@@ -73,6 +83,28 @@ class Feed extends Component {
     );
   }
 
+  renderItem = ({item}) => {
+    const test = {
+      actionCount: 10,
+      actionUser: true
+    }
+    return (
+        <Swipeable
+          leftActionActivationDistance={100}
+          leftContent={this.addToQueueUI()}
+          onLeftActionRelease={() => this.addToQueue(item)}
+        >
+          <ContentCard
+            payload={item}
+            shareAction={test}
+            addAction={test}
+            doneAction={test}
+            likeAction={test}
+          />
+        </Swipeable>
+    )
+  };
+
   loading = () => {
     if (!this.props.posts.feedPosts || !this.props.posts.loadedPostMeta) {
       return (
@@ -83,18 +115,17 @@ class Feed extends Component {
     return (
       <List
         data={flattenPosts(this.props.posts.feedPosts)}
-        swipeLeftToRightUI={this.addToQueueUI}
-        swipeLeftToRightAction={this.addToQueue}
+        renderItem={(item) => this.renderItem(item)}
         onEndReached={() => this.props.paginateFeedPosts(this.props.posts.lastPost)}
         onRefresh={() => this.props.refreshFeedPosts()}
         refreshing={this.props.posts.refreshing}
-      >
-      </List>
+      />
     );
   }
 
   render() {
-
+    console.log(this.state);
+    console.log(this.props);
     return (
       <View style={styles.container}>
         <this.loading/>

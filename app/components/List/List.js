@@ -8,10 +8,7 @@ import {
   TouchableHighlight
 } from 'react-native';
 import PropTypes from 'prop-types';
-import ContentCard from '../ContentCard';
-
 import styles from './styles';
-import SwipeCard from '../SwipeCard';
 
 
 export default class List extends Component {
@@ -21,52 +18,29 @@ export default class List extends Component {
 
   static propTypes = {
     data: PropTypes.array.isRequired,
-    swipeLeftToRightUI: PropTypes.func,
-    swipeLeftToRightAction: PropTypes.func,
-    swipeRightToLeftUI: PropTypes.func,
-    swipeRightToLeftAction: PropTypes.func,
+    renderItem: PropTypes.func.isRequired,
     onScroll: PropTypes.func,
     onEndReached: PropTypes.func,
     onRefresh: PropTypes.func,
   };
 
-  extractKey = ({key}) => key;
-
-  renderItem = ({item}) => {
-    return (
-      <View style={styles.box}>
-        <SwipeCard
-          card={<ContentCard
-              payload={item}
-              actions={}
-          />}
-          swipeLeftToRightUI={this.props.swipeLeftToRightUI}
-          swipeLeftToRightAction={this.props.swipeLeftToRightAction}
-          swipeRightToLeftUI={this.props.swipeRightToLeftUI}
-          swipeRightToLeftAction={this.props.swipeRightToLeftAction}
-        />
-      </View>
-    )
-  };
-  // renderItem = ({item}) => {
-  //   return (
-  //     <View style={styles.box}>
-  //       <SwipeCard
-  //         payload={item}
-  //         swipeLeftToRightUI={this.props.swipeLeftToRightUI}
-  //         swipeLeftToRightAction={this.props.swipeLeftToRightAction}
-  //         swipeRightToLeftUI={this.props.swipeRightToLeftUI}
-  //         swipeRightToLeftAction={this.props.swipeRightToLeftAction}
-  //       />
-  //     </View>
-  //   )
-  // };
+  extractKey = ({key}) => {
+    return key;
+  }
 
   renderSeparator = () => {
     return (
       <View style={styles.separator} />
     );
   };
+
+  renderItem = ({item}) => {
+    return (
+      <View style={styles.box}>
+        {this.props.renderItem(item)}
+      </View>
+    )
+  }
 
   render() {
     return (

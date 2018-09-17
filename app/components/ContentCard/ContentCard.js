@@ -42,7 +42,7 @@ export default class ContentCard extends Component {
     payload: PropTypes.shape({
       image: PropTypes.string.isRequired,
       title: PropTypes.string.isRequired,
-      publisherName: PropTypes.string.isRequired,
+      publisherName: PropTypes.string,
       sharedBy: PropTypes.shape({
         facebookProfilePhoto: PropTypes.string,
         firstName: PropTypes.string.isRequired,
@@ -51,10 +51,14 @@ export default class ContentCard extends Component {
       medium: PropTypes.string.isRequired,
       shares: PropTypes.shape({
         count: PropTypes.string,
-        firstName: PropTypes.string.isRequired,
-        lastName: PropTypes.string.isRequired,
+        firstName: PropTypes.string,
+        lastName: PropTypes.string,
       }),
     }),
+    shareAction: PropTypes.shape({
+      actionCount: PropTypes.number.isRequired,
+      actionUser: PropTypes.bool.isRequired,
+    })
   };
 
   static defaultProps = {
@@ -68,7 +72,7 @@ export default class ContentCard extends Component {
         lastName: 'Missing',
       },
       medium: 'Missing',
-      shayrs: {
+      shares: {
         count: 0,
         user: false,
       },
@@ -179,24 +183,20 @@ export default class ContentCard extends Component {
               </View>
               <View style={styles.actionsBox}>
                 <ActionCounter
-                  actionType={'shayr'}
-                  actionCount={10}
-                  actionUser={false}
+                  actionType={'share'}
+                  {...this.props.shareAction}
                 />
                 <ActionCounter
                   actionType={'add'}
-                  actionCount={10}
-                  actionUser={false}
+                  {...this.props.addAction}
                 />
                 <ActionCounter
                   actionType={'done'}
-                  actionCount={10}
-                  actionUser={false}
+                  {...this.props.doneAction}
                 />
                 <ActionCounter
                   actionType={'like'}
-                  actionCount={10}
-                  actionUser={false}
+                  {...this.props.likeAction}
                 />
               </View>
             </View>

@@ -14,9 +14,9 @@ import {
 
 import styles from './styles';
 
-import shayrActive from '../../assets/shayrActive/shayrActive.png';
-import shayrInactive from '../../assets/shayrInactive/shayrInactive.png';
-import shayrUser from '../../assets/shayrUser/shayrUser.png';
+import shareActive from '../../assets/shareActive/shareActive.png';
+import shareInactive from '../../assets/shareInactive/shareInactive.png';
+import shareUser from '../../assets/shareUser/shareUser.png';
 
 import addActive from '../../assets/addActive/addActive.png';
 import addInactive from '../../assets/addInactive/addInactive.png';
@@ -31,10 +31,10 @@ import likeInactive from '../../assets/likeInactive/likeInactive.png';
 import likeUser from '../../assets/likeUser/likeUser.png';
 
 const icons = {
-  shayr: {
-    active: shayrActive,
-    inactive: shayrInactive,
-    user: shayrUser,
+  share: {
+    active: shareActive,
+    inactive: shareInactive,
+    user: shareUser,
   },
   add: {
     active: addActive,
