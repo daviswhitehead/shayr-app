@@ -30,6 +30,28 @@ const getUserSubs = (userDoc, sub) => {
     });
 }
 
+const organize
+
+
+// {
+//   post: {
+//     post: {...},
+//     friendShares: {
+//       user: {...}
+//     },
+//     friendAdds: {
+//       user: {...}
+//     },
+//     friendDones: {
+//       user: {...}
+//     },
+//     friendLikes: {
+//       user: {...}
+//     },
+//   }
+// }
+
+
 // Action Creators
 export function loadFriends() {
   return function(dispatch) {
@@ -60,21 +82,3 @@ export function loadFriends() {
       })
   }
 }
-
-// {
-//   post: {
-//     post: {...},
-//     friendShares: {
-//       user: {...}
-//     },
-//     friendAdds: {
-//       user: {...}
-//     },
-//     friendDones: {
-//       user: {...}
-//     },
-//     friendLikes: {
-//       user: {...}
-//     },
-//   }
-// }
