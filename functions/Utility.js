@@ -1,3 +1,4 @@
+const admin = require('firebase-admin');
 const URL = require('url');
 
 exports.normalizeUrl = (url) => {
@@ -8,3 +9,14 @@ exports.normalizeUrl = (url) => {
     urlData.pathname
   )
 };
+
+
+exports.addTs = (payload) => {
+  const ts = admin.firestore.FieldValue.serverTimestamp();
+
+  return {
+    ...payload,
+    createdAt: ts,
+    updatedAt: ts,
+  }
+}

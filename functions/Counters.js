@@ -4,8 +4,7 @@ exports.updateCounter = (change, context, db, counterType) => {
    var activeToggle = change.after.data().active;
 
    // get the action post reference
-   var postRef = change.after.data().post;
-   // postRef = db.collection('posts').doc('jbMxqSSlgv5JcTBiO3jh')
+   var postRef = db.doc(change.after.data().post);
 
    return db.runTransaction(transaction => {
      // get the post data
