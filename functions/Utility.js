@@ -1,5 +1,6 @@
 const admin = require('firebase-admin');
 const URL = require('url');
+const ts = admin.firestore.FieldValue.serverTimestamp();
 
 exports.normalizeUrl = (url) => {
   const urlData = URL.parse(url);
@@ -11,12 +12,16 @@ exports.normalizeUrl = (url) => {
 };
 
 
-exports.addTs = (payload) => {
-  const ts = admin.firestore.FieldValue.serverTimestamp();
-
+exports.addCreatedAt = (payload) => {
   return {
     ...payload,
     createdAt: ts,
+  }
+}
+
+exports.addUpdatedAt = (payload) => {
+  return {
+    ...payload,
     updatedAt: ts,
   }
 }
