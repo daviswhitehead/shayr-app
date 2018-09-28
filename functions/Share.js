@@ -1,4 +1,3 @@
-const admin = require('firebase-admin');
 const URL = require('url');
 const utility = require('./Utility');
 const _ = require('lodash');

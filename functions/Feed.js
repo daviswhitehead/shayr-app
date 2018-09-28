@@ -1,18 +1,11 @@
-// {
-//   before: {},
-//   after:
-// }
-
-// onWritePost({createdAt: null, updatedAt: null, url: 'https://hackernoon.com/5-tips-for-building-effective-product-management-teams-c320ce54a4bb', user: 'users/0', share: 'shares/0', normalUrl: 'https://hackernoon.com/5-tips-for-building-effective-product-management-teams-c320ce54a4bb',})
-exports._onWritePost = (db, change, context) => {
-  // when a new share is created for a post, update the post information
-  const postId = context.params.postId;
+// find all post refernces in the feeds collection
+exports.findFeedPosts = (postId) => {
   const postRef = `posts/${postId}`;
 
   console.log('getting post data and scraping meta');
   return Promise.all([
       db.doc(postRef).get(),
-      scrape(change.data().url)
+      scrape(snap.data().url)
     ])
     .then((data) => {
       console.log('updating post with meta');

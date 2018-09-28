@@ -1,6 +1,6 @@
-const admin = require('firebase-admin');
+const config = require('./Config');
 const URL = require('url');
-const ts = admin.firestore.FieldValue.serverTimestamp();
+const ts = config.admin.firestore.FieldValue.serverTimestamp();
 
 exports.normalizeUrl = (url) => {
   const urlData = URL.parse(url);

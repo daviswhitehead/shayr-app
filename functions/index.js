@@ -1,9 +1,4 @@
-const functions = require('firebase-functions');
-const admin = require('firebase-admin');
-admin.initializeApp();
-var db = admin.firestore()
-db.settings({timestampsInSnapshots: true})
-
+const config = require('./Config');
 const share = require('./Share');
 const counters = require('./Counters');
 const post = require('./Post');
@@ -11,19 +6,19 @@ const post = require('./Post');
 // const social = require('./Social');
 // const notifications = require('./Notifications');
 
-exports.onCreateShare = functions.firestore.document('shares/{shareId}')
+exports.onCreateShare = config.functions.firestore.document('shares/{shareId}')
   .onCreate((snap, context) => {
-    return share._onCreateShare(db, snap, context);
+    return share._onCreateShare(config.db, snap, context);
 });
 
-exports.onCreatePostShare = functions.firestore.document('posts/{postId}/shares/{shareId}')
+exports.onCreatePostShare = config.functions.firestore.document('posts/{postId}/shares/{shareId}')
   .onCreate((snap, context) => {
-    return share._onCreatePostShare(db, snap, context);
+    return share._onCreatePostShare(config.db, snap, context);
 });
 
-exports.onWritePost = functions.firestore.document('posts/{postId}')
+exports.onWritePost = config.functions.firestore.document('posts/{postId}')
   .onWrite((snap, context) => {
-    return post._onWritePost(db, snap, context);
+    return post._onWritePost(config.db, snap, context);
 });
 
 // whenever a user (share, add, done, like) is written (created, updated, deleted)
