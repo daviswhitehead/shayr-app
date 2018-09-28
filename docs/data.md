@@ -30,7 +30,7 @@ Future
   - Notify users who are facebook friends with this user that they've joined shayr
 
 ### Sub Collections
-#### [Shares](userShares)
+#### [Shares](#userShares)
 `users/{userId}/shares/{shareId}`
 #### Adds
 `users/{userId}/adds/{addId}`
