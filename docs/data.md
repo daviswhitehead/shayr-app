@@ -5,9 +5,9 @@
   - [userDones](#userdones)
   - [userLikes](#userlikes)
   - [userFeed](#userfeed)
-- [Friends](#friends)
 - [Posts](#posts)
   - [postShares](#postshares)
+- [Friends](#friends)
 
 ---
 ## Users
@@ -102,11 +102,14 @@ Current
 - update post with new count
 - update share with post ref
 - add post data to feed for self and followers
+- update post data in self feed  
 - send a notification to followers
+
 #### `onUpdate()`
 Current
 - update post with new count
 - update share data of post in feeds
+- update post data in self feed  
 
 ---
 ## userAdds
@@ -132,20 +135,18 @@ Current
 }
 ```
 ### Lifecycle
-1. user performs add action  
+1. user performs done action  
 fields: `createdAt, done, post, updatedAt, visible`  
 
-1. `onCreate(users/{userId}/shares/{shareId})`  
-fields: `post, updatedAt`
-
-1. at any point, a user can un-share a post  
-fields: `visible, updatedAt`
+1. at any point, a user can un-done a post  
+fields: `visible, updatedAt`  
 
 ### Rules
 #### `onWrite()`
 Current
 - update post with new count
 - update add data of post in feeds
+- update post data in self feed  
 
 ---
 ## userDones
@@ -168,13 +169,28 @@ Current
   visible: true,
 }
 ```
+### Lifecycle
+1. user performs done action  
+fields: `createdAt, post, updatedAt, visible`  
+
+1. at any point, a user can un-done a post  
+fields: `visible, updatedAt`  
+
 ### Rules
-#### `onWrite()`
+#### `onCreate()`
 Current
 - update post with new count
 - update done data of post in feeds
 - update add data of post for user
+- update post data in self feed  
 - if new: send a notification to original sharer
+
+#### `onUpdate()`
+Current
+- update post with new count
+- update done data of post in feeds
+- update add data of post for user
+- update post data in self feed  
 
 ---
 ## userLikes
@@ -197,12 +213,26 @@ Current
   visible: true,
 }
 ```
+### Lifecycle
+1. user performs like action  
+fields: `createdAt, post, updatedAt, visible`  
+
+1. at any point, a user can un-like a post  
+fields: `visible, updatedAt`  
+
 ### Rules
+#### `onCreate()`
+Current
+- update post with new count
+- update like data of post in feeds
+- update post data in self feed  
+- if new: send a notification to original sharer
+
 #### `onWrite()`
 Current
 - update post with new count
 - update like data of post in feeds
-- if new: send a notification to original sharer
+- update post data in self feed  
 
 ---
 ## userFeed
@@ -211,59 +241,37 @@ Current
 ### Spec
 ```
 {
+  ...post (atom),
+  post (reference),
+  userShare (boolean),
+  userAdd (boolean),
+  userDone (boolean),
+  userLike (boolean),
+}
+```
+### Sample
+```
+{
   ...post,
   post: 'posts/0',
-}
-```
-### Sample
-```
-{
-  TBD
-}
-```
-### Rules
-#### `onWrite()`
-Current
-- update post with new count
-- update like data of post in feeds
-- if new: send a notification to original sharer
-
----
-## Shares
-`shares/{shareId}`
-### Spec
-```
-{
-  createdAt (timestamp),
-  post (reference),
-  updatedAt (timestamp),
-  url (string),
-  user (reference),
-}
-```
-### Sample
-```
-{
-  createdAt: ts,
-  post: 'posts/0',
-  updatedAt: ts,
-  url: 'https://hackernoon.com/5-tips-for-building-effective-product-management-teams-c320ce54a4bb',
-  user: 'users/0',
+  userShare: true,
+  userAdd: false,
+  userDone: true,
+  userLike: true,
 }
 ```
 ### Lifecycle
-1. user creates a new share (from share extension)  
-fields: `createdAt, updatedAt, url, user`  
+1. post gets added to user's feed from follower or self share  
+fields: `post (atom), post, userShare, userAdd, userDone, userLike`  
 
-1. `onCreate(shares/{shareId})`  
-fields: `post, updatedAt`
+1. post gets update  
+fields: `post (atom)`
+
+1. user performs (share, add, done, like) action  
+fields: `userShare, userAdd, userDone, userLike`
 
 ### Rules
-#### `onCreate()`  
-Current
-- match with an existing post or create a new post
-- create a new post share
-- update share with post ref
+None
 
 ---
 ## Posts
@@ -306,10 +314,8 @@ Current
 }
 ```
 ### Lifecycle
-1. `onCreate(shares/{shareId})` creates a new post   
+1. `onCreate(users/{userId}/shares/{shareId})` creates a new post   
 fields: `createdAt, updatedAt, url`
-
-1. `onCreate(shares/{shareId})` creates a new post share   
 
 1. `onCreate(posts/{postId}/shares/{shareId})` scrapes meta data for new post share and updates original post   
 fields: `description, image, medium, publisher, title, updatedAt, url`
@@ -319,11 +325,9 @@ fields: `shareCount, addCount, doneCount, likeCount`
 
 
 ### Rules
-#### `onCreate()`  
+#### `onWrite()`  
 Current
-- match with an existing post or create a new post
-- create a new post share
-- update share with post ref
+- update any documents in `users/{userId}/feed/{feedId}` with a matching post reference
 
 ### Sub Collections
 #### [Shares](#postshares)
@@ -337,7 +341,6 @@ Current
 {
   createdAt (timestamp),
   normalUrl (string),
-  share (reference),
   updatedAt (timestamp),
   url (string),
   user (reference),
@@ -347,15 +350,16 @@ Current
 ```
 {
   createdAt: ts,
-  share: 'shares/0',
+  normalUrl: 'https://futurism.com/virtual-real-estate/amp/'
   updatedAt: ts,
+  url: 'https://futurism.com/virtual-real-estate/amp/',
   user: 'users/0',
-  visible: true,
 }
 ```
 
 ### Lifecycle
-
+1. `onCreate(users/{userId})` creates a postShare  
+fields: `createdAt, normalUrl, updatedAt, url, user`
 
 ### Rules
 #### `onCreate()`  
@@ -364,6 +368,33 @@ Current
 - create a new post share
 - update share with post ref
 
-### Sub Collections
-#### [Shares](#postshares)
-`posts/{postId}/shares/{shareId}`
+----
+## Friends
+`friends/{friendshipId}`
+### Spec
+```
+{
+  createdAt (timestamp),
+  deletedAt (timestamp),
+  initiatingUser (reference),
+  receivingUser (reference),
+  status (string) [pending, accepted, rejected],
+  updatedAt (timestamp),
+}
+```
+### Sample
+```
+{
+  createdAt: ts,
+  deletedAt: ts,
+  initiatingUser: 'users/0',
+  receivingUser: 'users/0',
+  status: 'accepted',
+  updatedAt: ts,
+}
+```
+### Lifecycle
+None
+
+### Rules
+None
