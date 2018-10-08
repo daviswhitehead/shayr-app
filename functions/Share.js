@@ -1,15 +1,16 @@
-const URL = require('url');
-const utility = require('./Utility');
-const _ = require('lodash');
-const ogs = require('open-graph-scraper');
+const utility = require("./Utility");
+const counters = require("./Counters");
+const URL = require("url");
+const _ = require("lodash");
+const ogs = require("open-graph-scraper");
 
-const normalizeUrl = (url) => {
+const normalizeUrl = url => {
   const urlData = URL.parse(url);
 
-  return 'https://'.concat(
-    urlData.hostname.replace(/^www\./,''),
+  return "https://".concat(
+    urlData.hostname.replace(/^www\./, ""),
     urlData.pathname
-  )
+  );
 };
 
 const matchShareToPost = (db, normalUrl) => {
@@ -19,32 +20,38 @@ const matchShareToPost = (db, normalUrl) => {
   // enforces matching single post
 
   // find posts matching normalUrl
-  return db.collection('posts')
-    .where('url', '==', normalUrl)
-    .get()
+  return (
+    db
+      .collection("posts")
+      .where("url", "==", normalUrl)
+      .get()
 
-    // returns post DocumentReference
-    .then((query) => {
-      // if there's more than one matching post
-      if (query.size > 1) {
-          console.log('more than one post found');
-          return null
-        // if there's a single matching post
-      } else if (query.size === 1) {
-        console.log('existing post found');
-        return query.docs[0].ref
-      // if there's not a matching post
-      } else {
-        console.log('no post found, creating a new post');
-        return db.collection('posts').add(
-          utility.addUpdatedAt(utility.addCreatedAt({url: normalUrl}))
-        )
-      }
-    })
-}
+      // returns post DocumentReference
+      .then(query => {
+        // if there's more than one matching post
+        if (query.size > 1) {
+          console.log("more than one post found");
+          return null;
+          // if there's a single matching post
+        } else if (query.size === 1) {
+          console.log("existing post found");
+          return query.docs[0].ref;
+          // if there's not a matching post
+        } else {
+          console.log("no post found, creating a new post");
+          return db
+            .collection("posts")
+            .add(
+              utility.addUpdatedAt(utility.addCreatedAt({ url: normalUrl }))
+            );
+        }
+      })
+  );
+};
 
-// onCreateShare({createdAt: null, updatedAt: null, url: 'https://hackernoon.com/5-tips-for-building-effective-product-management-teams-c320ce54a4bb', user: 'users/0'})
+// onCreateShare({createdAt: null, updatedAt: null, url: 'https://hackernoon.com/5-tips-for-building-effective-product-management-teams-c320ce54a4bb', user: 'users/0', active: true})
 exports._onCreateShare = (db, snap, context) => {
+  const userId = context.params.userId;
   const shareId = context.params.shareId;
   const shareRef = snap.ref;
   const shareData = snap.data();
@@ -52,79 +59,98 @@ exports._onCreateShare = (db, snap, context) => {
 
   const postSharePayload = {
     normalUrl: normalUrl,
-    share: `shares/${shareId}`,
+    userShare: `users/${userId}/shares/${shareId}`,
     url: shareData.url,
-    user: shareData.user,
+    user: `users/${userId}`
   };
 
   const userSharePayload = {
     normalUrl: normalUrl,
-    share: `shares/${shareId}`,
+    postShare: null,
     url: shareData.url,
-    post: null,
+    post: null
   };
 
-  console.log('matching share to existing posts');
+  console.log("matching share to existing posts");
   return matchShareToPost(db, normalUrl)
-    .then((postRef) => {
+    .then(async postRef => {
       const postId = postRef.id;
-      var batch = db.batch()
-      console.log('updating original share doc');
+      var batch = db.batch();
+
+      console.log("creating a new post share");
       batch.set(
-        shareRef,
-        {post: `posts/${postId}`},
-        {merge: true}
-      );
-      console.log('creating a new post share');
-      batch.set(
-        postRef.collection('shares').doc(),
+        postRef.collection("shares").doc(),
         utility.addUpdatedAt(utility.addCreatedAt(postSharePayload))
       );
-      console.log('creating a new user share');
+
+      console.log("update post with new count");
       batch.set(
-        db.doc(shareData.user).collection('shares').doc(),
-        utility.addUpdatedAt(utility.addCreatedAt({
-          ...userSharePayload,
-          post: `posts/${postId}`
-        }))
+        postRef,
+        await counters.getCount(postRef, shareData, "shareCount"),
+        { merge: true }
       );
-      return batch.commit()
+
+      console.log("updating original user share with post ref");
+      batch.set(
+        shareRef,
+        utility.addUpdatedAt({
+          post: `posts/${postId}`,
+          postShare: `posts/${postId}/`
+        }),
+        { merge: true }
+      );
+
+      console.log("add post data to feed for self and followers");
+      // get list of followers
+      // check if post already exists in their feeds
+      // create or update post in feeds
+      // create a post share
+
+      console.log("send a notification to followers");
+
+      return batch.commit();
     })
 
-    .catch((e) => {
+    .catch(e => {
       console.error(e);
-      return e
+      return e;
     });
-}
+};
 
-const scrape = (url) => {
-  const options = {'url': url};
+const scrape = url => {
+  const options = { url: url };
   return ogs(options)
-    .then((result) => {
+    .then(result => {
       if (result.success) {
-        console.log('scraping success');
+        console.log("scraping success");
         return {
-          title: _.get(result.data, 'ogTitle', '') || _.get(result.data, 'twitterTitle', ''),
+          title:
+            _.get(result.data, "ogTitle", "") ||
+            _.get(result.data, "twitterTitle", ""),
           publisher: {
-            name: _.get(result.data, 'ogSiteName', '') || _.get(result.data, 'twitterSite', ''),
-            logo: ''
+            name:
+              _.get(result.data, "ogSiteName", "") ||
+              _.get(result.data, "twitterSite", ""),
+            logo: ""
           },
-          description: _.get(result.data, 'ogDescription', '') || _.get(result.data, 'twitterDescription', ''),
-          image: _.get(result.data, 'ogImage.url', '') || _.get(result.data, 'twitterImage.url', ''),
-          medium: _.get(result.data, 'ogType', '')
-        }
+          description:
+            _.get(result.data, "ogDescription", "") ||
+            _.get(result.data, "twitterDescription", ""),
+          image:
+            _.get(result.data, "ogImage.url", "") ||
+            _.get(result.data, "twitterImage.url", ""),
+          medium: _.get(result.data, "ogType", "")
+        };
+      } else {
+        console.log("scraping failure");
+        return null;
       }
-      else {
-        console.log('scraping failure');
-        return null
-      }
-
     })
-    .catch((error) => {
-      console.log('error:', error);
-      return null
+    .catch(error => {
+      console.log("error:", error);
+      return null;
     });
-}
+};
 
 // onCreatePostShare({createdAt: null, updatedAt: null, url: 'https://hackernoon.com/5-tips-for-building-effective-product-management-teams-c320ce54a4bb', user: 'users/0', share: 'shares/0', normalUrl: 'https://hackernoon.com/5-tips-for-building-effective-product-management-teams-c320ce54a4bb',})
 exports._onCreatePostShare = (db, snap, context) => {
@@ -132,30 +158,31 @@ exports._onCreatePostShare = (db, snap, context) => {
   const postId = context.params.postId;
   const postRef = `posts/${postId}`;
 
-  console.log('getting post data and scraping meta');
-  return Promise.all([
-      db.doc(postRef).get(),
-      scrape(snap.data().url)
-    ])
-    .then((data) => {
-      console.log('updating post with meta');
+  console.log("getting post data and scraping meta");
+  return Promise.all([db.doc(postRef).get(), scrape(snap.data().url)])
+    .then(data => {
+      console.log("updating post with meta");
       const postData = data[0].data();
       const scrapedData = data[1];
       let payload = {
-        title: _.get(postData, 'title', '') || _.get(scrapedData, 'title', ''),
-        publisher: _.get(postData, 'publisher', '') || _.get(scrapedData, 'publisher', ''),
-        description: _.get(postData, 'description', '') || _.get(scrapedData, 'description', ''),
-        image: _.get(postData, 'image', '') || _.get(scrapedData, 'image', ''),
-        medium: _.get(postData, 'medium', '') || _.get(scrapedData, 'medium', ''),
+        title: _.get(postData, "title", "") || _.get(scrapedData, "title", ""),
+        publisher:
+          _.get(postData, "publisher", "") ||
+          _.get(scrapedData, "publisher", ""),
+        description:
+          _.get(postData, "description", "") ||
+          _.get(scrapedData, "description", ""),
+        image: _.get(postData, "image", "") || _.get(scrapedData, "image", ""),
+        medium:
+          _.get(postData, "medium", "") || _.get(scrapedData, "medium", "")
       };
       payload = postData ? payload : utility.addCreatedAt(payload);
-      return db.doc(postRef).set(
-        utility.addUpdatedAt(payload),
-        {merge: true}
-      )
+      return db
+        .doc(postRef)
+        .set(utility.addUpdatedAt(payload), { merge: true });
     })
-    .catch((e) => {
+    .catch(e => {
       console.error(e);
-      return e
-    })
-}
+      return e;
+    });
+};
