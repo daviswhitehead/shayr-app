@@ -1,14 +1,109 @@
+# Functions Lifecycle
+
+## Inbound Share
+
+1. `onCreate('shares/{shareId}')` input: `createdAt, updatedAt, url, user`
+1. scrape url data
+1. match to `Post` or create a new `Post`
+1. write `Post` with scraped data
+1. get `userShare`
+1. write `userShare`
+1. write `Share` with `Post` reference
+1. `onWrite('users/{userId}/shares/{shareId}')` input: `createdAt, post, updatedAt, url, user, active`
+1. write `Post` with new share count
+1. write `Post` to `userPosts` for self and friends
+1. create or update `userPostsShares` document to matching `Post` in `userPosts` for self and friends
+1. update `userShare` field for matching `Post` in self `userPosts`
+1. if new: send a notification to followers
+1. `onWrite('posts/{postId}')` input: `createdAt, description, image, medium, publisher, title, updatedAt, url`
+1. write `Post` updates to matching `Posts` in all `userPosts`
+
+<!-- 1. `onWrite('users/{userId}/posts/{postId}')` input: `createdAt, description, image, medium, publisher, title, updatedAt, url`
+  1. write `Post` updates to matching `Posts` in self `userFeed` and `userQueue` -->
+
+## Post Actions
+
+actions: [share, add, done, like]
+
+1. `onWrite('users/{userId}/[action]/{[action]Id}')` input: `active, createdAt, post, updatedAt,`
+1. write `Post` with new [action] count
+1. [if new: share] write `Post` to `userPosts` for self and friends
+1. [if new: share] write `Post` to `userFeed` for self and friends
+1. create or update `userPosts[Actions]` document to matching `Post` in `userPosts` for self and friends
+1. update `user[Action]` field for matching `Post` in self `userPosts`
+1. if new: [share] send notification to all friends
+1. if new: [done, like] send notification to any friends who have shared the post
+1. `onWrite('posts/{postId}')` input: `createdAt, description, image, medium, publisher, title, updatedAt, url`
+1. write `Post` updates to matching `Posts` in all `userPosts`
+
+<!-- 1. `onWrite('users/{userId}/posts/{postId}')` input: `createdAt, description, image, medium, publisher, title, updatedAt, url`
+  1. write `Post` updates to matching `Posts` in self `userFeed` and `userQueue` -->
+
+## Add to Queue
+
+triggered by frontend
+
+- add --> copy `Post` from `userPosts` to `userQueue`
+- done --> remove `Post` from `userQueue`
+
 # Collections
 
+- [Shares](#shares)
 - [Users](#users)
   - [userShares](#usershares)
   - [userAdds](#useradds)
   - [userDones](#userdones)
   - [userLikes](#userlikes)
   - [userFeed](#userfeed)
+  - [userQueue](#userqueue)
+  - [userPosts](#userposts)
+    - [userPostShares](#userfeedshares)
+    - [userPostAdds](#userfeedadds)
+    - [userPostDones](#userfeeddones)
+    - [userPostLikes](#userfeedlikes)
+  - [userFriends](#userfriends)
 - [Posts](#posts)
-  - [postShares](#postshares)
 - [Friends](#friends)
+
+---
+
+## Shares
+
+`shares/{shareId}`
+
+### Spec
+
+```
+{
+  createdAt (timestamp),
+  post (reference),
+  updatedAt (timestamp),
+  url (string),
+  user (reference),
+}
+```
+
+### Lifecycle
+
+1. user creates a new share (from share extension)  
+   fields: `createdAt, updatedAt, url, user`
+
+1. `onCreate(shares/{shareId})`  
+   fields: `post, updatedAt`
+
+### Rules
+
+#### `onCreate()`
+
+Current
+
+- match with an existing post or create a new post
+- create a new post share
+- update share with post ref
+
+### Notes
+
+- Shares the same `{shareId}` with `users/{userId}/shares/{shareId}`
 
 ---
 
@@ -29,19 +124,6 @@
 }
 ```
 
-### Sample
-
-```
-{
-  createdAt: ts,
-  email: 'chillywilly.bootato@gmail.com',
-  facebookProfilePhoto: 'https://platform-lookaside.fbsbx.com/platform/profilepic/?asid=255045858399396&height=100&width=100&ext=1537904540&hash=AeQ3M2Oc2lGYH5OP',
-  firstName: 'Bob',
-  lastName: 'Sanders',
-  updatedAt: ts,
-}
-```
-
 ### Lifecycle
 
 1. created upon first login  
@@ -57,6 +139,7 @@
 Future
 
 - Notify users who are facebook friends with this user that they've joined shayr
+- Update userFriends for anyone who's already friends with a user if they change their information
 
 ### Sub Collections
 
@@ -80,6 +163,10 @@ Future
 
 `users/{userId}/feed/{postId}`
 
+#### [userFriends](#userfriends)
+
+`users/{userId}/friends/{friendshipId}`
+
 ---
 
 ## userShares
@@ -90,42 +177,27 @@ Future
 
 ```
 {
+  active (boolean),
   createdAt (timestamp),
   post (reference),
+  share (reference),
   updatedAt (timestamp),
-  url (reference),
-  user (reference),
-  active (boolean),
-}
-```
-
-### Sample
-
-```
-{
-  createdAt: ts,
-  post: 'posts/0',
-  updatedAt: ts,
-  url: 'https://hackernoon.com/5-tips-for-building-effective-product-management-teams-c320ce54a4bb',
-  user: 'users/0',
-  active: true,
 }
 ```
 
 ### Lifecycle
 
-1. user creates a new share (from share extension)  
-   fields: `createdAt, updatedAt, url, user, active`
-
-1. `onCreate(users/{userId}/shares/{shareId})`  
-   fields: `post, updatedAt`
+1. user creates a new share (from share extension), `onCreate(shares/{shareId})`  
+   fields: `active, createdAt, post, share, updatedAt`
 
 1. at any point, a user can un-share a post  
    fields: `active, updatedAt`
 
 ### Rules
 
-#### `onCreate()`
+#### `onWrite()`
+
+TBD
 
 Current
 
@@ -145,6 +217,10 @@ Current
 - update share data of post in feeds
 - update post data in self feed
 
+### Notes
+
+- Shares the same `{shareId}` with `shares/{shareId}`
+
 ---
 
 ## userAdds
@@ -155,23 +231,10 @@ Current
 
 ```
 {
+  active (boolean),
   createdAt (timestamp),
-  done (boolean),
   post (reference),
   updatedAt (timestamp),
-  active (boolean),
-}
-```
-
-### Sample
-
-```
-{
-  createdAt: ts,
-  done: false,
-  post: 'posts/0',
-  updatedAt: ts,
-  active: true,
 }
 ```
 
@@ -207,17 +270,6 @@ Current
   post (reference),
   updatedAt (timestamp),
   active (boolean),
-}
-```
-
-### Sample
-
-```
-{
-  createdAt: ts,
-  post: 'posts/0',
-  updatedAt: ts,
-  active: true,
 }
 ```
 
@@ -267,17 +319,6 @@ Current
 }
 ```
 
-### Sample
-
-```
-{
-  createdAt: ts,
-  post: 'posts/0',
-  updatedAt: ts,
-  active: true,
-}
-```
-
 ### Lifecycle
 
 1. user performs like action  
@@ -309,7 +350,7 @@ Current
 
 ## userFeed
 
-`users/{userId}/feeds/{postId}`
+`users/{userId}/feed/{postId}`
 
 ### Spec
 
@@ -321,19 +362,9 @@ Current
   userAdd (boolean),
   userDone (boolean),
   userLike (boolean),
-}
-```
-
-### Sample
-
-```
-{
-  ...post,
-  post: 'posts/0',
-  userShare: true,
-  userAdd: false,
-  userDone: true,
-  userLike: true,
+  sharedByFirstName (string),
+  sharedByLastName (string),
+  sharedByFacebookProfilePhoto (string)
 }
 ```
 
@@ -347,6 +378,89 @@ Current
 
 1. user performs (share, add, done, like) action  
    fields: `userShare, userAdd, userDone, userLike`
+
+### Rules
+
+None
+
+### Sub Collections
+
+#### [userFeedShares](#userfeedshares)
+
+`users/{userId}/feed/{postId}/shares/{shareId}`
+
+#### [userFeedAdds](#userfeedadds)
+
+`users/{userId}/feed/{postId}/adds/{addId}`
+
+#### [userFeedDones](#userfeeddones)
+
+`users/{userId}/feed/{postId}/dones/{doneId}`
+
+#### [userFeedLikes](#userfeedlikes)
+
+`users/{userId}/feed/{postId}/likes/{likeId}`
+
+---
+
+## userFeedShares
+
+`users/{userId}/feed/{postId}/shares/{shareId}`
+
+### Spec
+
+```
+{
+  active (boolean),
+  updatedAt (timestamp),
+  user (reference),
+  userFirstName (string),
+  userLastName (string),
+  userFacebookProfilePhoto (string)
+}
+```
+
+### Lifecycle
+
+1. Whenever a `userShare` is written, `userFeedShare` is written
+   fields: `all`
+
+### Rules
+
+None
+
+### Notes
+
+- Shares the same `{shareId}` with `users/{userId}/shares/{shareId}` and `shares/{shareId}`
+
+---
+
+## userFriends
+
+`users/{userId}/friends/{friendshipId}`
+
+### Spec
+
+```
+{
+  friendshipDeletedAt (timestamp),
+  friendship (reference),
+  friendshipStatus (string) [pending, accepted, rejected],
+  friendshipUpdatedAt (timestamp),
+  user (reference),
+  userFirstName (string),
+  userLastName (string),
+  userFacebookProfilePhoto (string)
+}
+```
+
+### Lifecycle
+
+1. gets updated anytime a friendship is written, `onWrite('friends/{friendshipId}')`  
+   fields: `all`
+
+1. gets updated anytime a user is updated, `onWrite('users/{userId}')`  
+   fields: `user (atom)`
 
 ### Rules
 
@@ -426,51 +540,6 @@ Current
 
 ---
 
-## postShares
-
-`posts/{postId}/shares/{shareId}`
-
-### Spec
-
-```
-{
-  createdAt (timestamp),
-  normalUrl (string),
-  updatedAt (timestamp),
-  url (string),
-  user (reference),
-}
-```
-
-### Sample
-
-```
-{
-  createdAt: ts,
-  normalUrl: 'https://futurism.com/virtual-real-estate/amp/'
-  updatedAt: ts,
-  url: 'https://futurism.com/virtual-real-estate/amp/',
-  user: 'users/0',
-}
-```
-
-### Lifecycle
-
-1. `onCreate(users/{userId})` creates a postShare  
-   fields: `createdAt, normalUrl, updatedAt, url, user`
-
-### Rules
-
-#### `onCreate()`
-
-Current
-
-- match with an existing post or create a new post
-- create a new post share
-- update share with post ref
-
----
-
 ## Friends
 
 `friends/{friendshipId}`
@@ -488,23 +557,14 @@ Current
 }
 ```
 
-### Sample
-
-```
-{
-  createdAt: ts,
-  deletedAt: ts,
-  initiatingUser: 'users/0',
-  receivingUser: 'users/0',
-  status: 'accepted',
-  updatedAt: ts,
-}
-```
-
 ### Lifecycle
 
 None
 
 ### Rules
 
-None
+#### `onWrite()`
+
+Current
+
+- create userFriend documents

@@ -10,8 +10,7 @@
     "test": "mocha --reporter spec",
     "dev": "firebase use shayr-dev",
     "prod": "firebase use shayr",
-    "lint": "eslint .",
-    "precommit": "pretty-quick --staged"
+    "lint": "eslint ."
   },
   "dependencies": {
     "firebase-admin": "^6.0.0",
@@ -20,6 +19,7 @@
     "open-graph-scraper": "^3.1.5"
   },
   "devDependencies": {
+    "babel-eslint": "^10.0.1",
     "chai": "^4.1.2",
     "eslint": "^4.19.1",
     "eslint-plugin-promise": "^3.6.0",
@@ -37,5 +37,10 @@
   "license": "ISC",
   "engines": {
     "node": "8"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "pretty-quick --staged"
+    }
   }
 }

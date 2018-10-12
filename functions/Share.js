@@ -1,5 +1,4 @@
 const utility = require("./Utility");
-const counters = require("./Counters");
 const URL = require("url");
 const _ = require("lodash");
 const ogs = require("open-graph-scraper");
@@ -11,6 +10,41 @@ const normalizeUrl = url => {
     urlData.hostname.replace(/^www\./, ""),
     urlData.pathname
   );
+};
+
+const scrape = url => {
+  const options = { url: url };
+  return ogs(options)
+    .then(result => {
+      if (result.success) {
+        console.log("scraping success");
+        return {
+          title:
+            _.get(result.data, "ogTitle", "") ||
+            _.get(result.data, "twitterTitle", ""),
+          publisher: {
+            name:
+              _.get(result.data, "ogSiteName", "") ||
+              _.get(result.data, "twitterSite", ""),
+            logo: ""
+          },
+          description:
+            _.get(result.data, "ogDescription", "") ||
+            _.get(result.data, "twitterDescription", ""),
+          image:
+            _.get(result.data, "ogImage.url", "") ||
+            _.get(result.data, "twitterImage.url", ""),
+          medium: _.get(result.data, "ogType", "")
+        };
+      } else {
+        console.log("scraping failure");
+        return null;
+      }
+    })
+    .catch(error => {
+      console.log("error:", error);
+      return null;
+    });
 };
 
 const matchShareToPost = (db, normalUrl) => {
@@ -49,140 +83,67 @@ const matchShareToPost = (db, normalUrl) => {
   );
 };
 
-// onCreateShare({createdAt: null, updatedAt: null, url: 'https://hackernoon.com/5-tips-for-building-effective-product-management-teams-c320ce54a4bb', user: 'users/0', active: true})
-exports._onCreateShare = (db, snap, context) => {
-  const userId = context.params.userId;
+// onCreateShare({createdAt: null, updatedAt: null, url: 'https://hackernoon.com/5-tips-for-building-effective-product-management-teams-c320ce54a4bb', user: 'users/uoguUzphvgfwerXGFOfBifkqVYo1'})
+// const user = "users/uoguUzphvgfwerXGFOfBifkqVYo1";
+exports._onCreateShare = async (db, snap, context) => {
+  // "shares/{shareId}"
   const shareId = context.params.shareId;
   const shareRef = snap.ref;
   const shareData = snap.data();
+  const userId = utility.getReferenceId(shareData.user, 1);
+
+  var batch = db.batch();
+
+  console.log("normalizing url");
   const normalUrl = normalizeUrl(shareData.url);
 
-  const postSharePayload = {
-    normalUrl: normalUrl,
-    userShare: `users/${userId}/shares/${shareId}`,
-    url: shareData.url,
-    user: `users/${userId}`
+  console.log("scraping share data");
+  let scrapeData = await scrape(normalUrl);
+
+  console.log("match to Post or create a new Post");
+  let postRef = await matchShareToPost(db, normalUrl);
+  const postId = postRef.id;
+
+  console.log("get Post data");
+  const postData = await utility.getDocument(db, `posts/${postId}`);
+
+  console.log("write Post with scraped data");
+  let postPayload = {
+    title: _.get(postData, "title", "") || _.get(scrapeData, "title", ""),
+    publisher:
+      _.get(postData, "publisher", "") || _.get(scrapeData, "publisher", ""),
+    description:
+      _.get(postData, "description", "") ||
+      _.get(scrapeData, "description", ""),
+    image: _.get(postData, "image", "") || _.get(scrapeData, "image", ""),
+    medium: _.get(postData, "medium", "") || _.get(scrapeData, "medium", "")
   };
+  postPayload = postData ? postPayload : utility.addCreatedAt(postPayload);
+  batch.set(postRef, utility.addUpdatedAt(postPayload), { merge: true });
 
-  const userSharePayload = {
-    normalUrl: normalUrl,
-    postShare: null,
-    url: shareData.url,
-    post: null
+  console.log("get userShare data");
+  const userShareRef = `users/${userId}/shares/${shareId}`;
+  const userShareData = await utility.getDocument(db, userShareRef);
+
+  console.log("write userShare");
+  let userSharePayload = {
+    active: true,
+    post: postRef,
+    share: shareRef
   };
+  userSharePayload = userShareData
+    ? userSharePayload
+    : utility.addCreatedAt(userSharePayload);
+  batch.set(db.doc(userShareRef), utility.addUpdatedAt(userSharePayload));
 
-  console.log("matching share to existing posts");
-  return matchShareToPost(db, normalUrl)
-    .then(async postRef => {
-      const postId = postRef.id;
-      var batch = db.batch();
+  console.log("write Share with Post reference");
+  batch.set(
+    shareRef,
+    utility.addUpdatedAt({
+      post: postRef
+    }),
+    { merge: true }
+  );
 
-      console.log("creating a new post share");
-      batch.set(
-        postRef.collection("shares").doc(),
-        utility.addUpdatedAt(utility.addCreatedAt(postSharePayload))
-      );
-
-      console.log("update post with new count");
-      batch.set(
-        postRef,
-        await counters.getCount(postRef, shareData, "shareCount"),
-        { merge: true }
-      );
-
-      console.log("updating original user share with post ref");
-      batch.set(
-        shareRef,
-        utility.addUpdatedAt({
-          post: `posts/${postId}`,
-          postShare: `posts/${postId}/`
-        }),
-        { merge: true }
-      );
-
-      console.log("add post data to feed for self and followers");
-      // get list of followers
-      // check if post already exists in their feeds
-      // create or update post in feeds
-      // create a post share
-
-      console.log("send a notification to followers");
-
-      return batch.commit();
-    })
-
-    .catch(e => {
-      console.error(e);
-      return e;
-    });
-};
-
-const scrape = url => {
-  const options = { url: url };
-  return ogs(options)
-    .then(result => {
-      if (result.success) {
-        console.log("scraping success");
-        return {
-          title:
-            _.get(result.data, "ogTitle", "") ||
-            _.get(result.data, "twitterTitle", ""),
-          publisher: {
-            name:
-              _.get(result.data, "ogSiteName", "") ||
-              _.get(result.data, "twitterSite", ""),
-            logo: ""
-          },
-          description:
-            _.get(result.data, "ogDescription", "") ||
-            _.get(result.data, "twitterDescription", ""),
-          image:
-            _.get(result.data, "ogImage.url", "") ||
-            _.get(result.data, "twitterImage.url", ""),
-          medium: _.get(result.data, "ogType", "")
-        };
-      } else {
-        console.log("scraping failure");
-        return null;
-      }
-    })
-    .catch(error => {
-      console.log("error:", error);
-      return null;
-    });
-};
-
-// onCreatePostShare({createdAt: null, updatedAt: null, url: 'https://hackernoon.com/5-tips-for-building-effective-product-management-teams-c320ce54a4bb', user: 'users/0', share: 'shares/0', normalUrl: 'https://hackernoon.com/5-tips-for-building-effective-product-management-teams-c320ce54a4bb',})
-exports._onCreatePostShare = (db, snap, context) => {
-  // when a new share is created for a post, update the post information
-  const postId = context.params.postId;
-  const postRef = `posts/${postId}`;
-
-  console.log("getting post data and scraping meta");
-  return Promise.all([db.doc(postRef).get(), scrape(snap.data().url)])
-    .then(data => {
-      console.log("updating post with meta");
-      const postData = data[0].data();
-      const scrapedData = data[1];
-      let payload = {
-        title: _.get(postData, "title", "") || _.get(scrapedData, "title", ""),
-        publisher:
-          _.get(postData, "publisher", "") ||
-          _.get(scrapedData, "publisher", ""),
-        description:
-          _.get(postData, "description", "") ||
-          _.get(scrapedData, "description", ""),
-        image: _.get(postData, "image", "") || _.get(scrapedData, "image", ""),
-        medium:
-          _.get(postData, "medium", "") || _.get(scrapedData, "medium", "")
-      };
-      payload = postData ? payload : utility.addCreatedAt(payload);
-      return db
-        .doc(postRef)
-        .set(utility.addUpdatedAt(payload), { merge: true });
-    })
-    .catch(e => {
-      console.error(e);
-      return e;
-    });
+  return utility.returnBatch(batch);
 };
