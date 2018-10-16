@@ -2,7 +2,7 @@ const functions = require("firebase-functions");
 const admin = require("firebase-admin");
 
 var env = null;
-// const env = "dev";
+// env = "dev";
 // const env = "prod";
 var initializeAppConfig = {};
 var serviceAccount = null;

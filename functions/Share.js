@@ -83,12 +83,11 @@ const matchShareToPost = (db, normalUrl) => {
   );
 };
 
-// onCreateShare({createdAt: null, updatedAt: null, url: 'https://hackernoon.com/5-tips-for-building-effective-product-management-teams-c320ce54a4bb', user: 'users/uoguUzphvgfwerXGFOfBifkqVYo1'})
-// const user = "users/uoguUzphvgfwerXGFOfBifkqVYo1";
+// onCreateShare({createdAt: null, updatedAt: null, url: 'https://hackernoon.com/5-tips-for-building-effective-product-management-teams-c320ce54a4bb', user: 'users/0'}, {params: {shareId: '0'}})
 exports._onCreateShare = async (db, snap, context) => {
   // "shares/{shareId}"
   const shareId = context.params.shareId;
-  const shareRef = snap.ref;
+  const shareRef = `shares/${shareId}`;
   const shareData = snap.data();
   const userId = utility.getReferenceId(shareData.user, 1);
 
@@ -102,10 +101,13 @@ exports._onCreateShare = async (db, snap, context) => {
 
   console.log("match to Post or create a new Post");
   let postRef = await matchShareToPost(db, normalUrl);
-  const postId = postRef.id;
+  let postRefString = `posts/${postRef.id}`;
 
   console.log("get Post data");
-  const postData = await utility.getDocument(db, `posts/${postId}`);
+  const postData = await utility.getDocument(
+    db.doc(postRefString),
+    postRefString
+  );
 
   console.log("write Post with scraped data");
   let postPayload = {
@@ -119,16 +121,21 @@ exports._onCreateShare = async (db, snap, context) => {
     medium: _.get(postData, "medium", "") || _.get(scrapeData, "medium", "")
   };
   postPayload = postData ? postPayload : utility.addCreatedAt(postPayload);
-  batch.set(postRef, utility.addUpdatedAt(postPayload), { merge: true });
+  batch.set(db.doc(postRefString), utility.addUpdatedAt(postPayload), {
+    merge: true
+  });
 
   console.log("get userShare data");
   const userShareRef = `users/${userId}/shares/${shareId}`;
-  const userShareData = await utility.getDocument(db, userShareRef);
+  const userShareData = await utility.getDocument(
+    db.doc(userShareRef),
+    userShareRef
+  );
 
   console.log("write userShare");
   let userSharePayload = {
     active: true,
-    post: postRef,
+    post: postRefString,
     share: shareRef
   };
   userSharePayload = userShareData
@@ -138,9 +145,9 @@ exports._onCreateShare = async (db, snap, context) => {
 
   console.log("write Share with Post reference");
   batch.set(
-    shareRef,
+    db.doc(shareRef),
     utility.addUpdatedAt({
-      post: postRef
+      post: postRefString
     }),
     { merge: true }
   );

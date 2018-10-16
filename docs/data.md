@@ -48,22 +48,14 @@ triggered by frontend
 
 # Collections
 
-- [Shares](#shares)
-- [Users](#users)
-  - [userShares](#usershares)
-  - [userAdds](#useradds)
-  - [userDones](#userdones)
-  - [userLikes](#userlikes)
-  - [userFeed](#userfeed)
-  - [userQueue](#userqueue)
-  - [userPosts](#userposts)
-    - [userPostShares](#userfeedshares)
-    - [userPostAdds](#userfeedadds)
-    - [userPostDones](#userfeeddones)
-    - [userPostLikes](#userfeedlikes)
-  - [userFriends](#userfriends)
-- [Posts](#posts)
-- [Friends](#friends)
+- [adds](#adds)
+- [dones](#dones)
+- [friends](#friends)
+- [likes](#likes)
+- [posts](#posts)
+- [shares](#shares)
+- [users](#users)
+- [users_posts](#users_posts)
 
 ---
 
@@ -75,6 +67,7 @@ triggered by frontend
 
 ```
 {
+  active (boolean),
   createdAt (timestamp),
   post (reference),
   updatedAt (timestamp),
@@ -86,24 +79,13 @@ triggered by frontend
 ### Lifecycle
 
 1. user creates a new share (from share extension)  
-   fields: `createdAt, updatedAt, url, user`
+   fields: `active, createdAt, updatedAt, url, user`
 
 1. `onCreate(shares/{shareId})`  
    fields: `post, updatedAt`
 
-### Rules
-
-#### `onCreate()`
-
-Current
-
-- match with an existing post or create a new post
-- create a new post share
-- update share with post ref
-
-### Notes
-
-- Shares the same `{shareId}` with `users/{userId}/shares/{shareId}`
+1. `onWrite(shares/{shareId})`  
+   TBD
 
 ---
 
@@ -443,10 +425,8 @@ None
 
 ```
 {
-  friendshipDeletedAt (timestamp),
   friendship (reference),
   friendshipStatus (string) [pending, accepted, rejected],
-  friendshipUpdatedAt (timestamp),
   user (reference),
   userFirstName (string),
   userLastName (string),
@@ -549,7 +529,6 @@ Current
 ```
 {
   createdAt (timestamp),
-  deletedAt (timestamp),
   initiatingUser (reference),
   receivingUser (reference),
   status (string) [pending, accepted, rejected],

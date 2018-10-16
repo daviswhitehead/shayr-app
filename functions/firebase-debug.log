@@ -1,0 +1,31 @@
+[debug] [2018-10-15T22:53:37.165Z] ----------------------------------------------------------------------
+[debug] [2018-10-15T22:53:37.168Z] Command:       /Users/dwhitehead/.nvm/versions/node/v8.11.1/bin/node /Users/dwhitehead/.nvm/versions/node/v8.11.1/bin/firebase experimental:functions:shell
+[debug] [2018-10-15T22:53:37.168Z] CLI Version:   4.2.1
+[debug] [2018-10-15T22:53:37.168Z] Platform:      darwin
+[debug] [2018-10-15T22:53:37.168Z] Node Version:  v8.11.1
+[debug] [2018-10-15T22:53:37.169Z] Time:          Mon Oct 15 2018 18:53:37 GMT-0400 (EDT)
+[debug] [2018-10-15T22:53:37.169Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2018-10-15T22:53:37.184Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2018-10-15T22:53:37.184Z] > authorizing via signed-in user
+[debug] [2018-10-15T22:53:37.186Z] >>> HTTP REQUEST GET https://admin.firebase.com/v1/projects/shayr-dev  
+ 
+[debug] [2018-10-15T22:53:37.522Z] <<< HTTP RESPONSE 200
+[info] i  functions: Preparing to emulate functions.
+[debug] [2018-10-15T22:53:38.157Z] Fetching environment
+[debug] [2018-10-15T22:53:38.158Z] >>> HTTP REQUEST GET https://cloudresourcemanager.googleapis.com/v1/projects/shayr-dev  
+ 
+[debug] [2018-10-15T22:53:38.426Z] <<< HTTP RESPONSE 200
+[debug] [2018-10-15T22:53:38.426Z] >>> HTTP REQUEST GET https://mobilesdk-pa.googleapis.com/v1/projects/552894174549:getServerAppConfig  
+ 
+[debug] [2018-10-15T22:53:38.659Z] <<< HTTP RESPONSE 200
+[debug] [2018-10-15T22:53:38.659Z] Starting @google-cloud/functions-emulator
+[debug] [2018-10-15T22:53:40.236Z] Parsing function triggers
+[debug] [2018-10-15T22:53:40.697Z] Deploying functions locally
+[debug] [2018-10-15T22:53:40.700Z] Deploying functions locally
+[debug] [2018-10-15T22:53:40.700Z] Deploying functions locally
+[debug] [2018-10-15T22:53:40.701Z] Deploying functions locally
+[info] ✔  functions: onWriteUserShare
+[info] ✔  functions: onCreateShare
+[info] ✔  functions: onWritePost
+[info] ✔  functions: onWriteFriend

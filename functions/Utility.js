@@ -2,6 +2,8 @@ const config = require("./Config");
 const URL = require("url");
 const ts = config.admin.firestore.FieldValue.serverTimestamp();
 
+exports.ts = ts;
+
 exports.addCreatedAt = payload => {
   return {
     ...payload,
@@ -27,25 +29,25 @@ exports.getReferenceId = (reference, position) => {
   return reference.split("/")[position];
 };
 
-exports.getDocument = (db, ref) => {
-  return db
-    .doc(ref)
-    .get()
-    .then(queryDocumentSnapshot => {
+exports.getDocument = (query, ref) => {
+  // query = db.doc(ref)
+  return query.get().then(queryDocumentSnapshot => {
+    if (queryDocumentSnapshot.exists) {
       return {
         id: queryDocumentSnapshot.id,
         ref: ref,
         ...queryDocumentSnapshot.data()
       };
-    });
+    }
+    return false;
+  });
 };
 
-exports.getDocumentsInCollection = (db, ref) => {
+exports.getDocumentsInCollection = (query, ref) => {
+  // query = db.collection(ref).where("a", "==", "b")
   const obj = {};
-  return db
-    .collection(ref)
-    .get()
-    .then(querySnapshot => {
+  return query.get().then(querySnapshot => {
+    if (!querySnapshot.empty) {
       querySnapshot.forEach(doc => {
         obj[doc.id] = {
           ref: ref + `/${doc.id}`,
@@ -53,7 +55,9 @@ exports.getDocumentsInCollection = (db, ref) => {
         };
       });
       return obj;
-    });
+    }
+    return false;
+  });
 };
 
 exports.returnBatch = batch => {

@@ -1,54 +1,48 @@
 const utility = require("./Utility");
+const atoms = require("./Atoms");
 // create
-// onWriteFriend({before: {}, after: {createdAt: null, deletedAt: null, deletedAt: null, status: 'pending', initiatingUser: 'users/00c3vWoNKJhfthqOkjhzkdZt7jh2', receivingUser: 'users/3SmsEEJByNPACcAcvAcinmNSXmC2', updatedAt: null}})
+// onWriteFriend({before: {}, after: {createdAt: null, status: 'pending', initiatingUser: 'users/0', receivingUser: 'users/1', updatedAt: null}})
 
 // update
-// onWriteFriend({before: {createdAt: null, deletedAt: null, deletedAt: null, status: 'pending', initiatingUser: 'users/00c3vWoNKJhfthqOkjhzkdZt7jh2', receivingUser: 'users/3SmsEEJByNPACcAcvAcinmNSXmC2', updatedAt: null}, after: {createdAt: null, deletedAt: null, deletedAt: null, status: 'accepted', initiatingUser: 'users/00c3vWoNKJhfthqOkjhzkdZt7jh2', receivingUser: 'users/3SmsEEJByNPACcAcvAcinmNSXmC2', updatedAt: null}})
+// onWriteFriend({before: {createdAt: null, status: 'pending', initiatingUser: 'users/0', receivingUser: 'users/1', updatedAt: null}, after: {createdAt: null, status: 'accepted', initiatingUser: 'users/0', receivingUser: 'users/1', updatedAt: null}})
 
-exports._onWriteFriend = (db, change, context) => {
+exports._onWriteFriend = async (db, change, context) => {
   const friendshipId = context.params.friendshipId;
   const afterData = change.after.data();
   const beforeData = change.before.data();
+  const initiatingUser = await utility.getDocument(
+    db.doc(afterData.initiatingUser),
+    afterData.initiatingUser
+  );
+  const receivingUser = await utility.getDocument(db, afterData.receivingUser);
 
-  // create function to add/update userFriends
-  const userFriendUpdate = (userA, userB) => {
-    return db
-      .doc(userA)
-      .get()
-      .then(querySnapshot => {
-        // get userA atom data
-        const userAId = querySnapshot.id;
-        const userAData = querySnapshot.data();
-
-        // build payload
-        var payload = {
-          friendshipDeletedAt: afterData.deletedAt,
-          friendship: `friends/${friendshipId}`,
-          friendshipStatus: afterData.status,
-          friendshipUpdatedAt: afterData.updatedAt,
-          user: `users/${userAId}`,
-          userFirstName: userAData.firstName,
-          userLastName: userAData.lastName,
-          userFacebookProfilePhoto: userAData.facebookProfilePhoto
-        };
-
-        // add createdAt if new friendship
-        payload = beforeData ? payload : utility.addCreatedAt(payload);
-
-        // update document
-        return db
-          .doc(userB)
-          .collection("friends")
-          .doc(friendshipId)
-          .set(utility.addUpdatedAt(payload), {
-            merge: true
-          });
-      });
+  var payload = {
+    friendship: `friends/${friendshipId}`,
+    friendshipStatus: afterData.status
   };
 
-  // run function for both members of friendship
-  return Promise.all([
-    userFriendUpdate(afterData.initiatingUser, afterData.receivingUser),
-    userFriendUpdate(afterData.receivingUser, afterData.initiatingUser)
-  ]);
+  // add createdAt if new friendship
+  payload = beforeData ? payload : utility.addCreatedAt(payload);
+
+  var batch = db.batch();
+
+  batch.set(
+    db.doc(`/users/${initiatingUser.id}/friends/${receivingUser.id}`),
+    utility.addUpdatedAt({
+      ...payload,
+      ...atoms.createUserAtom(receivingUser)
+    }),
+    { merge: true }
+  );
+
+  batch.set(
+    db.doc(`/users/${receivingUser.id}/friends/${initiatingUser.id}`),
+    utility.addUpdatedAt({
+      ...payload,
+      ...atoms.createUserAtom(initiatingUser)
+    }),
+    { merge: true }
+  );
+
+  return utility.returnBatch(batch);
 };
