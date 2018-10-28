@@ -9,18 +9,28 @@ const createUserPostPayload = async (
   postAtom,
   userId,
   action,
-  actionUserId
+  actionUserId,
+  active
 ) => {
   const user_postRefString = `users_posts/${userId}_${postAtom.postId}`;
   const user_post = await utility.getDocument(
     db.doc(user_postRefString),
     user_postRefString
   );
-  const actionUsers = _.union(_.get(user_post, action, []), [actionUserId]);
   let user_postPayload = utility.addUpdatedAt({
     ...postAtom,
     userId: userId
   });
+
+  var actionUsers = [];
+  if (active) {
+    actionUsers = _.union(_.get(user_post, action, []), [actionUserId]);
+  } else {
+    actionUsers = _.remove(
+      _.get(user_post, action, []),
+      id => id !== actionUserId
+    );
+  }
   user_postPayload[action] = actionUsers;
   user_postPayload = user_post
     ? user_postPayload
@@ -37,6 +47,7 @@ const createUserPostPayload = async (
 
 const sharedActionResources = async (db, change, context) => {
   const beforeData = change.before.data() ? change.before.data() : {};
+  const newAction = beforeData === {} ? true : false;
   const afterData = change.after.data();
   const post = await utility.getDocument(
     db.doc(`posts/${afterData.postId}`),
@@ -57,6 +68,7 @@ const sharedActionResources = async (db, change, context) => {
 
   return {
     beforeData: beforeData,
+    newAction: newAction,
     afterData: afterData,
     post: post,
     user: user,
@@ -93,7 +105,8 @@ const sharedActionWrites = async (db, resources, action) => {
     postAtom,
     resources.user.id,
     `${action}s`,
-    resources.user.id
+    resources.user.id,
+    resources.afterData.active
   );
   batch.set(user_post[0], user_post[1], user_post[2]);
 
@@ -105,7 +118,8 @@ const sharedActionWrites = async (db, resources, action) => {
         postAtom,
         resources.friends[friendId].friendUserId,
         `${action}s`,
-        resources.user.id
+        resources.user.id,
+        resources.afterData.active
       );
       batch.set(user_post[0], user_post[1], user_post[2]);
     }
@@ -114,7 +128,7 @@ const sharedActionWrites = async (db, resources, action) => {
   return utility.returnBatch(batch);
 };
 
-// onWriteAdd({before: {}, after: {active: true, createdAt: null, postId: "yDZVi7G4U5yThribDE7G", updatedAt: null, url: "https://hackernoon.com/5-tips-for-building-effective-product-management-teams-c320ce54a4bb", userId: "0"}}, {params: {addId: "0_yDZVi7G4U5yThribDE7G"}})
+// onWriteAdd({before: {}, after: {active: true, createdAt: null, postId: "JA81g0b9mPUp8FmchL9M", updatedAt: null, url: "https://hackernoon.com/5-tips-for-building-effective-product-management-teams-c320ce54a4bb", userId: "0"}}, {params: {addId: "0_JA81g0b9mPUp8FmchL9M"}})
 exports._onWriteAdd = async (db, change, context) => {
   // "adds/{addId}" where addId equals `${userId}_${postId}`
   const resources = await sharedActionResources(db, change, context);
@@ -122,7 +136,7 @@ exports._onWriteAdd = async (db, change, context) => {
   return sharedActionWrites(db, resources, "add");
 };
 
-// onWriteDone({before: {}, after: {active: true, createdAt: null, postId: "yDZVi7G4U5yThribDE7G", updatedAt: null, url: "https://hackernoon.com/5-tips-for-building-effective-product-management-teams-c320ce54a4bb", userId: "0"}}, {params: {doneId: "0_yDZVi7G4U5yThribDE7G"}})
+// onWriteDone({before: {}, after: {active: true, createdAt: null, postId: "JA81g0b9mPUp8FmchL9M", updatedAt: null, url: "https://hackernoon.com/5-tips-for-building-effective-product-management-teams-c320ce54a4bb", userId: "0"}}, {params: {doneId: "0_JA81g0b9mPUp8FmchL9M"}})
 exports._onWriteDone = async (db, change, context) => {
   // "dones/{doneId}" where doneId equals `${userId}_${postId}`
   const resources = await sharedActionResources(db, change, context);
@@ -131,7 +145,7 @@ exports._onWriteDone = async (db, change, context) => {
   // todo: need to add done push notifications
 };
 
-// onWriteLike({before: {}, after: {active: true, createdAt: null, postId: "yDZVi7G4U5yThribDE7G", updatedAt: null, url: "https://hackernoon.com/5-tips-for-building-effective-product-management-teams-c320ce54a4bb", userId: "0"}}, {params: {likeId: "0_yDZVi7G4U5yThribDE7G"}})
+// onWriteLike({before: {}, after: {active: true, createdAt: null, postId: "JA81g0b9mPUp8FmchL9M", updatedAt: null, url: "https://hackernoon.com/5-tips-for-building-effective-product-management-teams-c320ce54a4bb", userId: "0"}}, {params: {likeId: "0_JA81g0b9mPUp8FmchL9M"}})
 exports._onWriteLike = async (db, change, context) => {
   // "likes/{likeId}" where likeId equals `${userId}_${postId}`
   const resources = await sharedActionResources(db, change, context);
@@ -140,16 +154,20 @@ exports._onWriteLike = async (db, change, context) => {
   // todo: need to add like push notifications
 };
 
-// onWriteShare({before: {}, after: {active: true, createdAt: null, postId: "yDZVi7G4U5yThribDE7G", updatedAt: null, url: "https://hackernoon.com/5-tips-for-building-effective-product-management-teams-c320ce54a4bb", userId: "0"}}, {params: {shareId: "0_yDZVi7G4U5yThribDE7G"}})
+// onWriteShare({before: {}, after: {active: true, createdAt: null, postId: "JA81g0b9mPUp8FmchL9M", updatedAt: null, url: "https://hackernoon.com/5-tips-for-building-effective-product-management-teams-c320ce54a4bb", userId: "0"}}, {params: {shareId: "0_JA81g0b9mPUp8FmchL9M"}})
 exports._onWriteShare = async (db, change, context) => {
   // "shares/{shareId}" where shareId equals `${userId}_${postId}`
   const resources = await sharedActionResources(db, change, context);
 
   return sharedActionWrites(db, resources, "share")
     .then(value => {
-      console.log("send a notification to followers");
-
-      return notifications.sendNewSharePushNotificationToFriends(resources);
+      if (resources.newAction) {
+        console.log("send a notification to followers");
+        return notifications.sendNewSharePushNotificationToFriends(resources);
+      } else {
+        console.log("not sending notification due to old action");
+        return value;
+      }
     })
     .then(value => {
       console.log("success");

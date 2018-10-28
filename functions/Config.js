@@ -2,10 +2,10 @@ const functions = require("firebase-functions");
 const admin = require("firebase-admin");
 
 var env = null;
-env = "dev";
-// const env = "prod";
+// env = "dev";
+// env = "prod";
 var initializeAppConfig = {};
-var serviceAccount = null;
+var serviceAccount = "";
 
 if (env === "dev") {
   serviceAccount = require("/Users/dwhitehead/Documents/github/shayr-internal/functions/shayr-dev-a72391b9cbe3.json");

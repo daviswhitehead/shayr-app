@@ -313,7 +313,10 @@ actions: [share, add, done, like]
 ### lifecycle
 
 1. user creates a new share (from share extension)  
-   fields: `createdAt, postId, updatedAt, url`
+   fields: `createdAt, updatedAt, url`
+
+1. gets update by cloud function after matching  
+   fields: `postId`
 
 ## users_posts
 
