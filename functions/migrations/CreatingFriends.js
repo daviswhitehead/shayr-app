@@ -24,31 +24,17 @@ const createFriends = db => {
               users.hasOwnProperty(receivingUserId) &&
               initiatingUserId !== receivingUserId
             ) {
-              console.log("set");
-              console.log(
-                users[initiatingUserId].firstName,
-                users[initiatingUserId].lastName
-              );
-              console.log(
-                users[receivingUserId].firstName,
-                users[receivingUserId].lastName
-              );
-              console.log("creating a new friendship");
-              // {
-              //   createdAt (timestamp),
-              //   initiatingUser (reference),
-              //   receivingUser (reference),
-              //   status (string) [pending, accepted, rejected],
-              //   updatedAt (timestamp),
-              // }
               var friendship = {
-                initiatingUser: `users/${initiatingUserId}`,
-                receivingUser: `users/${receivingUserId}`,
-                status: "accepted"
+                initiatingUserId: `${initiatingUserId}`,
+                receivingUserId: `${receivingUserId}`,
+                status: "accepted",
+                userIds: [initiatingUserId, receivingUserId]
               };
 
               batch.set(
-                db.collection("friends").doc(),
+                db
+                  .collection("friends")
+                  .doc(`${initiatingUserId}_${receivingUserId}`),
                 utility.addUpdatedAt(utility.addCreatedAt(friendship))
               );
             }
@@ -57,7 +43,7 @@ const createFriends = db => {
         }
       }
 
-      return batch.commit();
+      return utility.returnBatch(batch);
     });
 };
 

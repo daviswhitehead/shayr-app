@@ -1,16 +1,16 @@
 const utility = require("./Utility");
 const _ = require("lodash");
 
-exports.createPostAtom = post => {
+exports.createPostAtom = (post, postId = false) => {
   return {
     ..._.omit(post, "createdAt", "updatedAt", "id", "ref"),
-    post: `posts/${post.id}`
+    postId: postId ? postId : post.id
   };
 };
 
-exports.createUserAtom = user => {
+exports.createUserAtom = (user, userId = false) => {
   return {
-    user: `users/${user.id}`,
+    userId: userId ? userId : user.id,
     userFirstName: user.firstName,
     userLastName: user.lastName,
     userFacebookProfilePhoto: user.facebookProfilePhoto

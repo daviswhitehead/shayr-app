@@ -1,31 +1,39 @@
-[debug] [2018-10-15T22:53:37.165Z] ----------------------------------------------------------------------
-[debug] [2018-10-15T22:53:37.168Z] Command:       /Users/dwhitehead/.nvm/versions/node/v8.11.1/bin/node /Users/dwhitehead/.nvm/versions/node/v8.11.1/bin/firebase experimental:functions:shell
-[debug] [2018-10-15T22:53:37.168Z] CLI Version:   4.2.1
-[debug] [2018-10-15T22:53:37.168Z] Platform:      darwin
-[debug] [2018-10-15T22:53:37.168Z] Node Version:  v8.11.1
-[debug] [2018-10-15T22:53:37.169Z] Time:          Mon Oct 15 2018 18:53:37 GMT-0400 (EDT)
-[debug] [2018-10-15T22:53:37.169Z] ----------------------------------------------------------------------
+[debug] [2018-10-28T19:33:49.418Z] ----------------------------------------------------------------------
+[debug] [2018-10-28T19:33:49.420Z] Command:       /Users/dwhitehead/.nvm/versions/node/v8.11.1/bin/node /Users/dwhitehead/.nvm/versions/node/v8.11.1/bin/firebase experimental:functions:shell
+[debug] [2018-10-28T19:33:49.420Z] CLI Version:   4.2.1
+[debug] [2018-10-28T19:33:49.420Z] Platform:      darwin
+[debug] [2018-10-28T19:33:49.420Z] Node Version:  v8.11.1
+[debug] [2018-10-28T19:33:49.421Z] Time:          Sun Oct 28 2018 15:33:49 GMT-0400 (EDT)
+[debug] [2018-10-28T19:33:49.421Z] ----------------------------------------------------------------------
 [debug] 
-[debug] [2018-10-15T22:53:37.184Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
-[debug] [2018-10-15T22:53:37.184Z] > authorizing via signed-in user
-[debug] [2018-10-15T22:53:37.186Z] >>> HTTP REQUEST GET https://admin.firebase.com/v1/projects/shayr-dev  
+[debug] [2018-10-28T19:33:49.432Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2018-10-28T19:33:49.432Z] > authorizing via signed-in user
+[debug] [2018-10-28T19:33:49.434Z] > refreshing access token with scopes: ["email","https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","openid"]
+[debug] [2018-10-28T19:33:49.435Z] >>> HTTP REQUEST POST https://www.googleapis.com/oauth2/v3/token  
+
+[debug] [2018-10-28T19:33:49.614Z] <<< HTTP RESPONSE 200
+[debug] [2018-10-28T19:33:49.632Z] >>> HTTP REQUEST GET https://admin.firebase.com/v1/projects/shayr-dev  
  
-[debug] [2018-10-15T22:53:37.522Z] <<< HTTP RESPONSE 200
+[debug] [2018-10-28T19:33:49.924Z] <<< HTTP RESPONSE 200
 [info] i  functions: Preparing to emulate functions.
-[debug] [2018-10-15T22:53:38.157Z] Fetching environment
-[debug] [2018-10-15T22:53:38.158Z] >>> HTTP REQUEST GET https://cloudresourcemanager.googleapis.com/v1/projects/shayr-dev  
+[debug] [2018-10-28T19:33:50.627Z] Fetching environment
+[debug] [2018-10-28T19:33:50.628Z] >>> HTTP REQUEST GET https://cloudresourcemanager.googleapis.com/v1/projects/shayr-dev  
  
-[debug] [2018-10-15T22:53:38.426Z] <<< HTTP RESPONSE 200
-[debug] [2018-10-15T22:53:38.426Z] >>> HTTP REQUEST GET https://mobilesdk-pa.googleapis.com/v1/projects/552894174549:getServerAppConfig  
+[debug] [2018-10-28T19:33:50.905Z] <<< HTTP RESPONSE 200
+[debug] [2018-10-28T19:33:50.906Z] >>> HTTP REQUEST GET https://mobilesdk-pa.googleapis.com/v1/projects/552894174549:getServerAppConfig  
  
-[debug] [2018-10-15T22:53:38.659Z] <<< HTTP RESPONSE 200
-[debug] [2018-10-15T22:53:38.659Z] Starting @google-cloud/functions-emulator
-[debug] [2018-10-15T22:53:40.236Z] Parsing function triggers
-[debug] [2018-10-15T22:53:40.697Z] Deploying functions locally
-[debug] [2018-10-15T22:53:40.700Z] Deploying functions locally
-[debug] [2018-10-15T22:53:40.700Z] Deploying functions locally
-[debug] [2018-10-15T22:53:40.701Z] Deploying functions locally
-[info] ✔  functions: onWriteUserShare
-[info] ✔  functions: onCreateShare
+[debug] [2018-10-28T19:33:51.106Z] <<< HTTP RESPONSE 200
+[debug] [2018-10-28T19:33:51.107Z] Starting @google-cloud/functions-emulator
+[debug] [2018-10-28T19:33:52.677Z] Parsing function triggers
+[debug] [2018-10-28T19:33:53.346Z] Deploying functions locally
+[debug] [2018-10-28T19:33:53.348Z] Deploying functions locally
+[debug] [2018-10-28T19:33:53.349Z] Deploying functions locally
+[debug] [2018-10-28T19:33:53.349Z] Deploying functions locally
+[debug] [2018-10-28T19:33:53.350Z] Deploying functions locally
+[debug] [2018-10-28T19:33:53.351Z] Deploying functions locally
+[info] ✔  functions: onWriteAdd
+[info] ✔  functions: onCreateInboundShare
+[info] ✔  functions: onWriteDone
+[info] ✔  functions: onWriteShare
+[info] ✔  functions: onWriteLike
 [info] ✔  functions: onWritePost
-[info] ✔  functions: onWriteFriend

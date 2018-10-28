@@ -1,33 +1,40 @@
 const config = require("./Config");
-const share = require("./Share");
-const upa = require("./UserPostActions");
+const inboundShare = require("./InboundShare");
+const postActions = require("./PostActions");
 const post = require("./Post");
-const social = require("./Social");
-// const notifications = require('./Notifications');
 
-// console.log(process.env.GCLOUD_PROJECT);
-// console.log(process.env.FIREBASE_CONFIG);
-
-exports.onCreateShare = config.functions.firestore
-  .document("shares/{shareId}")
+exports.onCreateInboundShare = config.functions.firestore
+  .document("users/{userId}/inboundShares/{inboundShareId}")
   .onCreate((snap, context) => {
-    return share._onCreateShare(config.db, snap, context);
+    return inboundShare._onCreateInboundShare(config.db, snap, context);
   });
 
-exports.onWriteUserShare = config.functions.firestore
-  .document("users/{userId}/shares/{shareId}")
+exports.onWriteAdd = config.functions.firestore
+  .document("adds/{addId}")
   .onWrite((change, context) => {
-    return upa._onWriteUserShare(config.db, change, context);
+    return postActions._onWriteAdd(config.db, change, context);
+  });
+
+exports.onWriteDone = config.functions.firestore
+  .document("dones/{doneId}")
+  .onWrite((change, context) => {
+    return postActions._onWriteDone(config.db, change, context);
+  });
+
+exports.onWriteLike = config.functions.firestore
+  .document("likes/{likeId}")
+  .onWrite((change, context) => {
+    return postActions._onWriteLike(config.db, change, context);
   });
 
 exports.onWritePost = config.functions.firestore
   .document("posts/{postId}")
-  .onWrite((snap, context) => {
-    return post._onWritePost(config.db, snap, context);
+  .onWrite((change, context) => {
+    return post._onWritePost(config.db, change, context);
   });
 
-exports.onWriteFriend = config.functions.firestore
-  .document("friends/{friendshipId}")
+exports.onWriteShare = config.functions.firestore
+  .document("shares/{shareId}")
   .onWrite((change, context) => {
-    return social._onWriteFriend(config.db, change, context);
+    return postActions._onWriteShare(config.db, change, context);
   });

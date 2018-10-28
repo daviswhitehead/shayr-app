@@ -83,18 +83,18 @@ const matchShareToPost = (db, normalUrl) => {
   );
 };
 
-// onCreateShare({createdAt: null, updatedAt: null, url: 'https://hackernoon.com/5-tips-for-building-effective-product-management-teams-c320ce54a4bb', user: 'users/0'}, {params: {shareId: '0'}})
-exports._onCreateShare = async (db, snap, context) => {
-  // "shares/{shareId}"
-  const shareId = context.params.shareId;
-  const shareRef = `shares/${shareId}`;
-  const shareData = snap.data();
-  const userId = utility.getReferenceId(shareData.user, 1);
+// onCreateInboundShare({createdAt: null, updatedAt: null, url: 'https://hackernoon.com/5-tips-for-building-effective-product-management-teams-c320ce54a4bb'}, {params: {userId: '0', shareId: '0'}})
+
+exports._onCreateInboundShare = async (db, snap, context) => {
+  // "users/{userId}/inboundShares/{shareId}"
+  const userId = context.params.userId;
+  const inboundShareId = context.params.inboundShareId;
+  const url = snap.data().url;
 
   var batch = db.batch();
 
   console.log("normalizing url");
-  const normalUrl = normalizeUrl(shareData.url);
+  const normalUrl = normalizeUrl(url);
 
   console.log("scraping share data");
   let scrapeData = await scrape(normalUrl);
@@ -125,29 +125,28 @@ exports._onCreateShare = async (db, snap, context) => {
     merge: true
   });
 
-  console.log("get userShare data");
-  const userShareRef = `users/${userId}/shares/${shareId}`;
-  const userShareData = await utility.getDocument(
-    db.doc(userShareRef),
-    userShareRef
+  console.log("get share data for user post");
+  const shareRefString = `shares/${userId}_${postRef.id}`;
+  const shareData = await utility.getDocument(
+    db.doc(shareRefString),
+    shareRefString
   );
 
-  console.log("write userShare");
-  let userSharePayload = {
+  console.log("write share for user post");
+  let sharePayload = {
     active: true,
-    post: postRefString,
-    share: shareRef
+    postId: postRef.id,
+    url: normalUrl,
+    userId: userId
   };
-  userSharePayload = userShareData
-    ? userSharePayload
-    : utility.addCreatedAt(userSharePayload);
-  batch.set(db.doc(userShareRef), utility.addUpdatedAt(userSharePayload));
+  sharePayload = shareData ? sharePayload : utility.addCreatedAt(sharePayload);
+  batch.set(db.doc(shareRefString), utility.addUpdatedAt(sharePayload));
 
   console.log("write Share with Post reference");
   batch.set(
-    db.doc(shareRef),
+    db.doc(`users/${userId}/inboundShares/${inboundShareId}`),
     utility.addUpdatedAt({
-      post: postRefString
+      postId: postRef.id
     }),
     { merge: true }
   );

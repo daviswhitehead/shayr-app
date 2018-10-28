@@ -1,5 +1,6 @@
 const config = require("./Config");
 const URL = require("url");
+const _ = require("lodash");
 const ts = config.admin.firestore.FieldValue.serverTimestamp();
 
 exports.ts = ts;
@@ -58,6 +59,19 @@ exports.getDocumentsInCollection = (query, ref) => {
     }
     return false;
   });
+};
+
+exports.organizeFriends = (userId, friends) => {
+  for (var friendId in friends) {
+    if (friends.hasOwnProperty(friendId)) {
+      friends[friendId]["userId"] = userId;
+      friends[friendId]["friendUserId"] = _.remove(
+        friends[friendId].userIds,
+        id => id !== userId
+      )[0];
+    }
+  }
+  return friends;
 };
 
 exports.returnBatch = batch => {

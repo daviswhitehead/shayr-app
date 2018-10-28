@@ -14,5 +14,5 @@ const write = (db, samples) => {
   return utility.returnBatch(batch);
 };
 
-// write(config.db, users.users());
-write(config.db, shares.inboundShares());
+write(config.db, users.users());
+// write(config.db, shares.inboundShares());

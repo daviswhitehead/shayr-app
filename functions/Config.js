@@ -2,7 +2,7 @@ const functions = require("firebase-functions");
 const admin = require("firebase-admin");
 
 var env = null;
-// env = "dev";
+env = "dev";
 // const env = "prod";
 var initializeAppConfig = {};
 var serviceAccount = null;
@@ -24,7 +24,9 @@ if (env === "dev") {
 admin.initializeApp(initializeAppConfig);
 var db = admin.firestore();
 db.settings({ timestampsInSnapshots: true });
+var msg = admin.messaging();
 
 exports.admin = admin;
 exports.db = db;
+exports.msg = msg;
 exports.functions = functions;
