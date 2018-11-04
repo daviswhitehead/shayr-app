@@ -4,6 +4,7 @@ import android.app.Application;
 
 import com.crashlytics.android.Crashlytics;
 import com.facebook.react.ReactApplication;
+import com.lugg.ReactNativeConfig.ReactNativeConfigPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.github.alinz.rnsk.RNSKPackage;
 import com.alinz.parkerdan.shareextension.SharePackage;
@@ -45,6 +46,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new ReactNativeConfigPackage(),
             new VectorIconsPackage(),
             new RNSKPackage(),
             new SharePackage(),
