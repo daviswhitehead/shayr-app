@@ -15,6 +15,7 @@
 #import <FBSDKCoreKit/FBSDKCoreKit.h>
 #import <Fabric/Fabric.h>
 #import <Crashlytics/Crashlytics.h>
+#import "ReactNativeConfig.h"
 
 @implementation AppDelegate
 
@@ -26,11 +27,16 @@
   [RNFirebaseNotifications configure];
   [Fabric with:@[[Crashlytics class]]];
   NSURL *jsCodeLocation;
-
-  // use this one for development
-  jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index" fallbackResource:nil];
-  // use this instead for app store release
-  // jsCodeLocation = [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];
+  
+  NSString *envName = [ReactNativeConfig envFor:@"ENV_NAME"];
+  if ([envName isEqualToString:@"prod"])
+  {
+    jsCodeLocation = [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];
+  }
+  else
+  {
+    jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index" fallbackResource:nil];
+  }
 
   RCTRootView *rootView = [[RCTRootView alloc] initWithBundleURL:jsCodeLocation
                                                       moduleName:@"shayr"

@@ -66,6 +66,9 @@ GoogleService-Info.plist
 google-services.json
 devices.txt
 .env
+.env.dev
+.env.prod
+.env.staging
 # Bundle artifact
 *.jsbundle
 Google\ Play\ Android\ Developer-b7a9e408df80.json
