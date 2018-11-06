@@ -1,0 +1,36 @@
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isSignedIn() {
+      return request.auth.uid != null;
+    }
+    function nestedUser(user) {
+      return request.auth.uid == user;
+    }
+
+    match /users/{user} {
+      allow create: if true;
+      allow get: if true;
+      allow read: if isSignedIn();
+      allow update: if nestedUser(user);
+
+      match /shares/{share} {
+        allow create: if nestedUser(user);
+        allow read: if isSignedIn();
+      }
+
+      match /savedPosts/{savedPost} {
+        allow write: if nestedUser(user);
+        allow read: if isSignedIn();
+      }
+
+      match /postsMeta/{postMeta} {
+        allow write: if nestedUser(user);
+        allow read: if isSignedIn();
+      }
+    }
+
+    match /posts/{posts=**} {
+      allow read: if isSignedIn();
+    }
+  }
+}

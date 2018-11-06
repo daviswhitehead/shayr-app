@@ -29,13 +29,13 @@
   NSURL *jsCodeLocation;
   
   NSString *envName = [ReactNativeConfig envFor:@"ENV_NAME"];
-  if ([envName isEqualToString:@"dev"])
+  if ([envName isEqualToString:@"prod"])
   {
-    jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index" fallbackResource:nil];
+    jsCodeLocation = [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];
   }
   else
   {
-    jsCodeLocation = [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];
+    jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index" fallbackResource:nil];
   }
 
   RCTRootView *rootView = [[RCTRootView alloc] initWithBundleURL:jsCodeLocation
