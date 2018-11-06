@@ -60,16 +60,16 @@
 #include <stdio.h>
 #include <string.h>
 
-#include <openssl/base64.h>
-#include <openssl/buf.h>
-#include <openssl/des.h>
-#include <openssl/err.h>
-#include <openssl/evp.h>
-#include <openssl/mem.h>
-#include <openssl/obj.h>
-#include <openssl/pem.h>
-#include <openssl/rand.h>
-#include <openssl/x509.h>
+#include <openssl_grpc/base64.h>
+#include <openssl_grpc/buf.h>
+#include <openssl_grpc/des.h>
+#include <openssl_grpc/err.h>
+#include <openssl_grpc/evp.h>
+#include <openssl_grpc/mem.h>
+#include <openssl_grpc/obj.h>
+#include <openssl_grpc/pem.h>
+#include <openssl_grpc/rand.h>
+#include <openssl_grpc/x509.h>
 
 #include "../internal.h"
 

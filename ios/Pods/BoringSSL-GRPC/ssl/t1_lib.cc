@@ -106,7 +106,7 @@
  * (eay@cryptsoft.com).  This product includes software written by Tim
  * Hudson (tjh@cryptsoft.com). */
 
-#include <openssl/ssl.h>
+#include <openssl_grpc/ssl.h>
 
 #include <assert.h>
 #include <limits.h>
@@ -115,15 +115,15 @@
 
 #include <utility>
 
-#include <openssl/bytestring.h>
-#include <openssl/chacha.h>
-#include <openssl/digest.h>
-#include <openssl/err.h>
-#include <openssl/evp.h>
-#include <openssl/hmac.h>
-#include <openssl/mem.h>
-#include <openssl/nid.h>
-#include <openssl/rand.h>
+#include <openssl_grpc/bytestring.h>
+#include <openssl_grpc/chacha.h>
+#include <openssl_grpc/digest.h>
+#include <openssl_grpc/err.h>
+#include <openssl_grpc/evp.h>
+#include <openssl_grpc/hmac.h>
+#include <openssl_grpc/mem.h>
+#include <openssl_grpc/nid.h>
+#include <openssl_grpc/rand.h>
 
 #include "internal.h"
 #include "../crypto/internal.h"

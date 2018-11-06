@@ -27,12 +27,12 @@
 // 256-bit Montgomery form, generated using fiat-crypto, for 64 and 32-bit.
 // Field operations with inputs in [0,p) return outputs in [0,p).
 
-#include <openssl/base.h>
+#include <openssl_grpc/base.h>
 
-#include <openssl/bn.h>
-#include <openssl/ec.h>
-#include <openssl/err.h>
-#include <openssl/mem.h>
+#include <openssl_grpc/bn.h>
+#include <openssl_grpc/ec.h>
+#include <openssl_grpc/err.h>
+#include <openssl_grpc/mem.h>
 
 #include <string.h>
 

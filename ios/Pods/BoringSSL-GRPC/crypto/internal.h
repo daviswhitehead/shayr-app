@@ -109,9 +109,9 @@
 #ifndef OPENSSL_HEADER_CRYPTO_INTERNAL_H
 #define OPENSSL_HEADER_CRYPTO_INTERNAL_H
 
-#include <openssl/ex_data.h>
-#include <openssl/stack.h>
-#include <openssl/thread.h>
+#include <openssl_grpc/ex_data.h>
+#include <openssl_grpc/stack.h>
+#include <openssl_grpc/thread.h>
 
 #include <assert.h>
 #include <string.h>

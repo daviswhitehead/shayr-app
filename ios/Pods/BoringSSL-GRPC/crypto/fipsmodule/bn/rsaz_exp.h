@@ -15,7 +15,7 @@
 #ifndef OPENSSL_HEADER_BN_RSAZ_EXP_H
 #define OPENSSL_HEADER_BN_RSAZ_EXP_H
 
-#include <openssl/bn.h>
+#include <openssl_grpc/bn.h>
 
 // RSAZ_1024_mod_exp_avx2 sets |result| to |base_norm| raised to |exponent|
 // modulo |m_norm|. |base_norm| must be fully-reduced and |exponent| must have

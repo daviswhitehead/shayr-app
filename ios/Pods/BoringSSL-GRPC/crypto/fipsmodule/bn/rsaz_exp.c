@@ -12,13 +12,13 @@
  * (2) University of Haifa, Israel
  */
 
-#include <openssl/base.h>
+#include <openssl_grpc/base.h>
 
 #if !defined(OPENSSL_NO_ASM) && defined(OPENSSL_X86_64)
 
 #include "rsaz_exp.h"
 
-#include <openssl/mem.h>
+#include <openssl_grpc/mem.h>
 
 #include "../../internal.h"
 

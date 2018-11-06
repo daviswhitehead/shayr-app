@@ -15,7 +15,7 @@
 #ifndef OPENSSL_HEADER_CRYPTO_RAND_INTERNAL_H
 #define OPENSSL_HEADER_CRYPTO_RAND_INTERNAL_H
 
-#include <openssl/aes.h>
+#include <openssl_grpc/aes.h>
 
 #include "../../internal.h"
 #include "../modes/internal.h"

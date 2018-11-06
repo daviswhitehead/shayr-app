@@ -15,7 +15,7 @@
 #ifndef OPENSSL_HEADER_SSL_SPAN_H
 #define OPENSSL_HEADER_SSL_SPAN_H
 
-#include <openssl/base.h>
+#include <openssl_grpc/base.h>
 
 #if !defined(BORINGSSL_NO_CXX)
 

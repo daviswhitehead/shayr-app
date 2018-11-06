@@ -7,9 +7,9 @@
  * https://www.openssl.org/source/license.html
  */
 
-#include <openssl/ssl.h>
+#include <openssl_grpc/ssl.h>
 
-#include <openssl/bio.h>
+#include <openssl_grpc/bio.h>
 
 
 static SSL *get_ssl(BIO *bio) {

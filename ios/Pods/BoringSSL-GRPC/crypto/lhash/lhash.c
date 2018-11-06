@@ -54,13 +54,13 @@
  * copied and put under another distribution licence
  * [including the GNU Public Licence.] */
 
-#include <openssl/lhash.h>
+#include <openssl_grpc/lhash.h>
 
 #include <assert.h>
 #include <limits.h>
 #include <string.h>
 
-#include <openssl/mem.h>
+#include <openssl_grpc/mem.h>
 
 #include "../internal.h"
 

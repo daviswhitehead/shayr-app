@@ -54,16 +54,16 @@
  * copied and put under another distribution licence
  * [including the GNU Public Licence.] */
 
-#include <openssl/ssl.h>
+#include <openssl_grpc/ssl.h>
 
 #include <assert.h>
 #include <limits.h>
 
-#include <openssl/ec.h>
-#include <openssl/ec_key.h>
-#include <openssl/err.h>
-#include <openssl/evp.h>
-#include <openssl/mem.h>
+#include <openssl_grpc/ec.h>
+#include <openssl_grpc/ec_key.h>
+#include <openssl_grpc/err.h>
+#include <openssl_grpc/evp.h>
+#include <openssl_grpc/mem.h>
 
 #include "internal.h"
 #include "../crypto/internal.h"

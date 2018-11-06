@@ -57,8 +57,8 @@
 #ifndef OPENSSL_HEADER_LHASH_H
 #define OPENSSL_HEADER_LHASH_H
 
-#include <openssl/base.h>
-#include <openssl/type_check.h>
+#include <openssl_grpc/base.h>
+#include <openssl_grpc/type_check.h>
 
 #if defined(__cplusplus)
 extern "C" {
@@ -101,7 +101,7 @@ extern "C" {
 // LHASH_OF:SSL_SESSION
 
 #define IN_LHASH_H
-#include <openssl/lhash_macros.h>
+#include <openssl_grpc/lhash_macros.h>
 #undef IN_LHASH_H
 
 

@@ -59,10 +59,10 @@
 
 #include <stdio.h>
 
-#include <openssl/bio.h>
-#include <openssl/conf.h>
-#include <openssl/mem.h>
-#include <openssl/x509v3.h>
+#include <openssl_grpc/bio.h>
+#include <openssl_grpc/conf.h>
+#include <openssl_grpc/mem.h>
+#include <openssl_grpc/x509v3.h>
 
 /* Extension printing routines */
 

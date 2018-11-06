@@ -35,7 +35,6 @@
 #include "src/core/lib/gpr/useful.h"
 #include "src/core/lib/iomgr/ev_epoll1_linux.h"
 #include "src/core/lib/iomgr/ev_epollex_linux.h"
-#include "src/core/lib/iomgr/ev_epollsig_linux.h"
 #include "src/core/lib/iomgr/ev_poll_posix.h"
 
 grpc_core::TraceFlag grpc_polling_trace(false,
@@ -123,13 +122,13 @@ const grpc_event_engine_vtable* init_non_polling(bool explicit_request) {
 // environment variable if that variable is set (which should be a
 // comma-separated list of one or more event engine names)
 static event_engine_factory g_factories[] = {
-    {ENGINE_HEAD_CUSTOM, nullptr},          {ENGINE_HEAD_CUSTOM, nullptr},
-    {ENGINE_HEAD_CUSTOM, nullptr},          {ENGINE_HEAD_CUSTOM, nullptr},
-    {"epollex", grpc_init_epollex_linux},   {"epoll1", grpc_init_epoll1_linux},
-    {"epollsig", grpc_init_epollsig_linux}, {"poll", grpc_init_poll_posix},
-    {"poll-cv", grpc_init_poll_cv_posix},   {"none", init_non_polling},
-    {ENGINE_TAIL_CUSTOM, nullptr},          {ENGINE_TAIL_CUSTOM, nullptr},
-    {ENGINE_TAIL_CUSTOM, nullptr},          {ENGINE_TAIL_CUSTOM, nullptr},
+    {ENGINE_HEAD_CUSTOM, nullptr},        {ENGINE_HEAD_CUSTOM, nullptr},
+    {ENGINE_HEAD_CUSTOM, nullptr},        {ENGINE_HEAD_CUSTOM, nullptr},
+    {"epollex", grpc_init_epollex_linux}, {"epoll1", grpc_init_epoll1_linux},
+    {"poll", grpc_init_poll_posix},       {"poll-cv", grpc_init_poll_cv_posix},
+    {"none", init_non_polling},           {ENGINE_TAIL_CUSTOM, nullptr},
+    {ENGINE_TAIL_CUSTOM, nullptr},        {ENGINE_TAIL_CUSTOM, nullptr},
+    {ENGINE_TAIL_CUSTOM, nullptr},
 };
 
 static void add(const char* beg, const char* end, char*** ss, size_t* ns) {
@@ -237,14 +236,19 @@ void grpc_event_engine_shutdown(void) {
 }
 
 bool grpc_event_engine_can_track_errors(void) {
+/* Only track errors if platform supports errqueue. */
+#ifdef GRPC_LINUX_ERRQUEUE
   return g_event_engine->can_track_err;
+#else
+  return false;
+#endif /* GRPC_LINUX_ERRQUEUE */
 }
 
 grpc_fd* grpc_fd_create(int fd, const char* name, bool track_err) {
   GRPC_POLLING_API_TRACE("fd_create(%d, %s, %d)", fd, name, track_err);
   GRPC_FD_TRACE("fd_create(%d, %s, %d)", fd, name, track_err);
-  GPR_DEBUG_ASSERT(!track_err || g_event_engine->can_track_err);
-  return g_event_engine->fd_create(fd, name, track_err);
+  return g_event_engine->fd_create(fd, name,
+                                   track_err && g_event_engine->can_track_err);
 }
 
 int grpc_fd_wrapped_fd(grpc_fd* fd) {
@@ -390,5 +394,7 @@ void grpc_pollset_set_del_fd(grpc_pollset_set* pollset_set, grpc_fd* fd) {
                          grpc_fd_wrapped_fd(fd));
   g_event_engine->pollset_set_del_fd(pollset_set, fd);
 }
+
+void grpc_use_signal(int signum) {}
 
 #endif  // GRPC_POSIX_SOCKET_EV

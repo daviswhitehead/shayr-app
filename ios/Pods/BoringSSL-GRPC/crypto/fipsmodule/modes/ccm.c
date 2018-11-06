@@ -50,8 +50,8 @@
 #include <assert.h>
 #include <string.h>
 
-#include <openssl/cpu.h>
-#include <openssl/mem.h>
+#include <openssl_grpc/cpu.h>
+#include <openssl_grpc/mem.h>
 
 #include "../../internal.h"
 #include "internal.h"

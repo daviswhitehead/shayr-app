@@ -49,7 +49,7 @@
 #ifndef OPENSSL_HEADER_MODES_INTERNAL_H
 #define OPENSSL_HEADER_MODES_INTERNAL_H
 
-#include <openssl/base.h>
+#include <openssl_grpc/base.h>
 
 #include <string.h>
 

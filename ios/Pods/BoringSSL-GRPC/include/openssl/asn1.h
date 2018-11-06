@@ -58,14 +58,14 @@
 #ifndef HEADER_ASN1_H
 #define HEADER_ASN1_H
 
-#include <openssl/base.h>
+#include <openssl_grpc/base.h>
 
 #include <time.h>
 
-#include <openssl/bio.h>
-#include <openssl/stack.h>
+#include <openssl_grpc/bio.h>
+#include <openssl_grpc/stack.h>
 
-#include <openssl/bn.h>
+#include <openssl_grpc/bn.h>
 
 #ifdef  __cplusplus
 extern "C" {

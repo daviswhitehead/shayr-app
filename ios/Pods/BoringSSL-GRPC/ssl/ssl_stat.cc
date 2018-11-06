@@ -81,7 +81,7 @@
  * OTHERWISE.
  */
 
-#include <openssl/ssl.h>
+#include <openssl_grpc/ssl.h>
 
 #include <assert.h>
 

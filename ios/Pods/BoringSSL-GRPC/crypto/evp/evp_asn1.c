@@ -54,15 +54,15 @@
  * copied and put under another distribution licence
  * [including the GNU Public Licence.] */
 
-#include <openssl/evp.h>
+#include <openssl_grpc/evp.h>
 
 #include <string.h>
 
-#include <openssl/bytestring.h>
-#include <openssl/dsa.h>
-#include <openssl/ec_key.h>
-#include <openssl/err.h>
-#include <openssl/rsa.h>
+#include <openssl_grpc/bytestring.h>
+#include <openssl_grpc/dsa.h>
+#include <openssl_grpc/ec_key.h>
+#include <openssl_grpc/err.h>
+#include <openssl_grpc/rsa.h>
 
 #include "internal.h"
 #include "../internal.h"

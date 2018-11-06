@@ -57,14 +57,14 @@
 #include <ctype.h>
 #include <string.h>
 
-#include <openssl/asn1.h>
-#include <openssl/asn1t.h>
-#include <openssl/buf.h>
-#include <openssl/err.h>
-#include <openssl/mem.h>
-#include <openssl/obj.h>
-#include <openssl/stack.h>
-#include <openssl/x509.h>
+#include <openssl_grpc/asn1.h>
+#include <openssl_grpc/asn1t.h>
+#include <openssl_grpc/buf.h>
+#include <openssl_grpc/err.h>
+#include <openssl_grpc/mem.h>
+#include <openssl_grpc/obj.h>
+#include <openssl_grpc/stack.h>
+#include <openssl_grpc/x509.h>
 
 #include "../asn1/asn1_locl.h"
 #include "../internal.h"

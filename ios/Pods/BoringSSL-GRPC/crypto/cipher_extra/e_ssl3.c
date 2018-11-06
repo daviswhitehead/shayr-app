@@ -16,13 +16,13 @@
 #include <limits.h>
 #include <string.h>
 
-#include <openssl/aead.h>
-#include <openssl/cipher.h>
-#include <openssl/err.h>
-#include <openssl/hmac.h>
-#include <openssl/md5.h>
-#include <openssl/mem.h>
-#include <openssl/sha.h>
+#include <openssl_grpc/aead.h>
+#include <openssl_grpc/cipher.h>
+#include <openssl_grpc/err.h>
+#include <openssl_grpc/hmac.h>
+#include <openssl_grpc/md5.h>
+#include <openssl_grpc/mem.h>
+#include <openssl_grpc/sha.h>
 
 #include "internal.h"
 #include "../internal.h"

@@ -54,13 +54,13 @@
  * copied and put under another distribution licence
  * [including the GNU Public Licence.] */
 
-#include <openssl/digest.h>
+#include <openssl_grpc/digest.h>
 
 #include <string.h>
 
-#include <openssl/asn1.h>
-#include <openssl/bytestring.h>
-#include <openssl/nid.h>
+#include <openssl_grpc/asn1.h>
+#include <openssl_grpc/bytestring.h>
+#include <openssl_grpc/nid.h>
 
 #include "../internal.h"
 

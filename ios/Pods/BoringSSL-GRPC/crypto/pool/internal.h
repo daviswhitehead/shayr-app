@@ -15,8 +15,8 @@
 #ifndef OPENSSL_HEADER_POOL_INTERNAL_H
 #define OPENSSL_HEADER_POOL_INTERNAL_H
 
-#include <openssl/lhash.h>
-#include <openssl/thread.h>
+#include <openssl_grpc/lhash.h>
+#include <openssl_grpc/thread.h>
 
 #if defined(__cplusplus)
 extern "C" {

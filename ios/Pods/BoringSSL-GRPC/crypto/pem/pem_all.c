@@ -108,16 +108,16 @@
 
 #include <stdio.h>
 
-#include <openssl/bio.h>
-#include <openssl/dh.h>
-#include <openssl/dsa.h>
-#include <openssl/evp.h>
-#include <openssl/pem.h>
+#include <openssl_grpc/bio.h>
+#include <openssl_grpc/dh.h>
+#include <openssl_grpc/dsa.h>
+#include <openssl_grpc/evp.h>
+#include <openssl_grpc/pem.h>
 /*
- * #include <openssl/pkcs7.h>
+ * #include <openssl_grpc/pkcs7.h>
  */
-#include <openssl/rsa.h>
-#include <openssl/x509.h>
+#include <openssl_grpc/rsa.h>
+#include <openssl_grpc/x509.h>
 
 static RSA *pkey_get_rsa(EVP_PKEY *key, RSA **rsa);
 static DSA *pkey_get_dsa(EVP_PKEY *key, DSA **dsa);

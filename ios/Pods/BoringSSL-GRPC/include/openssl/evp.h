@@ -57,19 +57,19 @@
 #ifndef OPENSSL_HEADER_EVP_H
 #define OPENSSL_HEADER_EVP_H
 
-#include <openssl/base.h>
+#include <openssl_grpc/base.h>
 
-#include <openssl/thread.h>
+#include <openssl_grpc/thread.h>
 
 // OpenSSL included digest and cipher functions in this header so we include
 // them for users that still expect that.
 //
 // TODO(fork): clean up callers so that they include what they use.
-#include <openssl/aead.h>
-#include <openssl/base64.h>
-#include <openssl/cipher.h>
-#include <openssl/digest.h>
-#include <openssl/nid.h>
+#include <openssl_grpc/aead.h>
+#include <openssl_grpc/base64.h>
+#include <openssl_grpc/cipher.h>
+#include <openssl_grpc/digest.h>
+#include <openssl_grpc/nid.h>
 
 #if defined(__cplusplus)
 extern "C" {

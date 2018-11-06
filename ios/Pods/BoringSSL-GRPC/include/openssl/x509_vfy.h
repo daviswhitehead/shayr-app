@@ -56,7 +56,7 @@
  */
 
 #ifndef HEADER_X509_H
-#include <openssl/x509.h>
+#include <openssl_grpc/x509.h>
 /* openssl/x509.h ends up #include-ing this file at about the only
  * appropriate moment. */
 #endif
@@ -64,7 +64,7 @@
 #ifndef HEADER_X509_VFY_H
 #define HEADER_X509_VFY_H
 
-#include <openssl/thread.h>
+#include <openssl_grpc/thread.h>
 
 #ifdef  __cplusplus
 extern "C" {

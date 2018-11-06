@@ -2,4 +2,5 @@
     <string name="app_name">shayr</string>
     <string name="title_activity_share">shayr</string>
     <string name="facebook_app_id">152320078878051</string>
+    <string name="default_notification_channel_id">channel1</string>
 </resources>

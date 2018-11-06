@@ -142,16 +142,16 @@
 #ifndef OPENSSL_HEADER_SSL_H
 #define OPENSSL_HEADER_SSL_H
 
-#include <openssl/base.h>
+#include <openssl_grpc/base.h>
 
-#include <openssl/bio.h>
-#include <openssl/buf.h>
-#include <openssl/pem.h>
-#include <openssl/span.h>
-#include <openssl/ssl3.h>
-#include <openssl/thread.h>
-#include <openssl/tls1.h>
-#include <openssl/x509.h>
+#include <openssl_grpc/bio.h>
+#include <openssl_grpc/buf.h>
+#include <openssl_grpc/pem.h>
+#include <openssl_grpc/span.h>
+#include <openssl_grpc/ssl3.h>
+#include <openssl_grpc/thread.h>
+#include <openssl_grpc/tls1.h>
+#include <openssl_grpc/x509.h>
 
 #if !defined(OPENSSL_WINDOWS)
 #include <sys/time.h>
@@ -160,7 +160,7 @@
 // NGINX needs this #include. Consider revisiting this after NGINX 1.14.0 has
 // been out for a year or so (assuming that they fix it in that release.) See
 // https://boringssl-review.googlesource.com/c/boringssl/+/21664.
-#include <openssl/hmac.h>
+#include <openssl_grpc/hmac.h>
 
 // Forward-declare struct timeval. On Windows, it is defined in winsock2.h and
 // Windows headers define too many macros to be included in public headers.

@@ -1,37 +1,35 @@
-import firebase from 'react-native-firebase';
+import firebase from "react-native-firebase";
 import {
   ts,
   getUserId,
   getDocShares,
   getRefData
-} from '../../lib/FirebaseHelpers';
-import _ from 'lodash';
+} from "../../lib/FirebaseHelpers";
+import _ from "lodash";
 
 // Action Types
 export const types = {
-  LOAD_FRIENDS_START: 'LOAD_FRIENDS_START',
-  LOAD_FRIENDS_SUCCESS: 'LOAD_FRIENDS_SUCCESS',
-  LOAD_FRIENDS_FAIL: 'LOAD_FRIENDS_FAIL',
-}
+  LOAD_FRIENDS_START: "LOAD_FRIENDS_START",
+  LOAD_FRIENDS_SUCCESS: "LOAD_FRIENDS_SUCCESS",
+  LOAD_FRIENDS_FAIL: "LOAD_FRIENDS_FAIL"
+};
 
 // Helper Functions
 const getUserSubs = (userDoc, sub) => {
-  return firebase.firestore()
-    .collection('users')
+  return firebase
+    .firestore()
+    .collection("users")
     .doc(userDoc.id)
     .collection(sub)
     .get()
-    .then((querySnapshot) => {
+    .then(querySnapshot => {
       const subData = {};
-      querySnapshot.forEach((doc) => {
+      querySnapshot.forEach(doc => {
         subData[doc.id] = doc.data();
       });
-      return subData
+      return subData;
     });
-}
-
-const organize
-
+};
 
 // {
 //   post: {
@@ -51,34 +49,34 @@ const organize
 //   }
 // }
 
-
 // Action Creators
 export function loadFriends() {
   return function(dispatch) {
     dispatch({ type: types.LOAD_FRIENDS_START });
-    return firebase.firestore()
-      .collection('users')
+    return firebase
+      .firestore()
+      .collection("users")
       .get()
-      .then((querySnapshot) => {
+      .then(querySnapshot => {
         const friends = {};
-        querySnapshot.forEach(async (doc) => {
+        querySnapshot.forEach(async doc => {
           friends[doc.id] = doc.data();
-          friends[doc.id]['shares'] = await getUserSubs(doc, 'shares');
-          friends[doc.id]['adds'] = await getUserSubs(doc, 'adds');
-          friends[doc.id]['dones'] = await getUserSubs(doc, 'dones');
-          friends[doc.id]['likes'] = await getUserSubs(doc, 'likes');
+          friends[doc.id]["shares"] = await getUserSubs(doc, "shares");
+          friends[doc.id]["adds"] = await getUserSubs(doc, "adds");
+          friends[doc.id]["dones"] = await getUserSubs(doc, "dones");
+          friends[doc.id]["likes"] = await getUserSubs(doc, "likes");
         });
         dispatch({
           type: types.LOAD_FRIENDS_SUCCESS,
           payload: friends
         });
       })
-      .catch((e) => {
+      .catch(e => {
         console.error(e);
         dispatch({
           type: types.LOAD_FRIENDS_FAIL,
           error: e
         });
-      })
-  }
+      });
+  };
 }

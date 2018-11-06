@@ -123,8 +123,8 @@
 #ifndef OPENSSL_HEADER_BN_H
 #define OPENSSL_HEADER_BN_H
 
-#include <openssl/base.h>
-#include <openssl/thread.h>
+#include <openssl_grpc/base.h>
+#include <openssl_grpc/thread.h>
 
 #include <inttypes.h>  // for PRIu64 and friends
 #include <stdio.h>  // for FILE*

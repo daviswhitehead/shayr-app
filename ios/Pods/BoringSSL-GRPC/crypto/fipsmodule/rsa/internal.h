@@ -57,9 +57,9 @@
 #ifndef OPENSSL_HEADER_RSA_INTERNAL_H
 #define OPENSSL_HEADER_RSA_INTERNAL_H
 
-#include <openssl/base.h>
+#include <openssl_grpc/base.h>
 
-#include <openssl/bn.h>
+#include <openssl_grpc/bn.h>
 
 
 #if defined(__cplusplus)

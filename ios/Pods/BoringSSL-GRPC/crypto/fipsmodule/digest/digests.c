@@ -54,15 +54,15 @@
  * copied and put under another distribution licence
  * [including the GNU Public Licence.] */
 
-#include <openssl/digest.h>
+#include <openssl_grpc/digest.h>
 
 #include <assert.h>
 #include <string.h>
 
-#include <openssl/md4.h>
-#include <openssl/md5.h>
-#include <openssl/nid.h>
-#include <openssl/sha.h>
+#include <openssl_grpc/md4.h>
+#include <openssl_grpc/md5.h>
+#include <openssl_grpc/nid.h>
+#include <openssl_grpc/sha.h>
 
 #include "internal.h"
 #include "../delocate.h"

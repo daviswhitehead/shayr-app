@@ -55,10 +55,10 @@
 #ifndef HEADER_X509V3_H
 #define HEADER_X509V3_H
 
-#include <openssl/bio.h>
-#include <openssl/conf.h>
-#include <openssl/lhash.h>
-#include <openssl/x509.h>
+#include <openssl_grpc/bio.h>
+#include <openssl_grpc/conf.h>
+#include <openssl_grpc/lhash.h>
+#include <openssl_grpc/x509.h>
 
 #ifdef __cplusplus
 extern "C" {

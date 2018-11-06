@@ -68,7 +68,7 @@
 #ifndef OPENSSL_HEADER_EC_H
 #define OPENSSL_HEADER_EC_H
 
-#include <openssl/base.h>
+#include <openssl_grpc/base.h>
 
 #if defined(__cplusplus)
 extern "C" {
@@ -356,7 +356,7 @@ OPENSSL_EXPORT size_t EC_get_builtin_curves(EC_builtin_curve *out_curves,
 OPENSSL_EXPORT void EC_POINT_clear_free(EC_POINT *point);
 
 // Old code expects to get EC_KEY from ec.h.
-#include <openssl/ec_key.h>
+#include <openssl_grpc/ec_key.h>
 
 
 #if defined(__cplusplus)

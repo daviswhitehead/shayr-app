@@ -56,9 +56,9 @@
 
 #include <stdio.h>
 
-#include <openssl/asn1t.h>
-#include <openssl/thread.h>
-#include <openssl/x509.h>
+#include <openssl_grpc/asn1t.h>
+#include <openssl_grpc/thread.h>
+#include <openssl_grpc/x509.h>
 
 /*
  * X509_REQ_INFO is handled in an unusual way to get round invalid encodings.

@@ -58,12 +58,12 @@
 
 #include <string.h>
 
-#include <openssl/mem.h>
-#include <openssl/obj.h>
-#include <openssl/stack.h>
-#include <openssl/thread.h>
-#include <openssl/x509.h>
-#include <openssl/x509v3.h>
+#include <openssl_grpc/mem.h>
+#include <openssl_grpc/obj.h>
+#include <openssl_grpc/stack.h>
+#include <openssl_grpc/thread.h>
+#include <openssl_grpc/x509.h>
+#include <openssl_grpc/x509v3.h>
 
 #include "pcy_int.h"
 #include "../internal.h"

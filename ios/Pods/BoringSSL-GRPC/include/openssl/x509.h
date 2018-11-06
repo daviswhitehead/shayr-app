@@ -63,26 +63,26 @@
 #ifndef HEADER_X509_H
 #define HEADER_X509_H
 
-#include <openssl/base.h>
+#include <openssl_grpc/base.h>
 
 #include <time.h>
 
-#include <openssl/asn1.h>
-#include <openssl/bio.h>
-#include <openssl/cipher.h>
-#include <openssl/dh.h>
-#include <openssl/dsa.h>
-#include <openssl/ecdh.h>
-#include <openssl/ecdsa.h>
-#include <openssl/ec.h>
-#include <openssl/evp.h>
-#include <openssl/obj.h>
-#include <openssl/pkcs7.h>
-#include <openssl/pool.h>
-#include <openssl/rsa.h>
-#include <openssl/sha.h>
-#include <openssl/stack.h>
-#include <openssl/thread.h>
+#include <openssl_grpc/asn1.h>
+#include <openssl_grpc/bio.h>
+#include <openssl_grpc/cipher.h>
+#include <openssl_grpc/dh.h>
+#include <openssl_grpc/dsa.h>
+#include <openssl_grpc/ecdh.h>
+#include <openssl_grpc/ecdsa.h>
+#include <openssl_grpc/ec.h>
+#include <openssl_grpc/evp.h>
+#include <openssl_grpc/obj.h>
+#include <openssl_grpc/pkcs7.h>
+#include <openssl_grpc/pool.h>
+#include <openssl_grpc/rsa.h>
+#include <openssl_grpc/sha.h>
+#include <openssl_grpc/stack.h>
+#include <openssl_grpc/thread.h>
 
 #ifdef  __cplusplus
 extern "C" {
@@ -512,7 +512,7 @@ struct pkcs8_priv_key_info_st
 }
 #endif
 
-#include <openssl/x509_vfy.h>
+#include <openssl_grpc/x509_vfy.h>
 
 #ifdef  __cplusplus
 extern "C" {

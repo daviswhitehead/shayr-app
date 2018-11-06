@@ -57,7 +57,7 @@
 #ifndef OPENSSL_HEADER_SHA_H
 #define OPENSSL_HEADER_SHA_H
 
-#include <openssl/base.h>
+#include <openssl_grpc/base.h>
 
 #if defined(__cplusplus)
 extern "C" {

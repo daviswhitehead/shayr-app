@@ -1,4 +1,4 @@
-git_url("https://github.com/daviswhitehead/shayr-internal.git")
+git_url("git@github.com:daviswhitehead/shayr-internal.git")
 
 type("development") # The default type, can be: appstore, adhoc, enterprise or development
 username("whitehead.davis@gmail.com") # Your Apple Developer Portal username

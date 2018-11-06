@@ -54,18 +54,18 @@
  * copied and put under another distribution licence
  * [including the GNU Public Licence.] */
 
-#include <openssl/evp.h>
+#include <openssl_grpc/evp.h>
 
 #include <assert.h>
 #include <string.h>
 
-#include <openssl/dsa.h>
-#include <openssl/ec.h>
-#include <openssl/err.h>
-#include <openssl/mem.h>
-#include <openssl/nid.h>
-#include <openssl/rsa.h>
-#include <openssl/thread.h>
+#include <openssl_grpc/dsa.h>
+#include <openssl_grpc/ec.h>
+#include <openssl_grpc/err.h>
+#include <openssl_grpc/mem.h>
+#include <openssl_grpc/nid.h>
+#include <openssl_grpc/rsa.h>
+#include <openssl_grpc/thread.h>
 
 #include "internal.h"
 #include "../internal.h"

@@ -54,14 +54,14 @@
  * copied and put under another distribution licence
  * [including the GNU Public Licence.] */
 
-#include <openssl/asn1.h>
-#include <openssl/buf.h>
-#include <openssl/digest.h>
-#include <openssl/dsa.h>
-#include <openssl/evp.h>
-#include <openssl/rsa.h>
-#include <openssl/stack.h>
-#include <openssl/x509.h>
+#include <openssl_grpc/asn1.h>
+#include <openssl_grpc/buf.h>
+#include <openssl_grpc/digest.h>
+#include <openssl_grpc/dsa.h>
+#include <openssl_grpc/evp.h>
+#include <openssl_grpc/rsa.h>
+#include <openssl_grpc/stack.h>
+#include <openssl_grpc/x509.h>
 
 int X509_verify(X509 *a, EVP_PKEY *r)
 {

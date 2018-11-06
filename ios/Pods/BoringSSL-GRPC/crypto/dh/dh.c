@@ -54,16 +54,16 @@
  * copied and put under another distribution licence
  * [including the GNU Public Licence.] */
 
-#include <openssl/dh.h>
+#include <openssl_grpc/dh.h>
 
 #include <string.h>
 
-#include <openssl/bn.h>
-#include <openssl/buf.h>
-#include <openssl/err.h>
-#include <openssl/ex_data.h>
-#include <openssl/mem.h>
-#include <openssl/thread.h>
+#include <openssl_grpc/bn.h>
+#include <openssl_grpc/buf.h>
+#include <openssl_grpc/err.h>
+#include <openssl_grpc/ex_data.h>
+#include <openssl_grpc/mem.h>
+#include <openssl_grpc/thread.h>
 
 #include "../internal.h"
 

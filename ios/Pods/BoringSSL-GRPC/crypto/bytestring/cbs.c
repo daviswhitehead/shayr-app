@@ -16,9 +16,9 @@
 #define __STDC_FORMAT_MACROS
 #endif
 
-#include <openssl/buf.h>
-#include <openssl/mem.h>
-#include <openssl/bytestring.h>
+#include <openssl_grpc/buf.h>
+#include <openssl_grpc/mem.h>
+#include <openssl_grpc/bytestring.h>
 
 #include <assert.h>
 #include <inttypes.h>

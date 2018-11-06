@@ -54,7 +54,7 @@
  * copied and put under another distribution licence
  * [including the GNU Public Licence.] */
 
-#include <openssl/bio.h>
+#include <openssl_grpc/bio.h>
 
 #include <errno.h>
 #include <string.h>
@@ -68,9 +68,9 @@ OPENSSL_MSVC_PRAGMA(warning(push, 3))
 OPENSSL_MSVC_PRAGMA(warning(pop))
 #endif
 
-#include <openssl/buf.h>
-#include <openssl/err.h>
-#include <openssl/mem.h>
+#include <openssl_grpc/buf.h>
+#include <openssl_grpc/err.h>
+#include <openssl_grpc/mem.h>
 
 #include "internal.h"
 #include "../internal.h"

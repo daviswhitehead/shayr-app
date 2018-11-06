@@ -27,7 +27,7 @@
 extern "C" {
 #endif
 
-#include <openssl/base.h>
+#include <openssl_grpc/base.h>
 
 #include "../../crypto/internal.h"
 

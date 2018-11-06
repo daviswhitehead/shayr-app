@@ -54,14 +54,14 @@
  * copied and put under another distribution licence
  * [including the GNU Public Licence.] */
 
-#include <openssl/cipher.h>
+#include <openssl_grpc/cipher.h>
 
 #include <assert.h>
 #include <string.h>
 
-#include <openssl/err.h>
-#include <openssl/mem.h>
-#include <openssl/nid.h>
+#include <openssl_grpc/err.h>
+#include <openssl_grpc/mem.h>
+#include <openssl_grpc/nid.h>
 
 #include "internal.h"
 #include "../../internal.h"

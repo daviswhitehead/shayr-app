@@ -58,10 +58,10 @@
 #include <stdio.h>
 #include <string.h>
 
-#include <openssl/digest.h>
-#include <openssl/err.h>
-#include <openssl/obj.h>
-#include <openssl/x509v3.h>
+#include <openssl_grpc/digest.h>
+#include <openssl_grpc/err.h>
+#include <openssl_grpc/obj.h>
+#include <openssl_grpc/x509v3.h>
 
 static ASN1_OCTET_STRING *s2i_skey_id(X509V3_EXT_METHOD *method,
                                       X509V3_CTX *ctx, char *str);

@@ -54,10 +54,10 @@
  * copied and put under another distribution licence
  * [including the GNU Public Licence.] */
 
-#include <openssl/asn1.h>
+#include <openssl_grpc/asn1.h>
 
-#include <openssl/asn1t.h>
-#include <openssl/mem.h>
+#include <openssl_grpc/asn1t.h>
+#include <openssl_grpc/mem.h>
 
 #include "asn1_locl.h"
 

@@ -15,9 +15,9 @@
 #ifndef OPENSSL_HEADER_POOL_H
 #define OPENSSL_HEADER_POOL_H
 
-#include <openssl/base.h>
+#include <openssl_grpc/base.h>
 
-#include <openssl/stack.h>
+#include <openssl_grpc/stack.h>
 
 #if defined(__cplusplus)
 extern "C" {

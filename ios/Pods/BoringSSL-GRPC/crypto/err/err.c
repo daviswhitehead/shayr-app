@@ -106,7 +106,7 @@
  * (eay@cryptsoft.com).  This product includes software written by Tim
  * Hudson (tjh@cryptsoft.com). */
 
-#include <openssl/err.h>
+#include <openssl_grpc/err.h>
 
 #include <assert.h>
 #include <errno.h>
@@ -119,8 +119,8 @@ OPENSSL_MSVC_PRAGMA(warning(push, 3))
 OPENSSL_MSVC_PRAGMA(warning(pop))
 #endif
 
-#include <openssl/mem.h>
-#include <openssl/thread.h>
+#include <openssl_grpc/mem.h>
+#include <openssl_grpc/thread.h>
 
 #include "../internal.h"
 #include "./internal.h"

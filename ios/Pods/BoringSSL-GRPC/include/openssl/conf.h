@@ -57,10 +57,10 @@
 #ifndef OPENSSL_HEADER_CONF_H
 #define OPENSSL_HEADER_CONF_H
 
-#include <openssl/base.h>
+#include <openssl_grpc/base.h>
 
-#include <openssl/stack.h>
-#include <openssl/lhash.h>
+#include <openssl_grpc/stack.h>
+#include <openssl_grpc/lhash.h>
 
 #if defined(__cplusplus)
 extern "C" {

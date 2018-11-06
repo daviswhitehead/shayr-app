@@ -54,19 +54,19 @@
  * copied and put under another distribution licence
  * [including the GNU Public Licence.] */
 
-#include <openssl/x509.h>
+#include <openssl_grpc/x509.h>
 
 #include <stdio.h>
 #include <time.h>
 #include <sys/types.h>
 
-#include <openssl/bn.h>
-#include <openssl/buf.h>
-#include <openssl/digest.h>
-#include <openssl/err.h>
-#include <openssl/evp.h>
-#include <openssl/mem.h>
-#include <openssl/obj.h>
+#include <openssl_grpc/bn.h>
+#include <openssl_grpc/buf.h>
+#include <openssl_grpc/digest.h>
+#include <openssl_grpc/err.h>
+#include <openssl_grpc/evp.h>
+#include <openssl_grpc/mem.h>
+#include <openssl_grpc/obj.h>
 
 #include "internal.h"
 

@@ -58,11 +58,11 @@
 #include <stdio.h>
 #include <string.h>
 
-#include <openssl/conf.h>
-#include <openssl/err.h>
-#include <openssl/mem.h>
-#include <openssl/obj.h>
-#include <openssl/x509v3.h>
+#include <openssl_grpc/conf.h>
+#include <openssl_grpc/err.h>
+#include <openssl_grpc/mem.h>
+#include <openssl_grpc/obj.h>
+#include <openssl_grpc/x509v3.h>
 
 static GENERAL_NAMES *v2i_subject_alt(X509V3_EXT_METHOD *method,
                                       X509V3_CTX *ctx,

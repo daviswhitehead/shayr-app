@@ -54,10 +54,10 @@
  * copied and put under another distribution licence
  * [including the GNU Public Licence.] */
 
-#include <openssl/asn1.h>
+#include <openssl_grpc/asn1.h>
 
-#include <openssl/err.h>
-#include <openssl/mem.h>
+#include <openssl_grpc/err.h>
+#include <openssl_grpc/mem.h>
 
 void *ASN1_dup(i2d_of_void *i2d, d2i_of_void *d2i, void *x)
 {

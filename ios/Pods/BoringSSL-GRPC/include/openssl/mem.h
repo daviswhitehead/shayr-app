@@ -57,7 +57,7 @@
 #ifndef OPENSSL_HEADER_MEM_H
 #define OPENSSL_HEADER_MEM_H
 
-#include <openssl/base.h>
+#include <openssl_grpc/base.h>
 
 #include <stdlib.h>
 #include <stdarg.h>

@@ -57,20 +57,20 @@
  * The DSS routines are based on patches supplied by
  * Steven Schoch <schoch@sheba.arc.nasa.gov>. */
 
-#include <openssl/dsa.h>
+#include <openssl_grpc/dsa.h>
 
 #include <string.h>
 
-#include <openssl/bn.h>
-#include <openssl/dh.h>
-#include <openssl/digest.h>
-#include <openssl/engine.h>
-#include <openssl/err.h>
-#include <openssl/ex_data.h>
-#include <openssl/mem.h>
-#include <openssl/rand.h>
-#include <openssl/sha.h>
-#include <openssl/thread.h>
+#include <openssl_grpc/bn.h>
+#include <openssl_grpc/dh.h>
+#include <openssl_grpc/digest.h>
+#include <openssl_grpc/engine.h>
+#include <openssl_grpc/err.h>
+#include <openssl_grpc/ex_data.h>
+#include <openssl_grpc/mem.h>
+#include <openssl_grpc/rand.h>
+#include <openssl_grpc/sha.h>
+#include <openssl_grpc/thread.h>
 
 #include "../fipsmodule/bn/internal.h"
 #include "../internal.h"

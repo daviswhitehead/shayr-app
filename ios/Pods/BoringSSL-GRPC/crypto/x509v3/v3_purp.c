@@ -59,14 +59,14 @@
 
 #include <string.h>
 
-#include <openssl/buf.h>
-#include <openssl/err.h>
-#include <openssl/digest.h>
-#include <openssl/mem.h>
-#include <openssl/obj.h>
-#include <openssl/thread.h>
-#include <openssl/x509_vfy.h>
-#include <openssl/x509v3.h>
+#include <openssl_grpc/buf.h>
+#include <openssl_grpc/err.h>
+#include <openssl_grpc/digest.h>
+#include <openssl_grpc/mem.h>
+#include <openssl_grpc/obj.h>
+#include <openssl_grpc/thread.h>
+#include <openssl_grpc/x509_vfy.h>
+#include <openssl_grpc/x509v3.h>
 
 #include "../internal.h"
 

@@ -57,10 +57,10 @@
 
 #include <stdlib.h>
 
-#include <openssl/buf.h>
-#include <openssl/err.h>
-#include <openssl/pem.h>
-#include <openssl/thread.h>
+#include <openssl_grpc/buf.h>
+#include <openssl_grpc/err.h>
+#include <openssl_grpc/pem.h>
+#include <openssl_grpc/thread.h>
 
 #ifndef OPENSSL_NO_STDIO
 

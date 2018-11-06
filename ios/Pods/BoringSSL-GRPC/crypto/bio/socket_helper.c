@@ -15,8 +15,8 @@
 #undef _POSIX_C_SOURCE
 #define _POSIX_C_SOURCE 200112L
 
-#include <openssl/bio.h>
-#include <openssl/err.h>
+#include <openssl_grpc/bio.h>
+#include <openssl_grpc/err.h>
 
 #include <fcntl.h>
 #include <string.h>

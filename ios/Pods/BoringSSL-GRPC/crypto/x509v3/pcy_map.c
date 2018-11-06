@@ -57,9 +57,9 @@
  *
  */
 
-#include <openssl/obj.h>
-#include <openssl/x509.h>
-#include <openssl/x509v3.h>
+#include <openssl_grpc/obj.h>
+#include <openssl_grpc/x509.h>
+#include <openssl_grpc/x509v3.h>
 
 #include "pcy_int.h"
 

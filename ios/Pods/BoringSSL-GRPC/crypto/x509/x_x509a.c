@@ -56,10 +56,10 @@
 
 #include <stdio.h>
 
-#include <openssl/asn1t.h>
-#include <openssl/evp.h>
-#include <openssl/obj.h>
-#include <openssl/x509.h>
+#include <openssl_grpc/asn1t.h>
+#include <openssl_grpc/evp.h>
+#include <openssl_grpc/obj.h>
+#include <openssl_grpc/x509.h>
 
 /*
  * X509_CERT_AUX routines. These are used to encode additional user

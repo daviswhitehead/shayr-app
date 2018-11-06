@@ -58,7 +58,7 @@
 #define __STDC_FORMAT_MACROS
 #endif
 
-#include <openssl/cpu.h>
+#include <openssl_grpc/cpu.h>
 
 
 #if !defined(OPENSSL_NO_ASM) && (defined(OPENSSL_X86) || defined(OPENSSL_X86_64))

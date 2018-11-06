@@ -46,7 +46,7 @@
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  * ==================================================================== */
 
-#include <openssl/aes.h>
+#include <openssl_grpc/aes.h>
 
 #include <assert.h>
 

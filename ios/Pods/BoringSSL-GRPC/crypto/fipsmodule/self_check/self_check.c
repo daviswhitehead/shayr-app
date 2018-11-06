@@ -12,19 +12,19 @@
  * OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN
  * CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE. */
 
-#include <openssl/crypto.h>
+#include <openssl_grpc/crypto.h>
 
 #include <stdio.h>
 
-#include <openssl/aead.h>
-#include <openssl/aes.h>
-#include <openssl/bn.h>
-#include <openssl/des.h>
-#include <openssl/ecdsa.h>
-#include <openssl/ec_key.h>
-#include <openssl/nid.h>
-#include <openssl/rsa.h>
-#include <openssl/sha.h>
+#include <openssl_grpc/aead.h>
+#include <openssl_grpc/aes.h>
+#include <openssl_grpc/bn.h>
+#include <openssl_grpc/des.h>
+#include <openssl_grpc/ecdsa.h>
+#include <openssl_grpc/ec_key.h>
+#include <openssl_grpc/nid.h>
+#include <openssl_grpc/rsa.h>
+#include <openssl_grpc/sha.h>
 
 #include "../../internal.h"
 #include "../ec/internal.h"

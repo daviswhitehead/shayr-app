@@ -12,17 +12,17 @@
  * OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN
  * CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE. */
 
-#include <openssl/aead.h>
+#include <openssl_grpc/aead.h>
 
 #include <string.h>
 
-#include <openssl/chacha.h>
-#include <openssl/cipher.h>
-#include <openssl/cpu.h>
-#include <openssl/err.h>
-#include <openssl/mem.h>
-#include <openssl/poly1305.h>
-#include <openssl/type_check.h>
+#include <openssl_grpc/chacha.h>
+#include <openssl_grpc/cipher.h>
+#include <openssl_grpc/cpu.h>
+#include <openssl_grpc/err.h>
+#include <openssl_grpc/mem.h>
+#include <openssl_grpc/poly1305.h>
+#include <openssl_grpc/type_check.h>
 
 #include "../fipsmodule/cipher/internal.h"
 #include "../internal.h"

@@ -142,7 +142,7 @@
 #ifndef OPENSSL_HEADER_SSL_INTERNAL_H
 #define OPENSSL_HEADER_SSL_INTERNAL_H
 
-#include <openssl/base.h>
+#include <openssl_grpc/base.h>
 
 #include <stdlib.h>
 
@@ -151,13 +151,13 @@
 #include <type_traits>
 #include <utility>
 
-#include <openssl/aead.h>
-#include <openssl/err.h>
-#include <openssl/lhash.h>
-#include <openssl/mem.h>
-#include <openssl/ssl.h>
-#include <openssl/span.h>
-#include <openssl/stack.h>
+#include <openssl_grpc/aead.h>
+#include <openssl_grpc/err.h>
+#include <openssl_grpc/lhash.h>
+#include <openssl_grpc/mem.h>
+#include <openssl_grpc/ssl.h>
+#include <openssl_grpc/span.h>
+#include <openssl_grpc/stack.h>
 
 #include "../crypto/err/internal.h"
 #include "../crypto/internal.h"

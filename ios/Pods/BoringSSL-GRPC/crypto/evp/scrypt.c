@@ -7,13 +7,13 @@
  * https://www.openssl.org/source/license.html
  */
 
-#include <openssl/evp.h>
+#include <openssl_grpc/evp.h>
 
 #include <assert.h>
 
-#include <openssl/err.h>
-#include <openssl/mem.h>
-#include <openssl/type_check.h>
+#include <openssl_grpc/err.h>
+#include <openssl_grpc/mem.h>
+#include <openssl_grpc/type_check.h>
 
 #include "../internal.h"
 

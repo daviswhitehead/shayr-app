@@ -54,9 +54,9 @@
  * copied and put under another distribution licence
  * [including the GNU Public Licence.] */
 
-#include <openssl/asn1.h>
+#include <openssl_grpc/asn1.h>
 
-#include <openssl/bio.h>
+#include <openssl_grpc/bio.h>
 
 int i2a_ASN1_INTEGER(BIO *bp, ASN1_INTEGER *a)
 {

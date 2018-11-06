@@ -19,18 +19,18 @@
 #define __STDC_LIMIT_MACROS
 #endif
 
-#include <openssl/ssl.h>
+#include <openssl_grpc/ssl.h>
 
 #include <assert.h>
 #include <string.h>
 
-#include <openssl/aead.h>
-#include <openssl/bytestring.h>
-#include <openssl/digest.h>
-#include <openssl/err.h>
-#include <openssl/mem.h>
-#include <openssl/rand.h>
-#include <openssl/stack.h>
+#include <openssl_grpc/aead.h>
+#include <openssl_grpc/bytestring.h>
+#include <openssl_grpc/digest.h>
+#include <openssl_grpc/err.h>
+#include <openssl_grpc/mem.h>
+#include <openssl_grpc/rand.h>
+#include <openssl_grpc/stack.h>
 
 #include "../crypto/internal.h"
 #include "internal.h"

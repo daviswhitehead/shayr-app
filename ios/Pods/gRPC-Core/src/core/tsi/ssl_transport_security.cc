@@ -42,12 +42,12 @@
 #include <grpc/support/thd_id.h>
 
 extern "C" {
-#include <openssl/bio.h>
-#include <openssl/crypto.h> /* For OPENSSL_free */
-#include <openssl/err.h>
-#include <openssl/ssl.h>
-#include <openssl/x509.h>
-#include <openssl/x509v3.h>
+#include <openssl_grpc/bio.h>
+#include <openssl_grpc/crypto.h> /* For OPENSSL_free */
+#include <openssl_grpc/err.h>
+#include <openssl_grpc/ssl.h>
+#include <openssl_grpc/x509.h>
+#include <openssl_grpc/x509v3.h>
 }
 
 #include "src/core/lib/gpr/useful.h"

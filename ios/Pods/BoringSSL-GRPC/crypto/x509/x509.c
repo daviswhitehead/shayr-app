@@ -54,11 +54,11 @@
  * copied and put under another distribution licence
  * [including the GNU Public Licence.] */
 
-#include <openssl/x509.h>
+#include <openssl_grpc/x509.h>
 
-#include <openssl/bio.h>
-#include <openssl/err.h>
-#include <openssl/mem.h>
+#include <openssl_grpc/bio.h>
+#include <openssl_grpc/err.h>
+#include <openssl_grpc/mem.h>
 
 
 /* |X509_R_UNSUPPORTED_ALGORITHM| is no longer emitted, but continue to define

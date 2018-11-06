@@ -138,18 +138,18 @@
  * OTHER ENTITY BASED ON INFRINGEMENT OF INTELLECTUAL PROPERTY RIGHTS OR
  * OTHERWISE. */
 
-#include <openssl/ssl.h>
+#include <openssl_grpc/ssl.h>
 
 #include <assert.h>
 
-#include <openssl/asn1.h>
-#include <openssl/bytestring.h>
-#include <openssl/err.h>
-#include <openssl/pem.h>
-#include <openssl/stack.h>
-#include <openssl/x509.h>
-#include <openssl/x509v3.h>
-#include <openssl/x509_vfy.h>
+#include <openssl_grpc/asn1.h>
+#include <openssl_grpc/bytestring.h>
+#include <openssl_grpc/err.h>
+#include <openssl_grpc/pem.h>
+#include <openssl_grpc/stack.h>
+#include <openssl_grpc/x509.h>
+#include <openssl_grpc/x509v3.h>
+#include <openssl_grpc/x509_vfy.h>
 
 #include "internal.h"
 #include "../crypto/internal.h"

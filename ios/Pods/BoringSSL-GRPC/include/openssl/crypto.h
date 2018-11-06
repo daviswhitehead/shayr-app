@@ -15,15 +15,15 @@
 #ifndef OPENSSL_HEADER_CRYPTO_H
 #define OPENSSL_HEADER_CRYPTO_H
 
-#include <openssl/base.h>
+#include <openssl_grpc/base.h>
 
 // Upstream OpenSSL defines |OPENSSL_malloc|, etc., in crypto.h rather than
 // mem.h.
-#include <openssl/mem.h>
+#include <openssl_grpc/mem.h>
 
 // Upstream OpenSSL defines |CRYPTO_LOCK|, etc., in crypto.h rather than
 // thread.h.
-#include <openssl/thread.h>
+#include <openssl_grpc/thread.h>
 
 
 #if defined(__cplusplus)

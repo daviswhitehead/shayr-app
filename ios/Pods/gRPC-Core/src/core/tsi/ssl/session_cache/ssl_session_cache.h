@@ -27,7 +27,7 @@
 #include <grpc/support/sync.h>
 
 extern "C" {
-#include <openssl/ssl.h>
+#include <openssl_grpc/ssl.h>
 }
 
 #include "src/core/lib/avl/avl.h"

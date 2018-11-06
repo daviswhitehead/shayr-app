@@ -48,14 +48,14 @@
 
 #include <string.h>
 
-#include <openssl/aead.h>
-#include <openssl/aes.h>
-#include <openssl/cipher.h>
-#include <openssl/cpu.h>
-#include <openssl/err.h>
-#include <openssl/mem.h>
-#include <openssl/nid.h>
-#include <openssl/rand.h>
+#include <openssl_grpc/aead.h>
+#include <openssl_grpc/aes.h>
+#include <openssl_grpc/cipher.h>
+#include <openssl_grpc/cpu.h>
+#include <openssl_grpc/err.h>
+#include <openssl_grpc/mem.h>
+#include <openssl_grpc/nid.h>
+#include <openssl_grpc/rand.h>
 
 #include "internal.h"
 #include "../../internal.h"
@@ -64,7 +64,7 @@
 #include "../delocate.h"
 
 #if defined(OPENSSL_ARM) || defined(OPENSSL_AARCH64)
-#include <openssl/arm_arch.h>
+#include <openssl_grpc/arm_arch.h>
 #endif
 
 

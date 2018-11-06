@@ -31,7 +31,7 @@
 
 #include "src/core/tsi/grpc_shadow_boringssl.h"
 
-#include <openssl/ssl.h>
+#include <openssl_grpc/ssl.h>
 
 #ifdef OPENSSL_IS_BORINGSSL
 #define TSI_INT_AS_SIZE(x) ((size_t)(x))

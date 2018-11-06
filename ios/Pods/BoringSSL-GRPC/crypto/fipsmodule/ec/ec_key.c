@@ -65,17 +65,17 @@
  * Sheueling Chang Shantz and Douglas Stebila of Sun Microsystems
  * Laboratories. */
 
-#include <openssl/ec_key.h>
+#include <openssl_grpc/ec_key.h>
 
 #include <string.h>
 
-#include <openssl/ec.h>
-#include <openssl/ecdsa.h>
-#include <openssl/engine.h>
-#include <openssl/err.h>
-#include <openssl/ex_data.h>
-#include <openssl/mem.h>
-#include <openssl/thread.h>
+#include <openssl_grpc/ec.h>
+#include <openssl_grpc/ecdsa.h>
+#include <openssl_grpc/engine.h>
+#include <openssl_grpc/err.h>
+#include <openssl_grpc/ex_data.h>
+#include <openssl_grpc/mem.h>
+#include <openssl_grpc/thread.h>
 
 #include "internal.h"
 #include "../delocate.h"

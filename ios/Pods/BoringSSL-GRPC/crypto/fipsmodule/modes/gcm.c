@@ -46,13 +46,13 @@
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  * ==================================================================== */
 
-#include <openssl/base.h>
+#include <openssl_grpc/base.h>
 
 #include <assert.h>
 #include <string.h>
 
-#include <openssl/mem.h>
-#include <openssl/cpu.h>
+#include <openssl_grpc/mem.h>
+#include <openssl_grpc/cpu.h>
 
 #include "internal.h"
 #include "../../internal.h"
@@ -283,7 +283,7 @@ void gcm_ghash_4bit_mmx(uint64_t Xi[2], const u128 Htable[16], const uint8_t *in
 #endif
 
 #elif defined(OPENSSL_ARM) || defined(OPENSSL_AARCH64)
-#include <openssl/arm_arch.h>
+#include <openssl_grpc/arm_arch.h>
 #if __ARM_ARCH__ >= 7
 #define GHASH_ASM_ARM
 #define GCM_FUNCREF_4BIT

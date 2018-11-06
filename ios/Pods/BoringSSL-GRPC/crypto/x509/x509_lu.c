@@ -57,11 +57,11 @@
 
 #include <string.h>
 
-#include <openssl/err.h>
-#include <openssl/mem.h>
-#include <openssl/thread.h>
-#include <openssl/x509.h>
-#include <openssl/x509v3.h>
+#include <openssl_grpc/err.h>
+#include <openssl_grpc/mem.h>
+#include <openssl_grpc/thread.h>
+#include <openssl_grpc/x509.h>
+#include <openssl_grpc/x509v3.h>
 
 #include "../internal.h"
 

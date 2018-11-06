@@ -55,12 +55,12 @@
  * copied and put under another distribution licence
  * [including the GNU Public Licence.] */
 
-#include <openssl/asn1.h>
-#include <openssl/err.h>
-#include <openssl/evp.h>
-#include <openssl/obj.h>
-#include <openssl/stack.h>
-#include <openssl/x509.h>
+#include <openssl_grpc/asn1.h>
+#include <openssl_grpc/err.h>
+#include <openssl_grpc/evp.h>
+#include <openssl_grpc/obj.h>
+#include <openssl_grpc/stack.h>
+#include <openssl_grpc/x509.h>
 
 int X509at_get_attr_count(const STACK_OF(X509_ATTRIBUTE) *x)
 {
