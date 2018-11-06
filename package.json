@@ -6,9 +6,12 @@
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "test": "jest",
     "dsyms": "find ./ios/ -name \"*.dSYM\" | xargs -I {} /Applications/Fabric.app/Contents/MacOS/upload-symbols -a <api-key> -p ios {}",
-    "ios:beta": "bundle exec fastlane ios beta",
-    "android:beta": "bundle exec fastlane android beta",
+    "release:ios:beta": "bundle exec fastlane ios beta",
+    "release:android:beta": "bundle exec fastlane android beta",
     "debugger": "open \"rndebugger://set-debugger-loc?host=localhost&port=8081\"",
+    "ios:dev": "sh scripts/env_manager.sh dev && ENVFILE=./environments/dev/.env.dev react-native run-ios --scheme shayr-dev",
+    "ios:prod": "sh scripts/env_manager.sh prod && ENVFILE=./environments/prod/.env.prod react-native run-ios --scheme shayr-prod",
+    "ios:staging": "sh scripts/env_manager.sh staging && ENVFILE=./environments/staging/.env.staging react-native run-ios --scheme shayr-prod",
     "reset_node_modules": "rm -rf node_modules/ && npm cache verify && npm install"
   },
   "dependencies": {
