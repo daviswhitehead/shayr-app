@@ -26,10 +26,8 @@ import {
   loadFeedPosts,
   paginateFeedPosts,
   flattenPosts,
-  refreshFeedPosts,
-  loadQueuePosts
+  refreshFeedPosts
 } from "../../redux/posts/PostsActions";
-import { loadFriends } from "../../redux/social/SocialActions";
 import {
   newAction,
   toggleAction
@@ -50,19 +48,15 @@ const mapDispatchToProps = dispatch => ({
   paginateFeedPosts: lastPost => dispatch(paginateFeedPosts(lastPost)),
   refreshFeedPosts: () => dispatch(refreshFeedPosts()),
   signOutUser: () => dispatch(signOutUser()),
-  loadQueuePosts: userId => dispatch(loadQueuePosts(userId)),
   newAction: (actionType, userId, postId) =>
     dispatch(newAction(actionType, userId, postId)),
   toggleAction: (actionType, userId, postId) =>
-    dispatch(toggleAction(actionType, userId, postId)),
-  loadFriends: () => dispatch(loadFriends())
+    dispatch(toggleAction(actionType, userId, postId))
 });
 
 class Feed extends Component {
   componentDidMount() {
-    this.props.loadFriends();
     this.props.loadFeedPosts();
-    this.unsubscribe = this.props.loadQueuePosts(this.props.auth.user.uid);
     this.notificationDisplayedListener = firebase
       .notifications()
       .onNotificationDisplayed(notification => {

@@ -1,18 +1,17 @@
-import { types } from './SocialActions';
+import { types } from "./SocialActions";
 
 const initialState = {
   friends: null,
-  error: null,
-}
+  error: null
+};
 
 function socialReducer(state = initialState, action) {
-  // console.log(action.type);
   // Failure Handling
-  if (action.type.substr(action.type.length - 4) === 'FAIL') {
+  if (action.type.substr(action.type.length - 4) === "FAIL") {
     return {
       ...state,
       error: action.error
-    }
+    };
   }
 
   // Case Handling
@@ -21,11 +20,11 @@ function socialReducer(state = initialState, action) {
       return {
         ...state,
         friends: action.payload
-      }
+      };
     }
   }
 
-  return state
+  return state;
 }
 
 export default socialReducer;

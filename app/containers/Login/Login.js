@@ -24,6 +24,7 @@ import {
 } from "../../redux/authentication/AuthenticationActions";
 import styles from "./styles";
 import vectorLogo from "../../assets/VectorLogo.png";
+import LoginListeners from "../../containers/LoginListeners";
 
 const mapStateToProps = state => {
   return {
