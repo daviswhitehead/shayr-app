@@ -23,10 +23,10 @@ import Icon from "react-native-vector-icons/MaterialIcons";
 import _ from "lodash";
 import { LoginManager } from "react-native-fbsdk";
 import {
-  loadFeedPosts,
-  paginateFeedPosts,
-  flattenPosts,
-  refreshFeedPosts
+  loadPosts,
+  paginatePosts,
+  refreshPosts,
+  flattenPosts
 } from "../../redux/posts/PostsActions";
 import {
   newAction,
@@ -44,9 +44,10 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => ({
   navQueue: () => dispatch(NavigationActions.navigate({ routeName: "Queue" })),
-  loadFeedPosts: () => dispatch(loadFeedPosts()),
-  paginateFeedPosts: lastPost => dispatch(paginateFeedPosts(lastPost)),
-  refreshFeedPosts: () => dispatch(refreshFeedPosts()),
+  loadPosts: (userId, query) => dispatch(loadPosts(userId, query)),
+  paginatePosts: (userId, query, lastPost) =>
+    dispatch(paginatePosts(userId, query, lastPost)),
+  refreshPosts: (userId, query) => dispatch(refreshPosts(userId, query)),
   signOutUser: () => dispatch(signOutUser()),
   newAction: (actionType, userId, postId) =>
     dispatch(newAction(actionType, userId, postId)),
@@ -55,8 +56,14 @@ const mapDispatchToProps = dispatch => ({
 });
 
 class Feed extends Component {
+  constructor() {
+    super();
+    this.subscriptions = [];
+  }
   componentDidMount() {
-    this.props.loadFeedPosts();
+    this.subscriptions.push(
+      this.props.loadPosts(this.props.auth.user.uid, "feed")
+    );
     this.notificationDisplayedListener = firebase
       .notifications()
       .onNotificationDisplayed(notification => {
@@ -71,7 +78,11 @@ class Feed extends Component {
   }
 
   componentWillUnmount() {
-    this.unsubscribe();
+    for (var sub in this.subscriptions) {
+      if (object.hasOwnProperty(sub)) {
+        this.subscriptions.sub();
+      }
+    }
   }
 
   addToQueue = payload => {
@@ -119,9 +130,15 @@ class Feed extends Component {
         data={flattenPosts(this.props.posts.feedPosts)}
         renderItem={item => this.renderItem(item)}
         onEndReached={() =>
-          this.props.paginateFeedPosts(this.props.posts.lastPost)
+          this.props.paginatePosts(
+            this.props.auth.user.uid,
+            "feed",
+            this.props.posts.lastPost
+          )
         }
-        onRefresh={() => this.props.refreshFeedPosts()}
+        onRefresh={() =>
+          this.props.refreshPosts(this.props.auth.user.uid, "feed")
+        }
         refreshing={this.props.posts.refreshing}
       />
     );

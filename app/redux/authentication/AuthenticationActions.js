@@ -70,8 +70,6 @@ export const savePushToken = user => {
   fcm.requestPermission();
   // gets the device's push token
   return fcm.getToken().then(token => {
-    console.log("enter token");
-    console.log(token);
     // stores the token in the user's document
     return firebase
       .firestore()
