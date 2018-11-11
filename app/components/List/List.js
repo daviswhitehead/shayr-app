@@ -32,7 +32,11 @@ export default class List extends Component {
   };
 
   renderItem = ({ item }) => {
-    return <View style={styles.box}>{this.props.renderItem(item)}</View>;
+    return (
+      <View style={styles.box}>
+        <View style={styles.row}>{this.props.renderItem(item)}</View>
+      </View>
+    );
   };
 
   render() {

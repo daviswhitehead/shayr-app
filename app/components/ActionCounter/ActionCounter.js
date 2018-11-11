@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Text, View, Image, TouchableWithoutFeedback } from "react-native";
+import { Text, View, Image, TouchableOpacity } from "react-native";
 import PropTypes from "prop-types";
 
 import {
@@ -59,7 +59,8 @@ export default class ActionCounter extends Component {
   static defaultProps = {
     actionType: null,
     actionCount: 0,
-    actionUser: false
+    actionUser: false,
+    onTap: () => console.log("i was tapped")
   };
 
   getIconState = (count, user) => {
@@ -95,15 +96,12 @@ export default class ActionCounter extends Component {
     const count = showCount ? this.props.actionCount : "";
 
     return (
-      <TouchableWithoutFeedback
-        onPress={() => this.props.onTap()}
-        // onPress={() => console.log('hello')}
-      >
+      <TouchableOpacity onPress={() => this.props.onTap()}>
         <View style={styles.container}>
           <Image style={styles.icon} source={icon} />
           <Text style={styles.count}>{count}</Text>
         </View>
-      </TouchableWithoutFeedback>
+      </TouchableOpacity>
     );
   }
 }

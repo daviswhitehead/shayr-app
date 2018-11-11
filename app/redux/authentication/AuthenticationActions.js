@@ -24,7 +24,8 @@ export const types = {
   FACEBOOK_SIGN_OUT_START: "FACEBOOK_SIGN_OUT_START",
   FACEBOOK_SIGN_OUT_SUCCESS: "FACEBOOK_SIGN_OUT_SUCCESS",
   APP_SIGN_OUT_START: "APP_SIGN_OUT_START",
-  APP_SIGN_OUT_SUCCESS: "APP_SIGN_OUT_SUCCESS"
+  APP_SIGN_OUT_SUCCESS: "APP_SIGN_OUT_SUCCESS",
+  USER_DATA_SUCCESS: "USER_DATA_SUCCESS"
 };
 
 // Helper Functions
@@ -85,11 +86,28 @@ export const savePushToken = user => {
   });
 };
 
+const getUser = userId => {
+  return firebase
+    .firestore()
+    .collection("users")
+    .doc(userId)
+    .get()
+    .then(documentSnapshot => {
+      return documentSnapshot.data();
+    })
+    .catch(e => {
+      console.error(e);
+      return e;
+    });
+};
+
 export const saveUserInfo = (user, data) => {
   const ref = firebase
     .firestore()
     .collection("users")
     .doc(getUserId(user));
+  console.log(ref);
+
   return ref
     .get()
     .then(doc => {
@@ -148,7 +166,6 @@ export function facebookAuth(error, result) {
     try {
       dispatch({ type: types.FACEBOOK_AUTH_START });
       const tokenData = await getFBToken(error, result);
-      console.log(tokenData);
       dispatch({ type: types.FACEBOOK_AUTH_SUCCESS });
 
       storeAccessToken(tokenData.accessToken);
@@ -156,12 +173,11 @@ export function facebookAuth(error, result) {
 
       dispatch({ type: types.AUTH_TOKEN_START });
       const credential = getAuthCredential(tokenData.accessToken);
-      console.log(credential);
       dispatch({ type: types.AUTH_TOKEN_SUCCESS });
 
       dispatch({ type: types.CURRENT_USER_START });
       const currentUser = await getCurrentUser(credential);
-      console.log(currentUser);
+      console.log(Object.keys(currentUser));
       dispatch({ type: types.CURRENT_USER_SUCCESS });
 
       dispatch({ type: types.UPDATE_USER_START });
@@ -169,7 +185,7 @@ export function facebookAuth(error, result) {
         currentUser.user,
         currentUser.additionalUserInfo.profile
       );
-      dispatch({ type: types.UPDATE_USER_SUCCESS });
+      dispatch({ type: types.UPDATE_USER_SUCCESS, payload: userData });
     } catch (e) {
       console.error(e);
       dispatch({
@@ -213,9 +229,12 @@ export function locateAccessToken() {
 export function authSubscription() {
   return function(dispatch) {
     dispatch({ type: types.AUTH_START });
-    return firebase.auth().onAuthStateChanged(user => {
+    return firebase.auth().onAuthStateChanged(async user => {
       if (user) {
         dispatch(authUser(user));
+        const userData = await getUser(user.uid);
+        dispatch({ type: types.USER_DATA_SUCCESS, payload: userData });
+        // return getUser(user.uid)
         savePushToken(user);
         // } else {
         //   dispatch(signOutUser())

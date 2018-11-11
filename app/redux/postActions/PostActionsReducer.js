@@ -1,31 +1,27 @@
-import { types } from './PostsActionsActions';
+import { types } from "./PostActionsActions";
 
 const initialState = {
-  error: null,
-}
+  error: null
+};
 
 function postActionsReducer(state = initialState, action) {
-  console.log(action.type);
   // Failure Handling
-  if (action.type.substr(action.type.length - 4) === 'FAIL') {
+  if (action.type.substr(action.type.length - 4) === "FAIL") {
     return {
       ...state,
       error: action.error
+    };
+  }
+
+  switch (action.type) {
+    case types.POST_ACTION_SUCCESS: {
+      return {
+        ...state
+      };
     }
   }
 
-  // Case Handling
-  // switch (action.type) {
-  //   case types.LOAD_QUEUE_POSTS_SUCCESS: {
-  //     return {
-  //       ...state,
-  //       queuePosts: action.payload,
-  //       refreshing: false
-  //     }
-  //   }
-  // }
-
-  return state
+  return state;
 }
 
 export default postActionsReducer;

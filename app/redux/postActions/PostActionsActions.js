@@ -1,109 +1,75 @@
-import firebase from 'react-native-firebase';
-import { ts } from '../../lib/FirebaseHelpers';
+import firebase from "react-native-firebase";
+import Toaster from "../../components/Toaster";
+import {
+  actionTypeActiveToasts,
+  actionTypeInactiveToasts
+} from "../../styles/Copy";
+import { ts } from "../../lib/FirebaseHelpers";
 
 // Action Types
 export const types = {
-  NEW_ACTION_START: 'NEW_ACTION_START',
-  NEW_ACTION_SUCCESS: 'NEW_ACTION_SUCCESS',
-  NEW_ACTION_FAIL: 'NEW_ACTION_FAIL',
-  TOGGLE_ACTION_START: 'TOGGLE_ACTION_START',
-  TOGGLE_ACTION_SUCCESS: 'TOGGLE_ACTION_SUCCESS',
-  TOGGLE_ACTION_FAIL: 'TOGGLE_ACTION_FAIL',
+  POST_ACTION_START: "POST_ACTION_START",
+  POST_ACTION_SUCCESS: "POST_ACTION_SUCCESS",
+  POST_ACTION_FAIL: "POST_ACTION_FAIL"
 };
 
-const newActionExists = (documentSnapshot) => {
-  documentSnapshot.ref.set({
-    updatedAt: ts,
-    visible: true
-  }, {
-    merge: true
-  })
-}
+export const postAction = (actionType, userId, postId) => {
+  return function(dispatch) {
+    dispatch({
+      type: types.POST_ACTION_START,
+      actionType: actionType
+    });
+    const actionRef = firebase
+      .firestore()
+      .collection(actionType + "s")
+      .doc(`${userId}_${postId}`);
 
-const toggleActionExists = (documentSnapshot) => {
-  documentSnapshot.ref.set({
-    updatedAt: ts,
-    visible: !documentSnapshot.data().visible
-  }, {
-    merge: true
-  })
-}
+    let actionActive = null;
 
-const actionWrite = (actionType, userId, postId, writeType) => {
-  const ref = firebase.firestore()
-    .collection('users')
-    .doc(userId)
-    .collection(actionType + 's');
-
-  return ref
-    .where('post', '==', firebase.firestore().collection('posts').doc(postId))
-    .get()
-    .then((querySnapshot) => {
-      if (querySnapshot.empty) {
-        ref.add({
-          createdAt: ts,
-          post: firebase.firestore().collection('posts').doc(postId),
-          updatedAt: ts,
-          user: firebase.firestore().collection('users').doc(userId),
-          visible: true
-        })
-      }
-      else if (querySnapshot.size == 1) {
-        querySnapshot.forEach((documentSnapshot) => {
-          if (writeType == 'new') {
-            newActionExists(documentSnapshot)
-          } else if (writeType == 'toggle') {
-            toggleActionExists(documentSnapshot)
+    return firebase
+      .firestore()
+      .runTransaction(t => {
+        return t.get(actionRef).then(documentSnapshot => {
+          if (!documentSnapshot.exists) {
+            actionActive = true;
+            t.set(actionRef, {
+              active: true,
+              createdAt: ts,
+              postId: postId,
+              updatedAt: ts,
+              userId: userId
+            });
+          } else {
+            actionActive = !documentSnapshot.data().active;
+            t.set(
+              actionRef,
+              {
+                active: actionActive,
+                updatedAt: ts
+              },
+              {
+                merge: true
+              }
+            );
           }
-        })
-      }
-    })
-}
-
-export const newAction = (actionType, userId, postId) => {
-  return function(dispatch) {
-    dispatch({
-      type: types.NEW_ACTION_START,
-      actionType: actionType
-    });
-    return actionWrite(actionType, userId, postId, 'new')
-      .then((value) => {
+        });
+      })
+      .then(value => {
+        let toast = actionActive
+          ? Toaster(actionTypeActiveToasts[actionType])
+          : Toaster(actionTypeInactiveToasts[actionType]);
         dispatch({
-          type: types.NEW_ACTION_SUCCESS,
+          type: types.POST_ACTION_SUCCESS,
           actionType: actionType
         });
       })
-      .catch((e) => {
+      .catch(e => {
         console.error(e);
         dispatch({
-          type: types.NEW_ACTION_FAIL,
+          type: types.POST_ACTION_FAIL,
           actionType: actionType,
           error: e
         });
       });
-  }
-}
-
-export const toggleAction = (actionType, userId, postId) => {
-  return function(dispatch) {
-    dispatch({
-      type: types.TOGGLE_ACTION_START,
-      actionType: actionType
-    });
-    return actionWrite(actionType, userId, postId, 'toggle')
-      .then((value) => {
-        dispatch({
-          type: types.TOGGLE_ACTION_SUCCESS,
-          actionType: actionType
-        });
-      })
-      .catch((e) => {
-        console.error(e);
-        dispatch({
-          type: types.TOGGLE_ACTION_FAIL,
-          actionType: actionType,
-          error: e
-        });
-      });
-  }
-}
+  };
+};
