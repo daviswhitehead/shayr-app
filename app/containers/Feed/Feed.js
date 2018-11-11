@@ -4,6 +4,7 @@ import {
   Text,
   TouchableOpacity,
   LayoutAnimation,
+  Linking,
   Notification
 } from "react-native";
 import { connect } from "react-redux";
@@ -60,6 +61,7 @@ class Feed extends Component {
     super();
     this.subscriptions = [];
   }
+
   componentDidMount() {
     this.subscriptions.push(
       this.props.loadPosts(this.props.auth.user.uid, "feed")
@@ -78,9 +80,9 @@ class Feed extends Component {
   }
 
   componentWillUnmount() {
-    for (var sub in this.subscriptions) {
-      if (object.hasOwnProperty(sub)) {
-        this.subscriptions.sub();
+    for (var subscription in this.subscriptions) {
+      if (object.hasOwnProperty(subscription)) {
+        this.subscriptions.subscription();
       }
     }
   }
@@ -98,11 +100,19 @@ class Feed extends Component {
     );
   };
 
-  renderItem = ({ item }) => {
-    const test = {
-      actionCount: 10,
-      actionUser: true
-    };
+  contentCardTap = url => {
+    Linking.canOpenURL(url)
+      .then(supported => {
+        if (!supported) {
+          console.log("Can't handle url: " + url);
+        } else {
+          return Linking.openURL(url);
+        }
+      })
+      .catch(err => console.error("An error occurred", err));
+  };
+
+  renderItem = item => {
     return (
       <Swipeable
         leftActionActivationDistance={100}
@@ -111,31 +121,53 @@ class Feed extends Component {
       >
         <ContentCard
           payload={item}
-          shareAction={test}
-          addAction={test}
-          doneAction={test}
-          likeAction={test}
+          friends={this.props.social.friends}
+          onTap={() => this.contentCardTap(item.url)}
+          shareAction={{
+            actionCount: item.shareCount,
+            actionUser: item.shares
+              ? item.shares.includes(this.props.auth.user.uid)
+              : false,
+            onTap: () => console.log("i was tapped")
+          }}
+          addAction={{
+            actionCount: item.addCount,
+            actionUser: item.adds
+              ? item.adds.includes(this.props.auth.user.uid)
+              : false
+          }}
+          doneAction={{
+            actionCount: item.doneCount,
+            actionUser: item.dones
+              ? item.dones.includes(this.props.auth.user.uid)
+              : false
+          }}
+          likeAction={{
+            actionCount: item.likeCount,
+            actionUser: item.likes
+              ? item.likes.includes(this.props.auth.user.uid)
+              : false
+          }}
         />
       </Swipeable>
     );
   };
 
   loading = () => {
-    if (!this.props.posts.feedPosts || !this.props.posts.loadedPostMeta) {
+    if (!this.props.posts.feedPosts || !this.props.social.friends) {
       return <Text>LOADING</Text>;
     }
-
     return (
       <List
         data={flattenPosts(this.props.posts.feedPosts)}
         renderItem={item => this.renderItem(item)}
-        onEndReached={() =>
-          this.props.paginatePosts(
-            this.props.auth.user.uid,
-            "feed",
-            this.props.posts.lastPost
-          )
-        }
+        // onEndReached={() =>
+        //   this.props.paginatePosts(
+        //     this.props.auth.user.uid,
+        //     "feed",
+        //     this.props.posts.feedLastPost
+        //   )
+        // }
         onRefresh={() =>
           this.props.refreshPosts(this.props.auth.user.uid, "feed")
         }
@@ -145,8 +177,6 @@ class Feed extends Component {
   };
 
   render() {
-    console.log(this.state);
-    console.log(this.props);
     return (
       <View style={styles.container}>
         <this.loading />

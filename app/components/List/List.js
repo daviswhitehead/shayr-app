@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
 import {
   FlatList,
   Text,
@@ -6,10 +6,9 @@ import {
   View,
   TouchableOpacity,
   TouchableHighlight
-} from 'react-native';
-import PropTypes from 'prop-types';
-import styles from './styles';
-
+} from "react-native";
+import PropTypes from "prop-types";
+import styles from "./styles";
 
 export default class List extends Component {
   constructor() {
@@ -21,26 +20,20 @@ export default class List extends Component {
     renderItem: PropTypes.func.isRequired,
     onScroll: PropTypes.func,
     onEndReached: PropTypes.func,
-    onRefresh: PropTypes.func,
+    onRefresh: PropTypes.func
   };
 
-  extractKey = ({key}) => {
+  extractKey = ({ key }) => {
     return key;
-  }
+  };
 
   renderSeparator = () => {
-    return (
-      <View style={styles.separator} />
-    );
+    return <View style={styles.separator} />;
   };
 
-  renderItem = ({item}) => {
-    return (
-      <View style={styles.box}>
-        {this.props.renderItem(item)}
-      </View>
-    )
-  }
+  renderItem = ({ item }) => {
+    return <View style={styles.box}>{this.props.renderItem(item)}</View>;
+  };
 
   render() {
     return (
@@ -52,7 +45,7 @@ export default class List extends Component {
         ItemSeparatorComponent={this.renderSeparator}
         onScroll={this.props.onScroll}
         onEndReached={this.props.onEndReached}
-        onEndThreshold={0.25}
+        onEndReachedThreshold={0.1}
         onRefresh={this.props.onRefresh}
         refreshing={this.props.refreshing}
       />

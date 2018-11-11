@@ -5,7 +5,7 @@ import { connect } from "react-redux";
 import { NavigationActions } from "react-navigation";
 import Feed from "../../containers/Feed";
 
-import { loadFriends } from "../../redux/social/SocialActions";
+import { loadFriendships } from "../../redux/social/SocialActions";
 
 const mapStateToProps = state => {
   return {
@@ -16,7 +16,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    loadFriends: userId => dispatch(loadFriends(userId))
+    loadFriendships: userId => dispatch(loadFriendships(userId))
+    // loadFriends: userId => dispatch(loadFriends(userId))
   };
 };
 
@@ -30,11 +31,13 @@ class LoginListener extends Component {
   };
 
   componentDidMount() {
-    this.unsubscribeFriends = this.props.loadFriends(this.props.auth.user.uid);
+    this.unsubscribeFriendships = this.props.loadFriendships(
+      this.props.auth.user.uid
+    );
   }
 
   componentWillUnmount() {
-    this.unsubscribeFriends();
+    this.unsubscribeFriendships();
   }
 
   render() {

@@ -20,7 +20,7 @@ export const types = {
 };
 
 // Helper Functions
-const pageLimter = 2;
+const pageLimter = 1;
 const feedQuery = userId => {
   return firebase
     .firestore()

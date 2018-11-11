@@ -1,6 +1,7 @@
 import { types } from "./SocialActions";
 
 const initialState = {
+  friendships: null,
   friends: null,
   error: null
 };
@@ -16,7 +17,13 @@ function socialReducer(state = initialState, action) {
 
   // Case Handling
   switch (action.type) {
-    case types.LOAD_FRIENDS_SUCCESS: {
+    case types.LOAD_FRIENDSHIPS_SUCCESS: {
+      return {
+        ...state,
+        friendships: action.payload
+      };
+    }
+    case types.LOAD_FRIEND_SUCCESS: {
       return {
         ...state,
         friends: action.payload
