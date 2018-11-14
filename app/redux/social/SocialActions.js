@@ -2,6 +2,9 @@ import firebase from "react-native-firebase";
 
 // Action Types
 export const types = {
+  LOAD_SELF_START: "LOAD_SELF_START",
+  LOAD_SELF_SUCCESS: "LOAD_SELF_SUCCESS",
+  LOAD_SELF_FAIL: "LOAD_SELF_FAIL",
   LOAD_FRIENDSHIPS_START: "LOAD_FRIENDSHIPS_START",
   LOAD_FRIENDSHIPS_SUCCESS: "LOAD_FRIENDSHIPS_SUCCESS",
   LOAD_FRIENDSHIPS_FAIL: "LOAD_FRIENDSHIPS_FAIL",
@@ -62,6 +65,33 @@ export function loadFriendships(userId) {
           console.error(e);
           dispatch({
             type: types.LOAD_FRIENDSHIPS_FAIL,
+            error: e
+          });
+        }
+      );
+  };
+}
+
+export function loadSelf(userId) {
+  return function(dispatch) {
+    dispatch({ type: types.LOAD_SELF_START });
+    return firebase
+      .firestore()
+      .collection("users")
+      .doc(userId)
+      .onSnapshot(
+        documentSnapshot => {
+          const self = {};
+          self[userId] = documentSnapshot.data();
+          dispatch({
+            type: types.LOAD_SELF_SUCCESS,
+            payload: self
+          });
+        },
+        e => {
+          console.error(e);
+          dispatch({
+            type: types.LOAD_SELF_FAIL,
             error: e
           });
         }

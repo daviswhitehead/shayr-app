@@ -13,9 +13,6 @@
 		00C302E91ABCBA2D00DB3ED1 /* libRCTNetwork.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302DC1ABCB9D200DB3ED1 /* libRCTNetwork.a */; };
 		00C302EA1ABCBA2D00DB3ED1 /* libRCTVibration.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302E41ABCB9EE00DB3ED1 /* libRCTVibration.a */; };
 		00E356F31AD99517003FC87E /* shayrTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* shayrTests.m */; };
-		03E0BF8ABE7546E4A11CA003 /* NunitoSans-BlackItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D473013089A8451CAE9731B6 /* NunitoSans-BlackItalic.ttf */; };
-		060AC6088D414F4A9A1E9974 /* NunitoSans-LightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 91BEA957DCFF4DACA64DE495 /* NunitoSans-LightItalic.ttf */; };
-		0B93C65DE1594F4887FD9039 /* NunitoSans-BoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 80E11D6F141A4E7FB251A806 /* NunitoSans-BoldItalic.ttf */; };
 		133E29F31AD74F7200F7D852 /* libRCTLinking.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 78C398B91ACF4ADC00677621 /* libRCTLinking.a */; };
 		139105C61AF99C1200B5F7CC /* libRCTSettings.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 139105C11AF99BAD00B5F7CC /* libRCTSettings.a */; };
 		139FDEF61B0652A700C62182 /* libRCTWebSocket.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 139FDEF41B06529B00C62182 /* libRCTWebSocket.a */; };
@@ -27,7 +24,6 @@
 		146834051AC3E58100842450 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
 		2C2B77A161484920B65085F4 /* Feather.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7D5DCBF1E4C446F8904729CF /* Feather.ttf */; };
 		2DF0FFEE2056DD460020B375 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DAD3EA31DF850E9000B6D8A /* libReact.a */; };
-		3025B0133D394156B321EBDD /* NunitoSans-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8319DA1701A6417B9F133F18 /* NunitoSans-Light.ttf */; };
 		3042DFBB8E7C4EB0A7AD2A91 /* Ionicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2633A0E7BE4145E59C93AD9B /* Ionicons.ttf */; };
 		3438A631ECEC4F0B9EB65FBB /* MaterialIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 69AB6B62A5614E80A8D734AB /* MaterialIcons.ttf */; };
 		4AB8EA4CBD564A93A57C0990 /* Entypo.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5BE6B98523534F0397866D4D /* Entypo.ttf */; };
@@ -61,26 +57,18 @@
 		614DBE3B20855A82007ADF34 /* libRNSKBucket.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 614DBDF1208501EE007ADF34 /* libRNSKBucket.a */; };
 		6172C8AB218F98F000231FF0 /* libReactNativeConfig.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6172C8AA218F98D100231FF0 /* libReactNativeConfig.a */; };
 		6172C8AC218F992000231FF0 /* libReactNativeConfig.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6172C8AA218F98D100231FF0 /* libReactNativeConfig.a */; };
+		61CF5E7B219BA6DD00164E15 /* libRCTAnimation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E9157331DD0AC6500FF2AA8 /* libRCTAnimation.a */; };
 		68A0A023BA22424480FB79D2 /* libRNFirebase.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A9607AF0E98D40738D630F1B /* libRNFirebase.a */; };
-		7626450CACB3455AAC41A142 /* NunitoSans-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7A6430C50B1849A3A058EB8F /* NunitoSans-Italic.ttf */; };
-		763C363909D74E5388C271A9 /* NunitoSans-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 41F0D439DECE45DEB6D8F626 /* NunitoSans-Bold.ttf */; };
-		7A72FB0D4175423DB843D695 /* NunitoSans-ExtraLight.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4AE5F3C54E1944448B8C7FE3 /* NunitoSans-ExtraLight.ttf */; };
-		7B3190016B564985A8209A42 /* NunitoSans-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 260CCFE69AA649DC854C5902 /* NunitoSans-ExtraBold.ttf */; };
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
-		9B9891B9FD3244A9A2029FDD /* NunitoSans-ExtraBoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 822F295ED19D4184A4E6CEAF /* NunitoSans-ExtraBoldItalic.ttf */; };
 		A1864BA6D2C14F439BB471D9 /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C6EF825C6BF744E6AD2A52C9 /* Zocial.ttf */; };
-		AC1E051EA818465CA00DD774 /* NunitoSans-SemiBoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 97CDFD66290046FBA1BE255F /* NunitoSans-SemiBoldItalic.ttf */; };
-		AD8B23898F4847399DF22B2C /* NunitoSans-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7694B3CCB6644DD19664F8EA /* NunitoSans-SemiBold.ttf */; };
 		ADBDB9381DFEBF1600ED6528 /* libRCTBlob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ADBDB9271DFEBF0700ED6528 /* libRCTBlob.a */; };
 		B6E70E45327A4A958A945D3D /* MaterialCommunityIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 45DAA99AC48B45108B9CD8ED /* MaterialCommunityIcons.ttf */; };
 		B8BEAC3C9F9B4B2BABB254CA /* libRNSKBucket.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 03C5B41A61BC438C8E55E72B /* libRNSKBucket.a */; };
 		C1D2FBC59D06470BAFDA3192 /* libReactNativeShareExtension.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 94D833A123694906B6671BB7 /* libReactNativeShareExtension.a */; };
 		C39665C0686445D4818AC81E /* Foundation.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9A770284447140E8B6683F7C /* Foundation.ttf */; };
-		CA801A8B7DB6429B9F6A3CD6 /* NunitoSans-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7E8F6B6293564ABEBB3C67B2 /* NunitoSans-Black.ttf */; };
 		E5E466780A314E7C98EE0AC1 /* FontAwesome.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9F745B6E90804517BE1EB668 /* FontAwesome.ttf */; };
 		F0C07303A4E649C8989A5474 /* libRCTFBSDK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 83FD7310BE994B37B547CBC0 /* libRCTFBSDK.a */; };
 		F595D1109E2C4FEFB840AFD0 /* EvilIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B557653982A94201B72DAE23 /* EvilIcons.ttf */; };
-		F743C71783FB480DAC286EAD /* NunitoSans-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FA5980FC422941569CAFB09A /* NunitoSans-Regular.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -501,6 +489,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				61CF5E7B219BA6DD00164E15 /* libRCTAnimation.a in Frameworks */,
 				6172C8AB218F98F000231FF0 /* libReactNativeConfig.a in Frameworks */,
 				ADBDB9381DFEBF1600ED6528 /* libRCTBlob.a in Frameworks */,
 				146834051AC3E58100842450 /* libReact.a in Frameworks */,
@@ -1401,10 +1390,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				61229D8A211BEE1B004BC77A /* NunitoSans-ExtraBold.ttf in Resources */,
-				61229DB5211BEE22004BC77A /* NunitoSans-LightItalic.ttf in Resources */,
 				58B59254201E8E96005CC7F4 /* Info.plist in Resources */,
-				61229DB4211BEE20004BC77A /* NunitoSans-Light.ttf in Resources */,
 				58B5923A201E8CA1005CC7F4 /* MainInterface.storyboard in Resources */,
 				614DBDB62084F857007ADF34 /* GoogleService-Info.plist in Resources */,
 			);

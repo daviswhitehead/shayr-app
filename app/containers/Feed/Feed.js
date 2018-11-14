@@ -80,12 +80,13 @@ class Feed extends Component {
   }
 
   renderItem = item => {
-    console.log(this.props.social.friends);
-    console.log(this.props.auth);
     return (
       <ContentCard
         payload={item}
-        friends={this.props.social.friends}
+        friends={{
+          ...this.props.social.self,
+          ...this.props.social.friends
+        }}
         onTap={() => openURL(item.url)}
         shareAction={{
           actionCount: item.shareCount,
@@ -128,7 +129,11 @@ class Feed extends Component {
   };
 
   loading = () => {
-    if (!this.props.posts.feedPosts || !this.props.social.friends) {
+    if (
+      !this.props.posts.feedPosts ||
+      !this.props.social.friends ||
+      !this.props.social.self
+    ) {
       return <Text>LOADING</Text>;
     }
     return (

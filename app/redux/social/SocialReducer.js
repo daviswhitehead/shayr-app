@@ -29,6 +29,12 @@ function socialReducer(state = initialState, action) {
         friends: action.payload
       };
     }
+    case types.LOAD_SELF_SUCCESS: {
+      return {
+        ...state,
+        self: action.payload
+      };
+    }
   }
 
   return state;
