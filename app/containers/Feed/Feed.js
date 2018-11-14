@@ -73,8 +73,9 @@ class Feed extends Component {
 
   componentWillUnmount() {
     for (var subscription in this.subscriptions) {
-      if (object.hasOwnProperty(subscription)) {
-        this.subscriptions.subscription();
+      if (this.subscriptions.hasOwnProperty(subscription)) {
+        console.log(this.subscriptions[subscription]);
+        this.subscriptions[subscription]();
       }
     }
   }
@@ -136,17 +137,18 @@ class Feed extends Component {
     ) {
       return <Text>LOADING</Text>;
     }
+    // this.props.signOutUser()
     return (
       <List
         data={flattenPosts(this.props.posts.feedPosts)}
         renderItem={item => this.renderItem(item)}
-        // onEndReached={() =>
-        //   this.props.paginatePosts(
-        //     this.props.auth.user.uid,
-        //     "feed",
-        //     this.props.posts.feedLastPost
-        //   )
-        // }
+        onEndReached={() =>
+          this.props.paginatePosts(
+            this.props.auth.user.uid,
+            "feed",
+            this.props.posts.feedLastPost
+          )
+        }
         onRefresh={() =>
           this.props.refreshPosts(this.props.auth.user.uid, "feed")
         }

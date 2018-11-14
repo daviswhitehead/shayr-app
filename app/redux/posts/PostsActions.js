@@ -20,7 +20,7 @@ export const types = {
 };
 
 // Helper Functions
-const pageLimter = 1;
+const pageLimter = 10;
 const feedQuery = userId => {
   return firebase
     .firestore()
@@ -120,20 +120,20 @@ const nextPosts = (dispatch, userId, query, lastPost) => {
 // Action Creators
 export const loadPosts = (userId, query) => {
   return function(dispatch) {
-    firstPosts(dispatch, userId, query);
+    return firstPosts(dispatch, userId, query);
   };
 };
 
 export const paginatePosts = (userId, query, lastPost) => {
   return function(dispatch) {
-    nextPosts(dispatch, userId, query, lastPost);
+    return nextPosts(dispatch, userId, query, lastPost);
   };
 };
 
 export const refreshPosts = (userId, query) => {
   return function(dispatch) {
     dispatch({ type: types.REFRESH });
-    firstPosts(dispatch, userId, query);
+    return firstPosts(dispatch, userId, query);
   };
 };
 

@@ -47,6 +47,7 @@ class Login extends Component {
   componentDidMount() {
     this.unsubscribe = this.props.authSubscription();
     this.props.locateAccessToken();
+
     // Build a channel
     const channel = new firebase.notifications.Android.Channel(
       "new-shayr-channel",

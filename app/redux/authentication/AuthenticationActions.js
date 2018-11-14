@@ -183,13 +183,17 @@ export function facebookAuth(error, result) {
 export function signOutUser() {
   return async function(dispatch) {
     try {
+      console.log("firebase.auth().signOut()");
       dispatch({ type: types.APP_SIGN_OUT_START });
       await firebase.auth().signOut();
+      console.log("POST firebase.auth().signOut()");
       dispatch({ type: types.APP_SIGN_OUT_SUCCESS });
 
       dispatch({ type: types.FACEBOOK_SIGN_OUT_START });
+      console.log("PRE LoginManager.logOut()");
       await LoginManager.logOut();
       dispatch({ type: types.FACEBOOK_SIGN_OUT_SUCCESS });
+      console.log("POST LoginManager.logOut()");
       dispatch({ type: types.SIGN_OUT_USER });
     } catch (e) {
       console.error(e);
@@ -214,6 +218,8 @@ export function authSubscription() {
   return function(dispatch) {
     dispatch({ type: types.AUTH_START });
     return firebase.auth().onAuthStateChanged(user => {
+      console.log("user");
+      console.log(user);
       if (user) {
         dispatch(authUser(user));
         savePushToken(user);

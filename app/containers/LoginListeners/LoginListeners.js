@@ -43,9 +43,16 @@ class LoginListener extends Component {
   }
 
   componentWillUnmount() {
+    console.log("here");
+    console.log(this.subscriptions);
     for (var subscription in this.subscriptions) {
-      if (object.hasOwnProperty(subscription)) {
-        this.subscriptions.subscription();
+      console.log(subscription);
+      if (this.subscriptions.hasOwnProperty(subscription)) {
+        console.log("inside");
+        console.log(this.subscriptions.subscription);
+        console.log(this.subscriptions[subscription]);
+        this.subscriptions[subscription]();
+        console.log("success");
       }
     }
   }
