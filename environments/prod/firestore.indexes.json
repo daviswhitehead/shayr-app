@@ -1,18 +1,18 @@
 {
   "indexes": [
     {
-      "collectionId": "savedPosts",
+      "collectionId": "users_posts",
       "fields": [
-        { "fieldPath": "doneAt", "mode": "DESCENDING" },
-        { "fieldPath": "deletedAt", "mode": "DESCENDING" },
-        { "fieldPath": "updatedAt", "mode": "DESCENDING" }
+        { "fieldPath": "userId", "mode": "ASCENDING" },
+        { "fieldPath": "createdAt", "mode": "DESCENDING" }
       ]
     },
     {
-      "collectionId": "postsMeta",
+      "collectionId": "users_posts",
       "fields": [
-        { "fieldPath": "addVisible", "mode": "DESCENDING" },
-        { "fieldPath": "addUpdatedAt", "mode": "DESCENDING" }
+        { "fieldPath": "userId", "mode": "ASCENDING" },
+        { "fieldPath": "adds", "mode": "ASCENDING" },
+        { "fieldPath": "updatedAt", "mode": "DESCENDING" }
       ]
     }
   ]

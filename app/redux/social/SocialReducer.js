@@ -23,7 +23,7 @@ function socialReducer(state = initialState, action) {
         friendships: action.payload
       };
     }
-    case types.LOAD_FRIEND_SUCCESS: {
+    case types.LOAD_FRIENDS_SUCCESS: {
       return {
         ...state,
         friends: action.payload

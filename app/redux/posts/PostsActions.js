@@ -34,7 +34,7 @@ const queueQuery = userId => {
     .collection("users_posts")
     .where("userId", "==", userId)
     .where("adds", "array-contains", userId)
-    .orderBy("updatedAt", "desc");
+    .orderBy("createdAt", "desc");
 };
 
 const firstPosts = (dispatch, userId, query) => {

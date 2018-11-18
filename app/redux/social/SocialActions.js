@@ -8,35 +8,9 @@ export const types = {
   LOAD_FRIENDSHIPS_START: "LOAD_FRIENDSHIPS_START",
   LOAD_FRIENDSHIPS_SUCCESS: "LOAD_FRIENDSHIPS_SUCCESS",
   LOAD_FRIENDSHIPS_FAIL: "LOAD_FRIENDSHIPS_FAIL",
-  LOAD_FRIEND_START: "LOAD_FRIEND_START",
-  LOAD_FRIEND_SUCCESS: "LOAD_FRIEND_SUCCESS",
-  LOAD_FRIEND_FAIL: "LOAD_FRIEND_FAIL"
-};
-
-// Helpers
-const getFriend = async (dispatch, friends, doc, userId) => {
-  dispatch({ type: types.LOAD_FRIEND_START });
-
-  try {
-    const friendshipData = doc.data();
-    const friendId =
-      userId === friendshipData.initiatingUserId
-        ? friendshipData.receivingUserId
-        : friendshipData.initiatingUserId;
-    friend = await firebase
-      .firestore()
-      .collection("users")
-      .doc(friendId)
-      .get();
-    friends[friendId] = friend.data();
-    dispatch({ type: types.LOAD_FRIEND_SUCCESS, payload: friends });
-  } catch (e) {
-    console.error(e);
-    dispatch({
-      type: types.LOAD_FRIEND_FAIL,
-      payload: e
-    });
-  }
+  LOAD_FRIENDS_START: "LOAD_FRIENDS_START",
+  LOAD_FRIENDS_SUCCESS: "LOAD_FRIENDS_SUCCESS",
+  LOAD_FRIENDS_FAIL: "LOAD_FRIENDS_FAIL"
 };
 
 // Action Creators
@@ -49,16 +23,55 @@ export function loadFriendships(userId) {
       .where("userIds", "array-contains", userId)
       .where("status", "==", "accepted")
       .onSnapshot(
-        querySnapshot => {
+        async querySnapshot => {
+          // data on a users friendships status
           const friendships = {};
-          const friends = {};
+          // array of friend promises to get
+          const friendsToGet = [];
+
+          // fill in friendships and friendsToGet
           querySnapshot.forEach(doc => {
-            friendships[doc.id] = doc.data();
-            getFriend(dispatch, friends, doc, userId);
+            const friendshipData = doc.data();
+            friendships[doc.id] = friendshipData;
+            const friendId =
+              userId === friendshipData.initiatingUserId
+                ? friendshipData.receivingUserId
+                : friendshipData.initiatingUserId;
+            friendsToGet.push(
+              firebase
+                .firestore()
+                .collection("users")
+                .doc(friendId)
+                .get()
+            );
           });
+
+          // get friends
+          dispatch({ type: types.LOAD_FRIENDS_START });
+          const friends = await Promise.all(friendsToGet)
+            .then(friendsList => {
+              const friends = {};
+              for (var friend in friendsList) {
+                if (friendsList.hasOwnProperty(friend)) {
+                  friends[friendsList[friend].id] = friendsList[friend].data();
+                }
+              }
+              return friends;
+            })
+            .catch(e => {
+              dispatch({
+                type: types.LOAD_FRIENDS_FAIL,
+                error: e
+              });
+              return e;
+            });
           dispatch({
             type: types.LOAD_FRIENDSHIPS_SUCCESS,
             payload: friendships
+          });
+          dispatch({
+            type: types.LOAD_FRIENDS_SUCCESS,
+            payload: friends
           });
         },
         e => {
@@ -80,10 +93,10 @@ export function loadSelf(userId) {
       .collection("users")
       .doc(userId)
       .onSnapshot(
-        documentSnapshot => {
+        async documentSnapshot => {
           const self = {};
-          self[userId] = documentSnapshot.data();
-          dispatch({
+          self[userId] = await documentSnapshot.data();
+          await dispatch({
             type: types.LOAD_SELF_SUCCESS,
             payload: self
           });

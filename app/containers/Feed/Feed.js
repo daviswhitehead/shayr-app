@@ -1,12 +1,5 @@
 import React, { Component } from "react";
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  LayoutAnimation,
-  Linking,
-  Notification
-} from "react-native";
+import { View, Text, Notification } from "react-native";
 import { connect } from "react-redux";
 import { NavigationActions } from "react-navigation";
 
@@ -137,7 +130,6 @@ class Feed extends Component {
     ) {
       return <Text>LOADING</Text>;
     }
-    // this.props.signOutUser()
     return (
       <List
         data={flattenPosts(this.props.posts.feedPosts)}
