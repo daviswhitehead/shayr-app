@@ -65,7 +65,7 @@ export const pushNotificationListener = () => {
 };
 
 export const savePushToken = user => {
-  fcm = firebase.messaging();
+  const fcm = firebase.messaging();
   // requests push notification permissions from the user
   fcm.requestPermission();
   // gets the device's push token
@@ -210,7 +210,7 @@ export function locateAccessToken() {
 
   return {
     type: types.ACCESS_TOKEN_STATUS,
-    payload: token ? true : false
+    payload: !!token
   };
 }
 

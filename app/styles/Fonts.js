@@ -1,7 +1,6 @@
 export const fonts = {
   BOLD: {
     // fontFamily: 'NunitoSans-ExtraBold',
-    // fontFamily: 'arial',
   },
   LIGHT: {
     // fontFamily: 'NunitoSans-Light',

@@ -1,11 +1,11 @@
 import firebase from "react-native-firebase";
+import _ from "lodash";
 import {
   ts,
   getUserId,
   getDocShares,
   getRefData
 } from "../../lib/FirebaseHelpers";
-import _ from "lodash";
 
 // Action Types
 export const types = {
@@ -34,7 +34,7 @@ const queueQuery = userId => {
     .collection("users_posts")
     .where("userId", "==", userId)
     .where("adds", "array-contains", userId)
-    .orderBy("createdAt", "desc");
+    .orderBy("updatedAt", "desc");
 };
 
 const firstPosts = (dispatch, userId, query) => {
@@ -56,12 +56,12 @@ const firstPosts = (dispatch, userId, query) => {
       dispatch({
         type: types.LAST_POST,
         payload: newLastPost,
-        query: query
+        query
       });
       dispatch({
         type: types.LOAD_POSTS_SUCCESS,
         payload: posts,
-        query: query
+        query
       });
     },
     e => {
@@ -99,12 +99,12 @@ const nextPosts = (dispatch, userId, query, lastPost) => {
         dispatch({
           type: types.LAST_POST,
           payload: newLastPost,
-          query: query
+          query
         });
         dispatch({
           type: types.PAGINATE_POSTS_SUCCESS,
           payload: posts,
-          query: query
+          query
         });
       },
       e => {

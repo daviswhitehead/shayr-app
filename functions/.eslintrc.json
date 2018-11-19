@@ -117,6 +117,6 @@
     "promise/catch-or-return": 2,
 
     // Warn against nested then() or catch() statements
-    "promise/no-nesting": 1
+    "promise/no-nesting": "off"
   }
 }

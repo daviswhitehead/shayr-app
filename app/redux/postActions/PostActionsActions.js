@@ -17,7 +17,7 @@ export const postAction = (actionType, userId, postId) => {
   return function(dispatch) {
     dispatch({
       type: types.POST_ACTION_START,
-      actionType: actionType
+      actionType
     });
     const actionRef = firebase
       .firestore()
@@ -35,9 +35,9 @@ export const postAction = (actionType, userId, postId) => {
             t.set(actionRef, {
               active: true,
               createdAt: ts,
-              postId: postId,
+              postId,
               updatedAt: ts,
-              userId: userId
+              userId
             });
           } else {
             actionActive = !documentSnapshot.data().active;
@@ -60,14 +60,14 @@ export const postAction = (actionType, userId, postId) => {
           : Toaster(actionTypeInactiveToasts[actionType]);
         dispatch({
           type: types.POST_ACTION_SUCCESS,
-          actionType: actionType
+          actionType
         });
       })
       .catch(e => {
         console.error(e);
         dispatch({
           type: types.POST_ACTION_FAIL,
-          actionType: actionType,
+          actionType,
           error: e
         });
       });

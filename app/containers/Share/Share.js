@@ -8,6 +8,8 @@ import {
   TouchableWithoutFeedback
 } from "react-native";
 
+import firebase from "react-native-firebase";
+import ShareExtension from "react-native-share-extension";
 import styles from "./styles";
 import shareExtensionLogo from "../../assets/ShareExtensionLogo.png";
 import {
@@ -17,9 +19,6 @@ import {
 } from "../../redux/authentication/AuthenticationActions";
 import { createShare } from "../../lib/FirebaseHelpers";
 
-import firebase from "react-native-firebase";
-import ShareExtension from "react-native-share-extension";
-
 export default class MyComponent extends Component {
   constructor() {
     super();
@@ -27,7 +26,6 @@ export default class MyComponent extends Component {
     this.state = {
       modalVisible: true,
       loading: true,
-      sharing: true,
       shareText: "Shayring..."
     };
   }
@@ -38,7 +36,7 @@ export default class MyComponent extends Component {
         return {
           ...previousState,
           loading: false,
-          user: user
+          user
         };
       });
     });
@@ -83,7 +81,7 @@ export default class MyComponent extends Component {
               shareText: "Failed."
             };
           });
-        }, 3000);
+        }, 2000);
       }
     } catch (error) {
       console.log(error);
@@ -119,7 +117,8 @@ export default class MyComponent extends Component {
         visible={this.state.modalVisible}
         animationType={"slide"}
         onRequestClose={() => this.closeModal()}
-        transparent={true}
+        supportedOrientations={["portrait"]}
+        transparent
       >
         <TouchableWithoutFeedback
           onPress={() => {

@@ -11,14 +11,7 @@
       "collectionId": "users_posts",
       "fields": [
         { "fieldPath": "userId", "mode": "ASCENDING" },
-        { "fieldPath": "adds", "mode": "ARRAY_CONTAINS" },
-        { "fieldPath": "updatedAt", "mode": "DESCENDING" }
-      ]
-    },
-    {
-      "collectionId": "users_posts",
-      "fields": [
-        { "fieldPath": "adds", "mode": "ARRAY_CONTAINS" },
+        { "fieldPath": "adds", "mode": "ASCENDING" },
         { "fieldPath": "updatedAt", "mode": "DESCENDING" }
       ]
     }
