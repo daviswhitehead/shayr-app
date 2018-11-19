@@ -49,7 +49,7 @@ platform :ios do
       xcodeproj: './ios/shayr.xcodeproj'
     )
     gym(
-      scheme: 'shayr',
+      scheme: 'shayr-prod',
       workspace: './ios/shayr.xcworkspace',
       export_method: options[:method]
     )
