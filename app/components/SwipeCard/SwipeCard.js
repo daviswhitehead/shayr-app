@@ -4,7 +4,7 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types';
 
-import ContentCard from '../ContentCard';
+// import ContentCard from '../ContentCard';
 
 import Swipeable from 'react-native-swipeable';
 
@@ -51,7 +51,7 @@ export default class SwipeCard extends Component {
       <Swipeable
         {...swipeableOptions}
       >
-        <ContentCard payload={payload} />
+        {this.props.card}
       </Swipeable>
     );
   }

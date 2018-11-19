@@ -63,6 +63,8 @@ shayr.app.dSYM.zip
 #
 .firebaserc
 GoogleService-Info.plist
+GoogleService-Info-shayr.plist
+GoogleService-Info-ShareExtension.plist
 google-services.json
 devices.txt
 .env

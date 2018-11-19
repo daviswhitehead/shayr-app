@@ -15,4 +15,5 @@ const write = (db, samples) => {
 };
 
 // write(config.db, users.users());
-write(config.db, shares.inboundShares());
+// write(config.db, shares.inboundShares());
+write(config.db, shares.inboundSharesRound2());

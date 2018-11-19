@@ -1,27 +1,25 @@
-import { applyMiddleware, compose, createStore } from 'redux';
-import firebase from 'react-native-firebase';
-import thunk from 'redux-thunk';
-import makeRootReducer from './Reducers';
-import { navMiddleware } from './ReduxNavigation';
+import { applyMiddleware, compose, createStore } from "redux";
+import thunk from "redux-thunk";
+import { composeWithDevTools } from "redux-devtools-extension";
+import Config from "react-native-config";
+import makeRootReducer from "./Reducers";
+import { navMiddleware } from "./ReduxNavigation";
 
-export default (initialState = { }) => {
-
-  const reduxConfig = {
-    enableRedirectHandling: false
+export default (initialState = {}) => {
+  let composeEnhancers;
+  if (Config.ENV_NAME === "prod" || Config.ENV_NAME === "alpha") {
+    composeEnhancers = compose();
+  } else {
+    composeEnhancers = composeWithDevTools({});
   }
 
-  const middleware = [
-    thunk,
-    navMiddleware,
-  ];
+  const middleware = [thunk, navMiddleware];
 
   const store = createStore(
     makeRootReducer(),
     initialState,
-    compose(
-     applyMiddleware(...middleware)
-    )
-  )
+    composeEnhancers(applyMiddleware(...middleware))
+  );
 
-  return store
-}
+  return store;
+};

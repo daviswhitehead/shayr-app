@@ -1,29 +1,26 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import {
-  createStackNavigator,
-} from 'react-navigation';
-import { initializeListeners } from 'react-navigation-redux-helpers';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import { createStackNavigator } from "react-navigation";
+import { initializeListeners } from "react-navigation-redux-helpers";
 
-import { RootNavigator } from '../../config/Routes';
-import { navigationPropConstructor } from '../../redux/ReduxNavigation';
+import { RootNavigator } from "../../config/Routes";
+import { navigationPropConstructor } from "../../redux/ReduxNavigation";
 
 const mapStateToProps = state => {
   return {
-    nav: state.nav,
-  }
+    nav: state.nav
+  };
 };
-
 
 class AppWithNavigation extends Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
-    nav: PropTypes.object.isRequired,
+    nav: PropTypes.object.isRequired
   };
 
   componentDidMount() {
-    initializeListeners('root', this.props.nav);
+    initializeListeners("root", this.props.nav);
   }
 
   render() {
@@ -32,7 +29,5 @@ class AppWithNavigation extends Component {
     return <RootNavigator navigation={navigation} />;
   }
 }
-
-
 
 export default connect(mapStateToProps)(AppWithNavigation);

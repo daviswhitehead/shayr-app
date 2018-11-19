@@ -20,6 +20,28 @@
 - get all / filter posts from the same medium
   - `db.collection('users_posts').where('medium', '==', 'poscast')`
 
+# sets
+
+- perform an action on a post
+  - `db.collection('friends').where('users', 'array-contains', '${userId}').where('status', '==', 'accepted')`
+- get all of a user's (shared, added, doned, liked) posts
+  - `db.collection('users_posts').where('userId', '==', '${userId}').where('shares', 'array-contains', ${userId})`
+  - `db.collection('users_posts').where('userId', '==', '${userId}').where('adds', 'array-contains', ${userId})`
+- get all of a user's friends' (shared, added, doned, liked) posts
+  - if `friend's userId`: `db.collection('users_posts').where('userId', '==', '${userId}').where('shares', 'array-contains', ${userId})`
+- get all total (shares, adds, dones, likes) of a post
+  - `[action]Count` field in `Post` documents
+- get total (shares, adds, dones, likes) of a post within a user's friends
+  - frontend: count friends in array for `Post` in `users_posts`
+- get the names of all the friends who (shared, added, doned, liked) a post
+  - frontend: merge friends object with `Post` [action] arrays in `users_posts`
+- get all / filter posts from the same publisher
+  - `db.collection('posts').where('publisherName', '==', 'nytimes')`
+- get all / filter posts from the same tag
+  - `db.collection('users_posts').where('tags', 'array-contains', 'business')`
+- get all / filter posts from the same medium
+  - `db.collection('users_posts').where('medium', '==', 'poscast')`
+
 # functions
 
 - `onCreate('users/{userId}/inboundShares/{shareId}')`

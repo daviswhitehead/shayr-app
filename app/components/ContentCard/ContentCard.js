@@ -1,110 +1,161 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
 import {
   Text,
   StyleSheet,
   View,
   Image,
-  Linking,
-  TouchableWithoutFeedback,
-} from 'react-native';
-import PropTypes from 'prop-types';
+  TouchableWithoutFeedback
+} from "react-native";
+import PropTypes from "prop-types";
 
-import styles from './styles';
-import article from '../../assets/Article.png';
+import styles from "./styles";
+import article from "../../assets/Article.png";
+// import isURL from '../../lib/Utils'; check to make sure url is openable
+import ActionCounter from "../ActionCounter";
 
-import _ from 'lodash';
+import _ from "lodash";
 
 export default class ContentCard extends Component {
-  constructor() {
-    super();
-  }
-
   static propTypes = {
-    payload: PropTypes.object.isRequired
+    payload: PropTypes.shape({
+      image: PropTypes.string.isRequired,
+      title: PropTypes.string.isRequired,
+      publisher: PropTypes.shape({
+        name: PropTypes.string,
+        logo: PropTypes.string
+      }),
+      shares: PropTypes.arrayOf(PropTypes.string),
+      adds: PropTypes.arrayOf(PropTypes.string),
+      dones: PropTypes.arrayOf(PropTypes.string),
+      likes: PropTypes.arrayOf(PropTypes.string),
+      medium: PropTypes.string,
+      shareCount: PropTypes.number,
+      addCount: PropTypes.number,
+      doneCount: PropTypes.number,
+      likeCount: PropTypes.number,
+      url: PropTypes.string.isRequired
+    }),
+    friends: PropTypes.shape({
+      friendId: PropTypes.shape({
+        firstName: PropTypes.string,
+        lastName: PropTypes.string,
+        facebookProfilePhoto: PropTypes.string
+      })
+    })
   };
 
-  sanitizeData = (payload) => {
-    const data = {
-      image: _.get(payload, 'image', ''),
-      publisherName: _.get(payload, 'publisher.name', 'Error: Missing Publisher'),
-      title: _.get(payload, 'title', 'Error: Missing Title'),
-      sharedBy: _.get(payload, 'sharedBy', ''),
-      shareCount: _.get(payload, 'shareCount', '')
+  static defaultProps = {
+    payload: {
+      image: "missing",
+      title: "missing",
+      publisher: {
+        name: "missing",
+        logo: "missing"
+      },
+      shares: [],
+      medium: "missing",
+      shareCount: 0,
+      url: "missing"
+    },
+    friends: {
+      firstName: "missing",
+      lastName: "missing",
+      facebookProfilePhoto: "missing"
     }
-    if (data['sharedBy']['firstName'] && data['sharedBy']['lastName']) {
-      data['sharedByFriend'] = data['sharedBy']['firstName'] + ' ' + data['sharedBy']['lastName']
-      data['shareCount'] = data['shareCount'] - 1
-    } else {
-      data['sharedByFriend'] = false
+  };
+
+  combine = () => {
+    let data = {
+      image: this.props.payload.image,
+      title: this.props.payload.title,
+      publisher: this.props.payload.publisher,
+      url: this.props.payload.url
+    };
+    let featuredUserId = "";
+    let featuredType = "";
+    if (this.props.payload.shares) {
+      featuredUserId = this.props.payload.shares[0];
+      featuredType = "shayred";
+    } else if (this.props.payload.adds) {
+      featuredUserId = this.props.payload.adds[0];
+      featuredType = "added";
+    } else if (this.props.payload.dones) {
+      featuredUserId = this.props.payload.dones[0];
+      featuredType = "checked";
+    } else if (this.props.payload.likes) {
+      featuredUserId = this.props.payload.likes[0];
+      featuredType = "liked";
     }
 
-    if (data['shareCount'] > 1) {
-      data['sharedByOther'] = data['shareCount'] + ' others'
-    } else if (data['shareCount'] == 1) {
-      data['sharedByOther'] = data['shareCount'] + ' other'
-    } else if (!data['shareCount'] || data['shareCount'] == 0) {
-      data['sharedByOther'] = false
+    if (featuredUserId && featuredType) {
+      (data["facebookProfilePhoto"] = _.get(
+        this.props.friends,
+        [featuredUserId, "facebookProfilePhoto"],
+        "missing"
+      )),
+        (data["firstName"] = _.get(
+          this.props.friends,
+          [featuredUserId, "firstName"],
+          "missing"
+        )),
+        (data["lastName"] = _.get(
+          this.props.friends,
+          [featuredUserId, "lastName"],
+          "missing"
+        )),
+        (data["featureType"] = featuredType);
     }
 
-    if (data['sharedByFriend'] && data['sharedByOther']) {
-      data['sharedBy'] = 'Shared by ' + data['sharedByFriend'] + ' and ' + data['sharedByOther']
-    } else if (data['sharedByFriend'] && !data['sharedByOther']) {
-      data['sharedBy'] = 'Shared by ' + data['sharedByFriend']
-    } else if (!data['sharedByFriend'] && data['sharedByOther']) {
-      data['sharedBy'] = 'Shared by ' + data['sharedByOther']
-    } else {
-      data['sharedBy'] = ''
-    }
-
-    return data
-  }
-
-  tap = (payload) => {
-    const url = payload['url']
-    Linking.canOpenURL(url).then(supported => {
-      if (!supported) {
-        console.log('Can\'t handle url: ' + url);
-      } else {
-        return Linking.openURL(url);
-      }
-    }).catch(err => console.error('An error occurred', err));
-  }
+    return data;
+  };
 
   render() {
-    const data = this.sanitizeData(this.props.payload);
+    const data = this.combine();
+
     return (
       <TouchableWithoutFeedback
-        onPress={() => this.tap(this.props.payload)}
+        onPress={() => this.props.onTap(this.props.payload.url)}
       >
-        <View style={styles.card}>
-          <View
-            style={styles.imageBox}
-          >
-            <Image
-              style={styles.image}
-              source={{uri: data.image}}
-              defaultSource={article}
-            />
-            <View
-              style={styles.triangleCorner}
-            />
-          </View>
-          <View style={styles.textBox}>
-            <View style={styles.titlePublisherBox}>
-              <Text
-                style={styles.titleText}>
-                {data.title}
-              </Text>
-              <Text
-                style={styles.publisherText}>
-                {data.publisherName}
+        <View style={styles.cardBox}>
+          <View style={styles.headerBox}>
+            <View style={styles.profileImageBox}>
+              {data.facebookProfilePhoto ? (
+                <Image
+                  style={styles.profileImage}
+                  source={{ uri: data.facebookProfilePhoto }}
+                />
+              ) : (
+                <Image style={styles.profileImage} source={article} />
+              )}
+            </View>
+            <View style={styles.profileNameBox}>
+              <Text style={styles.profileName}>
+                {data.firstName} {data.lastName} {data.featureType}
               </Text>
             </View>
-            <View style={styles.sharedByBox}>
-              <Text
-                style={styles.sharedByText}>
-                {data.sharedBy}
-              </Text>
+          </View>
+          <View style={styles.contentBox}>
+            <View style={styles.imageBox}>
+              {data.image ? (
+                <Image style={styles.image} source={{ uri: data.image }} />
+              ) : (
+                <Image style={styles.image} source={article} />
+              )}
+            </View>
+            <View style={styles.textActionsBox}>
+              <View style={styles.textBox}>
+                <Text style={styles.titleText}>{data.title}</Text>
+                <Text style={styles.publisherText}>{data.publisher.name}</Text>
+              </View>
+              <View style={styles.actionsBox}>
+                <ActionCounter
+                  actionType={"share"}
+                  {...this.props.shareAction}
+                />
+                <ActionCounter actionType={"add"} {...this.props.addAction} />
+                <ActionCounter actionType={"done"} {...this.props.doneAction} />
+                <ActionCounter actionType={"like"} {...this.props.likeAction} />
+              </View>
             </View>
           </View>
         </View>

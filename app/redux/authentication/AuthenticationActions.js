@@ -1,45 +1,42 @@
-import firebase from 'react-native-firebase';
-import { AccessToken, LoginManager } from 'react-native-fbsdk';
-import { RNSKBucket } from 'react-native-swiss-knife';
-import {
-  ts,
-  getUserId,
-} from '../../lib/FirebaseHelpers';
+import firebase from "react-native-firebase";
+import { AccessToken, LoginManager } from "react-native-fbsdk";
+import { RNSKBucket } from "react-native-swiss-knife";
+import { ts, getUserId } from "../../lib/FirebaseHelpers";
 
 // Action Types
 export const types = {
-  SIGNED_IN: 'SIGNED_IN',
-  SIGN_OUT_USER: 'SIGN_OUT_USER',
-  AUTH_START: 'AUTH_START',
-  AUTH_SUCCESS: 'AUTH_SUCCESS',
-  AUTH_FAIL: 'AUTH_FAIL',
-  ACCESS_TOKEN_STATUS: 'ACCESS_TOKEN_STATUS',
-  ACCESS_TOKEN_SAVED: 'ACCESS_TOKEN_SAVED',
-  FACEBOOK_AUTH_TAP: 'FACEBOOK_AUTH_TAP',
-  FACEBOOK_AUTH_START: 'FACEBOOK_AUTH_START',
-  FACEBOOK_AUTH_SUCCESS: 'FACEBOOK_AUTH_SUCCESS',
-  AUTH_TOKEN_START: 'AUTH_TOKEN_START',
-  AUTH_TOKEN_SUCCESS: 'AUTH_TOKEN_SUCCESS',
-  CURRENT_USER_START: 'CURRENT_USER_START',
-  CURRENT_USER_SUCCESS: 'CURRENT_USER_SUCCESS',
-  UPDATE_USER_START: 'UPDATE_USER_START',
-  UPDATE_USER_SUCCESS: 'UPDATE_USER_SUCCESS',
-  FACEBOOK_SIGN_OUT_START: 'FACEBOOK_SIGN_OUT_START',
-  FACEBOOK_SIGN_OUT_SUCCESS: 'FACEBOOK_SIGN_OUT_SUCCESS',
-  APP_SIGN_OUT_START: 'APP_SIGN_OUT_START',
-  APP_SIGN_OUT_SUCCESS: 'APP_SIGN_OUT_SUCCESS',
-}
+  SIGNED_IN: "SIGNED_IN",
+  SIGN_OUT_USER: "SIGN_OUT_USER",
+  AUTH_START: "AUTH_START",
+  AUTH_SUCCESS: "AUTH_SUCCESS",
+  AUTH_FAIL: "AUTH_FAIL",
+  ACCESS_TOKEN_STATUS: "ACCESS_TOKEN_STATUS",
+  ACCESS_TOKEN_SAVED: "ACCESS_TOKEN_SAVED",
+  FACEBOOK_AUTH_TAP: "FACEBOOK_AUTH_TAP",
+  FACEBOOK_AUTH_START: "FACEBOOK_AUTH_START",
+  FACEBOOK_AUTH_SUCCESS: "FACEBOOK_AUTH_SUCCESS",
+  AUTH_TOKEN_START: "AUTH_TOKEN_START",
+  AUTH_TOKEN_SUCCESS: "AUTH_TOKEN_SUCCESS",
+  CURRENT_USER_START: "CURRENT_USER_START",
+  CURRENT_USER_SUCCESS: "CURRENT_USER_SUCCESS",
+  UPDATE_USER_START: "UPDATE_USER_START",
+  UPDATE_USER_SUCCESS: "UPDATE_USER_SUCCESS",
+  FACEBOOK_SIGN_OUT_START: "FACEBOOK_SIGN_OUT_START",
+  FACEBOOK_SIGN_OUT_SUCCESS: "FACEBOOK_SIGN_OUT_SUCCESS",
+  APP_SIGN_OUT_START: "APP_SIGN_OUT_START",
+  APP_SIGN_OUT_SUCCESS: "APP_SIGN_OUT_SUCCESS"
+};
 
 // Helper Functions
-const appGroup = 'group.shayr';
+const appGroup = "group.shayr";
 
-const storeAccessToken = (token) => {
-  RNSKBucket.set('accessToken', token, appGroup);
-}
+const storeAccessToken = token => {
+  RNSKBucket.set("accessToken", token, appGroup);
+};
 
 export const retrieveAccessToken = () => {
-  return RNSKBucket.get('accessToken', appGroup);
-}
+  return RNSKBucket.get("accessToken", appGroup);
+};
 
 export const getFBToken = (error, result) => {
   if (error) {
@@ -47,90 +44,103 @@ export const getFBToken = (error, result) => {
   } else if (result.isCancelled) {
     console.log("login is cancelled.");
   } else {
-    const tokenData = AccessToken.getCurrentAccessToken()
+    const tokenData = AccessToken.getCurrentAccessToken();
     if (!tokenData) {
-      throw new Error('Something went wrong obtaining the users access token');
+      throw new Error("Something went wrong obtaining the users access token");
     }
     return tokenData;
   }
-}
+};
 
-export const getAuthCredential = (token) => {
+export const getAuthCredential = token => {
   return firebase.auth.FacebookAuthProvider.credential(token);
-}
+};
 
-export const getCurrentUser = (credential) => {
+export const getCurrentUser = credential => {
   return firebase.auth().signInAndRetrieveDataWithCredential(credential);
-}
+};
 
 export const pushNotificationListener = () => {
   return firebase.auth;
-}
+};
 
-export const savePushToken = (user) => {
-  fcm = firebase.messaging();
+export const savePushToken = user => {
+  const fcm = firebase.messaging();
   // requests push notification permissions from the user
   fcm.requestPermission();
   // gets the device's push token
   return fcm.getToken().then(token => {
-    console.log('enter token');
-    console.log(token);
     // stores the token in the user's document
-    return firebase.firestore().collection("users").doc(user.uid).update({ pushToken: token, updatedAt: ts })
-      .then((ref) => {
-        console.log('push token update success');
+    return firebase
+      .firestore()
+      .collection("users")
+      .doc(user.uid)
+      .update({ pushToken: token, updatedAt: ts })
+      .then(ref => {
+        console.log("push token update success");
       })
-      .catch((error) => {
+      .catch(error => {
         console.error(error);
       });
   });
-}
+};
 
 export const saveUserInfo = (user, data) => {
-  const ref = firebase.firestore().collection('users').doc(getUserId(user));
+  const ref = firebase
+    .firestore()
+    .collection("users")
+    .doc(getUserId(user));
   return ref
     .get()
-    .then((doc) => {
+    .then(doc => {
       if (!doc.exists) {
         ref.set({
           createdAt: ts,
           updatedAt: ts,
           firstName: data.first_name,
           lastName: data.last_name,
-          email: data.email
-        })
+          email: data.email,
+          facebookProfilePhoto: user._user.photoURL
+        });
       } else {
-        ref.set({
-          updatedAt: ts,
-        }, {
-          merge: true
-        })
+        ref.set(
+          {
+            updatedAt: ts,
+            firstName: data.first_name,
+            lastName: data.last_name,
+            email: data.email,
+            facebookProfilePhoto: user._user.photoURL
+          },
+          {
+            merge: true
+          }
+        );
       }
-      console.log('saveUserInfo success');
+      console.log("saveUserInfo success");
     })
-    .catch((error) => {
+    .catch(error => {
       console.error(error);
     });
-}
+};
 
 // Action Creators
 export function signedIn() {
   return {
     type: types.SIGNED_IN
-  }
+  };
 }
 
 export function authUser(user) {
   return {
     type: types.AUTH_SUCCESS,
     payload: user
-  }
+  };
 }
 
 export function facebookAuthTap() {
   return {
     type: types.FACEBOOK_AUTH_TAP
-  }
+  };
 }
 
 export function facebookAuth(error, result) {
@@ -138,6 +148,7 @@ export function facebookAuth(error, result) {
     try {
       dispatch({ type: types.FACEBOOK_AUTH_START });
       const tokenData = await getFBToken(error, result);
+      console.log(tokenData);
       dispatch({ type: types.FACEBOOK_AUTH_SUCCESS });
 
       storeAccessToken(tokenData.accessToken);
@@ -145,44 +156,53 @@ export function facebookAuth(error, result) {
 
       dispatch({ type: types.AUTH_TOKEN_START });
       const credential = getAuthCredential(tokenData.accessToken);
+      console.log(credential);
       dispatch({ type: types.AUTH_TOKEN_SUCCESS });
 
       dispatch({ type: types.CURRENT_USER_START });
       const currentUser = await getCurrentUser(credential);
+      console.log(currentUser);
       dispatch({ type: types.CURRENT_USER_SUCCESS });
 
       dispatch({ type: types.UPDATE_USER_START });
-      await saveUserInfo(currentUser.user, currentUser.additionalUserInfo.profile);
+      await saveUserInfo(
+        currentUser.user,
+        currentUser.additionalUserInfo.profile
+      );
       dispatch({ type: types.UPDATE_USER_SUCCESS });
     } catch (e) {
       console.error(e);
       dispatch({
         type: types.AUTH_FAIL,
-        payload: e
+        error: e
       });
     }
-  }
+  };
 }
 
 export function signOutUser() {
   return async function(dispatch) {
     try {
+      console.log("firebase.auth().signOut()");
       dispatch({ type: types.APP_SIGN_OUT_START });
       await firebase.auth().signOut();
+      console.log("POST firebase.auth().signOut()");
       dispatch({ type: types.APP_SIGN_OUT_SUCCESS });
 
       dispatch({ type: types.FACEBOOK_SIGN_OUT_START });
+      console.log("PRE LoginManager.logOut()");
       await LoginManager.logOut();
       dispatch({ type: types.FACEBOOK_SIGN_OUT_SUCCESS });
+      console.log("POST LoginManager.logOut()");
       dispatch({ type: types.SIGN_OUT_USER });
     } catch (e) {
       console.error(e);
       dispatch({
         type: types.AUTH_FAIL,
-        payload: e
+        error: e
       });
     }
-  }
+  };
 }
 
 export function locateAccessToken() {
@@ -190,20 +210,22 @@ export function locateAccessToken() {
 
   return {
     type: types.ACCESS_TOKEN_STATUS,
-    payload: token ? true : false
-  }
+    payload: !!token
+  };
 }
 
 export function authSubscription() {
   return function(dispatch) {
     dispatch({ type: types.AUTH_START });
-    return firebase.auth().onAuthStateChanged((user) => {
+    return firebase.auth().onAuthStateChanged(user => {
+      console.log("user");
+      console.log(user);
       if (user) {
-        dispatch(authUser(user))
-        savePushToken(user)
-      // } else {
-      //   dispatch(signOutUser())
+        dispatch(authUser(user));
+        savePushToken(user);
+        // } else {
+        //   dispatch(signOutUser())
       }
     });
-  }
+  };
 }

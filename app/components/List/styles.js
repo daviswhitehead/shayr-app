@@ -1,18 +1,21 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet } from "react-native";
 
 export default StyleSheet.create({
   container: {
-    flex: 1,
+    flex: 1
   },
   box: {
     flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
-    alignItems: 'center'
+    flexDirection: "row",
+    justifyContent: "flex-start",
+    alignItems: "center"
+  },
+  row: {
+    flexDirection: "row"
   },
   separator: {
     height: 1,
-    width: '100%',
-    backgroundColor: '#E8E8E8',
-  },
-})
+    width: "100%",
+    backgroundColor: "#E8E8E8"
+  }
+});

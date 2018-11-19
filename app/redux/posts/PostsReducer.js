@@ -1,68 +1,79 @@
-import { types } from './PostsActions';
+import { types } from "./PostsActions";
 
 const initialState = {
   feedPosts: null,
   queuePosts: null,
-  lastPost: null,
-  refreshing: false,
-  loadedPostMeta: false,
-  error: null,
-}
+  feedLastPost: null,
+  queueLastPost: null,
+  feedRefreshing: false,
+  queueRefreshing: false,
+  error: null
+};
 
 function feedReducer(state = initialState, action) {
-  console.log(action.type);
+  // console.log(action.type);
   // Failure Handling
-  if (action.type.substr(action.type.length - 4) === 'FAIL') {
+  if (action.type.substr(action.type.length - 4) === "FAIL") {
     return {
       ...state,
-      error: action.payload
-    }
+      error: action.error
+    };
   }
 
   // Case Handling
   switch (action.type) {
-    case types.LOAD_QUEUE_POSTS_SUCCESS: {
-      return {
-        ...state,
-        queuePosts: action.payload,
-        refreshing: false
-      }
-    }
-  }
-  switch (action.type) {
-    case types.LOAD_FEED_POSTS_SUCCESS: {
-      return {
-        ...state,
-        feedPosts: action.payload,
-        refreshing: false
-      }
-    }
-  }
-  switch (action.type) {
-    case types.PAGINATE_FEED_POSTS_SUCCESS: {
-      return {
-        ...state,
-        feedPosts: {
-          ...state.feedPosts,
-          ...action.payload,
+    case types.LOAD_POSTS_SUCCESS: {
+      if (action.query === "feed") {
+        return {
+          ...state,
+          feedPosts: action.payload,
           refreshing: false
-        }
+        };
+      }
+      if (action.query === "queue") {
+        return {
+          ...state,
+          queuePosts: action.payload,
+          refreshing: false
+        };
+      }
+    }
+  }
+  switch (action.type) {
+    case types.PAGINATE_POSTS_SUCCESS: {
+      if (action.query === "feed") {
+        return {
+          ...state,
+          feedPosts: {
+            ...state.feedPosts,
+            ...action.payload
+          }
+        };
+      }
+      if (action.query === "queue") {
+        return {
+          ...state,
+          queuePosts: {
+            ...state.queuePosts,
+            ...action.payload
+          }
+        };
       }
     }
   }
   switch (action.type) {
     case types.LAST_POST: {
-      return {
-        ...state,
-        lastPost: action.payload
+      if (action.query === "feed") {
+        return {
+          ...state,
+          feedLastPost: action.payload
+        };
       }
-    }
-  }
-  switch (action.type) {
-    case types.LOAD_POST_META_SUCCESS: {
-      return {
-        ...state,
-        loadedPostMeta: true
+      if (action.query === "queue") {
+        return {
+          ...state,
+          queueLastPost: action.payload
+        };
       }
     }
   }
@@ -71,11 +82,11 @@ function feedReducer(state = initialState, action) {
       return {
         ...state,
         refreshing: true
-      }
+      };
     }
   }
 
-  return state
+  return state;
 }
 
 export default feedReducer;

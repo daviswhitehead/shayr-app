@@ -1,6 +1,7 @@
 import { StyleSheet } from 'react-native';
 
 import { colors } from '../../styles/Colors';
+import { fonts } from '../../styles/Fonts';
 
 export default StyleSheet.create({
   container: {
@@ -28,6 +29,11 @@ export default StyleSheet.create({
     width: 60,
   },
   text: {
+    textAlign: 'center',
+    ...fonts.BOLD,
+    fontSize: 30,
+  },
+  textTwo: {
     textAlign: 'center',
     fontSize: 30,
   },

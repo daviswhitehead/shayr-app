@@ -1,107 +1,158 @@
-import React, { Component } from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  LayoutAnimation,
-  Notification,
-} from 'react-native';
-import { connect } from 'react-redux';
-import { NavigationActions } from 'react-navigation';
+import React, { Component } from "react";
+import { View, Text, Notification } from "react-native";
+import { connect } from "react-redux";
+import { NavigationActions } from "react-navigation";
 
-import styles from './styles';
-import DynamicActionButton from '../../components/DynamicActionButton';
-import Toaster from '../../components/Toaster';
-import List from '../../components/List';
+import styles from "./styles";
+import DynamicActionButton from "../../components/DynamicActionButton";
+import List from "../../components/List";
+import ContentCard from "../../components/ContentCard";
+import { openURL } from "../../lib/Utils";
 
-import firebase from 'react-native-firebase';
-import Icon from 'react-native-vector-icons/MaterialIcons';
-import _ from 'lodash';
-import { LoginManager } from 'react-native-fbsdk';
+import firebase from "react-native-firebase";
+import Icon from "react-native-vector-icons/MaterialIcons";
+import _ from "lodash";
+import { LoginManager } from "react-native-fbsdk";
 import {
-  loadFeedPosts,
-  paginateFeedPosts,
-  flattenPosts,
-  refreshFeedPosts,
-  loadQueuePosts,
-} from '../../redux/posts/PostsActions';
-import {
-  signOutUser,
-} from '../../redux/authentication/AuthenticationActions';
-import { addPost } from '../../lib/FirebaseHelpers';
+  loadPosts,
+  paginatePosts,
+  refreshPosts,
+  flattenPosts
+} from "../../redux/posts/PostsActions";
+import { postAction } from "../../redux/postActions/PostActionsActions";
+import { signOutUser } from "../../redux/authentication/AuthenticationActions";
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {
     auth: state.auth,
-    posts: state.posts
-  }
-}
+    posts: state.posts,
+    social: state.social
+  };
+};
 
-const mapDispatchToProps = (dispatch) => ({
-  navQueue: () => dispatch(NavigationActions.navigate({ routeName: 'Queue' })),
-  loadFeedPosts: () => dispatch(loadFeedPosts()),
-  paginateFeedPosts: (lastPost) => dispatch(paginateFeedPosts(lastPost)),
-  refreshFeedPosts: () => dispatch(refreshFeedPosts()),
+const mapDispatchToProps = dispatch => ({
+  navQueue: () => dispatch(NavigationActions.navigate({ routeName: "Queue" })),
+  loadPosts: (userId, query) => dispatch(loadPosts(userId, query)),
+  paginatePosts: (userId, query, lastPost) =>
+    dispatch(paginatePosts(userId, query, lastPost)),
+  refreshPosts: (userId, query) => dispatch(refreshPosts(userId, query)),
   signOutUser: () => dispatch(signOutUser()),
-  loadQueuePosts: (userId) => dispatch(loadQueuePosts(userId)),
+  postAction: (actionType, userId, postId) =>
+    dispatch(postAction(actionType, userId, postId))
 });
 
 class Feed extends Component {
+  constructor() {
+    super();
+    this.subscriptions = [];
+  }
+
   componentDidMount() {
-    console.log('feed mount');
-    this.props.loadFeedPosts();
-    this.unsubscribe = this.props.loadQueuePosts(this.props.auth.user.uid);
-    this.notificationDisplayedListener = firebase.notifications().onNotificationDisplayed((notification) => {
-      // Process your notification as required
-      // ANDROID: Remote notifications do not contain the channel ID. You will have to specify this manually if you'd like to re-display the notification.
-    });
-    this.notificationListener = firebase.notifications().onNotification((notification) => {
-      // Process your notification as required
-    });
+    this.subscriptions.push(
+      this.props.loadPosts(this.props.auth.user.uid, "feed")
+    );
+    this.notificationDisplayedListener = firebase
+      .notifications()
+      .onNotificationDisplayed(notification => {
+        // Process your notification as required
+        // ANDROID: Remote notifications do not contain the channel ID. You will have to specify this manually if you'd like to re-display the notification.
+      });
+    this.notificationListener = firebase
+      .notifications()
+      .onNotification(notification => {
+        // Process your notification as required
+      });
   }
 
   componentWillUnmount() {
-    this.unsubscribe()
+    for (var subscription in this.subscriptions) {
+      if (this.subscriptions.hasOwnProperty(subscription)) {
+        console.log(this.subscriptions[subscription]);
+        this.subscriptions[subscription]();
+      }
+    }
   }
 
-  addToQueue = (payload) => {
-    addPost(this.props.auth.user, payload['key']);
-    let toast = Toaster('added to queue');
-  }
-
-  addToQueueUI = () => {
+  renderItem = item => {
     return (
-      <View style={styles.leftSwipeItem}>
-        <Icon name='add' size={50} color='white' />
-      </View>
+      <ContentCard
+        payload={item}
+        friends={{
+          ...this.props.social.self,
+          ...this.props.social.friends
+        }}
+        onTap={() => openURL(item.url)}
+        shareAction={{
+          actionCount: item.shareCount,
+          actionUser: item.shares
+            ? item.shares.includes(this.props.auth.user.uid)
+            : false,
+          onTap: () =>
+            this.props.postAction(
+              "share",
+              this.props.auth.user.uid,
+              item.postId
+            )
+        }}
+        addAction={{
+          actionCount: item.addCount,
+          actionUser: item.adds
+            ? item.adds.includes(this.props.auth.user.uid)
+            : false,
+          onTap: () =>
+            this.props.postAction("add", this.props.auth.user.uid, item.postId)
+        }}
+        doneAction={{
+          actionCount: item.doneCount,
+          actionUser: item.dones
+            ? item.dones.includes(this.props.auth.user.uid)
+            : false,
+          onTap: () =>
+            this.props.postAction("done", this.props.auth.user.uid, item.postId)
+        }}
+        likeAction={{
+          actionCount: item.likeCount,
+          actionUser: item.likes
+            ? item.likes.includes(this.props.auth.user.uid)
+            : false,
+          onTap: () =>
+            this.props.postAction("like", this.props.auth.user.uid, item.postId)
+        }}
+      />
     );
-  }
+  };
 
   loading = () => {
-    if (!this.props.posts.feedPosts || !this.props.posts.loadedPostMeta) {
-      return (
-        <Text>LOADING</Text>
-      );
+    if (
+      !this.props.posts.feedPosts ||
+      !this.props.social.friends ||
+      !this.props.social.self
+    ) {
+      return <Text>LOADING</Text>;
     }
-
     return (
       <List
         data={flattenPosts(this.props.posts.feedPosts)}
-        swipeLeftToRightUI={this.addToQueueUI}
-        swipeLeftToRightAction={this.addToQueue}
-        onEndReached={() => this.props.paginateFeedPosts(this.props.posts.lastPost)}
-        onRefresh={() => this.props.refreshFeedPosts()}
+        renderItem={item => this.renderItem(item)}
+        onEndReached={() =>
+          this.props.paginatePosts(
+            this.props.auth.user.uid,
+            "feed",
+            this.props.posts.feedLastPost
+          )
+        }
+        onRefresh={() =>
+          this.props.refreshPosts(this.props.auth.user.uid, "feed")
+        }
         refreshing={this.props.posts.refreshing}
-      >
-      </List>
+      />
     );
-  }
+  };
 
   render() {
-
     return (
       <View style={styles.container}>
-        <this.loading/>
+        <this.loading />
         <DynamicActionButton
           logout={this.props.signOutUser}
           feed={false}
@@ -112,4 +163,7 @@ class Feed extends Component {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Feed);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Feed);

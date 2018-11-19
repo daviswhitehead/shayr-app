@@ -27,9 +27,9 @@
   [RNFirebaseNotifications configure];
   [Fabric with:@[[Crashlytics class]]];
   NSURL *jsCodeLocation;
-  
+
   NSString *envName = [ReactNativeConfig envFor:@"ENV_NAME"];
-  if ([envName isEqualToString:@"prod"])
+  if ([envName isEqualToString:@"prod"] || [envName isEqualToString:@"alpha"])
   {
     jsCodeLocation = [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];
   }
@@ -37,6 +37,16 @@
   {
     jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index" fallbackResource:nil];
   }
+
+  // for (NSString* family in [UIFont familyNames])
+  // {
+  //   NSLog(@"%@", family);
+  //
+  //   for (NSString* name in [UIFont fontNamesForFamilyName: family])
+  //   {
+  //     NSLog(@"  %@", name);
+  //   }
+  // }
 
   RCTRootView *rootView = [[RCTRootView alloc] initWithBundleURL:jsCodeLocation
                                                       moduleName:@"shayr"

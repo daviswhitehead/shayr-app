@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
 import {
   FlatList,
   Text,
@@ -6,12 +6,9 @@ import {
   View,
   TouchableOpacity,
   TouchableHighlight
-} from 'react-native';
-import PropTypes from 'prop-types';
-
-import styles from './styles';
-import SwipeCard from '../SwipeCard';
-
+} from "react-native";
+import PropTypes from "prop-types";
+import styles from "./styles";
 
 export default class List extends Component {
   constructor() {
@@ -20,34 +17,25 @@ export default class List extends Component {
 
   static propTypes = {
     data: PropTypes.array.isRequired,
-    swipeLeftToRightUI: PropTypes.func,
-    swipeLeftToRightAction: PropTypes.func,
-    swipeRightToLeftUI: PropTypes.func,
-    swipeRightToLeftAction: PropTypes.func,
+    renderItem: PropTypes.func.isRequired,
     onScroll: PropTypes.func,
     onEndReached: PropTypes.func,
-    onRefresh: PropTypes.func,
+    onRefresh: PropTypes.func
   };
 
-  extractKey = ({key}) => key;
-
-  renderItem = ({item}) => {
-    return (
-      <View style={styles.box}>
-        <SwipeCard
-          payload={item}
-          swipeLeftToRightUI={this.props.swipeLeftToRightUI}
-          swipeLeftToRightAction={this.props.swipeLeftToRightAction}
-          swipeRightToLeftUI={this.props.swipeRightToLeftUI}
-          swipeRightToLeftAction={this.props.swipeRightToLeftAction}
-        />
-      </View>
-    )
+  extractKey = ({ key }) => {
+    return key;
   };
 
   renderSeparator = () => {
+    return <View style={styles.separator} />;
+  };
+
+  renderItem = ({ item }) => {
     return (
-      <View style={styles.separator} />
+      <View style={styles.box}>
+        <View style={styles.row}>{this.props.renderItem(item)}</View>
+      </View>
     );
   };
 
@@ -61,7 +49,7 @@ export default class List extends Component {
         ItemSeparatorComponent={this.renderSeparator}
         onScroll={this.props.onScroll}
         onEndReached={this.props.onEndReached}
-        onEndThreshold={0.25}
+        onEndReachedThreshold={0.1}
         onRefresh={this.props.onRefresh}
         refreshing={this.props.refreshing}
       />

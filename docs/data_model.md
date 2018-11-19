@@ -48,6 +48,44 @@ posts/{post} {
 
 ### Future
 ```
+ATOMS
+shares/{share} {
+  createdAt (timestamp),
+  post (reference),
+  tags [
+    {tag} (reference),
+    {tag} (reference)
+  ],
+  updatedAt (timestamp),
+  user (reference),
+  visible (boolean)
+}
+
+adds/{add} {
+  createdAt (timestamp),
+  post (reference),
+  updatedAt (timestamp),
+  user (reference),
+  visible (boolean)
+}
+
+dones/{done} {
+  createdAt (timestamp),
+  post (reference),
+  updatedAt (timestamp),
+  user (reference),
+  visible (boolean)
+}
+
+likes/{like} {
+  createdAt (timestamp),
+  post (reference),
+  updatedAt (timestamp),
+  user (reference),
+  visible (boolean)
+}
+----
+
 users/{user} {
   createdAt (timestamp),
   email (string),
@@ -57,6 +95,10 @@ users/{user} {
     {user} (reference)
   ],
   lastName (string),
+  tags [
+    {tag} (reference),
+    {tag} (reference)
+  ]
   updatedAt (timestamp)
 
   shares/{share} {
@@ -67,20 +109,32 @@ users/{user} {
       {tag} (reference)
     ],
     updatedAt (timestamp),
-    url (string),
+    user (reference),
     visible (boolean)
   }
 
-  postsMeta/{post} {
-    addCreatedAt (timestamp),
-    addUpdatedAt (timestamp),
-    addVisible (boolean),
-    doneCreatedAt (timestamp),
-    doneUpdatedAt (timestamp),
-    doneVisible (boolean),
-    likeCreatedAt (timestamp),
-    likeUpdatedAt (timestamp),
-    likeVisible (boolean),
+  adds/{add} {
+    createdAt (timestamp),
+    post (reference),
+    updatedAt (timestamp),
+    user (reference),
+    visible (boolean)
+  }
+
+  dones/{done} {
+    createdAt (timestamp),
+    post (reference),
+    updatedAt (timestamp),
+    user (reference),
+    visible (boolean)
+  }
+
+  likes/{like} {
+    createdAt (timestamp),
+    post (reference),
+    updatedAt (timestamp),
+    user (reference),
+    visible (boolean)
   }
 }
 
@@ -111,32 +165,48 @@ posts/{post} {
     logo (string),
     name (string)
   },
+  tags [
+    {tag} (reference),
+    {tag} (reference)
+  ]
   title (string),
   updatedAt (timestamp),
   url (string)
 
   shares/{share} {
     createdAt (timestamp),
+    post (reference),
     tags [
       {tag} (reference),
       {tag} (reference)
     ],
     updatedAt (timestamp),
-    url (string),
     user (reference),
     visible (boolean)
   }
 
-  usersMeta/{user} {
-    addCreatedAt (timestamp),
-    addUpdatedAt (timestamp),
-    addVisible (boolean),
-    doneCreatedAt (timestamp),
-    doneUpdatedAt (timestamp),
-    doneVisible (boolean),
-    likeCreatedAt (timestamp),
-    likeUpdatedAt (timestamp),
-    likeVisible (boolean),
+  adds/{add} {
+    createdAt (timestamp),
+    post (reference),
+    updatedAt (timestamp),
+    user (reference),
+    visible (boolean)
+  }
+
+  dones/{done} {
+    createdAt (timestamp),
+    post (reference),
+    updatedAt (timestamp),
+    user (reference),
+    visible (boolean)
+  }
+
+  likes/{like} {
+    createdAt (timestamp),
+    post (reference),
+    updatedAt (timestamp),
+    user (reference),
+    visible (boolean)
   }
 }
 ```

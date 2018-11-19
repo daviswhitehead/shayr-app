@@ -1,70 +1,86 @@
 import { StyleSheet } from 'react-native';
 
 import { colors } from '../../styles/Colors';
+import { layout } from '../../styles/Layout';
+import { fonts } from '../../styles/Fonts';
 
 export default StyleSheet.create({
-  card: {
+  cardBox: {
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'center',
+    backgroundColor: 'white',
+  },
+  headerBox: {
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',
-    backgroundColor: 'white'
+    marginLeft: layout.MARGINLEFT,
+  },
+  profileImageBox: {
+    padding: layout.PADDING,
+  },
+  profileImage: {
+    height: 36,
+    width: 36,
+    borderRadius: 18,
+    resizeMode: 'cover',
+  },
+  profileNameBox: {
+    padding: layout.PADDING,
+  },
+  profileName: {
+    ...fonts.LIGHT,
+    color: 'black',
+  },
+  contentBox: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    backgroundColor: 'white',
+    marginLeft: layout.MARGINLEFT,
   },
   imageBox: {
-    width: 110,
-    height: 100,
-    // 70% mask
+    padding: layout.PADDING,
+
   },
   image: {
     width: 100,
     height: 100,
-    // 70% mask
+    borderRadius: 10,
   },
-  triangleCorner: {
-    position: 'absolute',
-    width: 0,
-    height: 0,
-    backgroundColor: 'transparent',
-    borderStyle: 'solid',
-    borderRightWidth: 30,
-    borderTopWidth: 100,
-    borderRightColor: 'transparent',
-    borderTopColor: 'white',
-    transform: [
-      {rotate: '180deg'}
-    ],
-    paddingRight: 10,
-    marginLeft: 70,
-    shadowColor: colors.SHADOW,
-    shadowOffset: { width: 8, height: 0 },
-    shadowOpacity: 0.20,
-    shadowRadius: 3,
-  },
-  textBox: {
-    flex: 1,
-    flexDirection: 'column',
-    backgroundColor: 'white',
-    marginLeft: 0,
-  },
-  titlePublisherBox: {
-    flex: 2,
-    flexDirection: 'column',
-    justifyContent: 'center',
-  },
-  sharedByBox: {
+  textActionsBox: {
     flex: 1,
     flexDirection: 'column',
     justifyContent: 'flex-start',
+    backgroundColor: 'white',
+    padding: layout.PADDING,
+  },
+  textBox: {
+    flex: 100,
+    flexDirection: 'column',
+    backgroundColor: 'white',
   },
   titleText: {
-    fontWeight: 'bold',
+    ...fonts.BOLD,
+    color: 'black',
   },
   publisherText: {
-    fontWeight: 'normal',
+    ...fonts.LIGHT_ITALICS,
+    color: 'grey',
   },
-  sharedByText: {
-    fontStyle: 'italic',
-    fontWeight: 'normal',
-    color: colors.YELLOW,
+  actionsBox: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignContent: 'center',
+  },
+  action: {
+    padding: layout.PADDING,
+  },
+  actionImage: {
+    height: 24,
+    width: 24,
   },
 })

@@ -7,30 +7,45 @@ service cloud.firestore {
       return request.auth.uid == user;
     }
 
+    match /adds/{add} {
+      allow read, write: if isSignedIn();
+    }
+
+    match /dones/{done} {
+      allow read, write: if isSignedIn();
+    }
+
+    match /friends/{friendship} {
+      allow read, write: if isSignedIn();
+    }
+
+    match /likes/{like} {
+      allow read, write: if isSignedIn();
+    }
+
+    match /posts/{post} {
+      allow read: if isSignedIn();
+    }
+
+    match /shares/{share} {
+      allow read, write: if isSignedIn();
+    }
+
     match /users/{user} {
       allow create: if true;
       allow get: if true;
       allow read: if isSignedIn();
       allow update: if nestedUser(user);
 
-      match /shares/{share} {
+      match /inboundShares/{inboundShare} {
+        allow read, write: if isSignedIn() && nestedUser(user);
         allow create: if nestedUser(user);
-        allow read: if isSignedIn();
-      }
-
-      match /savedPosts/{savedPost} {
-        allow write: if nestedUser(user);
-        allow read: if isSignedIn();
-      }
-
-      match /postsMeta/{postMeta} {
-        allow write: if nestedUser(user);
-        allow read: if isSignedIn();
       }
     }
 
-    match /posts/{posts=**} {
-      allow read: if isSignedIn();
+    match /users_posts/{user_post} {
+      allow read, write: if isSignedIn();
     }
+
   }
 }
