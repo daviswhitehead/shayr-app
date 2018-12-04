@@ -2,36 +2,60 @@ package com.shayr;
 
 import android.app.Application;
 
-import com.crashlytics.android.Crashlytics;
+import java.util.Arrays;
+import java.util.List;
+
+// React Native
 import com.facebook.react.ReactApplication;
-import com.oblador.vectoricons.VectorIconsPackage;
-import com.github.alinz.rnsk.RNSKPackage;
-import com.alinz.parkerdan.shareextension.SharePackage;
-import io.invertase.firebase.RNFirebasePackage;
-import com.facebook.reactnative.androidsdk.FBSDKPackage;
-import com.lugg.ReactNativeConfig.ReactNativeConfigPackage;
-import com.oblador.vectoricons.VectorIconsPackage;
-import com.github.alinz.rnsk.RNSKPackage;
-import com.alinz.parkerdan.shareextension.SharePackage;
-import io.fabric.sdk.android.Fabric;
-import io.invertase.firebase.RNFirebasePackage;
-import com.facebook.reactnative.androidsdk.FBSDKPackage;
-import io.invertase.firebase.auth.RNFirebaseAuthPackage;
-import io.invertase.firebase.firestore.RNFirebaseFirestorePackage;
-import io.invertase.firebase.messaging.RNFirebaseMessagingPackage;
-import io.invertase.firebase.notifications.RNFirebaseNotificationsPackage;
-import io.invertase.firebase.fabric.crashlytics.RNFirebaseCrashlyticsPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
 import com.facebook.soloader.SoLoader;
+
+// Firebase
+// // Core
+import io.invertase.firebase.RNFirebasePackage;
+// // Authentication
+import io.invertase.firebase.auth.RNFirebaseAuthPackage;
+// // Analytics
+// import io.invertase.firebase.analytics.RNFirebaseAnalyticsPackage;
+// // Performance Monitoring
+// import io.invertase.firebase.perf.RNFirebasePerformancePackage;
+// // Remote Config
+// import io.invertase.firebase.config.RNFirebaseRemoteConfigPackage;
+// // Cloud Storage
+// import io.invertase.firebase.storage.RNFirebaseStoragePackage;
+// // Invites
+// import io.invertase.firebase.invites.RNFirebaseInvitesPackage;
+// // Dynamic Links
+// import io.invertase.firebase.links.RNFirebaseLinksPackage;
+// // Cloud Firestore
+import io.invertase.firebase.firestore.RNFirebaseFirestorePackage;
+// // Cloud Messaging / FCM
+import io.invertase.firebase.messaging.RNFirebaseMessagingPackage;
+import io.invertase.firebase.notifications.RNFirebaseNotificationsPackage;
+// // Crashlytics
+import io.invertase.firebase.fabric.crashlytics.RNFirebaseCrashlyticsPackage;
+
+// FBSDK
 import com.facebook.CallbackManager;
 import com.facebook.FacebookSdk;
+import com.facebook.reactnative.androidsdk.FBSDKPackage;
 import com.facebook.appevents.AppEventsLogger;
 
+// Crashlytics
+import io.fabric.sdk.android.Fabric;
+import com.crashlytics.android.Crashlytics;
 
-import java.util.Arrays;
-import java.util.List;
+// React Native Config
+import com.lugg.ReactNativeConfig.ReactNativeConfigPackage;
+
+// Vector Icons
+import com.oblador.vectoricons.VectorIconsPackage;
+
+// Share Extension
+import com.alinz.parkerdan.shareextension.SharePackage;
+import com.github.alinz.rnsk.RNSKPackage;
 
 public class MainApplication extends Application implements ReactApplication {
 
@@ -51,11 +75,6 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
-            new VectorIconsPackage(),
-            new RNSKPackage(),
-            new SharePackage(),
-            new RNFirebasePackage(),
-            new FBSDKPackage(),
             new ReactNativeConfigPackage(),
             new VectorIconsPackage(),
             new RNSKPackage(),
