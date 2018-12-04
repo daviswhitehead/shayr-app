@@ -96,19 +96,24 @@ def enableSeparateBuildPerCPUArchitecture = false
 def enableProguardInReleaseBuilds = false
 
 android {
-    compileSdkVersion 26
-    buildToolsVersion '27.0.3'
-    //flavorDimensions "default"
+    // because of firestore
+    dexOptions {
+        javaMaxHeapSize "4g"
+    }
+
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
 
     defaultConfig {
         applicationId "com.shayr"
-        minSdkVersion 21
-        targetSdkVersion 26
-        versionCode 6
-        versionName "1.0.4"
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode 26
+        versionName "2.0.0"
         ndk {
             abiFilters "armeabi-v7a", "x86"
         }
+        // because of firestore
         multiDexEnabled true
     }
     signingConfigs {
@@ -135,6 +140,10 @@ android {
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
             signingConfig signingConfigs.release
         }
+        debug {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+        }
     }
     // applicationVariants are e.g. debug, release
     applicationVariants.all { variant ->
@@ -155,32 +164,51 @@ android {
 }
 
 dependencies {
-    compile project(':react-native-vector-icons')
-    compile project(':react-native-swiss-knife')
-    compile project(':react-native-share-extension')
-    compile project(':react-native-firebase')
-    compile project(':react-native-fbsdk')
-    compile project(':react-native-config')
-    implementation("com.crashlytics.sdk.android:crashlytics:2.9.1@aar") {
-        transitive = true;
-    }
+    // Required
+    implementation fileTree(dir: "libs", include: ["*.jar"])
+    implementation "com.facebook.react:react-native:+"
+    implementation "com.android.support:appcompat-v7:${rootProject.ext.supportLibVersion}"
+
+    // React Native Modules
+    implementation project(':react-native-config')
     implementation project(':react-native-vector-icons')
     implementation project(':react-native-swiss-knife')
     implementation project(':react-native-share-extension')
-    implementation project(':react-native-firebase')
+    
+    // // FBSDK
     implementation project(':react-native-fbsdk')
-    implementation fileTree(dir: "libs", include: ["*.jar"])
+    // implementation 'com.facebook.android:facebook-android-sdk:[4,5)'
+    implementation 'com.facebook.android:facebook-android-sdk:4.34.0'
 
-    implementation 'com.android.support:appcompat-v7:26.0.2'
-    implementation "com.facebook.react:react-native:+"  // From node_module
-    implementation 'com.facebook.android:facebook-android-sdk:[4,5)'
-    implementation "com.google.android.gms:play-services-base:15.0.1"
-    implementation 'com.google.firebase:firebase-core:16.0.1'
-    implementation "com.google.firebase:firebase-auth:16.0.2"
-    implementation "com.google.firebase:firebase-firestore:17.0.2"
-    implementation "com.google.firebase:firebase-messaging:17.1.0"
+    // // Firebase Core
+    implementation project(':react-native-firebase')
+    implementation 'com.google.firebase:firebase-core:16.0.4'
+    implementation "com.google.android.gms:play-services-base:16.0.1"
 
-    implementation 'com.android.support:multidex:1.0.3'
+    // // Firebase Modules
+    // // // Authentication
+    implementation "com.google.firebase:firebase-auth:16.0.5"
+    // // // Analytics
+    // implementation "com.google.firebase:firebase-analytics:16.0.4"
+    // // // Performance Monitoring
+    // implementation "com.google.firebase:firebase-perf:16.2.0"
+    // // // Remote Config
+    // implementation "com.google.firebase:firebase-config:16.1.0"
+    // // // Cloud Storage
+    // implementation "com.google.firebase:firebase-storage:16.0.4"
+    // // // Invites
+    // implementation "com.google.firebase:firebase-invites:16.0.4"
+    // // // Dynamic Links
+    // implementation "com.google.firebase:firebase-dynamic-links:16.1.2"
+    // // // Cloud Firestore
+    implementation "com.google.firebase:firebase-firestore:17.1.2"
+    // // // Cloud Messaging / FCM
+    implementation "com.google.firebase:firebase-messaging:17.3.4"
+    // // // Crashlytics
+    implementation('com.crashlytics.sdk.android:crashlytics:2.9.5@aar') {
+        transitive = true
+    }
+    // implementation 'com.android.support:multidex:1.0.3'
 
 }
 
