@@ -1,29 +1,25 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet } from "react-native";
 
-import { colors } from '../../styles/Colors';
-import { layout } from '../../styles/Layout';
-import { fonts } from '../../styles/Fonts';
+import { layout } from "../../styles/Layout";
 
 export default StyleSheet.create({
   container: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
+    flex: 1,
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    margin: layout.MARGIN_SHORT
   },
-  icon: {
-    height: 16,
-    width: 16,
-    resizeMode: 'contain',
+  iconBox: {
+    padding: layout.PADDING_MEDIUM
+  },
+  countBox: {
+    height: 20,
+    width: 16
   },
   count: {
-    ...fonts.BOLD,
-    color: colors.YELLOW,
-    padding: layout.PADDING,
     fontSize: 16,
-  },
-  iconLoading: {
-    height: 16,
-    width: 16,
-    backgroundColor: colors.GRAY,
-  },
-})
+    // textAlignVertical: 'center',
+    textAlign: "center"
+  }
+});

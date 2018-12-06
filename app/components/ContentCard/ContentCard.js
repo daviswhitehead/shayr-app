@@ -8,12 +8,11 @@ import {
 } from "react-native";
 import PropTypes from "prop-types";
 
+import _ from "lodash";
 import styles from "./styles";
 import article from "../../assets/Article.png";
 // import isURL from '../../lib/Utils'; check to make sure url is openable
 import ActionCounter from "../ActionCounter";
-
-import _ from "lodash";
 
 export default class ContentCard extends Component {
   static propTypes = {
