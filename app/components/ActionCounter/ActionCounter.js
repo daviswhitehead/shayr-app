@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Text, View, Image, TouchableOpacity } from "react-native";
+import { Text, View, TouchableOpacity } from "react-native";
 import PropTypes from "prop-types";
 
 import {
@@ -7,46 +7,13 @@ import {
   toggleAction
 } from "../../redux/postActions/PostActionsActions";
 
+import { createIconSetFromIcoMoon } from "react-native-vector-icons";
+import icoMoonConfig from "../../assets/fonts/selection.json";
+
 import styles from "./styles";
-
-import shareActive from "../../assets/shareActive/shareActive.png";
-import shareInactive from "../../assets/shareInactive/shareInactive.png";
-import shareUser from "../../assets/shareUser/shareUser.png";
-
-import addActive from "../../assets/addActive/addActive.png";
-import addInactive from "../../assets/addInactive/addInactive.png";
-import addUser from "../../assets/addUser/addUser.png";
-
-import doneActive from "../../assets/doneActive/doneActive.png";
-import doneInactive from "../../assets/doneInactive/doneInactive.png";
-import doneUser from "../../assets/doneUser/doneUser.png";
-
-import likeActive from "../../assets/likeActive/likeActive.png";
-import likeInactive from "../../assets/likeInactive/likeInactive.png";
-import likeUser from "../../assets/likeUser/likeUser.png";
-
-const icons = {
-  share: {
-    active: shareActive,
-    inactive: shareInactive,
-    user: shareUser
-  },
-  add: {
-    active: addActive,
-    inactive: addInactive,
-    user: addUser
-  },
-  done: {
-    active: doneActive,
-    inactive: doneInactive,
-    user: doneUser
-  },
-  like: {
-    active: likeActive,
-    inactive: likeInactive,
-    user: likeUser
-  }
-};
+import { colors } from "../../styles/Colors";
+import { fonts } from "../../styles/Fonts";
+const PostActionIcons = createIconSetFromIcoMoon(icoMoonConfig);
 
 export default class ActionCounter extends Component {
   static propTypes = {
@@ -64,42 +31,52 @@ export default class ActionCounter extends Component {
   };
 
   getIconState = (count, user) => {
-    let iconState = "inactive";
-    let showCount = false;
+    let iconColor = colors.LIGHT_GRAY;
+    let countColor = false;
+    let countFont = fonts.LIGHT.fontFamily;
 
     if (count > 0) {
-      iconState = "active";
-      showCount = true;
+      iconColor = colors.BLACK;
+      countColor = colors.DARK_GRAY;
     }
 
     if (user) {
-      iconState = "user";
+      iconColor = colors.YELLOW;
+      countColor = colors.YELLOW;
+      countFont = fonts.BOLD.fontFamily;
     }
 
-    return [iconState, showCount];
+    return [iconColor, countColor, countFont];
   };
 
   render() {
-    if (!icons.hasOwnProperty(this.props.actionType)) {
-      return (
-        <View style={styles.container}>
-          <View style={styles.iconLoading} />
-        </View>
-      );
-    }
-    const [iconState, showCount] = this.getIconState(
+    const [iconColor, countColor, countFont] = this.getIconState(
       this.props.actionCount,
       this.props.actionUser
     );
 
-    const icon = icons[this.props.actionType][iconState];
-    const count = showCount ? this.props.actionCount : "";
+    let count = "";
+    let countStyles = {
+      fontFamily: countFont
+    };
+    if (countColor) {
+      count = this.props.actionCount;
+      countStyles["color"] = countColor;
+    }
 
     return (
       <TouchableOpacity onPress={() => this.props.onTap()}>
         <View style={styles.container}>
-          <Image style={styles.icon} source={icon} />
-          <Text style={styles.count}>{count}</Text>
+          <View style={styles.iconBox}>
+            <PostActionIcons
+              name={this.props.actionType}
+              size={16}
+              color={iconColor}
+            />
+          </View>
+          <View style={styles.countBox}>
+            <Text style={{ ...styles.count, ...countStyles }}>{count}</Text>
+          </View>
         </View>
       </TouchableOpacity>
     );

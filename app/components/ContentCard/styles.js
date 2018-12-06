@@ -1,86 +1,86 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet } from "react-native";
 
-import { colors } from '../../styles/Colors';
-import { layout } from '../../styles/Layout';
-import { fonts } from '../../styles/Fonts';
+import { colors } from "../../styles/Colors";
+import { layout } from "../../styles/Layout";
+import { fonts } from "../../styles/Fonts";
 
 export default StyleSheet.create({
   cardBox: {
     flex: 1,
-    flexDirection: 'column',
-    justifyContent: 'center',
-    backgroundColor: 'white',
+    flexDirection: "column",
+    justifyContent: "center",
+    backgroundColor: "white"
   },
   headerBox: {
     flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    marginLeft: layout.MARGINLEFT,
+    flexDirection: "row",
+    justifyContent: "flex-start",
+    alignItems: "center",
+    marginLeft: layout.MARGIN_MEDIUM
   },
   profileImageBox: {
-    padding: layout.PADDING,
+    padding: layout.PADDING_MEDIUM
   },
   profileImage: {
     height: 36,
     width: 36,
     borderRadius: 18,
-    resizeMode: 'cover',
+    resizeMode: "cover"
   },
   profileNameBox: {
-    padding: layout.PADDING,
+    padding: layout.PADDING_MEDIUM
   },
   profileName: {
     ...fonts.LIGHT,
-    color: 'black',
+    color: "black"
   },
   contentBox: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-    backgroundColor: 'white',
-    marginLeft: layout.MARGINLEFT,
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    alignItems: "center",
+    backgroundColor: "white",
+    marginLeft: layout.MARGIN_MEDIUM
   },
   imageBox: {
-    padding: layout.PADDING,
-
+    padding: layout.PADDING_MEDIUM
   },
   image: {
     width: 100,
     height: 100,
-    borderRadius: 10,
+    borderRadius: 10
   },
   textActionsBox: {
     flex: 1,
-    flexDirection: 'column',
-    justifyContent: 'flex-start',
-    backgroundColor: 'white',
-    padding: layout.PADDING,
+    flexDirection: "column",
+    justifyContent: "flex-start",
+    backgroundColor: "white",
+    padding: layout.PADDING_MEDIUM
   },
   textBox: {
     flex: 100,
-    flexDirection: 'column',
-    backgroundColor: 'white',
+    flexDirection: "column",
+    backgroundColor: "white"
   },
   titleText: {
     ...fonts.BOLD,
-    color: 'black',
+    color: "black"
   },
   publisherText: {
     ...fonts.LIGHT_ITALICS,
-    color: 'grey',
+    color: "grey"
   },
   actionsBox: {
     flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignContent: 'center',
+    flexDirection: "row",
+    // justifyContent: 'space-between',
+    justifyContent: "flex-start",
+    alignContent: "center"
   },
   action: {
-    padding: layout.PADDING,
+    padding: layout.PADDING_MEDIUM
   },
   actionImage: {
     height: 24,
-    width: 24,
-  },
-})
+    width: 24
+  }
+});
