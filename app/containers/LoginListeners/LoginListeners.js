@@ -1,9 +1,9 @@
 import React, { Component } from "react";
-import { View } from "react-native";
-import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { NavigationActions } from "react-navigation";
 import Feed from "../../containers/Feed";
+import PostDetails from "../../containers/PostDetails";
+import HeaderBar from "../../components/HeaderBar";
+import { colors } from "../../styles/Colors";
 
 import { loadSelf, loadFriendships } from "../../redux/social/SocialActions";
 
@@ -29,10 +29,17 @@ class LoginListener extends Component {
     this.subscriptions = [];
   }
 
-  static propTypes = {};
-
-  static navigationOptions = {
-    title: "feed"
+  static navigationOptions = ({ navigation }) => {
+    return {
+      header: (
+        <HeaderBar
+          backgroundColor={colors.YELLOW}
+          statusBarStyle="dark-content"
+          shadow
+          title="feed"
+        />
+      )
+    };
   };
 
   componentDidMount() {
@@ -51,7 +58,8 @@ class LoginListener extends Component {
   }
 
   render() {
-    return <Feed />;
+    // return <Feed />;
+    return <PostDetails />;
   }
 }
 

@@ -1,4 +1,5 @@
 import firebase from "react-native-firebase";
+import { NavigationActions } from "react-navigation";
 import Toaster from "../../components/Toaster";
 import {
   actionTypeActiveToasts,
@@ -10,14 +11,16 @@ import { ts } from "../../lib/FirebaseHelpers";
 export const types = {
   POST_ACTION_START: "POST_ACTION_START",
   POST_ACTION_SUCCESS: "POST_ACTION_SUCCESS",
-  POST_ACTION_FAIL: "POST_ACTION_FAIL"
+  POST_ACTION_FAIL: "POST_ACTION_FAIL",
+  POST_DETAILS_VIEW: "POST_DETAILS_VIEW",
+  POST_DETAILS_BACK: "POST_DETAILS_BACK"
 };
 
 export const postAction = (actionType, userId, postId) => {
   return function(dispatch) {
     dispatch({
       type: types.POST_ACTION_START,
-      actionType
+      payload: actionType
     });
     const actionRef = firebase
       .firestore()
@@ -60,16 +63,35 @@ export const postAction = (actionType, userId, postId) => {
           : Toaster(actionTypeInactiveToasts[actionType]);
         dispatch({
           type: types.POST_ACTION_SUCCESS,
-          actionType
+          payload: actionType
         });
       })
       .catch(e => {
         console.error(e);
         dispatch({
           type: types.POST_ACTION_FAIL,
-          actionType,
+          payload: actionType,
           error: e
         });
       });
+  };
+};
+
+export const postDetailsView = post => {
+  return function(dispatch) {
+    dispatch(NavigationActions.navigate({ routeName: "PostDetails" }));
+    dispatch({
+      type: types.POST_DETAILS_VIEW,
+      payload: post
+    });
+  };
+};
+
+export const postDetailsBack = () => {
+  return function(dispatch) {
+    dispatch(NavigationActions.back());
+    dispatch({
+      type: types.POST_DETAILS_BACK
+    });
   };
 };

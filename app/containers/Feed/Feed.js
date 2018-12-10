@@ -2,25 +2,25 @@ import React, { Component } from "react";
 import { View, Text, Notification } from "react-native";
 import { connect } from "react-redux";
 import { NavigationActions } from "react-navigation";
-
+import firebase from "react-native-firebase";
 import styles from "./styles";
 import DynamicActionButton from "../../components/DynamicActionButton";
 import List from "../../components/List";
 import ContentCard from "../../components/ContentCard";
 import { openURL } from "../../lib/Utils";
-
-import firebase from "react-native-firebase";
-import Icon from "react-native-vector-icons/MaterialIcons";
-import _ from "lodash";
-import { LoginManager } from "react-native-fbsdk";
 import {
   loadPosts,
   paginatePosts,
   refreshPosts,
   flattenPosts
 } from "../../redux/posts/PostsActions";
-import { postAction } from "../../redux/postActions/PostActionsActions";
+import {
+  postAction,
+  postDetailsView
+} from "../../redux/postActions/PostActionsActions";
 import { signOutUser } from "../../redux/authentication/AuthenticationActions";
+import HeaderBar from "../../components/HeaderBar";
+import { colors } from "../../styles/Colors";
 
 const mapStateToProps = state => {
   return {
@@ -32,6 +32,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => ({
   navQueue: () => dispatch(NavigationActions.navigate({ routeName: "Queue" })),
+  navPostDetails: post => dispatch(postDetailsView(post)),
   loadPosts: (userId, query) => dispatch(loadPosts(userId, query)),
   paginatePosts: (userId, query, lastPost) =>
     dispatch(paginatePosts(userId, query, lastPost)),
@@ -46,6 +47,19 @@ class Feed extends Component {
     super();
     this.subscriptions = [];
   }
+
+  static navigationOptions = ({ navigation }) => {
+    return {
+      header: (
+        <HeaderBar
+          backgroundColor={colors.YELLOW}
+          statusBarStyle="dark-content"
+          shadow
+          title="feed"
+        />
+      )
+    };
+  };
 
   componentDidMount() {
     this.subscriptions.push(
@@ -67,7 +81,6 @@ class Feed extends Component {
   componentWillUnmount() {
     for (var subscription in this.subscriptions) {
       if (this.subscriptions.hasOwnProperty(subscription)) {
-        console.log(this.subscriptions[subscription]);
         this.subscriptions[subscription]();
       }
     }
@@ -81,7 +94,8 @@ class Feed extends Component {
           ...this.props.social.self,
           ...this.props.social.friends
         }}
-        onTap={() => openURL(item.url)}
+        // onTap={() => openURL(item.url)}
+        onTap={() => this.props.navPostDetails(item)}
         shareAction={{
           actionCount: item.shareCount,
           actionUser: item.shares

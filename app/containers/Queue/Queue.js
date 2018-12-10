@@ -2,17 +2,19 @@ import React, { Component } from "react";
 import { View, Text } from "react-native";
 import { connect } from "react-redux";
 import { NavigationActions } from "react-navigation";
-
+import firebase from "react-native-firebase";
+import Icon from "react-native-vector-icons/MaterialIcons";
+import _ from "lodash";
+import { LoginManager } from "react-native-fbsdk";
+import Header from "react-navigation/src/views/Header/Header";
 import styles from "./styles";
 import DynamicActionButton from "../../components/DynamicActionButton";
 import List from "../../components/List";
 import ContentCard from "../../components/ContentCard";
 import { openURL } from "../../lib/Utils";
+import HeaderBar from "../../components/HeaderBar";
+import { colors } from "../../styles/Colors";
 
-import firebase from "react-native-firebase";
-import Icon from "react-native-vector-icons/MaterialIcons";
-import _ from "lodash";
-import { LoginManager } from "react-native-fbsdk";
 import {
   loadPosts,
   paginatePosts,
@@ -32,6 +34,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => ({
   navFeed: () => dispatch(NavigationActions.navigate({ routeName: "Feed" })),
+  navPostDetails: () =>
+    dispatch(NavigationActions.navigate({ routeName: "PostDetails" })),
   loadPosts: (userId, query) => dispatch(loadPosts(userId, query)),
   paginatePosts: (userId, query, lastPost) =>
     dispatch(paginatePosts(userId, query, lastPost)),
@@ -46,6 +50,19 @@ class Queue extends Component {
     super();
     this.subscriptions = [];
   }
+
+  static navigationOptions = ({ navigation }) => {
+    return {
+      header: (
+        <HeaderBar
+          backgroundColor={colors.YELLOW}
+          statusBarStyle="dark-content"
+          shadow
+          title="queue"
+        />
+      )
+    };
+  };
 
   componentDidMount() {
     this.subscriptions.push(
@@ -70,7 +87,8 @@ class Queue extends Component {
           ...this.props.social.self,
           ...this.props.social.friends
         }}
-        onTap={() => openURL(item.url)}
+        // onTap={() => openURL(item.url)}
+        onTap={this.props.navPostDetails}
         shareAction={{
           actionCount: item.shareCount,
           actionUser: item.shares

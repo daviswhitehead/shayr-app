@@ -1,15 +1,8 @@
 import React, { Component } from "react";
 import { Text, View, TouchableOpacity } from "react-native";
 import PropTypes from "prop-types";
-
-import {
-  newAction,
-  toggleAction
-} from "../../redux/postActions/PostActionsActions";
-
 import { createIconSetFromIcoMoon } from "react-native-vector-icons";
 import icoMoonConfig from "../../assets/fonts/selection.json";
-
 import styles from "./styles";
 import { colors } from "../../styles/Colors";
 import { fonts } from "../../styles/Fonts";
@@ -17,17 +10,10 @@ const PostActionIcons = createIconSetFromIcoMoon(icoMoonConfig);
 
 export default class ActionCounter extends Component {
   static propTypes = {
-    actionType: PropTypes.string.isRequired,
+    actionType: PropTypes.oneOf(["share", "add", "done", "like"]).isRequired,
     actionCount: PropTypes.number.isRequired,
     actionUser: PropTypes.bool.isRequired,
     onTap: PropTypes.func.isRequired
-  };
-
-  static defaultProps = {
-    actionType: null,
-    actionCount: 0,
-    actionUser: false,
-    onTap: () => console.log("i was tapped")
   };
 
   getIconState = (count, user) => {
