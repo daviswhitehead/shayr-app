@@ -11,7 +11,7 @@ const PostActionIcons = createIconSetFromIcoMoon(icoMoonConfig);
 export default class ActionCounter extends Component {
   static propTypes = {
     actionType: PropTypes.oneOf(["share", "add", "done", "like"]).isRequired,
-    actionCount: PropTypes.number.isRequired,
+    actionCount: PropTypes.number,
     actionUser: PropTypes.bool.isRequired,
     onTap: PropTypes.func.isRequired
   };

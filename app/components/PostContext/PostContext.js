@@ -7,7 +7,10 @@ export default class PostContext extends Component {
   static propTypes = {
     title: PropTypes.string.isRequired,
     publisher: PropTypes.string.isRequired,
-    actions: PropTypes.any
+    actions: PropTypes.oneOfType([
+      PropTypes.arrayOf(PropTypes.element),
+      PropTypes.bool
+    ])
   };
 
   render() {

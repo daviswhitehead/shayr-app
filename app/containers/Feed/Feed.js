@@ -7,7 +7,6 @@ import styles from "./styles";
 import DynamicActionButton from "../../components/DynamicActionButton";
 import List from "../../components/List";
 import ContentCard from "../../components/ContentCard";
-import { openURL } from "../../lib/Utils";
 import {
   loadPosts,
   paginatePosts,

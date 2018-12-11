@@ -12,6 +12,7 @@ import PostImage from "../../components/PostImage";
 import PostContext from "../../components/PostContext";
 import ActionCounter from "../../components/ActionCounter";
 import ProfileIcon from "../../components/ProfileIcon";
+import { openURL } from "../../lib/Utils";
 
 const mapStateToProps = state => {
   return {
@@ -43,9 +44,9 @@ class PostDetails extends Component {
 
   componentDidMount() {
     // this.subscriptions.push();
-    // this.props.navigation.setParams({
-    //   navBack: this.props.navBack,
-    // });
+    this.props.navigation.setParams({
+      navBack: this.props.navBack
+    });
   }
 
   componentWillUnmount() {
@@ -58,35 +59,21 @@ class PostDetails extends Component {
 
   render() {
     console.log(this.props);
-    console.log(this.state);
-    let testActions = [
-      <ActionCounter
-        actionType={"share"}
-        actionCount={1}
-        actionUser
-        onTap={() => console.log("action counter tap")}
-      />,
-      <ActionCounter
-        actionType={"add"}
-        actionCount={1}
-        actionUser
-        onTap={() => console.log("action counter tap")}
-      />
-    ];
-    testActions = null;
+    const { ...post } = { ...this.props.postActions.postDetail };
+    console.log(post);
 
     return (
-      <ScrollView showsVerticalScrollIndicator={false}>
-        <View style={styles.container}>
+      <View style={styles.container}>
+        <ScrollView showsVerticalScrollIndicator={false}>
           <TouchableOpacity
             style={styles.contentBox}
-            onPress={() => console.log("touch me")}
+            onPress={() => openURL(post.url)}
           >
-            <PostImage view="detail" />
+            <PostImage view={"detail"} uri={post.image} />
             <PostContext
-              title="lsakdjlfkjs"
-              publisher="lsakdjlfkjs"
-              actions={testActions}
+              title={post.title}
+              publisher={post.publisher.name}
+              actions={false}
             />
           </TouchableOpacity>
           <View style={styles.dividerBox}>
@@ -94,44 +81,74 @@ class PostDetails extends Component {
             <View style={styles.actionBox}>
               <ActionCounter
                 actionType={"share"}
-                actionCount={1}
-                actionUser
-                onTap={() => console.log("action counter tap")}
+                actionCount={post.shareCount}
+                actionUser={
+                  post.shares
+                    ? post.shares.includes(this.props.auth.user.uid)
+                    : false
+                }
+                onTap={() =>
+                  this.props.postAction(
+                    "share",
+                    this.props.auth.user.uid,
+                    post.postId
+                  )
+                }
               />
               <ActionCounter
                 actionType={"add"}
-                actionCount={1}
-                actionUser
-                onTap={() => console.log("action counter tap")}
+                actionCount={post.addCount}
+                actionUser={
+                  post.adds
+                    ? post.adds.includes(this.props.auth.user.uid)
+                    : false
+                }
+                onTap={() =>
+                  this.props.postAction(
+                    "add",
+                    this.props.auth.user.uid,
+                    post.postId
+                  )
+                }
               />
               <ActionCounter
                 actionType={"done"}
-                actionCount={1}
-                actionUser
-                onTap={() => console.log("action counter tap")}
+                actionCount={post.doneCount}
+                actionUser={
+                  post.dones
+                    ? post.dones.includes(this.props.auth.user.uid)
+                    : false
+                }
+                onTap={() =>
+                  this.props.postAction(
+                    "done",
+                    this.props.auth.user.uid,
+                    post.postId
+                  )
+                }
               />
               <ActionCounter
                 actionType={"like"}
-                actionCount={1}
-                actionUser
-                onTap={() => console.log("action counter tap")}
+                actionCount={post.likeCount}
+                actionUser={
+                  post.likes
+                    ? post.likes.includes(this.props.auth.user.uid)
+                    : false
+                }
+                onTap={() =>
+                  this.props.postAction(
+                    "like",
+                    this.props.auth.user.uid,
+                    post.postId
+                  )
+                }
               />
             </View>
             <View style={styles.divider} />
           </View>
           <View style={styles.descriptionBox}>
             <Text style={styles.header}>description</Text>
-            <Text style={styles.body}>
-              This week, Alex receives feedback about his job performance from
-              his co-workers, friends, and family. Some of it is good, some less
-              so. But there is something else that comes up during the review
-              process that shocks him. We explore what happens when you unpack
-              your emotional baggage—or someone unpacks it for you—and you
-              realize the unexpected effect that it has been having on your
-              team. In this final Gimlet-focused episode of season four, we take
-              a raw and intimate look at a defining moment in the trajectory of
-              a CEO.
-            </Text>
+            <Text style={styles.body}>{post.description}</Text>
           </View>
           <View style={styles.actionByBox}>
             <Text style={styles.header}>shayred by</Text>
@@ -345,8 +362,8 @@ class PostDetails extends Component {
               />
             </ScrollView>
           </View>
-        </View>
-      </ScrollView>
+        </ScrollView>
+      </View>
     );
   }
 }
