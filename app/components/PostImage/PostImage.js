@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { View, Image } from "react-native";
 import PropTypes from "prop-types";
 import article from "../../assets/Article.png";
-import styles from "./styles";
+import StyleSheetFactory from "./styles";
 
 export default class PostImage extends Component {
   static propTypes = {
@@ -13,15 +13,14 @@ export default class PostImage extends Component {
   static defaultProps = {};
 
   render() {
-    const imageStyle =
-      this.props.view === "list" ? styles.imageList : styles.imageDetail;
+    const styles = StyleSheetFactory.getSheet(this.props.view);
 
     return (
       <View style={styles.container}>
         {this.props.uri ? (
-          <Image style={imageStyle} source={{ uri: this.props.uri }} />
+          <Image style={styles.image} source={{ uri: this.props.uri }} />
         ) : (
-          <Image style={imageStyle} source={article} />
+          <Image style={styles.image} source={article} />
         )}
       </View>
     );

@@ -58,8 +58,8 @@ class LoginListener extends Component {
   }
 
   render() {
-    // return <Feed />;
-    return <PostDetails />;
+    return <Feed />;
+    // return <PostDetails />;
   }
 }
 

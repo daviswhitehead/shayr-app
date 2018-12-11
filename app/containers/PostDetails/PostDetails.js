@@ -11,6 +11,7 @@ import styles from "./styles";
 import PostImage from "../../components/PostImage";
 import PostContext from "../../components/PostContext";
 import ActionCounter from "../../components/ActionCounter";
+import ProfileIcon from "../../components/ProfileIcon";
 
 const mapStateToProps = state => {
   return {
@@ -118,8 +119,8 @@ class PostDetails extends Component {
             </View>
             <View style={styles.divider} />
           </View>
-          <View style={styles.summaryBox}>
-            <Text style={styles.header}>summary</Text>
+          <View style={styles.descriptionBox}>
+            <Text style={styles.header}>description</Text>
             <Text style={styles.body}>
               This week, Alex receives feedback about his job performance from
               his co-workers, friends, and family. Some of it is good, some less
@@ -135,52 +136,214 @@ class PostDetails extends Component {
           <View style={styles.actionByBox}>
             <Text style={styles.header}>shayred by</Text>
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-              <Text style={styles.header}>shayred by</Text>
-              <Text style={styles.header}>shayred by</Text>
-              <Text style={styles.header}>shayred by</Text>
+              <ProfileIcon
+                view={"large"}
+                uri={"https://graph.facebook.com/255045858399396/picture"}
+                firstName={"Sarah"}
+                lastName={"Buttons"}
+              />
+              <ProfileIcon
+                view={"large"}
+                uri={"https://graph.facebook.com/255045858399396/picture"}
+                firstName={"Sarah"}
+                lastName={"Buttons"}
+              />
+              <ProfileIcon
+                view={"large"}
+                uri={"https://graph.facebook.com/255045858399396/picture"}
+                firstName={"Sara.skdmflskdjlkfah"}
+                lastName={"Buttons"}
+              />
+              <ProfileIcon
+                view={"large"}
+                uri={"https://graph.facebook.com/255045858399396/picture"}
+                firstName={"Sarah"}
+                lastName={"Buttons"}
+              />
+              <ProfileIcon
+                view={"large"}
+                uri={"https://graph.facebook.com/255045858399396/picture"}
+                firstName={"Saa.skdlfkjlaskrah"}
+                lastName={"Buttons"}
+              />
+              <ProfileIcon
+                view={"large"}
+                uri={"https://graph.facebook.com/255045858399396/picture"}
+                firstName={"Sarah"}
+                lastName={"Buttons"}
+              />
+              <ProfileIcon
+                view={"large"}
+                uri={"https://graph.facebook.com/255045858399396/picture"}
+                firstName={"Saralksjdlkah"}
+                lastName={"Buttons"}
+              />
+              <ProfileIcon
+                view={"large"}
+                uri={"https://graph.facebook.com/255045858399396/picture"}
+                firstName={"Sarah"}
+                lastName={"Buttons"}
+              />
             </ScrollView>
           </View>
           <View style={styles.actionByBox}>
             <Text style={styles.header}>added by</Text>
-            <Text style={styles.body}>
-              This week, Alex receives feedback about his job performance from
-              his co-workers, friends, and family. Some of it is good, some less
-              so. But there is something else that comes up during the review
-              process that shocks him. We explore what happens when you unpack
-              your emotional baggage—or someone unpacks it for you—and you
-              realize the unexpected effect that it has been having on your
-              team. In this final Gimlet-focused episode of season four, we take
-              a raw and intimate look at a defining moment in the trajectory of
-              a CEO.
-            </Text>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+              <ProfileIcon
+                view={"large"}
+                uri={"https://graph.facebook.com/255045858399396/picture"}
+                firstName={"Sarah"}
+                lastName={"Buttons"}
+              />
+              <ProfileIcon
+                view={"large"}
+                uri={"https://graph.facebook.com/255045858399396/picture"}
+                firstName={"Sarah"}
+                lastName={"Buttons"}
+              />
+              <ProfileIcon
+                view={"large"}
+                uri={"https://graph.facebook.com/255045858399396/picture"}
+                firstName={"Sara.skdmflskdjlkfah"}
+                lastName={"Buttons"}
+              />
+              <ProfileIcon
+                view={"large"}
+                uri={"https://graph.facebook.com/255045858399396/picture"}
+                firstName={"Sarah"}
+                lastName={"Buttons"}
+              />
+              <ProfileIcon
+                view={"large"}
+                uri={"https://graph.facebook.com/255045858399396/picture"}
+                firstName={"Saa.skdlfkjlaskrah"}
+                lastName={"Buttons"}
+              />
+              <ProfileIcon
+                view={"large"}
+                uri={"https://graph.facebook.com/255045858399396/picture"}
+                firstName={"Sarah"}
+                lastName={"Buttons"}
+              />
+              <ProfileIcon
+                view={"large"}
+                uri={"https://graph.facebook.com/255045858399396/picture"}
+                firstName={"Saralksjdlkah"}
+                lastName={"Buttons"}
+              />
+              <ProfileIcon
+                view={"large"}
+                uri={"https://graph.facebook.com/255045858399396/picture"}
+                firstName={"Sarah"}
+                lastName={"Buttons"}
+              />
+            </ScrollView>
           </View>
           <View style={styles.actionByBox}>
             <Text style={styles.header}>read by</Text>
-            <Text style={styles.body}>
-              This week, Alex receives feedback about his job performance from
-              his co-workers, friends, and family. Some of it is good, some less
-              so. But there is something else that comes up during the review
-              process that shocks him. We explore what happens when you unpack
-              your emotional baggage—or someone unpacks it for you—and you
-              realize the unexpected effect that it has been having on your
-              team. In this final Gimlet-focused episode of season four, we take
-              a raw and intimate look at a defining moment in the trajectory of
-              a CEO.
-            </Text>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+              <ProfileIcon
+                view={"large"}
+                uri={"https://graph.facebook.com/255045858399396/picture"}
+                firstName={"Sarah"}
+                lastName={"Buttons"}
+              />
+              <ProfileIcon
+                view={"large"}
+                uri={"https://graph.facebook.com/255045858399396/picture"}
+                firstName={"Sarah"}
+                lastName={"Buttons"}
+              />
+              <ProfileIcon
+                view={"large"}
+                uri={"https://graph.facebook.com/255045858399396/picture"}
+                firstName={"Sara.skdmflskdjlkfah"}
+                lastName={"Buttons"}
+              />
+              <ProfileIcon
+                view={"large"}
+                uri={"https://graph.facebook.com/255045858399396/picture"}
+                firstName={"Sarah"}
+                lastName={"Buttons"}
+              />
+              <ProfileIcon
+                view={"large"}
+                uri={"https://graph.facebook.com/255045858399396/picture"}
+                firstName={"Saa.skdlfkjlaskrah"}
+                lastName={"Buttons"}
+              />
+              <ProfileIcon
+                view={"large"}
+                uri={"https://graph.facebook.com/255045858399396/picture"}
+                firstName={"Sarah"}
+                lastName={"Buttons"}
+              />
+              <ProfileIcon
+                view={"large"}
+                uri={"https://graph.facebook.com/255045858399396/picture"}
+                firstName={"Saralksjdlkah"}
+                lastName={"Buttons"}
+              />
+              <ProfileIcon
+                view={"large"}
+                uri={"https://graph.facebook.com/255045858399396/picture"}
+                firstName={"Sarah"}
+                lastName={"Buttons"}
+              />
+            </ScrollView>
           </View>
           <View style={styles.actionByBox}>
             <Text style={styles.header}>liked by</Text>
-            <Text style={styles.body}>
-              This week, Alex receives feedback about his job performance from
-              his co-workers, friends, and family. Some of it is good, some less
-              so. But there is something else that comes up during the review
-              process that shocks him. We explore what happens when you unpack
-              your emotional baggage—or someone unpacks it for you—and you
-              realize the unexpected effect that it has been having on your
-              team. In this final Gimlet-focused episode of season four, we take
-              a raw and intimate look at a defining moment in the trajectory of
-              a CEO.
-            </Text>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+              <ProfileIcon
+                view={"large"}
+                uri={"https://graph.facebook.com/255045858399396/picture"}
+                firstName={"Sarah"}
+                lastName={"Buttons"}
+              />
+              <ProfileIcon
+                view={"large"}
+                uri={"https://graph.facebook.com/255045858399396/picture"}
+                firstName={"Sarah"}
+                lastName={"Buttons"}
+              />
+              <ProfileIcon
+                view={"large"}
+                uri={"https://graph.facebook.com/255045858399396/picture"}
+                firstName={"Sara.skdmflskdjlkfah"}
+                lastName={"Buttons"}
+              />
+              <ProfileIcon
+                view={"large"}
+                uri={"https://graph.facebook.com/255045858399396/picture"}
+                firstName={"Sarah"}
+                lastName={"Buttons"}
+              />
+              <ProfileIcon
+                view={"large"}
+                uri={"https://graph.facebook.com/255045858399396/picture"}
+                firstName={"Saa.skdlfkjlaskrah"}
+                lastName={"Buttons"}
+              />
+              <ProfileIcon
+                view={"large"}
+                uri={"https://graph.facebook.com/255045858399396/picture"}
+                firstName={"Sarah"}
+                lastName={"Buttons"}
+              />
+              <ProfileIcon
+                view={"large"}
+                uri={"https://graph.facebook.com/255045858399396/picture"}
+                firstName={"Saralksjdlkah"}
+                lastName={"Buttons"}
+              />
+              <ProfileIcon
+                view={"large"}
+                uri={"https://graph.facebook.com/255045858399396/picture"}
+                firstName={"Sarah"}
+                lastName={"Buttons"}
+              />
+            </ScrollView>
           </View>
         </View>
       </ScrollView>

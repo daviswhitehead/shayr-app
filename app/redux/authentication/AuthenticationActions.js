@@ -77,7 +77,7 @@ export const savePushToken = user => {
       .doc(user.uid)
       .update({ pushToken: token, updatedAt: ts })
       .then(ref => {
-        console.log("push token update success");
+        // console.log('push token update success');
       })
       .catch(error => {
         console.error(error);
@@ -218,8 +218,6 @@ export function authSubscription() {
   return function(dispatch) {
     dispatch({ type: types.AUTH_START });
     return firebase.auth().onAuthStateChanged(user => {
-      console.log("user");
-      console.log(user);
       if (user) {
         dispatch(authUser(user));
         savePushToken(user);

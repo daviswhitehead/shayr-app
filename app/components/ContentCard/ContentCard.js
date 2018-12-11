@@ -1,17 +1,9 @@
 import React, { Component } from "react";
-import {
-  Text,
-  StyleSheet,
-  View,
-  Image,
-  TouchableWithoutFeedback
-} from "react-native";
+import { Text, View, Image, TouchableWithoutFeedback } from "react-native";
 import PropTypes from "prop-types";
-
 import _ from "lodash";
 import styles from "./styles";
 import article from "../../assets/Article.png";
-// import isURL from '../../lib/Utils'; check to make sure url is openable
 import ActionCounter from "../ActionCounter";
 
 export default class ContentCard extends Component {
@@ -33,7 +25,7 @@ export default class ContentCard extends Component {
       doneCount: PropTypes.number,
       likeCount: PropTypes.number,
       url: PropTypes.string.isRequired
-    }),
+    }).isRequired,
     friends: PropTypes.shape({
       friendId: PropTypes.shape({
         firstName: PropTypes.string,
@@ -43,25 +35,7 @@ export default class ContentCard extends Component {
     })
   };
 
-  static defaultProps = {
-    payload: {
-      image: "missing",
-      title: "missing",
-      publisher: {
-        name: "missing",
-        logo: "missing"
-      },
-      shares: [],
-      medium: "missing",
-      shareCount: 0,
-      url: "missing"
-    },
-    friends: {
-      firstName: "missing",
-      lastName: "missing",
-      facebookProfilePhoto: "missing"
-    }
-  };
+  static defaultProps = {};
 
   combine = () => {
     let data = {
@@ -87,22 +61,22 @@ export default class ContentCard extends Component {
     }
 
     if (featuredUserId && featuredType) {
-      (data["facebookProfilePhoto"] = _.get(
+      data["facebookProfilePhoto"] = _.get(
         this.props.friends,
         [featuredUserId, "facebookProfilePhoto"],
         "missing"
-      )),
-        (data["firstName"] = _.get(
-          this.props.friends,
-          [featuredUserId, "firstName"],
-          "missing"
-        )),
-        (data["lastName"] = _.get(
-          this.props.friends,
-          [featuredUserId, "lastName"],
-          "missing"
-        )),
-        (data["featureType"] = featuredType);
+      );
+      data["firstName"] = _.get(
+        this.props.friends,
+        [featuredUserId, "firstName"],
+        "missing"
+      );
+      data["lastName"] = _.get(
+        this.props.friends,
+        [featuredUserId, "lastName"],
+        "missing"
+      );
+      data["featureType"] = featuredType;
     }
 
     return data;
