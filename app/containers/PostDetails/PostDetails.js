@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { View, Text, ScrollView, TouchableOpacity } from "react-native";
 import { connect } from "react-redux";
+import PropTypes from "prop-types";
 import {
   postAction,
   postDetailsBack
@@ -29,6 +30,18 @@ const mapDispatchToProps = dispatch => ({
 });
 
 class PostDetails extends Component {
+  // static propTypes = {
+  //   postImage: ,
+  //   postContext: ,
+  //   actions: ,
+  //   description: ,
+  //   sharedBy: ,
+  //   addedBy: ,
+  //   readBy: ,
+  //   likedBy: ,
+  //   navBack: ,
+  // };
+
   static navigationOptions = ({ navigation }) => {
     return {
       header: (
@@ -58,6 +71,10 @@ class PostDetails extends Component {
   }
 
   render() {
+    if (!this.props.postActions.postDetail) {
+      return <View style={styles.container} />;
+    }
+
     console.log(this.props);
     const { ...post } = { ...this.props.postActions.postDetail };
     console.log(post);
