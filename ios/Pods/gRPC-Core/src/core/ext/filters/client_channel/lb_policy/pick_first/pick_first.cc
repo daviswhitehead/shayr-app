@@ -46,7 +46,8 @@ class PickFirst : public LoadBalancingPolicy {
  public:
   explicit PickFirst(const Args& args);
 
-  void UpdateLocked(const grpc_channel_args& args) override;
+  void UpdateLocked(const grpc_channel_args& args,
+                    grpc_json* lb_config) override;
   bool PickLocked(PickState* pick, grpc_error** error) override;
   void CancelPickLocked(PickState* pick, grpc_error* error) override;
   void CancelMatchingPicksLocked(uint32_t initial_metadata_flags_mask,
@@ -59,8 +60,8 @@ class PickFirst : public LoadBalancingPolicy {
   void HandOffPendingPicksLocked(LoadBalancingPolicy* new_policy) override;
   void ExitIdleLocked() override;
   void ResetBackoffLocked() override;
-  void FillChildRefsForChannelz(ChildRefsList* child_subchannels,
-                                ChildRefsList* ignored) override;
+  void FillChildRefsForChannelz(channelz::ChildRefsList* child_subchannels,
+                                channelz::ChildRefsList* ignored) override;
 
  private:
   ~PickFirst();
@@ -147,8 +148,8 @@ class PickFirst : public LoadBalancingPolicy {
   /// Lock and data used to capture snapshots of this channels child
   /// channels and subchannels. This data is consumed by channelz.
   gpr_mu child_refs_mu_;
-  ChildRefsList child_subchannels_;
-  ChildRefsList child_channels_;
+  channelz::ChildRefsList child_subchannels_;
+  channelz::ChildRefsList child_channels_;
 };
 
 PickFirst::PickFirst(const Args& args) : LoadBalancingPolicy(args) {
@@ -159,7 +160,7 @@ PickFirst::PickFirst(const Args& args) : LoadBalancingPolicy(args) {
   if (grpc_lb_pick_first_trace.enabled()) {
     gpr_log(GPR_INFO, "Pick First %p created.", this);
   }
-  UpdateLocked(*args.args);
+  UpdateLocked(*args.args, args.lb_config);
   grpc_subchannel_index_ref();
 }
 
@@ -300,7 +301,8 @@ void PickFirst::NotifyOnStateChangeLocked(grpc_connectivity_state* current,
 }
 
 void PickFirst::FillChildRefsForChannelz(
-    ChildRefsList* child_subchannels_to_fill, ChildRefsList* ignored) {
+    channelz::ChildRefsList* child_subchannels_to_fill,
+    channelz::ChildRefsList* ignored) {
   MutexLock lock(&child_refs_mu_);
   for (size_t i = 0; i < child_subchannels_.size(); ++i) {
     // TODO(ncteisen): implement a de dup loop that is not O(n^2). Might
@@ -320,7 +322,7 @@ void PickFirst::FillChildRefsForChannelz(
 }
 
 void PickFirst::UpdateChildRefsLocked() {
-  ChildRefsList cs;
+  channelz::ChildRefsList cs;
   if (subchannel_list_ != nullptr) {
     subchannel_list_->PopulateChildRefsList(&cs);
   }
@@ -332,7 +334,8 @@ void PickFirst::UpdateChildRefsLocked() {
   child_subchannels_ = std::move(cs);
 }
 
-void PickFirst::UpdateLocked(const grpc_channel_args& args) {
+void PickFirst::UpdateLocked(const grpc_channel_args& args,
+                             grpc_json* lb_config) {
   AutoChildRefsUpdater guard(this);
   const grpc_arg* arg = grpc_channel_args_find(&args, GRPC_ARG_LB_ADDRESSES);
   if (arg == nullptr || arg->type != GRPC_ARG_POINTER) {
@@ -358,9 +361,14 @@ void PickFirst::UpdateLocked(const grpc_channel_args& args) {
             "Pick First %p received update with %" PRIuPTR " addresses", this,
             addresses->num_addresses);
   }
+  grpc_arg new_arg = grpc_channel_arg_integer_create(
+      const_cast<char*>(GRPC_ARG_INHIBIT_HEALTH_CHECKING), 1);
+  grpc_channel_args* new_args =
+      grpc_channel_args_copy_and_add(&args, &new_arg, 1);
   auto subchannel_list = MakeOrphanable<PickFirstSubchannelList>(
       this, &grpc_lb_pick_first_trace, addresses, combiner(),
-      client_channel_factory(), args);
+      client_channel_factory(), *new_args);
+  grpc_channel_args_destroy(new_args);
   if (subchannel_list->num_subchannels() == 0) {
     // Empty update or no valid subchannels. Unsubscribe from all current
     // subchannels and put the channel in TRANSIENT_FAILURE.

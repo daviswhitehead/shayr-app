@@ -57,7 +57,8 @@ class RoundRobin : public LoadBalancingPolicy {
  public:
   explicit RoundRobin(const Args& args);
 
-  void UpdateLocked(const grpc_channel_args& args) override;
+  void UpdateLocked(const grpc_channel_args& args,
+                    grpc_json* lb_config) override;
   bool PickLocked(PickState* pick, grpc_error** error) override;
   void CancelPickLocked(PickState* pick, grpc_error* error) override;
   void CancelMatchingPicksLocked(uint32_t initial_metadata_flags_mask,
@@ -70,8 +71,8 @@ class RoundRobin : public LoadBalancingPolicy {
   void HandOffPendingPicksLocked(LoadBalancingPolicy* new_policy) override;
   void ExitIdleLocked() override;
   void ResetBackoffLocked() override;
-  void FillChildRefsForChannelz(ChildRefsList* child_subchannels,
-                                ChildRefsList* ignored) override;
+  void FillChildRefsForChannelz(channelz::ChildRefsList* child_subchannels,
+                                channelz::ChildRefsList* ignored) override;
 
  private:
   ~RoundRobin();
@@ -223,8 +224,8 @@ class RoundRobin : public LoadBalancingPolicy {
   /// Lock and data used to capture snapshots of this channel's child
   /// channels and subchannels. This data is consumed by channelz.
   gpr_mu child_refs_mu_;
-  ChildRefsList child_subchannels_;
-  ChildRefsList child_channels_;
+  channelz::ChildRefsList child_subchannels_;
+  channelz::ChildRefsList child_channels_;
 };
 
 RoundRobin::RoundRobin(const Args& args) : LoadBalancingPolicy(args) {
@@ -232,7 +233,7 @@ RoundRobin::RoundRobin(const Args& args) : LoadBalancingPolicy(args) {
   gpr_mu_init(&child_refs_mu_);
   grpc_connectivity_state_init(&state_tracker_, GRPC_CHANNEL_IDLE,
                                "round_robin");
-  UpdateLocked(*args.args);
+  UpdateLocked(*args.args, args.lb_config);
   if (grpc_lb_round_robin_trace.enabled()) {
     gpr_log(GPR_INFO, "[RR %p] Created with %" PRIuPTR " subchannels", this,
             subchannel_list_->num_subchannels());
@@ -402,7 +403,8 @@ bool RoundRobin::PickLocked(PickState* pick, grpc_error** error) {
 }
 
 void RoundRobin::FillChildRefsForChannelz(
-    ChildRefsList* child_subchannels_to_fill, ChildRefsList* ignored) {
+    channelz::ChildRefsList* child_subchannels_to_fill,
+    channelz::ChildRefsList* ignored) {
   MutexLock lock(&child_refs_mu_);
   for (size_t i = 0; i < child_subchannels_.size(); ++i) {
     // TODO(ncteisen): implement a de dup loop that is not O(n^2). Might
@@ -422,7 +424,7 @@ void RoundRobin::FillChildRefsForChannelz(
 }
 
 void RoundRobin::UpdateChildRefsLocked() {
-  ChildRefsList cs;
+  channelz::ChildRefsList cs;
   if (subchannel_list_ != nullptr) {
     subchannel_list_->PopulateChildRefsList(&cs);
   }
@@ -663,7 +665,8 @@ void RoundRobin::NotifyOnStateChangeLocked(grpc_connectivity_state* current,
                                                  notify);
 }
 
-void RoundRobin::UpdateLocked(const grpc_channel_args& args) {
+void RoundRobin::UpdateLocked(const grpc_channel_args& args,
+                              grpc_json* lb_config) {
   const grpc_arg* arg = grpc_channel_args_find(&args, GRPC_ARG_LB_ADDRESSES);
   AutoChildRefsUpdater guard(this);
   if (GPR_UNLIKELY(arg == nullptr || arg->type != GRPC_ARG_POINTER)) {

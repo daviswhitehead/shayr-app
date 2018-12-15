@@ -120,6 +120,8 @@ class AresDnsResolver : public Resolver {
   grpc_lb_addresses* lb_addresses_ = nullptr;
   /// currently resolving service config
   char* service_config_json_ = nullptr;
+  // has shutdown been initiated
+  bool shutdown_initiated_ = false;
 };
 
 AresDnsResolver::AresDnsResolver(const ResolverArgs& args)
@@ -197,11 +199,12 @@ void AresDnsResolver::ResetBackoffLocked() {
 }
 
 void AresDnsResolver::ShutdownLocked() {
+  shutdown_initiated_ = true;
   if (have_next_resolution_timer_) {
     grpc_timer_cancel(&next_resolution_timer_);
   }
   if (pending_request_ != nullptr) {
-    grpc_cancel_ares_request(pending_request_);
+    grpc_cancel_ares_request_locked(pending_request_);
   }
   if (next_completion_ != nullptr) {
     *target_result_ = nullptr;
@@ -213,9 +216,13 @@ void AresDnsResolver::ShutdownLocked() {
 
 void AresDnsResolver::OnNextResolutionLocked(void* arg, grpc_error* error) {
   AresDnsResolver* r = static_cast<AresDnsResolver*>(arg);
+  GRPC_CARES_TRACE_LOG(
+      "%p re-resolution timer fired. error: %s. shutdown_initiated_: %d", r,
+      grpc_error_string(error), r->shutdown_initiated_);
   r->have_next_resolution_timer_ = false;
-  if (error == GRPC_ERROR_NONE) {
+  if (error == GRPC_ERROR_NONE && !r->shutdown_initiated_) {
     if (!r->resolving_) {
+      GRPC_CARES_TRACE_LOG("%p start resolving due to re-resolution timer", r);
       r->StartResolvingLocked();
     }
   }
@@ -298,15 +305,15 @@ void AresDnsResolver::OnResolvedLocked(void* arg, grpc_error* error) {
   grpc_channel_args* result = nullptr;
   GPR_ASSERT(r->resolving_);
   r->resolving_ = false;
+  gpr_free(r->pending_request_);
   r->pending_request_ = nullptr;
   if (r->lb_addresses_ != nullptr) {
-    static const char* args_to_remove[2];
+    static const char* args_to_remove[1];
     size_t num_args_to_remove = 0;
-    grpc_arg new_args[3];
+    grpc_arg args_to_add[2];
     size_t num_args_to_add = 0;
-    new_args[num_args_to_add++] =
+    args_to_add[num_args_to_add++] =
         grpc_lb_addresses_create_channel_arg(r->lb_addresses_);
-    grpc_core::UniquePtr<grpc_core::ServiceConfig> service_config;
     char* service_config_string = nullptr;
     if (r->service_config_json_ != nullptr) {
       service_config_string = ChooseServiceConfig(r->service_config_json_);
@@ -315,31 +322,19 @@ void AresDnsResolver::OnResolvedLocked(void* arg, grpc_error* error) {
         gpr_log(GPR_INFO, "selected service config choice: %s",
                 service_config_string);
         args_to_remove[num_args_to_remove++] = GRPC_ARG_SERVICE_CONFIG;
-        new_args[num_args_to_add++] = grpc_channel_arg_string_create(
+        args_to_add[num_args_to_add++] = grpc_channel_arg_string_create(
             (char*)GRPC_ARG_SERVICE_CONFIG, service_config_string);
-        service_config =
-            grpc_core::ServiceConfig::Create(service_config_string);
-        if (service_config != nullptr) {
-          const char* lb_policy_name =
-              service_config->GetLoadBalancingPolicyName();
-          if (lb_policy_name != nullptr) {
-            args_to_remove[num_args_to_remove++] = GRPC_ARG_LB_POLICY_NAME;
-            new_args[num_args_to_add++] = grpc_channel_arg_string_create(
-                (char*)GRPC_ARG_LB_POLICY_NAME,
-                const_cast<char*>(lb_policy_name));
-          }
-        }
       }
     }
     result = grpc_channel_args_copy_and_add_and_remove(
-        r->channel_args_, args_to_remove, num_args_to_remove, new_args,
+        r->channel_args_, args_to_remove, num_args_to_remove, args_to_add,
         num_args_to_add);
     gpr_free(service_config_string);
     grpc_lb_addresses_destroy(r->lb_addresses_);
     // Reset backoff state so that we start from the beginning when the
     // next request gets triggered.
     r->backoff_.Reset();
-  } else {
+  } else if (!r->shutdown_initiated_) {
     const char* msg = grpc_error_string(error);
     gpr_log(GPR_DEBUG, "dns resolution failed: %s", msg);
     grpc_millis next_try = r->backoff_.NextAttemptTime();
@@ -473,7 +468,9 @@ void grpc_resolver_dns_ares_init() {
       GRPC_LOG_IF_ERROR("ares_library_init() failed", error);
       return;
     }
-    default_resolver = grpc_resolve_address_impl;
+    if (default_resolver == nullptr) {
+      default_resolver = grpc_resolve_address_impl;
+    }
     grpc_set_resolver_impl(&ares_resolver);
     grpc_core::ResolverRegistry::Builder::RegisterResolverFactory(
         grpc_core::UniquePtr<grpc_core::ResolverFactory>(
