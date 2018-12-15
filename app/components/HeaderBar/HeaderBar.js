@@ -1,10 +1,11 @@
 import React, { Component } from "react";
-import { View, TouchableOpacity, Text, SafeAreaView } from "react-native";
-import Icon from "react-native-vector-icons/MaterialIcons";
+import { View, SafeAreaView } from "react-native";
 import PropTypes from "prop-types";
 import styles from "./styles";
-import ShayrStatusBar from "../ShayrStatusBar/ShayrStatusBar";
+import ShayrStatusBar from "../ShayrStatusBar";
+import HeaderTitle from "../HeaderTitle";
 import { createShadow } from "../../styles/Shadows";
+import HeaderBack from "../HeaderBack";
 
 export default class HeaderBar extends Component {
   static propTypes = {
@@ -41,16 +42,12 @@ export default class HeaderBar extends Component {
             <View style={styles.headerBox}>
               <View style={styles.bookendsBox}>
                 {this.props.back ? (
-                  <TouchableOpacity onPress={() => this.props.back()}>
-                    <Icon name="chevron-left" size={24} color="black" />
-                  </TouchableOpacity>
+                  <HeaderBack onPress={this.props.back} />
                 ) : (
                   <View />
                 )}
               </View>
-              <View style={styles.titleBox}>
-                <Text style={styles.title}>{this.props.title}</Text>
-              </View>
+              <HeaderTitle title={this.props.title} />
               <View style={styles.bookendsBox} />
             </View>
           </View>

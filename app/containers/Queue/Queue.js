@@ -6,7 +6,6 @@ import firebase from "react-native-firebase";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import _ from "lodash";
 import { LoginManager } from "react-native-fbsdk";
-import Header from "react-navigation/src/views/Header/Header";
 import styles from "./styles";
 import DynamicActionButton from "../../components/DynamicActionButton";
 import List from "../../components/List";

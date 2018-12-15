@@ -1,12 +1,12 @@
 import {
   createReactNavigationReduxMiddleware,
-  createNavigationPropConstructor,
-} from 'react-navigation-redux-helpers';
+  createNavigationPropConstructor
+} from "react-navigation-redux-helpers";
 
 const navMiddleware = createReactNavigationReduxMiddleware(
-  'root',
+  "root",
   state => state.nav
 );
-const navigationPropConstructor = createNavigationPropConstructor('root');
+const navigationPropConstructor = createNavigationPropConstructor("root");
 
 export { navMiddleware, navigationPropConstructor };

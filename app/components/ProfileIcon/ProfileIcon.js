@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { View, Image, Text } from "react-native";
 import PropTypes from "prop-types";
 import StyleSheetFactory from "./styles";
+import { colors } from "../../styles/Colors";
 
 export default class ProfileIcon extends Component {
   static propTypes = {
@@ -26,7 +27,12 @@ export default class ProfileIcon extends Component {
           {this.props.uri ? (
             <Image style={styles.image} source={{ uri: this.props.uri }} />
           ) : (
-            <View style={styles.image} />
+            <View
+              style={{
+                ...styles.image,
+                backgroundColor: colors.LIGHT_GRAY
+              }}
+            />
           )}
         </View>
         <View style={styles.nameBox}>
