@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import Feed from "../../containers/Feed";
-import PostDetails from "../../containers/PostDetails";
-import HeaderBar from "../../components/HeaderBar";
+import PostDetail from "../../containers/PostDetail";
+import Header from "../../components/Header";
 import { colors } from "../../styles/Colors";
 
 import { loadSelf, loadFriendships } from "../../redux/social/SocialActions";
@@ -32,7 +32,7 @@ class LoginListener extends Component {
   static navigationOptions = ({ navigation }) => {
     return {
       header: (
-        <HeaderBar
+        <Header
           backgroundColor={colors.YELLOW}
           statusBarStyle="dark-content"
           shadow
@@ -59,7 +59,7 @@ class LoginListener extends Component {
 
   render() {
     return <Feed />;
-    // return <PostDetails />;
+    // return <PostDetail />;
   }
 }
 

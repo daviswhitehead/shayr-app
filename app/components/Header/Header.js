@@ -3,11 +3,11 @@ import { View, SafeAreaView } from "react-native";
 import PropTypes from "prop-types";
 import styles from "./styles";
 import ShayrStatusBar from "../ShayrStatusBar";
-import HeaderTitle from "../HeaderTitle";
+import FontTitle from "../FontTitle";
 import { createShadow } from "../../styles/Shadows";
 import HeaderBack from "../HeaderBack";
 
-export default class HeaderBar extends Component {
+export default class Header extends Component {
   static propTypes = {
     backgroundColor: PropTypes.string.isRequired,
     statusBarStyle: PropTypes.string.isRequired,
@@ -47,7 +47,7 @@ export default class HeaderBar extends Component {
                   <View />
                 )}
               </View>
-              <HeaderTitle title={this.props.title} />
+              <FontTitle text={this.props.title} />
               <View style={styles.bookendsBox} />
             </View>
           </View>

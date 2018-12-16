@@ -4,7 +4,9 @@ import PropTypes from "prop-types";
 import _ from "lodash";
 import styles from "./styles";
 import article from "../../assets/Article.png";
-import ActionCounter from "../ActionCounter";
+import PostAction from "../PostAction";
+import FontHeadingTwo from "../FontHeadingTwo";
+import FontSubHeading from "../FontSubHeading";
 
 export default class ContentCard extends Component {
   static propTypes = {
@@ -117,17 +119,14 @@ export default class ContentCard extends Component {
             </View>
             <View style={styles.textActionsBox}>
               <View style={styles.textBox}>
-                <Text style={styles.titleText}>{data.title}</Text>
-                <Text style={styles.publisherText}>{data.publisher.name}</Text>
+                <FontHeadingTwo text={data.title} />
+                <FontSubHeading text={data.publisher.name} />
               </View>
               <View style={styles.actionsBox}>
-                <ActionCounter
-                  actionType={"share"}
-                  {...this.props.shareAction}
-                />
-                <ActionCounter actionType={"add"} {...this.props.addAction} />
-                <ActionCounter actionType={"done"} {...this.props.doneAction} />
-                <ActionCounter actionType={"like"} {...this.props.likeAction} />
+                <PostAction actionType={"share"} {...this.props.shareAction} />
+                <PostAction actionType={"add"} {...this.props.addAction} />
+                <PostAction actionType={"done"} {...this.props.doneAction} />
+                <PostAction actionType={"like"} {...this.props.likeAction} />
               </View>
             </View>
           </View>

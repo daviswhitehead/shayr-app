@@ -11,8 +11,6 @@ const initialState = {
 };
 
 function feedReducer(state = initialState, action) {
-  // console.log(action.type);
-  // Failure Handling
   if (action.type.substr(action.type.length - 4) === "FAIL") {
     return {
       ...state,
@@ -20,7 +18,6 @@ function feedReducer(state = initialState, action) {
     };
   }
 
-  // Case Handling
   switch (action.type) {
     case types.LOAD_POSTS_SUCCESS: {
       if (action.query === "feed") {

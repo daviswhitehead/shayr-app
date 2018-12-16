@@ -8,12 +8,21 @@ import { colors } from "../../styles/Colors";
 import { fonts } from "../../styles/Fonts";
 const PostActionIcons = createIconSetFromIcoMoon(icoMoonConfig);
 
-export default class ActionCounter extends Component {
+export default class PostAction extends Component {
+  constructor() {
+    super();
+    this.state = {
+      wasPressed: false,
+      user: false,
+      count: 0
+    };
+  }
+
   static propTypes = {
     actionType: PropTypes.oneOf(["share", "add", "done", "like"]).isRequired,
     actionCount: PropTypes.number,
     actionUser: PropTypes.bool.isRequired,
-    onTap: PropTypes.func.isRequired
+    onPress: PropTypes.func.isRequired
   };
 
   getIconState = (count, user) => {
@@ -35,23 +44,45 @@ export default class ActionCounter extends Component {
     return [iconColor, countColor, countFont];
   };
 
+  onPress = onPress => {
+    // state takes over the logic after the action has been pressed to feel real-time
+    const decider = this.state.wasPressed
+      ? this.state.user
+      : this.props.actionUser;
+    const counter = this.state.wasPressed
+      ? this.state.count
+      : this.props.actionCount;
+
+    this.setState(previousState => ({
+      wasPressed: true,
+      user: previousState.wasPressed
+        ? !previousState.user
+        : !this.props.actionUser,
+      count: decider === false ? counter + 1 : counter - 1
+    }));
+
+    onPress();
+  };
+
   render() {
+    let count = this.state.wasPressed
+      ? this.state.count
+      : this.props.actionCount;
+
     const [iconColor, countColor, countFont] = this.getIconState(
-      this.props.actionCount,
-      this.props.actionUser
+      count,
+      this.state.wasPressed ? this.state.user : this.props.actionUser
     );
 
-    let count = "";
     let countStyles = {
       fontFamily: countFont
     };
     if (countColor) {
-      count = this.props.actionCount;
       countStyles["color"] = countColor;
     }
 
     return (
-      <TouchableOpacity onPress={() => this.props.onTap()}>
+      <TouchableOpacity onPress={() => this.onPress(this.props.onPress)}>
         <View style={styles.container}>
           <View style={styles.iconBox}>
             <PostActionIcons

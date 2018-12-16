@@ -1,10 +1,9 @@
-import React from "react";
 import { createStackNavigator } from "react-navigation";
 import LoginListeners from "../containers/LoginListeners";
 import Feed from "../containers/Feed";
 import Queue from "../containers/Queue";
 import Login from "../containers/Login";
-import PostDetails from "../containers/PostDetails";
+import PostDetail from "../containers/PostDetail";
 
 export const RootNavigator = createStackNavigator({
   Login: {
@@ -22,7 +21,7 @@ export const RootNavigator = createStackNavigator({
   Queue: {
     screen: Queue
   },
-  PostDetails: {
-    screen: PostDetails
+  PostDetail: {
+    screen: PostDetail
   }
 });

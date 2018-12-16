@@ -3,12 +3,12 @@ import { fonts } from "../../styles/Fonts";
 import { colors } from "../../styles/Colors";
 
 export default StyleSheet.create({
-  titleBox: {
-    textAlign: "center"
+  box: {
+    textAlign: "left"
   },
-  titleText: {
-    ...fonts.EXTRA_BOLD,
-    fontSize: 24,
-    color: colors.BLACK
+  text: {
+    ...fonts.REGULAR,
+    color: colors.BLACK,
+    fontSize: 18
   }
 });

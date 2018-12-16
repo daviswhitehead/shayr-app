@@ -1,9 +1,9 @@
 {
   Feed: {
-    List: { SwipeCard, ContentCard, ActionCounter}
+    List: { SwipeCard, ContentCard, PostAction}
       SwipeCard: {
         ContentCard: {
-          ActionCounter: {
+          PostAction: {
             data: {
               actionType: PropTypes.string.isRequired,
               actionCount: PropTypes.number.isRequired,

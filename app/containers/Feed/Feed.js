@@ -13,12 +13,10 @@ import {
   refreshPosts,
   flattenPosts
 } from "../../redux/posts/PostsActions";
-import {
-  postAction,
-  postDetailsView
-} from "../../redux/postActions/PostActionsActions";
+import { postAction } from "../../redux/postActions/PostActionsActions";
+import { postDetailView } from "../PostDetail/actions";
 import { signOutUser } from "../../redux/authentication/AuthenticationActions";
-import HeaderBar from "../../components/HeaderBar";
+import Header from "../../components/Header";
 import { colors } from "../../styles/Colors";
 
 const mapStateToProps = state => {
@@ -31,7 +29,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => ({
   navQueue: () => dispatch(NavigationActions.navigate({ routeName: "Queue" })),
-  navPostDetails: post => dispatch(postDetailsView(post)),
+  postDetailView: post => dispatch(postDetailView(post)),
   loadPosts: (userId, query) => dispatch(loadPosts(userId, query)),
   paginatePosts: (userId, query, lastPost) =>
     dispatch(paginatePosts(userId, query, lastPost)),
@@ -50,7 +48,7 @@ class Feed extends Component {
   static navigationOptions = ({ navigation }) => {
     return {
       header: (
-        <HeaderBar
+        <Header
           backgroundColor={colors.YELLOW}
           statusBarStyle="dark-content"
           shadow
@@ -94,13 +92,13 @@ class Feed extends Component {
           ...this.props.social.friends
         }}
         // onTap={() => openURL(item.url)}
-        onTap={() => this.props.navPostDetails(item)}
+        onTap={() => this.props.postDetailView(item)}
         shareAction={{
           actionCount: item.shareCount,
           actionUser: item.shares
             ? item.shares.includes(this.props.auth.user.uid)
             : false,
-          onTap: () =>
+          onPress: () =>
             this.props.postAction(
               "share",
               this.props.auth.user.uid,
@@ -112,7 +110,7 @@ class Feed extends Component {
           actionUser: item.adds
             ? item.adds.includes(this.props.auth.user.uid)
             : false,
-          onTap: () =>
+          onPress: () =>
             this.props.postAction("add", this.props.auth.user.uid, item.postId)
         }}
         doneAction={{
@@ -120,7 +118,7 @@ class Feed extends Component {
           actionUser: item.dones
             ? item.dones.includes(this.props.auth.user.uid)
             : false,
-          onTap: () =>
+          onPress: () =>
             this.props.postAction("done", this.props.auth.user.uid, item.postId)
         }}
         likeAction={{
@@ -128,7 +126,7 @@ class Feed extends Component {
           actionUser: item.likes
             ? item.likes.includes(this.props.auth.user.uid)
             : false,
-          onTap: () =>
+          onPress: () =>
             this.props.postAction("like", this.props.auth.user.uid, item.postId)
         }}
       />
