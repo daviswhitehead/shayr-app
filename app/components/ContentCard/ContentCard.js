@@ -1,18 +1,12 @@
 import React, { Component } from "react";
-import {
-  Text,
-  StyleSheet,
-  View,
-  Image,
-  TouchableWithoutFeedback
-} from "react-native";
+import { Text, View, Image, TouchableWithoutFeedback } from "react-native";
 import PropTypes from "prop-types";
-
 import _ from "lodash";
 import styles from "./styles";
 import article from "../../assets/Article.png";
-// import isURL from '../../lib/Utils'; check to make sure url is openable
-import ActionCounter from "../ActionCounter";
+import PostAction from "../PostAction";
+import FontHeadingTwo from "../FontHeadingTwo";
+import FontSubHeading from "../FontSubHeading";
 
 export default class ContentCard extends Component {
   static propTypes = {
@@ -33,7 +27,7 @@ export default class ContentCard extends Component {
       doneCount: PropTypes.number,
       likeCount: PropTypes.number,
       url: PropTypes.string.isRequired
-    }),
+    }).isRequired,
     friends: PropTypes.shape({
       friendId: PropTypes.shape({
         firstName: PropTypes.string,
@@ -43,25 +37,7 @@ export default class ContentCard extends Component {
     })
   };
 
-  static defaultProps = {
-    payload: {
-      image: "missing",
-      title: "missing",
-      publisher: {
-        name: "missing",
-        logo: "missing"
-      },
-      shares: [],
-      medium: "missing",
-      shareCount: 0,
-      url: "missing"
-    },
-    friends: {
-      firstName: "missing",
-      lastName: "missing",
-      facebookProfilePhoto: "missing"
-    }
-  };
+  static defaultProps = {};
 
   combine = () => {
     let data = {
@@ -87,22 +63,22 @@ export default class ContentCard extends Component {
     }
 
     if (featuredUserId && featuredType) {
-      (data["facebookProfilePhoto"] = _.get(
+      data["facebookProfilePhoto"] = _.get(
         this.props.friends,
         [featuredUserId, "facebookProfilePhoto"],
         "missing"
-      )),
-        (data["firstName"] = _.get(
-          this.props.friends,
-          [featuredUserId, "firstName"],
-          "missing"
-        )),
-        (data["lastName"] = _.get(
-          this.props.friends,
-          [featuredUserId, "lastName"],
-          "missing"
-        )),
-        (data["featureType"] = featuredType);
+      );
+      data["firstName"] = _.get(
+        this.props.friends,
+        [featuredUserId, "firstName"],
+        "missing"
+      );
+      data["lastName"] = _.get(
+        this.props.friends,
+        [featuredUserId, "lastName"],
+        "missing"
+      );
+      data["featureType"] = featuredType;
     }
 
     return data;
@@ -143,17 +119,14 @@ export default class ContentCard extends Component {
             </View>
             <View style={styles.textActionsBox}>
               <View style={styles.textBox}>
-                <Text style={styles.titleText}>{data.title}</Text>
-                <Text style={styles.publisherText}>{data.publisher.name}</Text>
+                <FontHeadingTwo text={data.title} />
+                <FontSubHeading text={data.publisher.name} />
               </View>
               <View style={styles.actionsBox}>
-                <ActionCounter
-                  actionType={"share"}
-                  {...this.props.shareAction}
-                />
-                <ActionCounter actionType={"add"} {...this.props.addAction} />
-                <ActionCounter actionType={"done"} {...this.props.doneAction} />
-                <ActionCounter actionType={"like"} {...this.props.likeAction} />
+                <PostAction actionType={"share"} {...this.props.shareAction} />
+                <PostAction actionType={"add"} {...this.props.addAction} />
+                <PostAction actionType={"done"} {...this.props.doneAction} />
+                <PostAction actionType={"like"} {...this.props.likeAction} />
               </View>
             </View>
           </View>

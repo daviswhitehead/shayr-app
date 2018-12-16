@@ -6,7 +6,6 @@ import {
 } from "../../styles/Copy";
 import { ts } from "../../lib/FirebaseHelpers";
 
-// Action Types
 export const types = {
   POST_ACTION_START: "POST_ACTION_START",
   POST_ACTION_SUCCESS: "POST_ACTION_SUCCESS",
@@ -17,7 +16,7 @@ export const postAction = (actionType, userId, postId) => {
   return function(dispatch) {
     dispatch({
       type: types.POST_ACTION_START,
-      actionType
+      payload: actionType
     });
     const actionRef = firebase
       .firestore()
@@ -60,14 +59,14 @@ export const postAction = (actionType, userId, postId) => {
           : Toaster(actionTypeInactiveToasts[actionType]);
         dispatch({
           type: types.POST_ACTION_SUCCESS,
-          actionType
+          payload: actionType
         });
       })
       .catch(e => {
         console.error(e);
         dispatch({
           type: types.POST_ACTION_FAIL,
-          actionType,
+          payload: actionType,
           error: e
         });
       });

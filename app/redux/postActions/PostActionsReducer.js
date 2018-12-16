@@ -5,7 +5,6 @@ const initialState = {
 };
 
 function postActionsReducer(state = initialState, action) {
-  // Failure Handling
   if (action.type.substr(action.type.length - 4) === "FAIL") {
     return {
       ...state,

@@ -42,7 +42,9 @@ export default StyleSheet.create({
     marginLeft: layout.MARGIN_MEDIUM
   },
   imageBox: {
-    padding: layout.PADDING_MEDIUM
+    padding: layout.PADDING_MEDIUM,
+    borderColor: "blue",
+    borderWidth: 5
   },
   image: {
     width: 100,
@@ -54,12 +56,16 @@ export default StyleSheet.create({
     flexDirection: "column",
     justifyContent: "flex-start",
     backgroundColor: "white",
-    padding: layout.PADDING_MEDIUM
+    padding: layout.PADDING_MEDIUM,
+    borderColor: "blue",
+    borderWidth: 5
   },
   textBox: {
     flex: 100,
     flexDirection: "column",
-    backgroundColor: "white"
+    backgroundColor: "white",
+    borderColor: "blue",
+    borderWidth: 5
   },
   titleText: {
     ...fonts.BOLD,
@@ -74,7 +80,9 @@ export default StyleSheet.create({
     flexDirection: "row",
     // justifyContent: 'space-between',
     justifyContent: "flex-start",
-    alignContent: "center"
+    alignContent: "center",
+    borderColor: "red",
+    borderWidth: 5
   },
   action: {
     padding: layout.PADDING_MEDIUM

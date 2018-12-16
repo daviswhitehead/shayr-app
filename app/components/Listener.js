@@ -49,7 +49,7 @@ export function registerAppListener(navigation) {
     });
 
   this.onTokenRefreshListener = firebase.messaging().onTokenRefresh(token => {
-    console.log("TOKEN (refreshUnsubscribe)", token);
+    // console.log('TOKEN (refreshUnsubscribe)', token);
   });
 
   this.messageListener = firebase.messaging().onMessage(message => {
