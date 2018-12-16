@@ -1,6 +1,6 @@
 import { StackActions, NavigationActions } from "react-navigation";
 import { RootNavigator } from "../../config/Routes";
-import { types } from "../authentication/AuthenticationActions";
+import { types } from "../../containers/Login/actions";
 
 const firstAction = RootNavigator.router.getActionForPathAndParams("Login");
 const initialState = RootNavigator.router.getStateForAction(firstAction);

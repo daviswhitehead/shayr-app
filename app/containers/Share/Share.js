@@ -16,7 +16,7 @@ import {
   retrieveAccessToken,
   getAuthCredential,
   getCurrentUser
-} from "../../redux/authentication/AuthenticationActions";
+} from "../Login/actions";
 import { createShare } from "../../lib/FirebaseHelpers";
 
 export default class MyComponent extends Component {

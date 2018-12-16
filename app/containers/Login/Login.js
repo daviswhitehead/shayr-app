@@ -1,19 +1,16 @@
 import React, { Component } from "react";
 import {
   View,
-  Button,
   Image,
   Text,
-  StyleSheet,
-  TouchableWithoutFeedback
+  TouchableWithoutFeedback,
+  AsyncStorage
 } from "react-native";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { NavigationActions } from "react-navigation";
 import firebase from "react-native-firebase";
-import { registerAppListener } from "../../components/Listener";
 import { LoginButton } from "react-native-fbsdk";
-import { AsyncStorage } from "react-native";
+import { registerAppListener } from "../../components/Listener";
 import {
   authSubscription,
   signOutUser,
@@ -21,10 +18,9 @@ import {
   facebookAuthTap,
   facebookAuth,
   signedIn
-} from "../../redux/authentication/AuthenticationActions";
+} from "./actions";
 import styles from "./styles";
 import vectorLogo from "../../assets/VectorLogo.png";
-import LoginListeners from "../../containers/LoginListeners";
 
 const mapStateToProps = state => {
   return {

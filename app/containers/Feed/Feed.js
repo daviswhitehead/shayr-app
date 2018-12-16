@@ -15,7 +15,7 @@ import {
 } from "../../redux/posts/PostsActions";
 import { postAction } from "../../redux/postActions/PostActionsActions";
 import { postDetailView } from "../PostDetail/actions";
-import { signOutUser } from "../../redux/authentication/AuthenticationActions";
+import { signOutUser } from "../Login/actions";
 import Header from "../../components/Header";
 import { colors } from "../../styles/Colors";
 

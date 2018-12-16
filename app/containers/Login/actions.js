@@ -3,7 +3,6 @@ import { AccessToken, LoginManager } from "react-native-fbsdk";
 import { RNSKBucket } from "react-native-swiss-knife";
 import { ts, getUserId } from "../../lib/FirebaseHelpers";
 
-// Action Types
 export const types = {
   SIGNED_IN: "SIGNED_IN",
   SIGN_OUT_USER: "SIGN_OUT_USER",
@@ -24,10 +23,12 @@ export const types = {
   FACEBOOK_SIGN_OUT_START: "FACEBOOK_SIGN_OUT_START",
   FACEBOOK_SIGN_OUT_SUCCESS: "FACEBOOK_SIGN_OUT_SUCCESS",
   APP_SIGN_OUT_START: "APP_SIGN_OUT_START",
-  APP_SIGN_OUT_SUCCESS: "APP_SIGN_OUT_SUCCESS"
+  APP_SIGN_OUT_SUCCESS: "APP_SIGN_OUT_SUCCESS",
+  NOTIFICATION_PERMISSIONS_START: "NOTIFICATION_PERMISSIONS_START",
+  NOTIFICATION_PERMISSIONS_SUCCESS: "NOTIFICATION_PERMISSIONS_SUCCESS",
+  NOTIFICATION_PERMISSIONS_FAIL: "NOTIFICATION_PERMISSIONS_FAIL"
 };
 
-// Helper Functions
 const appGroup = "group.shayr";
 
 const storeAccessToken = token => {
@@ -60,29 +61,37 @@ export const getCurrentUser = credential => {
   return firebase.auth().signInAndRetrieveDataWithCredential(credential);
 };
 
-export const pushNotificationListener = () => {
-  return firebase.auth;
-};
-
-export const savePushToken = user => {
-  const fcm = firebase.messaging();
-  // requests push notification permissions from the user
-  fcm.requestPermission();
-  // gets the device's push token
-  return fcm.getToken().then(token => {
-    // stores the token in the user's document
-    return firebase
-      .firestore()
-      .collection("users")
-      .doc(user.uid)
-      .update({ pushToken: token, updatedAt: ts })
-      .then(ref => {
-        // console.log('push token update success');
-      })
-      .catch(error => {
-        console.error(error);
+export const savePushToken = async (dispatch, user) => {
+  dispatch({ type: types.NOTIFICATION_PERMISSIONS_START });
+  if (!(await firebase.messaging().hasPermission())) {
+    try {
+      // requests push notification permissions from the user
+      await firebase.messaging().requestPermission();
+    } catch (e) {
+      console.error(e);
+      dispatch({
+        type: types.NOTIFICATION_PERMISSIONS_FAIL,
+        error: e
       });
-  });
+    }
+  }
+
+  // gets the device's push token
+  const token = await firebase.messaging().getToken();
+
+  // stores the token in the user's document
+  return firebase
+    .firestore()
+    .collection("users")
+    .doc(user.uid)
+    .update({ pushToken: token, updatedAt: ts })
+    .then(ref => {
+      console.log("savePushToken success");
+      dispatch({ type: types.NOTIFICATION_PERMISSIONS_SUCCESS });
+    })
+    .catch(error => {
+      console.error(error);
+    });
 };
 
 export const saveUserInfo = (user, data) => {
@@ -123,17 +132,9 @@ export const saveUserInfo = (user, data) => {
     });
 };
 
-// Action Creators
 export function signedIn() {
   return {
     type: types.SIGNED_IN
-  };
-}
-
-export function authUser(user) {
-  return {
-    type: types.AUTH_SUCCESS,
-    payload: user
   };
 }
 
@@ -219,8 +220,11 @@ export function authSubscription() {
     dispatch({ type: types.AUTH_START });
     return firebase.auth().onAuthStateChanged(user => {
       if (user) {
-        dispatch(authUser(user));
-        savePushToken(user);
+        dispatch({
+          type: types.AUTH_SUCCESS,
+          payload: user
+        });
+        savePushToken(dispatch, user);
         // } else {
         //   dispatch(signOutUser())
       }

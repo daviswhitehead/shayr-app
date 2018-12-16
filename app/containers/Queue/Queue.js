@@ -21,7 +21,7 @@ import {
   flattenPosts
 } from "../../redux/posts/PostsActions";
 import { postAction } from "../../redux/postActions/PostActionsActions";
-import { signOutUser } from "../../redux/authentication/AuthenticationActions";
+import { signOutUser } from "../Login/actions";
 
 const mapStateToProps = state => {
   return {

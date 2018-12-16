@@ -1,6 +1,6 @@
 import { combineReducers } from "redux";
 import navigationReducer from "./navigation/NavigationReducer";
-import authenticationReducer from "./authentication/AuthenticationReducer";
+import authenticationReducer from "../containers/Login/reducer";
 import postsReducer from "./posts/PostsReducer";
 import postActionsReducer from "./postActions/PostActionsReducer";
 import socialReducer from "./social/SocialReducer";
