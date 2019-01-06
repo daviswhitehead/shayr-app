@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { createStackNavigator } from "react-navigation";
 import { initializeListeners } from "react-navigation-redux-helpers";
 
 import { RootNavigator } from "../../config/Routes";

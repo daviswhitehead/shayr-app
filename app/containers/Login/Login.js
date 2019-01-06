@@ -4,13 +4,17 @@ import {
   Image,
   Text,
   TouchableWithoutFeedback,
-  AsyncStorage
+  Alert
 } from "react-native";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import firebase from "react-native-firebase";
 import { LoginButton } from "react-native-fbsdk";
-import { registerAppListener } from "../../components/Listener";
+import {
+  notificationListener,
+  notificationOpenedListener
+} from "../../lib/NotificationListeners";
+import { notificationChannels } from "../../lib/NotificationChannels";
 import {
   authSubscription,
   signOutUser,
@@ -41,46 +45,58 @@ const mapDispatchToProps = dispatch => {
 
 class Login extends Component {
   componentDidMount() {
+    // check authentication
     this.unsubscribe = this.props.authSubscription();
     this.props.locateAccessToken();
 
-    // Build a channel
-    const channel = new firebase.notifications.Android.Channel(
-      "new-shayr-channel",
-      "Test Channel",
-      firebase.notifications.Android.Importance.Max
-    ).setDescription("My apps test channel");
-    // Create the channel
-    firebase.notifications().android.createChannel(channel);
-    registerAppListener(this.props.navigation);
+    // setup android notification channels
+    notificationChannels.forEach(channel => {
+      firebase.notifications().android.createChannel(channel);
+    });
+    console.log(notificationChannels);
+
+    const notification = new firebase.notifications.Notification()
+      .setNotificationId("notificationId")
+      .setTitle("My notification title")
+      .setBody("My notification body")
+      .setData({
+        key1: "value1",
+        key2: "value2"
+      })
+      .android.setChannelId("General")
+      .android.setSmallIcon("ic_launcher")
+      .ios.setBadge(0);
+    console.log(notification);
+
+    const date = new Date();
+    date.setSeconds(date.getSeconds() + 5);
+    console.log(date);
+
+    firebase.notifications().scheduleNotification(notification, {
+      fireDate: date.getTime()
+    });
+
+    // start notification listeners
+    this.notificationListener = notificationListener();
+    console.log(this.notificationListener);
+
+    this.notificationOpenedListener = notificationOpenedListener();
+    console.log(this.notificationOpenedListener);
+
     firebase
       .notifications()
       .getInitialNotification()
       .then(notificationOpen => {
         if (notificationOpen) {
-          // Get information about the notification that was opened
-          const notif = notificationOpen.notification;
-          this.setState({
-            initNotif: notif.data
-          });
-          if (notif && notif.targetScreen === "detail") {
-            setTimeout(() => {
-              this.props.navigation.navigate("Detail");
-            }, 500);
-          }
+          const { action, notification } = notificationOpen;
+          Alert.alert("getInitialNotification");
         }
       });
-    const offline = AsyncStorage.getItem("headless");
-    if (offline) {
-      this.setState({
-        offlineNotif: offline
-      });
-      AsyncStorage.removeItem("headless");
-    }
   }
 
   componentWillUnmount() {
     this.unsubscribe();
+    this.notificationOpenedListener();
   }
 
   render() {
