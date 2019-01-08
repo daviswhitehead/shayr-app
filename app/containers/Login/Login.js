@@ -11,6 +11,7 @@ import { connect } from "react-redux";
 import firebase from "react-native-firebase";
 import { LoginButton } from "react-native-fbsdk";
 import {
+  notificationDisplayedListener,
   notificationListener,
   notificationOpenedListener
 } from "../../lib/NotificationListeners";
@@ -53,41 +54,40 @@ class Login extends Component {
     notificationChannels.forEach(channel => {
       firebase.notifications().android.createChannel(channel);
     });
-    console.log(notificationChannels);
 
-    const notification = new firebase.notifications.Notification()
-      .setNotificationId("notificationId")
-      .setTitle("My notification title")
-      .setBody("My notification body")
-      .setData({
-        key1: "value1",
-        key2: "value2"
-      })
-      .android.setChannelId("General")
-      .android.setSmallIcon("ic_launcher")
-      .ios.setBadge(0);
-    console.log(notification);
+    // const notification = new firebase.notifications.Notification()
+    //   .setNotificationId('notificationId')
+    //   .setTitle('My notification title')
+    //   .setBody('My notification body')
+    //   .setData({
+    //     key1: 'value1',
+    //     key2: 'value2',
+    //   })
+    //   .android.setChannelId('General')
+    //   .android.setSmallIcon('ic_launcher')
+    //   .ios.setBadge(0);
+    // console.log(notification);
 
-    const date = new Date();
-    date.setSeconds(date.getSeconds() + 5);
-    console.log(date);
+    // const date = new Date();
+    // date.setSeconds(date.getSeconds() + 5);
+    // console.log(date);
 
-    firebase.notifications().scheduleNotification(notification, {
-      fireDate: date.getTime()
-    });
+    // firebase.notifications().scheduleNotification(notification, {
+    //   fireDate: date.getTime(),
+    // });
 
     // start notification listeners
+    // this.notificationDisplayedListener = notificationDisplayedListener();
     this.notificationListener = notificationListener();
-    console.log(this.notificationListener);
-
     this.notificationOpenedListener = notificationOpenedListener();
-    console.log(this.notificationOpenedListener);
 
     firebase
       .notifications()
       .getInitialNotification()
       .then(notificationOpen => {
         if (notificationOpen) {
+          console.log("getInitialNotification");
+          console.log(notificationOpen);
           const { action, notification } = notificationOpen;
           Alert.alert("getInitialNotification");
         }
@@ -96,7 +96,6 @@ class Login extends Component {
 
   componentWillUnmount() {
     this.unsubscribe();
-    this.notificationOpenedListener();
   }
 
   render() {
