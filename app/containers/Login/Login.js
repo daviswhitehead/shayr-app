@@ -1,21 +1,8 @@
 import React, { Component } from "react";
-import {
-  View,
-  Image,
-  Text,
-  TouchableWithoutFeedback,
-  Alert
-} from "react-native";
+import { View, Image, Text, TouchableWithoutFeedback } from "react-native";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import firebase from "react-native-firebase";
 import { LoginButton } from "react-native-fbsdk";
-import {
-  notificationDisplayedListener,
-  notificationListener,
-  notificationOpenedListener
-} from "../../lib/NotificationListeners";
-import { notificationChannels } from "../../lib/NotificationChannels";
 import {
   authSubscription,
   signOutUser,
@@ -49,49 +36,6 @@ class Login extends Component {
     // check authentication
     this.unsubscribe = this.props.authSubscription();
     this.props.locateAccessToken();
-
-    // setup android notification channels
-    notificationChannels.forEach(channel => {
-      firebase.notifications().android.createChannel(channel);
-    });
-
-    // const notification = new firebase.notifications.Notification()
-    //   .setNotificationId('notificationId')
-    //   .setTitle('My notification title')
-    //   .setBody('My notification body')
-    //   .setData({
-    //     key1: 'value1',
-    //     key2: 'value2',
-    //   })
-    //   .android.setChannelId('General')
-    //   .android.setSmallIcon('ic_launcher')
-    //   .ios.setBadge(0);
-    // console.log(notification);
-
-    // const date = new Date();
-    // date.setSeconds(date.getSeconds() + 5);
-    // console.log(date);
-
-    // firebase.notifications().scheduleNotification(notification, {
-    //   fireDate: date.getTime(),
-    // });
-
-    // start notification listeners
-    // this.notificationDisplayedListener = notificationDisplayedListener();
-    this.notificationListener = notificationListener();
-    this.notificationOpenedListener = notificationOpenedListener();
-
-    firebase
-      .notifications()
-      .getInitialNotification()
-      .then(notificationOpen => {
-        if (notificationOpen) {
-          console.log("getInitialNotification");
-          console.log(notificationOpen);
-          const { action, notification } = notificationOpen;
-          Alert.alert("getInitialNotification");
-        }
-      });
   }
 
   componentWillUnmount() {

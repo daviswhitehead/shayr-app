@@ -4,8 +4,8 @@ import Feed from "../../containers/Feed";
 import PostDetail from "../../containers/PostDetail";
 import Header from "../../components/Header";
 import { colors } from "../../styles/Colors";
-
 import { loadSelf, loadFriendships } from "../../redux/social/SocialActions";
+import { notificationTokenListener } from "../../lib/NotificationListeners";
 
 const mapStateToProps = state => {
   return {
@@ -45,7 +45,8 @@ class LoginListener extends Component {
   componentDidMount() {
     this.subscriptions.push(
       this.props.loadSelf(this.props.auth.user.uid),
-      this.props.loadFriendships(this.props.auth.user.uid)
+      this.props.loadFriendships(this.props.auth.user.uid),
+      notificationTokenListener(this.props.auth.user.uid)
     );
   }
 

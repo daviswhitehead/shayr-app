@@ -131,7 +131,7 @@ export const createShare = (ref, url) => {
     .add({
       createdAt: ts,
       updatedAt: ts,
-      url: url
+      url
     })
     .then(ref => {
       console.log("createShare success");

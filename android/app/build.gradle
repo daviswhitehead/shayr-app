@@ -105,7 +105,7 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
 
     defaultConfig {
-        applicationId "com.shayr"
+        applicationId project.env.get("APP_ID")
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 26
@@ -115,6 +115,9 @@ android {
         }
         // because of firestore
         multiDexEnabled true
+
+        // for build variants
+        resValue "string", "build_config_package", "com.shayr"
     }
     signingConfigs {
         release {

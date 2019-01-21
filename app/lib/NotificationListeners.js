@@ -1,5 +1,5 @@
 import firebase from "react-native-firebase";
-import { Alert } from "react-native";
+import { ts } from "./FirebaseHelpers";
 // https://rnfirebase.io/docs/v5.x.x/notifications/introduction
 
 export const notificationDisplayedListener = () =>
@@ -17,19 +17,9 @@ export const notificationListener = () =>
     notification.android.setChannelId("General");
     console.log(notification);
 
-    const newNotification = new firebase.notifications.Notification()
-      .setNotificationId(notification.notificationId)
-      .setTitle(notification.title)
-      .setBody(notification.body)
-      .setData(notification.data)
-      .setSound("default")
-      .android.setChannelId("test-channel")
-      .android.setSmallIcon("ic_launcher")
-      .android.setPriority(firebase.notifications.Android.Priority.High);
-    firebase.notifications().displayNotification(newNotification);
-    // Alert.alert('onNotification');
+    firebase.notifications().displayNotification(notification);
+    console.log("displayed");
 
-    // firebase.notifications().displayNotification(notification);
     // firebase.notifications().removeDeliveredNotification(notification.notificationId);
   });
 
@@ -43,4 +33,22 @@ export const notificationOpenedListener = () =>
       .notifications()
       .removeDeliveredNotification(notification.notificationId);
     console.log("OPEN:", notification);
+  });
+
+export const notificationTokenListener = userId =>
+  // listens for changes to the user's notification token and updates database upon change
+  firebase.messaging().onTokenRefresh(notificationToken => {
+    console.log("notificationTokenListener");
+
+    return firebase
+      .firestore()
+      .collection("users")
+      .doc(userId)
+      .update({ pushToken: notificationToken, updatedAt: ts })
+      .then(ref => {
+        console.log("savePushToken success");
+      })
+      .catch(e => {
+        console.error(e);
+      });
   });
