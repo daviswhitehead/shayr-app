@@ -9,7 +9,7 @@ import {
   notificationOpenedListener
 } from "../../lib/NotificationListeners";
 import { notificationChannels } from "../../lib/NotificationChannels";
-import { notifications } from "../../lib/Notifications";
+// import { notifications } from '../../lib/Notifications';
 import { RootNavigator } from "../../config/Routes";
 import { navigationPropConstructor } from "../../redux/ReduxNavigation";
 

@@ -19,8 +19,8 @@ platform :ios do
     match(
       type: 'appstore',
       app_identifier: [
-          ENV['SHAYR_BUNDLE_ID'],
-          ENV['SHARE_EXTENSION_BUNDLE_ID']
+          ENV['APP_BUNDLE_ID_IOS'],
+          ENV['APP_EXTENSION_BUNDLE_ID_IOS']
         ],
         readonly: true
       )
@@ -35,8 +35,8 @@ platform :ios do
     match(
       type: 'development',
       app_identifier: [
-          ENV['SHAYR_BUNDLE_ID'],
-          ENV['SHARE_EXTENSION_BUNDLE_ID']
+          ENV['APP_BUNDLE_ID_IOS'],
+          ENV['APP_EXTENSION_BUNDLE_ID_IOS']
         ],
         readonly: false,
         force_for_new_devices: true
@@ -94,16 +94,28 @@ platform :android do
       task: 'clean',
       project_dir: 'android/'
     )
+
+    increment_version_code(
+        gradle_file_path: "./android/app/build.gradle",
+        #ext_constant_name: "test"
+        #app_folder_name:"app"
+  )
     gradle(
       task: 'assemble',
       build_type: 'Release',
-      project_dir: 'android'
+      project_dir: 'android',
+      system_properties: {
+        "ENVFILE": ENV['ENVFILE_LOCATION']
+      }
     )
     # supply(track: "alpha", apk: "android/app/build/outputs/apk/app-release.apk")
     crashlytics(
       api_token: ENV['FABRIC_API_KEY'],
       build_secret: ENV['FABRIC_BUILD_SECRET']
     )
-    upload_to_play_store(track: 'alpha')
+    upload_to_play_store(
+      track: 'alpha',
+      package_name: ENV['APP_ID_ANDROID']
+    )
   end
 end

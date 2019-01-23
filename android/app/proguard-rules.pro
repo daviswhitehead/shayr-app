@@ -16,4 +16,4 @@
 #   public *;
 #}
 
--keep class com.shayr.BuildConfig { *; }
+-keep class com.daviswhitehead.shayr.android.BuildConfig { *; }

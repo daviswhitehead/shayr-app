@@ -1,4 +1,4 @@
-package com.shayr;
+package com.daviswhitehead.shayr.android;
 
 import com.facebook.react.ReactActivity;
 import android.content.Intent;
@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import com.crashlytics.android.Crashlytics;
 import io.fabric.sdk.android.Fabric;
+import org.devio.rn.splashscreen.SplashScreen;
 
 
 public class MainActivity extends ReactActivity {
@@ -17,6 +18,7 @@ public class MainActivity extends ReactActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        SplashScreen.show(this);
         super.onCreate(savedInstanceState);
 
         Fabric.with(this, new Crashlytics());

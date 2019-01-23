@@ -6,6 +6,7 @@ service cloud.firestore {
     function nestedUser(user) {
       return request.auth.uid == user;
     }
+
     match /adds/{add} {
       allow read, write: if isSignedIn();
     }
@@ -35,6 +36,11 @@ service cloud.firestore {
       allow get: if true;
       allow read: if isSignedIn();
       allow update: if nestedUser(user);
+
+      match /inboundShares/{inboundShare} {
+        allow read, write: if isSignedIn() && nestedUser(user);
+        allow create: if nestedUser(user);
+      }
     }
 
     match /users_posts/{user_post} {

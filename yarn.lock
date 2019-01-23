@@ -4681,7 +4681,7 @@ react-native-action-button@^2.8.4:
   dependencies:
     prop-types "^15.5.10"
 
-react-native-config@^0.11.5:
+react-native-config@0.11.7:
   version "0.11.7"
   resolved "https://registry.yarnpkg.com/react-native-config/-/react-native-config-0.11.7.tgz#a2b323f2ecd76a4df88cbb6bc86eaa2ef9febee7"
   integrity sha512-dn5s+zhwLyE25vRT/vaEtLk/j8ZL1UZKvejORNDWakSwpOnLmFurFeaZV83IqkPlfWHXHFdsYe2IRYG1WN4WkQ==
@@ -4754,6 +4754,11 @@ react-native-screens@^1.0.0-alpha.11:
 react-native-share-extension@^1.2.1:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/react-native-share-extension/-/react-native-share-extension-1.2.1.tgz#e71b87126f7c3c2b400f2c5f3d7d30e72ed9c0ad"
+
+react-native-splash-screen@^3.1.1:
+  version "3.1.1"
+  resolved "https://registry.yarnpkg.com/react-native-splash-screen/-/react-native-splash-screen-3.1.1.tgz#1a4e46c9fdce53ff52af2a2cb4181788c4e30b30"
+  integrity sha512-PU2YocOSGbLjL9Vgcq/cwMNuHHKNjjuPpa1IPMuWo+6EB/fSZ5VOmxSa7+eucQe3631s3NhGuk3eHKahU03a4Q==
 
 react-native-swipeable@^0.6.0:
   version "0.6.0"

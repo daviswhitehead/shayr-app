@@ -1,7 +1,7 @@
 // your package you defined in ShareActivity
-package com.shayr.share;
+package com.daviswhitehead.shayr.android.share;
 // import build config
-import com.shayr.BuildConfig;
+import com.daviswhitehead.shayr.android.BuildConfig;
 
 import com.alinz.parkerdan.shareextension.SharePackage;
 

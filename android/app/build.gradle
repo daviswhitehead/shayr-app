@@ -105,10 +105,10 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
 
     defaultConfig {
-        applicationId project.env.get("APP_ID")
+        applicationId project.env.get("APP_ID_ANDROID")
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 26
+        versionCode 32
         versionName "2.0.0"
         ndk {
             abiFilters "armeabi-v7a", "x86"
@@ -117,7 +117,7 @@ android {
         multiDexEnabled true
 
         // for build variants
-        resValue "string", "build_config_package", "com.shayr"
+        resValue "string", "build_config_package", "com.daviswhitehead.shayr.android"
     }
     signingConfigs {
         release {
@@ -177,6 +177,7 @@ dependencies {
     implementation project(':react-native-vector-icons')
     implementation project(':react-native-swiss-knife')
     implementation project(':react-native-share-extension')
+    implementation project(':react-native-splash-screen')
     
     // // FBSDK
     implementation project(':react-native-fbsdk')

@@ -1,5 +1,5 @@
 // define your share project, if your main project is com.sample1, then com.sample1.share makes sense....
-package com.shayr.share;
+package com.daviswhitehead.shayr.android.share;
 
 
 // import ReactActivity
