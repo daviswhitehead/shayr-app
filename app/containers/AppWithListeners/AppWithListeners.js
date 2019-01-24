@@ -9,7 +9,7 @@ import {
   notificationOpenedListener
 } from "../../lib/NotificationListeners";
 import { notificationChannels } from "../../lib/NotificationChannels";
-// import { notifications } from '../../lib/Notifications';
+import { notifications } from "../../lib/Notifications";
 import { RootNavigator } from "../../config/Routes";
 import { navigationPropConstructor } from "../../redux/ReduxNavigation";
 
@@ -46,14 +46,19 @@ class AppWithListeners extends Component {
       console.log("getInitialNotification");
       console.log(notificationOpen);
       const { action, notification } = notificationOpen;
+      firebase
+        .notifications()
+        .removeDeliveredNotification(notification.notificationId);
     }
 
     // to test (scheduled) notifications
-    // const date = new Date();
-    // date.setSeconds(date.getSeconds() + 10);
-    // const test = firebase.notifications().scheduleNotification(notifications.testScheduled, {
-    //   fireDate: date.getTime(),
-    // });
+    const date = new Date();
+    date.setSeconds(date.getSeconds() + 5);
+    const test = firebase
+      .notifications()
+      .scheduleNotification(notifications.testScheduled, {
+        fireDate: date.getTime()
+      });
   }
 
   render() {

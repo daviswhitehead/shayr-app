@@ -115,7 +115,7 @@ platform :android do
     )
     upload_to_play_store(
       track: 'alpha',
-      package_name: ENV['APP_ID_ANDROID']
+      package_name: ENV['APP_ID_ANDROID'] + ENV['APP_ID_SUFFIX_ANDROID']
     )
   end
 end
