@@ -5,6 +5,7 @@
 	};
 	objectVersion = 46;
 	objects = {
+
 /* Begin PBXBuildFile section */
 		00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302AC1ABCB8CE00DB3ED1 /* libRCTActionSheet.a */; };
 		00C302E71ABCBA2D00DB3ED1 /* libRCTGeolocation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302BA1ABCB90400DB3ED1 /* libRCTGeolocation.a */; };
@@ -372,6 +373,13 @@
 			proxyType = 2;
 			remoteGlobalIDString = EB2648DF1C7BE17A00B8F155;
 			remoteInfo = ReactNativeConfig;
+		};
+		61E0DDED21FAD2FA00CCFA26 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6172C8A5218F98D000231FF0 /* ReactNativeConfig.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 3DF7F6AC203AA09B00D0EAB7;
+			remoteInfo = "ReactNativeConfig-tvOS";
 		};
 		78C398B81ACF4ADC00677621 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -757,6 +765,7 @@
 			isa = PBXGroup;
 			children = (
 				6172C8AA218F98D100231FF0 /* libReactNativeConfig.a */,
+				61E0DDEE21FAD2FA00CCFA26 /* libReactNativeConfig-tvOS.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1353,6 +1362,13 @@
 			remoteRef = 6172C8A9218F98D100231FF0 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		61E0DDEE21FAD2FA00CCFA26 /* libReactNativeConfig-tvOS.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = "libReactNativeConfig-tvOS.a";
+			remoteRef = 61E0DDED21FAD2FA00CCFA26 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		78C398B91ACF4ADC00677621 /* libRCTLinking.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -1494,7 +1510,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh\n\"${PODS_ROOT}/Fabric/run\" c12e5c4bb8cd8ca855a8ada44fa3fde413006659 ba048a991e8ea9fb403ca2a51b31d3a80afff44dd4438e37c3bf4420f2906db0";
+			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh\n\"${PODS_ROOT}/Fabric/run\" c12e5c4bb8cd8ca855a8ada44fa3fde413006659 ba048a991e8ea9fb403ca2a51b31d3a80afff44dd4438e37c3bf4420f2906db0\n";
 		};
 		61B2625920AD297300CDA576 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1507,7 +1523,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Fabric/run\" c12e5c4bb8cd8ca855a8ada44fa3fde413006659 ba048a991e8ea9fb403ca2a51b31d3a80afff44dd4438e37c3bf4420f2906db0";
+			shellScript = "\"${PODS_ROOT}/Fabric/run\" c12e5c4bb8cd8ca855a8ada44fa3fde413006659 ba048a991e8ea9fb403ca2a51b31d3a80afff44dd4438e37c3bf4420f2906db0\n";
 		};
 		70D8CFEDFDD8193CF725F826 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1692,7 +1708,7 @@
 				CODE_SIGN_ENTITLEMENTS = shayr/shayr.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 21;
+				CURRENT_PROJECT_VERSION = 31;
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = D5PU696EY8;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1717,10 +1733,10 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.daviswhitehead.shayr.ios;
+				PRODUCT_BUNDLE_IDENTIFIER = com.daviswhitehead.shayr.ios.alpha;
 				PRODUCT_NAME = shayr;
 				PROVISIONING_PROFILE = "79422a41-6d0f-4716-a7e8-63a814ca54ea";
-				PROVISIONING_PROFILE_SPECIFIER = "match Development com.daviswhitehead.shayr.ios";
+				PROVISIONING_PROFILE_SPECIFIER = "match Development com.daviswhitehead.shayr.ios.alpha";
 				TARGETED_DEVICE_FAMILY = 1;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -1735,7 +1751,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 21;
+				CURRENT_PROJECT_VERSION = 31;
 				DEVELOPMENT_TEAM = D5PU696EY8;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1759,10 +1775,10 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.daviswhitehead.shayr.ios;
+				PRODUCT_BUNDLE_IDENTIFIER = com.daviswhitehead.shayr.ios.alpha;
 				PRODUCT_NAME = shayr;
 				PROVISIONING_PROFILE = "56ed9696-3c0c-424a-8283-8e7224744bf2";
-				PROVISIONING_PROFILE_SPECIFIER = "match AppStore com.daviswhitehead.shayr.ios";
+				PROVISIONING_PROFILE_SPECIFIER = "match AppStore com.daviswhitehead.shayr.ios.alpha";
 				TARGETED_DEVICE_FAMILY = 1;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -1819,10 +1835,10 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.daviswhitehead.shayr.ios.ShareExtension;
+				PRODUCT_BUNDLE_IDENTIFIER = com.daviswhitehead.shayr.ios.alpha.shareextension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "f4be2213-70d5-4fd6-a66f-babc46639bcd";
-				PROVISIONING_PROFILE_SPECIFIER = "match Development com.daviswhitehead.shayr.ios.ShareExtension";
+				PROVISIONING_PROFILE_SPECIFIER = "match Development com.daviswhitehead.shayr.ios.alpha.ShareExtension";
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALID_ARCHS = "armv7 armv7s arm64";
@@ -1881,10 +1897,10 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.daviswhitehead.shayr.ios.ShareExtension;
+				PRODUCT_BUNDLE_IDENTIFIER = com.daviswhitehead.shayr.ios.alpha.shareextension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "9570e3fa-d09a-4775-a706-8137e021ed9a";
-				PROVISIONING_PROFILE_SPECIFIER = "match AppStore com.daviswhitehead.shayr.ios.ShareExtension";
+				PROVISIONING_PROFILE_SPECIFIER = "match AppStore com.daviswhitehead.shayr.ios.alpha.ShareExtension";
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALID_ARCHS = "armv7 armv7s arm64";

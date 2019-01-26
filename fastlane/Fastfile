@@ -49,15 +49,30 @@ platform :ios do
       xcodeproj: './ios/shayr.xcodeproj'
     )
     gym(
-      scheme: 'shayr-prod',
+      scheme: ENV['SCHEME'],
       workspace: './ios/shayr.xcworkspace',
       export_method: options[:method]
+    )
+  end
+  
+  desc 'update bundle ids per environment'
+  lane :update_bundle_ids do
+    update_app_identifier(
+      xcodeproj: './ios/shayr.xcodeproj',
+      plist_path: 'shayr/Info.plist', 
+      app_identifier: ENV['APP_BUNDLE_ID_IOS']
+    )
+    update_app_identifier(
+      xcodeproj: './ios/shayr.xcodeproj',
+      plist_path: 'ShareExtension/Info.plist', 
+      app_identifier: ENV['APP_EXTENSION_BUNDLE_ID_IOS']
     )
   end
 
   desc 'ship a beta'
   lane :beta do
     development_certificates
+    update_bundle_ids
     build(method: 'development')
     crashlytics(
       api_token: ENV['FABRIC_API_KEY'],

@@ -1,5 +1,7 @@
+fastlane_require 'dotenv/load'
+
 for_platform :ios do
-  app_identifier("com.daviswhitehead.shayr.ios") # The bundle identifier of your app
+  app_identifier(ENV['APP_BUNDLE_ID_IOS']) # The bundle identifier of your app
   apple_id("whitehead.davis@gmail.com") # Your Apple email address
   itc_team_id("119048181") # iTunes Connect Team ID
   team_id("D5PU696EY8") # Developer Portal Team ID
