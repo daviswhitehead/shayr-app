@@ -29,7 +29,7 @@ export const types = {
   NOTIFICATION_PERMISSIONS_FAIL: "NOTIFICATION_PERMISSIONS_FAIL"
 };
 
-const appGroup = "group.shayr";
+const appGroup = "group.com.daviswhitehead.shayr.ios";
 
 const storeAccessToken = token => {
   RNSKBucket.set("accessToken", token, appGroup);

@@ -1,5 +1,3 @@
-fastlane_require 'dotenv/load'
-
 for_platform :ios do
   app_identifier(ENV['APP_BUNDLE_ID_IOS']) # The bundle identifier of your app
   apple_id("whitehead.davis@gmail.com") # Your Apple email address

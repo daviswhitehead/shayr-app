@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { initializeListeners } from "react-navigation-redux-helpers";
 import firebase from "react-native-firebase";
+import { AppState } from "react-native";
 import {
   notificationDisplayedListener,
   notificationListener,
@@ -26,6 +27,10 @@ class AppWithListeners extends Component {
   };
 
   async componentDidMount() {
+    // listen to app state changes
+    AppState.addEventListener("change", this._handleAppStateChange);
+
+    // navigation listeners
     initializeListeners("root", this.props.nav);
 
     // setup android notification channels
@@ -43,8 +48,6 @@ class AppWithListeners extends Component {
       .notifications()
       .getInitialNotification();
     if (notificationOpen) {
-      console.log("getInitialNotification");
-      console.log(notificationOpen);
       const { action, notification } = notificationOpen;
       firebase
         .notifications()
@@ -60,6 +63,19 @@ class AppWithListeners extends Component {
         fireDate: date.getTime()
       });
   }
+
+  componentWillUnmount() {
+    AppState.removeEventListener("change", this._handleAppStateChange);
+  }
+
+  _handleAppStateChange = nextAppState => {
+    // https://facebook.github.io/react-native/docs/appstate
+    if (nextAppState === "active") {
+      // clear notification badge
+      firebase.notifications().setBadge(0);
+      firebase.notifications().removeAllDeliveredNotifications();
+    }
+  };
 
   render() {
     const { dispatch, nav } = this.props;
