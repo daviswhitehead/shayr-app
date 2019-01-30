@@ -10,20 +10,22 @@ export const notificationDisplayedListener = () =>
 export const notificationListener = () =>
   // app in foreground
   firebase.notifications().onNotification(notification => {
-    const localNotification = new firebase.notifications.Notification({
-      sound: "default",
-      show_in_foreground: true,
-      show_in_background: true
-    })
+    console.log("notificationListener");
+
+    const localNotification = new firebase.notifications.Notification()
       .setNotificationId(notification.notificationId)
       .setTitle(notification.title)
       .setSubtitle(notification.subtitle)
       .setBody(notification.body)
       .setData(notification.data)
-      .android.setChannelId("General")
+      .setSound("default")
+      // android notification settings
+      .android.setChannelId(notification.data.channelId)
       .android.setSmallIcon("@mipmap/ic_notification")
       .android.setColor(colors.YELLOW)
-      .android.setPriority(firebase.notifications.Android.Priority.High);
+      .android.setPriority(firebase.notifications.Android.Priority.High)
+      // ios notification settings
+      .ios.setBadge(1);
 
     firebase.notifications().displayNotification(localNotification);
     firebase
@@ -34,6 +36,8 @@ export const notificationListener = () =>
 export const notificationOpenedListener = () =>
   // app in background
   firebase.notifications().onNotificationOpened(notificationOpen => {
+    console.log("notificationOpenedListener");
+
     const { action, notification } = notificationOpen;
     firebase
       .notifications()
@@ -43,6 +47,8 @@ export const notificationOpenedListener = () =>
 export const notificationTokenListener = userId =>
   // listens for changes to the user's notification token and updates database upon change
   firebase.messaging().onTokenRefresh(notificationToken => {
+    console.log("notificationTokenListener");
+
     return firebase
       .firestore()
       .collection("users")

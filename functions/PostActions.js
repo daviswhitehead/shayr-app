@@ -1,8 +1,8 @@
+const _ = require("lodash");
 const utility = require("./Utility");
 const counters = require("./Counters");
 const atoms = require("./Atoms");
 const notifications = require("./Notifications");
-const _ = require("lodash");
 
 const createUserPostPayload = async (
   db,
@@ -47,7 +47,7 @@ const createUserPostPayload = async (
 
 const sharedActionResources = async (db, change, context) => {
   const beforeData = change.before.data() ? change.before.data() : {};
-  const newAction = beforeData === {} ? true : false;
+  const newAction = _.isEmpty(beforeData) ? true : false;
   const afterData = change.after.data();
   const post = await utility.getDocument(
     db.doc(`posts/${afterData.postId}`),
@@ -173,8 +173,8 @@ exports._onWriteShare = async (db, change, context) => {
       console.log("success");
       return value;
     })
-    .catch(err => {
-      console.error(err);
-      return err;
+    .catch(e => {
+      console.error(e);
+      return e;
     });
 };
