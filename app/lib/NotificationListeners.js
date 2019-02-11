@@ -11,6 +11,7 @@ export const notificationListener = () =>
   // app in foreground
   firebase.notifications().onNotification(notification => {
     console.log("notificationListener");
+    console.log(notification);
 
     const localNotification = new firebase.notifications.Notification()
       .setNotificationId(notification.notificationId)
@@ -23,7 +24,8 @@ export const notificationListener = () =>
       .android.setChannelId(notification.data.channelId)
       .android.setSmallIcon("@mipmap/ic_notification")
       .android.setColor(colors.YELLOW)
-      .android.setPriority(firebase.notifications.Android.Priority.High)
+      .android.setPriority(firebase.notifications.Android.Priority.Default)
+      .android.setBigText(notification.body)
       // ios notification settings
       .ios.setBadge(1);
 

@@ -1,19 +1,21 @@
 const config = require("./Config");
 const utility = require("./Utility");
 
-exports.sendNewSharePushNotificationToFriends = async resources => {
-  let messageBase = {
-    title: "New Shayr",
-    body: `${resources.user.firstName} shayred something new!`
+const newShareNotification = (name, postTitle, postId) => {
+  const copy = {
+    title: "New Shayr!",
+    body: `${name} wants you to check out "${postTitle}"`
   };
 
-  let message = {
+  const message = {
     notification: {
-      ...messageBase
+      ...copy
     },
     data: {
-      ...messageBase,
-      channelId: "General"
+      ...copy,
+      channelId: "General",
+      navigation: "TRUE",
+      postId
     },
     android: {
       priority: "high"
@@ -22,13 +24,83 @@ exports.sendNewSharePushNotificationToFriends = async resources => {
       payload: {
         aps: {
           alert: {
-            ...messageBase
+            ...copy
           },
           badge: 1
         }
       }
     }
   };
+  return message;
+};
+
+const newDoneNotification = (name, postTitle, postId) => {
+  const copy = {
+    title: "New Done!",
+    body: `${name} finished checking out your shayr. Ask them what they think!`
+  };
+
+  const message = {
+    notification: {
+      ...copy
+    },
+    data: {
+      ...copy,
+      channelId: "General",
+      navigation: "TRUE",
+      postId
+    },
+    android: {
+      priority: "high"
+    },
+    apns: {
+      payload: {
+        aps: {
+          alert: {
+            ...copy
+          },
+          badge: 1
+        }
+      }
+    }
+  };
+  return message;
+};
+
+const newLikeNotification = (name, postTitle, postId) => {
+  const copy = {
+    title: "New Like!",
+    body: `${name} liked your shayr`
+  };
+
+  const message = {
+    notification: {
+      ...copy
+    },
+    data: {
+      ...copy,
+      channelId: "General",
+      navigation: "TRUE",
+      postId
+    },
+    android: {
+      priority: "high"
+    },
+    apns: {
+      payload: {
+        aps: {
+          alert: {
+            ...copy
+          },
+          badge: 1
+        }
+      }
+    }
+  };
+  return message;
+};
+
+exports.sendNewSharePushNotificationToFriends = async resources => {
   var messages = [];
 
   for (var friendId in resources.friends) {
@@ -40,49 +112,24 @@ exports.sendNewSharePushNotificationToFriends = async resources => {
       );
 
       if (friend && friend.pushToken) {
-        console.log(friend);
         messages.push(
           config.msg.send({
-            ...message,
+            ...newShareNotification(
+              resources.user.firstName,
+              resources.post.title,
+              resources.post.id
+            ),
             token: friend.pushToken
           })
         );
       }
     }
   }
-  console.log(messages);
 
   return Promise.all(messages);
 };
 
-exports.sendNewDonePushNotificationToSharer = async resources => {
-  let messageBase = {
-    title: "New Shayr",
-    body: `${resources.user.firstName} shayred something new!`
-  };
-
-  let message = {
-    notification: {
-      ...messageBase
-    },
-    data: {
-      ...messageBase,
-      channelId: "General"
-    },
-    android: {
-      priority: "high"
-    },
-    apns: {
-      payload: {
-        aps: {
-          alert: {
-            ...messageBase
-          },
-          badge: 1
-        }
-      }
-    }
-  };
+exports.sendNewDonePushNotificationToFriends = async resources => {
   var messages = [];
 
   for (var friendId in resources.friends) {
@@ -94,17 +141,48 @@ exports.sendNewDonePushNotificationToSharer = async resources => {
       );
 
       if (friend && friend.pushToken) {
-        console.log(friend);
         messages.push(
           config.msg.send({
-            ...message,
+            ...newDoneNotification(
+              resources.user.firstName,
+              resources.post.title,
+              resources.post.id
+            ),
             token: friend.pushToken
           })
         );
       }
     }
   }
-  console.log(messages);
+
+  return Promise.all(messages);
+};
+
+exports.sendNewLikePushNotificationToFriends = async resources => {
+  var messages = [];
+
+  for (var friendId in resources.friends) {
+    if (resources.friends.hasOwnProperty(friendId)) {
+      // eslint-disable-next-line no-await-in-loop
+      var friend = await utility.getDocument(
+        config.db.doc(`users/${resources.friends[friendId].friendUserId}`),
+        `users/${resources.friends[friendId].friendUserId}`
+      );
+
+      if (friend && friend.pushToken) {
+        messages.push(
+          config.msg.send({
+            ...newLikeNotification(
+              resources.user.firstName,
+              resources.post.title,
+              resources.post.id
+            ),
+            token: friend.pushToken
+          })
+        );
+      }
+    }
+  }
 
   return Promise.all(messages);
 };

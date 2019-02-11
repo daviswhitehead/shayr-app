@@ -141,8 +141,24 @@ exports._onWriteDone = async (db, change, context) => {
   // "dones/{doneId}" where doneId equals `${userId}_${postId}`
   const resources = await sharedActionResources(db, change, context);
 
-  return sharedActionWrites(db, resources, "done");
-  // todo: need to add done push notifications
+  return sharedActionWrites(db, resources, "done")
+    .then(value => {
+      if (resources.newAction) {
+        console.log("send a notification to friends");
+        return notifications.sendNewDonePushNotificationToFriends(resources);
+      } else {
+        console.log("not sending notification due to old action");
+        return value;
+      }
+    })
+    .then(value => {
+      console.log("success");
+      return value;
+    })
+    .catch(e => {
+      console.error(e);
+      return e;
+    });
 };
 
 // onWriteLike({before: {}, after: {active: true, createdAt: null, postId: "JA81g0b9mPUp8FmchL9M", updatedAt: null, url: "https://hackernoon.com/5-tips-for-building-effective-product-management-teams-c320ce54a4bb", userId: "0"}}, {params: {likeId: "0_JA81g0b9mPUp8FmchL9M"}})
@@ -150,8 +166,24 @@ exports._onWriteLike = async (db, change, context) => {
   // "likes/{likeId}" where likeId equals `${userId}_${postId}`
   const resources = await sharedActionResources(db, change, context);
 
-  return sharedActionWrites(db, resources, "like");
-  // todo: need to add like push notifications
+  return sharedActionWrites(db, resources, "like")
+    .then(value => {
+      if (resources.newAction) {
+        console.log("send a notification to friends");
+        return notifications.sendNewLikePushNotificationToFriends(resources);
+      } else {
+        console.log("not sending notification due to old action");
+        return value;
+      }
+    })
+    .then(value => {
+      console.log("success");
+      return value;
+    })
+    .catch(e => {
+      console.error(e);
+      return e;
+    });
 };
 
 // onWriteShare({before: {}, after: {active: true, createdAt: null, postId: "JA81g0b9mPUp8FmchL9M", updatedAt: null, url: "https://hackernoon.com/5-tips-for-building-effective-product-management-teams-c320ce54a4bb", userId: "0"}}, {params: {shareId: "0_JA81g0b9mPUp8FmchL9M"}})
@@ -162,7 +194,7 @@ exports._onWriteShare = async (db, change, context) => {
   return sharedActionWrites(db, resources, "share")
     .then(value => {
       if (resources.newAction) {
-        console.log("send a notification to followers");
+        console.log("send a notification to friends");
         return notifications.sendNewSharePushNotificationToFriends(resources);
       } else {
         console.log("not sending notification due to old action");
