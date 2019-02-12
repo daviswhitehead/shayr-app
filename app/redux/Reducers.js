@@ -5,7 +5,6 @@ import postsReducer from "./posts/PostsReducer";
 import postActionsReducer from "./postActions/PostActionsReducer";
 import socialReducer from "./social/SocialReducer";
 import postDetailReducer from "../containers/PostDetail/reducer";
-import notificationReducer from "../containers/AppWithListeners/reducer";
 
 export const makeRootReducer = () => {
   return combineReducers({
@@ -14,7 +13,6 @@ export const makeRootReducer = () => {
     posts: postsReducer,
     postActions: postActionsReducer,
     social: socialReducer,
-    postDetail: postDetailReducer,
     postDetail: postDetailReducer
   });
 };

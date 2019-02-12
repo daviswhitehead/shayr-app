@@ -1,52 +1,5 @@
 {
-  "plugins": [
-    "react",
-    "react-native"
-  ],
-  "ecmaFeatures": {
-    "jsx": true
-  },
-  "env": {
-    "react-native/react-native": true
-  },
-  "extends": "universe/native",
-  "rules": {
-    'jsx-closing-bracket-location': true,
-    'brace-style': [2, '1tbs'],
-    'react/jsx-max-props-per-line': [
-      'error',
-      { maximum: 1, when: 'multiline' }
-    ],
-    'react/no-multi-comp': ['error', { ignoreStateless: true }],
-    'react/prefer-es6-class': ['error', 'always'],
-    'react/require-render-return': 'error',
-    'react/jsx-wrap-multilines': [
-      'error',
-      {
-        declaration: 'parens-new-line',
-        assignment: 'parens-new-line',
-        return: 'parens-new-line',
-        arrow: 'parens-new-line',
-        condition: 'parens-new-line',
-        logical: 'parens-new-line',
-        prop: 'parens-new-line'
-      }
-    ],
-    'react/jsx-first-prop-new-line': ['error', 'multiline-multiprop'],
-    'react/jsx-equals-spacing': ['error', 'never'],
-    'react/jsx-indent': ['error', 2],
-    'react/jsx-tag-spacing': [
-      'error',
-      {
-        closingSlash: 'never',
-        beforeSelfClosing: 'always',
-        afterOpening: 'never',
-        beforeClosing: 'never'
-      }
-    ],
-    'react-native/no-inline-styles': 2,
-    'react/jsx-space-before-closing': ['off', 'always'],
-    'react/no-unused-state': 'error',
-    'no-unexpected-multiline': 'error'
-  }
+  "parser": "babel-eslint",
+  "extends": "airbnb",
+  "plugins": ["react", "jsx-a11y", "import"]
 }
