@@ -41,6 +41,8 @@ export const notificationOpenedListener = () =>
     console.log("notificationOpenedListener");
 
     const { action, notification } = notificationOpen;
+    console.log(notification);
+
     firebase
       .notifications()
       .removeDeliveredNotification(notification.notificationId);
