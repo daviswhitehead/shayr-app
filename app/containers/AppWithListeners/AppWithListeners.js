@@ -1,18 +1,18 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
-import { initializeListeners } from "react-navigation-redux-helpers";
-import firebase from "react-native-firebase";
-import { AppState } from "react-native";
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { initializeListeners } from 'react-navigation-redux-helpers';
+import firebase from 'react-native-firebase';
+import { AppState } from 'react-native';
 import {
   notificationDisplayedListener,
   notificationListener,
   notificationOpenedListener
-} from "../../lib/NotificationListeners";
-import { notificationChannels } from "../../lib/NotificationChannels";
+} from '../../lib/NotificationListeners';
+import { notificationChannels } from '../../lib/NotificationChannels';
 // import { testScheduledNotification } from '../../lib/Notifications';
-import { RootNavigator } from "../../config/Routes";
-import { navigationPropConstructor } from "../../redux/ReduxNavigation";
+import { RootNavigator } from '../../config/Routes';
+import { navigationPropConstructor } from '../../redux/ReduxNavigation';
 
 const mapStateToProps = state => {
   return {
@@ -28,10 +28,10 @@ class AppWithListeners extends Component {
 
   async componentDidMount() {
     // listen to app state changes
-    AppState.addEventListener("change", this._handleAppStateChange);
+    AppState.addEventListener('change', this._handleAppStateChange);
 
     // navigation listeners
-    initializeListeners("root", this.props.nav);
+    initializeListeners('root', this.props.nav);
 
     // setup android notification channels
     notificationChannels.forEach(channel => {
@@ -48,7 +48,7 @@ class AppWithListeners extends Component {
       .notifications()
       .getInitialNotification();
     if (notificationOpen) {
-      console.log("getInitialNotification");
+      console.log('getInitialNotification');
 
       const { action, notification } = notificationOpen;
       firebase
@@ -65,7 +65,7 @@ class AppWithListeners extends Component {
   }
 
   componentWillUnmount() {
-    AppState.removeEventListener("change", this._handleAppStateChange);
+    AppState.removeEventListener('change', this._handleAppStateChange);
     this.notificationDisplayedListener();
     this.notificationListener();
     this.notificationOpenedListener();
@@ -73,7 +73,7 @@ class AppWithListeners extends Component {
 
   _handleAppStateChange = nextAppState => {
     // https://facebook.github.io/react-native/docs/appstate
-    if (nextAppState === "active") {
+    if (nextAppState === 'active') {
       // clear notification badge
       firebase.notifications().setBadge(0);
       firebase.notifications().removeAllDeliveredNotifications();
