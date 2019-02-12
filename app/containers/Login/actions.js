@@ -1,53 +1,53 @@
-import firebase from "react-native-firebase";
-import { AccessToken, LoginManager } from "react-native-fbsdk";
-import { RNSKBucket } from "react-native-swiss-knife";
-import { ts, getUserId } from "../../lib/FirebaseHelpers";
+import firebase from 'react-native-firebase';
+import { AccessToken, LoginManager } from 'react-native-fbsdk';
+import { RNSKBucket } from 'react-native-swiss-knife';
+import { ts, getUserId } from '../../lib/FirebaseHelpers';
 
 export const types = {
-  SIGNED_IN: "SIGNED_IN",
-  SIGN_OUT_USER: "SIGN_OUT_USER",
-  AUTH_START: "AUTH_START",
-  AUTH_SUCCESS: "AUTH_SUCCESS",
-  AUTH_FAIL: "AUTH_FAIL",
-  ACCESS_TOKEN_STATUS: "ACCESS_TOKEN_STATUS",
-  ACCESS_TOKEN_SAVED: "ACCESS_TOKEN_SAVED",
-  FACEBOOK_AUTH_TAP: "FACEBOOK_AUTH_TAP",
-  FACEBOOK_AUTH_START: "FACEBOOK_AUTH_START",
-  FACEBOOK_AUTH_SUCCESS: "FACEBOOK_AUTH_SUCCESS",
-  AUTH_TOKEN_START: "AUTH_TOKEN_START",
-  AUTH_TOKEN_SUCCESS: "AUTH_TOKEN_SUCCESS",
-  CURRENT_USER_START: "CURRENT_USER_START",
-  CURRENT_USER_SUCCESS: "CURRENT_USER_SUCCESS",
-  UPDATE_USER_START: "UPDATE_USER_START",
-  UPDATE_USER_SUCCESS: "UPDATE_USER_SUCCESS",
-  FACEBOOK_SIGN_OUT_START: "FACEBOOK_SIGN_OUT_START",
-  FACEBOOK_SIGN_OUT_SUCCESS: "FACEBOOK_SIGN_OUT_SUCCESS",
-  APP_SIGN_OUT_START: "APP_SIGN_OUT_START",
-  APP_SIGN_OUT_SUCCESS: "APP_SIGN_OUT_SUCCESS",
-  NOTIFICATION_PERMISSIONS_START: "NOTIFICATION_PERMISSIONS_START",
-  NOTIFICATION_PERMISSIONS_SUCCESS: "NOTIFICATION_PERMISSIONS_SUCCESS",
-  NOTIFICATION_PERMISSIONS_FAIL: "NOTIFICATION_PERMISSIONS_FAIL"
+  SIGNED_IN: 'SIGNED_IN',
+  SIGN_OUT_USER: 'SIGN_OUT_USER',
+  AUTH_START: 'AUTH_START',
+  AUTH_SUCCESS: 'AUTH_SUCCESS',
+  AUTH_FAIL: 'AUTH_FAIL',
+  ACCESS_TOKEN_STATUS: 'ACCESS_TOKEN_STATUS',
+  ACCESS_TOKEN_SAVED: 'ACCESS_TOKEN_SAVED',
+  FACEBOOK_AUTH_TAP: 'FACEBOOK_AUTH_TAP',
+  FACEBOOK_AUTH_START: 'FACEBOOK_AUTH_START',
+  FACEBOOK_AUTH_SUCCESS: 'FACEBOOK_AUTH_SUCCESS',
+  AUTH_TOKEN_START: 'AUTH_TOKEN_START',
+  AUTH_TOKEN_SUCCESS: 'AUTH_TOKEN_SUCCESS',
+  CURRENT_USER_START: 'CURRENT_USER_START',
+  CURRENT_USER_SUCCESS: 'CURRENT_USER_SUCCESS',
+  UPDATE_USER_START: 'UPDATE_USER_START',
+  UPDATE_USER_SUCCESS: 'UPDATE_USER_SUCCESS',
+  FACEBOOK_SIGN_OUT_START: 'FACEBOOK_SIGN_OUT_START',
+  FACEBOOK_SIGN_OUT_SUCCESS: 'FACEBOOK_SIGN_OUT_SUCCESS',
+  APP_SIGN_OUT_START: 'APP_SIGN_OUT_START',
+  APP_SIGN_OUT_SUCCESS: 'APP_SIGN_OUT_SUCCESS',
+  NOTIFICATION_PERMISSIONS_START: 'NOTIFICATION_PERMISSIONS_START',
+  NOTIFICATION_PERMISSIONS_SUCCESS: 'NOTIFICATION_PERMISSIONS_SUCCESS',
+  NOTIFICATION_PERMISSIONS_FAIL: 'NOTIFICATION_PERMISSIONS_FAIL'
 };
 
-const appGroup = "group.com.daviswhitehead.shayr.ios";
+const appGroup = 'group.com.daviswhitehead.shayr.ios';
 
 const storeAccessToken = token => {
-  RNSKBucket.set("accessToken", token, appGroup);
+  RNSKBucket.set('accessToken', token, appGroup);
 };
 
 export const retrieveAccessToken = () => {
-  return RNSKBucket.get("accessToken", appGroup);
+  return RNSKBucket.get('accessToken', appGroup);
 };
 
 export const getFBToken = (error, result) => {
   if (error) {
-    console.error("login has error: " + result.error);
+    console.error('login has error: ' + result.error);
   } else if (result.isCancelled) {
-    console.log("login is cancelled.");
+    console.log('login is cancelled.');
   } else {
     const tokenData = AccessToken.getCurrentAccessToken();
     if (!tokenData) {
-      throw new Error("Something went wrong obtaining the users access token");
+      throw new Error('Something went wrong obtaining the users access token');
     }
     return tokenData;
   }
@@ -82,11 +82,11 @@ export const savePushToken = async (dispatch, user) => {
   // stores the token in the user's document
   return firebase
     .firestore()
-    .collection("users")
+    .collection('users')
     .doc(user.uid)
     .update({ pushToken: token, updatedAt: ts })
     .then(ref => {
-      console.log("savePushToken success");
+      console.log('savePushToken success');
       dispatch({ type: types.NOTIFICATION_PERMISSIONS_SUCCESS });
     })
     .catch(error => {
@@ -97,7 +97,7 @@ export const savePushToken = async (dispatch, user) => {
 export const saveUserInfo = (user, data) => {
   const ref = firebase
     .firestore()
-    .collection("users")
+    .collection('users')
     .doc(getUserId(user));
   return ref
     .get()
@@ -125,7 +125,7 @@ export const saveUserInfo = (user, data) => {
           }
         );
       }
-      console.log("saveUserInfo success");
+      console.log('saveUserInfo success');
     })
     .catch(error => {
       console.error(error);
@@ -184,17 +184,17 @@ export function facebookAuth(error, result) {
 export function signOutUser() {
   return async function(dispatch) {
     try {
-      console.log("firebase.auth().signOut()");
+      console.log('firebase.auth().signOut()');
       dispatch({ type: types.APP_SIGN_OUT_START });
       await firebase.auth().signOut();
-      console.log("POST firebase.auth().signOut()");
+      console.log('POST firebase.auth().signOut()');
       dispatch({ type: types.APP_SIGN_OUT_SUCCESS });
 
       dispatch({ type: types.FACEBOOK_SIGN_OUT_START });
-      console.log("PRE LoginManager.logOut()");
+      console.log('PRE LoginManager.logOut()');
       await LoginManager.logOut();
       dispatch({ type: types.FACEBOOK_SIGN_OUT_SUCCESS });
-      console.log("POST LoginManager.logOut()");
+      console.log('POST LoginManager.logOut()');
       dispatch({ type: types.SIGN_OUT_USER });
     } catch (e) {
       console.error(e);
