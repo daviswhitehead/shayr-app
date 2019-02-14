@@ -179,6 +179,7 @@ dependencies {
     implementation project(':react-native-swiss-knife')
     implementation project(':react-native-share-extension')
     implementation project(':react-native-splash-screen')
+    implementation project(':react-native-gesture-handler')
     
     // // FBSDK
     implementation project(':react-native-fbsdk')

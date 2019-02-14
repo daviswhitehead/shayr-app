@@ -12,7 +12,7 @@ import List from "../../components/List";
 import ContentCard from "../../components/ContentCard";
 import { openURL } from "../../lib/Utils";
 import Header from "../../components/Header";
-import { colors } from "../../styles/Colors";
+import colors from "../../styles/Colors";
 
 import {
   loadPosts,

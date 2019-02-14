@@ -1,30 +1,40 @@
-import { types } from "./actions";
+import { types } from './actions';
 
 const initialState = {
-  postId: null,
-  error: null
+  user: null,
+  isAuthenticated: false,
+  hasAccessToken: false,
+  error: null,
 };
 
-function notificationReducer(state = initialState, action) {
+function authenticationReducer(state = initialState, action) {
   // Failure Handling
-  if (action.type.substr(action.type.length - 4) === "FAIL") {
+  if (action.type.substr(action.type.length - 4) === 'FAIL') {
     return {
       ...state,
-      error: action.error
+      error: action.error,
     };
   }
 
   // Case Handling
   switch (action.type) {
-    case types.NOTIFICATION_NAVIGATION_PROCESSED: {
+    case types.AUTH_STATUS: {
       return {
         ...state,
-        postId: action.payload
+        isAuthenticated: action.isAuthenticated,
+        user: action.user,
       };
     }
+    case types.ACCESS_TOKEN_STATUS: {
+      return {
+        ...state,
+        hasAccessToken: action.hasAccessToken,
+      };
+    }
+    default: {
+      return state;
+    }
   }
-
-  return state;
 }
 
-export default notificationReducer;
+export default authenticationReducer;

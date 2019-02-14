@@ -1,6 +1,6 @@
 # https://facebook.github.io/react-native/docs/troubleshooting
 # fix any node_modules issues
-rm -rf node_modules/ && npm install
+rm -rf node_modules/ && yarn install
 
 # fix any pods issues
 cd ./ios

@@ -1,6 +1,6 @@
 import { StyleSheet } from "react-native";
 
-import { layout } from "../../styles/Layout";
+import layout from "../../styles/Layout";
 import { fontSystem } from "../../styles/Fonts";
 
 export default StyleSheet.create({

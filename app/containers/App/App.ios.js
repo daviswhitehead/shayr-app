@@ -1,12 +1,14 @@
-import React, { Component } from "react";
-import { Provider } from "react-redux";
-import createStore from "../../redux/CreateStore";
-import AppWithListeners from "../AppWithListeners";
-import styles from "./styles";
+import React, { Component } from 'react';
+import { Provider } from 'react-redux';
+import createStore from '../../redux/CreateStore';
+import AppWithListeners from '../AppWithListeners';
+import styles from './styles';
 
 const store = createStore();
 
-export default class App extends Component {
+class App extends Component {
+  componentDidMount = () => {};
+
   render() {
     return (
       <Provider store={store} style={styles.container}>
@@ -15,3 +17,5 @@ export default class App extends Component {
     );
   }
 }
+
+export default App;

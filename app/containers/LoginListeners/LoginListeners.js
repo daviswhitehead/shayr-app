@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import Feed from "../../containers/Feed";
 import PostDetail from "../../containers/PostDetail";
 import Header from "../../components/Header";
-import { colors } from "../../styles/Colors";
+import colors from "../../styles/Colors";
 import { loadSelf, loadFriendships } from "../../redux/social/SocialActions";
 import { notificationTokenListener } from "../../lib/NotificationListeners";
 

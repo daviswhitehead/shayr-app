@@ -1,17 +1,17 @@
-import { types } from "./actions";
+import { types } from './actions';
 
 const initialState = {
   user: null,
   accessTokenSaved: false,
-  error: null
+  error: null,
 };
 
 function authenticationReducer(state = initialState, action) {
   // Failure Handling
-  if (action.type.substr(action.type.length - 4) === "FAIL") {
+  if (action.type.substr(action.type.length - 4) === 'FAIL') {
     return {
       ...state,
-      error: action.error
+      error: action.error,
     };
   }
 
@@ -20,31 +20,31 @@ function authenticationReducer(state = initialState, action) {
     case types.AUTH_SUCCESS: {
       return {
         ...state,
-        user: action.payload
+        user: action.payload,
       };
     }
     case types.USER_DATA_SUCCESS: {
       return {
         ...state,
-        userData: action.payload
+        userData: action.payload,
       };
     }
     case types.SIGN_OUT_USER: {
       return {
         ...state,
-        user: null
+        user: null,
       };
     }
     case types.ACCESS_TOKEN_STATUS: {
       return {
         ...state,
-        accessTokenSaved: action.payload
+        accessTokenSaved: action.payload,
       };
     }
     case types.ACCESS_TOKEN_SAVED: {
       return {
         ...state,
-        accessTokenSaved: true
+        accessTokenSaved: true,
       };
     }
   }

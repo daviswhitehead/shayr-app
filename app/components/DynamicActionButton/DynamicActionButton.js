@@ -8,7 +8,7 @@ import {
 
 import styles from './styles';
 import vectorLogo from '../../assets/VectorLogo.png';
-import { colors } from '../../styles/Colors';
+import colors from '../../styles/Colors';
 
 import ActionButton from 'react-native-action-button';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';

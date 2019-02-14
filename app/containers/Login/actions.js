@@ -4,7 +4,6 @@ import { RNSKBucket } from 'react-native-swiss-knife';
 import { ts, getUserId } from '../../lib/FirebaseHelpers';
 
 export const types = {
-  SIGNED_IN: 'SIGNED_IN',
   SIGN_OUT_USER: 'SIGN_OUT_USER',
   AUTH_START: 'AUTH_START',
   AUTH_SUCCESS: 'AUTH_SUCCESS',
@@ -26,22 +25,22 @@ export const types = {
   APP_SIGN_OUT_SUCCESS: 'APP_SIGN_OUT_SUCCESS',
   NOTIFICATION_PERMISSIONS_START: 'NOTIFICATION_PERMISSIONS_START',
   NOTIFICATION_PERMISSIONS_SUCCESS: 'NOTIFICATION_PERMISSIONS_SUCCESS',
-  NOTIFICATION_PERMISSIONS_FAIL: 'NOTIFICATION_PERMISSIONS_FAIL'
+  NOTIFICATION_PERMISSIONS_FAIL: 'NOTIFICATION_PERMISSIONS_FAIL',
 };
 
 const appGroup = 'group.com.daviswhitehead.shayr.ios';
 
-const storeAccessToken = token => {
+const storeAccessToken = (token) => {
   RNSKBucket.set('accessToken', token, appGroup);
 };
 
-export const retrieveAccessToken = () => {
-  return RNSKBucket.get('accessToken', appGroup);
-};
+// Auth
+export const retrieveAccessToken = () => RNSKBucket.get('accessToken', appGroup);
 
+// Login
 export const getFBToken = (error, result) => {
   if (error) {
-    console.error('login has error: ' + result.error);
+    console.error(`login has error: ${result.error}`);
   } else if (result.isCancelled) {
     console.log('login is cancelled.');
   } else {
@@ -53,14 +52,13 @@ export const getFBToken = (error, result) => {
   }
 };
 
-export const getAuthCredential = token => {
-  return firebase.auth.FacebookAuthProvider.credential(token);
-};
+// Login
+export const getAuthCredential = token => firebase.auth.FacebookAuthProvider.credential(token);
 
-export const getCurrentUser = credential => {
-  return firebase.auth().signInAndRetrieveDataWithCredential(credential);
-};
+// Login
+export const getCurrentUser = credential => firebase.auth().signInAndRetrieveDataWithCredential(credential);
 
+// Login
 export const savePushToken = async (dispatch, user) => {
   dispatch({ type: types.NOTIFICATION_PERMISSIONS_START });
   if (!(await firebase.messaging().hasPermission())) {
@@ -71,7 +69,7 @@ export const savePushToken = async (dispatch, user) => {
       console.error(e);
       dispatch({
         type: types.NOTIFICATION_PERMISSIONS_FAIL,
-        error: e
+        error: e,
       });
     }
   }
@@ -85,15 +83,16 @@ export const savePushToken = async (dispatch, user) => {
     .collection('users')
     .doc(user.uid)
     .update({ pushToken: token, updatedAt: ts })
-    .then(ref => {
+    .then((ref) => {
       console.log('savePushToken success');
       dispatch({ type: types.NOTIFICATION_PERMISSIONS_SUCCESS });
     })
-    .catch(error => {
+    .catch((error) => {
       console.error(error);
     });
 };
 
+// Login
 export const saveUserInfo = (user, data) => {
   const ref = firebase
     .firestore()
@@ -101,7 +100,7 @@ export const saveUserInfo = (user, data) => {
     .doc(getUserId(user));
   return ref
     .get()
-    .then(doc => {
+    .then((doc) => {
       if (!doc.exists) {
         ref.set({
           createdAt: ts,
@@ -109,7 +108,7 @@ export const saveUserInfo = (user, data) => {
           firstName: data.first_name,
           lastName: data.last_name,
           email: data.email,
-          facebookProfilePhoto: user._user.photoURL
+          facebookProfilePhoto: user._user.photoURL,
         });
       } else {
         ref.set(
@@ -118,38 +117,33 @@ export const saveUserInfo = (user, data) => {
             firstName: data.first_name,
             lastName: data.last_name,
             email: data.email,
-            facebookProfilePhoto: user._user.photoURL
+            facebookProfilePhoto: user._user.photoURL,
           },
           {
-            merge: true
-          }
+            merge: true,
+          },
         );
       }
       console.log('saveUserInfo success');
     })
-    .catch(error => {
+    .catch((error) => {
       console.error(error);
     });
 };
 
-export function signedIn() {
-  return {
-    type: types.SIGNED_IN
-  };
-}
-
+// Login
 export function facebookAuthTap() {
   return {
-    type: types.FACEBOOK_AUTH_TAP
+    type: types.FACEBOOK_AUTH_TAP,
   };
 }
 
+// Login
 export function facebookAuth(error, result) {
-  return async function(dispatch) {
+  return async function facebookAuthy(dispatch) {
     try {
       dispatch({ type: types.FACEBOOK_AUTH_START });
       const tokenData = await getFBToken(error, result);
-      console.log(tokenData);
       dispatch({ type: types.FACEBOOK_AUTH_SUCCESS });
 
       storeAccessToken(tokenData.accessToken);
@@ -157,72 +151,65 @@ export function facebookAuth(error, result) {
 
       dispatch({ type: types.AUTH_TOKEN_START });
       const credential = getAuthCredential(tokenData.accessToken);
-      console.log(credential);
       dispatch({ type: types.AUTH_TOKEN_SUCCESS });
 
       dispatch({ type: types.CURRENT_USER_START });
       const currentUser = await getCurrentUser(credential);
-      console.log(currentUser);
       dispatch({ type: types.CURRENT_USER_SUCCESS });
 
       dispatch({ type: types.UPDATE_USER_START });
-      await saveUserInfo(
-        currentUser.user,
-        currentUser.additionalUserInfo.profile
-      );
+      await saveUserInfo(currentUser.user, currentUser.additionalUserInfo.profile);
       dispatch({ type: types.UPDATE_USER_SUCCESS });
     } catch (e) {
       console.error(e);
       dispatch({
         type: types.AUTH_FAIL,
-        error: e
+        error: e,
       });
     }
   };
 }
 
 export function signOutUser() {
-  return async function(dispatch) {
+  return async function test(dispatch) {
     try {
-      console.log('firebase.auth().signOut()');
       dispatch({ type: types.APP_SIGN_OUT_START });
       await firebase.auth().signOut();
-      console.log('POST firebase.auth().signOut()');
       dispatch({ type: types.APP_SIGN_OUT_SUCCESS });
 
       dispatch({ type: types.FACEBOOK_SIGN_OUT_START });
-      console.log('PRE LoginManager.logOut()');
       await LoginManager.logOut();
       dispatch({ type: types.FACEBOOK_SIGN_OUT_SUCCESS });
-      console.log('POST LoginManager.logOut()');
       dispatch({ type: types.SIGN_OUT_USER });
     } catch (e) {
       console.error(e);
       dispatch({
         type: types.AUTH_FAIL,
-        error: e
+        error: e,
       });
     }
   };
 }
 
+// Auth
 export function locateAccessToken() {
   const token = retrieveAccessToken();
 
   return {
     type: types.ACCESS_TOKEN_STATUS,
-    payload: !!token
+    payload: !!token,
   };
 }
 
+// Auth
 export function authSubscription() {
-  return function(dispatch) {
+  return function (dispatch) {
     dispatch({ type: types.AUTH_START });
-    return firebase.auth().onAuthStateChanged(user => {
+    return firebase.auth().onAuthStateChanged((user) => {
       if (user) {
         dispatch({
           type: types.AUTH_SUCCESS,
-          payload: user
+          payload: user,
         });
         savePushToken(dispatch, user);
         // } else {

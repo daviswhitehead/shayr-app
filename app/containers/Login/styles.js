@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
 
-import { colors } from '../../styles/Colors';
+import colors from '../../styles/Colors';
 
 export default StyleSheet.create({
   container: {
@@ -28,7 +28,7 @@ export default StyleSheet.create({
   },
   tagline: {
     fontWeight: '100',
-    fontSize: 25
+    fontSize: 25,
   },
   loginContainer: {
     flex: 1,

@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 import { postAction } from "../../redux/postActions/PostActionsActions";
 import { postDetailBack } from "./actions";
 import Header from "../../components/Header";
-import { colors } from "../../styles/Colors";
+import colors from "../../styles/Colors";
 import styles from "./styles";
 import PostImage from "../../components/PostImage";
 import PostContext from "../../components/PostContext";

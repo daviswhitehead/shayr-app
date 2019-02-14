@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import { createIconSetFromIcoMoon } from "react-native-vector-icons";
 import icoMoonConfig from "../../assets/fonts/selection.json";
 import styles from "./styles";
-import { colors } from "../../styles/Colors";
+import colors from "../../styles/Colors";
 import { fonts } from "../../styles/Fonts";
 const PostActionIcons = createIconSetFromIcoMoon(icoMoonConfig);
 

@@ -1,6 +1,6 @@
 import Toast from "react-native-root-toast";
 
-import { colors } from "../../styles/Colors";
+import colors from "../../styles/Colors";
 
 export const Toaster = message => {
   return Toast.show(message, {
