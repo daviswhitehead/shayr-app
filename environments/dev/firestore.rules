@@ -32,14 +32,11 @@ service cloud.firestore {
     }
 
     match /users/{user} {
-      allow create: if true;
-      allow get: if true;
-      allow read: if isSignedIn();
-      allow update: if nestedUser(user);
+      allow read, create: if isSignedIn();
+      allow update: if isSignedIn() && nestedUser(user);
 
       match /inboundShares/{inboundShare} {
         allow read, write: if isSignedIn() && nestedUser(user);
-        allow create: if nestedUser(user);
       }
     }
 
@@ -49,3 +46,12 @@ service cloud.firestore {
 
   }
 }
+
+// https://firebase.google.com/docs/firestore/security/rules-structure
+// read
+// // get applies to single document read requests
+// // list applies to queries and collection read requests
+// write
+// // create applies to writes to nonexistent documents
+// // update applies to writes to existing documents
+// // delete applies to delete operations

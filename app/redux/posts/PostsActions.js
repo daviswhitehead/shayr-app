@@ -1,8 +1,4 @@
 import firebase from 'react-native-firebase';
-import _ from 'lodash';
-import {
-  ts, getUserId, getDocShares, getRefData,
-} from '../../lib/FirebaseHelpers';
 
 // Action Types
 export const types = {
@@ -68,7 +64,7 @@ const firstPosts = (dispatch, userId, query) => {
 };
 
 const nextPosts = (dispatch, userId, query, lastPost) => {
-  if (lastPost == 'done') {
+  if (lastPost === 'done') {
     return;
   }
   dispatch({ type: types.PAGINATE_POSTS_START });
@@ -111,29 +107,27 @@ const nextPosts = (dispatch, userId, query, lastPost) => {
 };
 
 // Action Creators
-export const loadPosts = (userId, query) => function (dispatch) {
+export const loadPosts = (userId, query) => function _loadPosts(dispatch) {
   return firstPosts(dispatch, userId, query);
 };
 
-export const paginatePosts = (userId, query, lastPost) => function (dispatch) {
+export const paginatePosts = (userId, query, lastPost) => function _paginatePosts(dispatch) {
   return nextPosts(dispatch, userId, query, lastPost);
 };
 
-export const refreshPosts = (userId, query) => function (dispatch) {
+export const refreshPosts = (userId, query) => function _refreshPosts(dispatch) {
   dispatch({ type: types.REFRESH });
   return firstPosts(dispatch, userId, query);
 };
 
 export const flattenPosts = (posts) => {
   const data = [];
-  for (const postId in posts) {
-    if (posts.hasOwnProperty(postId)) {
-      data.push({
-        key: postId,
-        ...posts[postId],
-      });
-    }
-  }
+  Object.keys(posts).forEach((postId) => {
+    data.push({
+      key: postId,
+      ...posts[postId],
+    });
+  });
 
   return data;
 };

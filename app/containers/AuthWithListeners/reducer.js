@@ -1,6 +1,5 @@
 import { types } from './actions';
 import { types as loginTypes } from '../Login/actions';
-import { types as authTypes } from '../AuthWithListeners/actions';
 
 const initialState = {
   user: null,
@@ -49,19 +48,19 @@ function appListenerReducer(state = initialState, action) {
         listenersReady: action.listenersReady,
       };
     }
-    case authTypes.SUBSCRIBE_SELF_SUCCESS: {
+    case types.SUBSCRIBE_SELF_SUCCESS: {
       return {
         ...state,
         self: action.self,
       };
     }
-    case authTypes.SUBSCRIBE_FRIENDSHIPS_SUCCESS: {
+    case types.SUBSCRIBE_FRIENDSHIPS_SUCCESS: {
       return {
         ...state,
         friendships: action.friendships,
       };
     }
-    case authTypes.SUBSCRIBE_FRIENDS_SUCCESS: {
+    case types.SUBSCRIBE_FRIENDS_SUCCESS: {
       return {
         ...state,
         friends: action.friends,

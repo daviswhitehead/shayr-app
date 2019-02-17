@@ -1,21 +1,40 @@
-import { createSwitchNavigator, createStackNavigator, createAppContainer } from 'react-navigation';
+import {
+  createSwitchNavigator,
+  createStackNavigator,
+  createAppContainer,
+  // createBottomTabNavigator,
+} from 'react-navigation';
 import ListenersLoaded from '../containers/ListenersLoaded';
 import Feed from '../containers/Feed';
 import Queue from '../containers/Queue';
 import Login from '../containers/Login';
 import PostDetail from '../containers/PostDetail';
+import AuthWithListeners from '../containers/AuthWithListeners';
 
-const AppStack = createStackNavigator({
-  Feed: {
-    screen: Feed,
+// const TabStack = createBottomTabNavigator({
+//   Feed,
+//   Queue,
+// });
+
+const AppStack = createStackNavigator(
+  {
+    AuthWithListeners: {
+      screen: AuthWithListeners,
+    },
+    Feed: {
+      screen: Feed,
+    },
+    Queue: {
+      screen: Queue,
+    },
+    PostDetail: {
+      screen: PostDetail,
+    },
   },
-  Queue: {
-    screen: Queue,
+  {
+    initialRouteName: 'AuthWithListeners',
   },
-  PostDetail: {
-    screen: PostDetail,
-  },
-});
+);
 
 const AuthStack = createStackNavigator({
   Login: {

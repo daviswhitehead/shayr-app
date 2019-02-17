@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import { View, Text } from 'react-native';
 import { connect } from 'react-redux';
-import { NavigationActions } from 'react-navigation';
-import firebase from 'react-native-firebase';
+import PropTypes from 'prop-types';
 import styles from './styles';
 import DynamicActionButton from '../../components/DynamicActionButton';
 import List from '../../components/List';
@@ -15,7 +14,6 @@ import {
 } from '../../redux/posts/PostsActions';
 import { postAction } from '../../redux/postActions/PostActionsActions';
 import { postDetailView } from '../PostDetail/actions';
-import { signOutUser } from '../Login/actions';
 import Header from '../../components/Header';
 import colors from '../../styles/Colors';
 
@@ -25,16 +23,20 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  navQueue: () => dispatch(NavigationActions.navigate({ routeName: 'Queue' })),
   postDetailView: post => dispatch(postDetailView(post)),
   loadPosts: (userId, query) => dispatch(loadPosts(userId, query)),
   paginatePosts: (userId, query, lastPost) => dispatch(paginatePosts(userId, query, lastPost)),
   refreshPosts: (userId, query) => dispatch(refreshPosts(userId, query)),
-  signOutUser: () => dispatch(signOutUser()),
   postAction: (actionType, userId, postId) => dispatch(postAction(actionType, userId, postId)),
 });
 
 class Feed extends Component {
+  static propTypes = {
+    appListeners: PropTypes.instanceOf(Object).isRequired,
+    navigation: PropTypes.instanceOf(Object).isRequired,
+    posts: PropTypes.instanceOf(Object).isRequired,
+  };
+
   static navigationOptions = ({ navigation }) => ({
     header: (
       <Header backgroundColor={colors.YELLOW} statusBarStyle="dark-content" shadow title="feed" />
@@ -48,23 +50,12 @@ class Feed extends Component {
 
   componentDidMount() {
     this.subscriptions.push(this.props.loadPosts(this.props.appListeners.user.uid, 'feed'));
-    this.notificationDisplayedListener = firebase
-      .notifications()
-      .onNotificationDisplayed((notification) => {
-        // Process your notification as required
-        // ANDROID: Remote notifications do not contain the channel ID. You will have to specify this manually if you'd like to re-display the notification.
-      });
-    this.notificationListener = firebase.notifications().onNotification((notification) => {
-      // Process your notification as required
-    });
   }
 
   componentWillUnmount() {
-    for (const subscription in this.subscriptions) {
-      if (this.subscriptions.hasOwnProperty(subscription)) {
-        this.subscriptions[subscription]();
-      }
-    }
+    Object.values(this.subscriptions).forEach((subscription) => {
+      subscription();
+    });
   }
 
   renderItem = item => (
@@ -99,6 +90,24 @@ class Feed extends Component {
     />
   );
 
+  _paginate = () => {
+    const unsubscribe = this.props.paginatePosts(
+      this.props.appListeners.user.uid,
+      'feed',
+      this.props.posts.feedLastPost,
+    );
+    if (unsubscribe) {
+      this.subscriptions.push(unsubscribe);
+    }
+  };
+
+  _refresh = () => {
+    const unsubscribe = this.props.refreshPosts(this.props.appListeners.user.uid, 'feed');
+    if (unsubscribe) {
+      this.subscriptions.push(unsubscribe);
+    }
+  };
+
   loading = () => {
     if (
       !this.props.posts.feedPosts
@@ -111,30 +120,40 @@ class Feed extends Component {
       <List
         data={flattenPosts(this.props.posts.feedPosts)}
         renderItem={item => this.renderItem(item)}
-        onEndReached={() => this.props.paginatePosts(
-          this.props.appListeners.user.uid,
-          'feed',
-          this.props.posts.feedLastPost,
-        )
-        }
-        onRefresh={() => this.props.refreshPosts(this.props.appListeners.user.uid, 'feed')}
+        onEndReached={() => this._paginate()}
+        onRefresh={() => this._refresh()}
         refreshing={this.props.posts.refreshing}
       />
     );
   };
 
+  _signOut = () => {
+    this.props.navigation.navigate('Auth');
+  };
+
   render() {
+    console.log(this.state);
+    console.log(this.props);
+
     return (
       <View style={styles.container}>
         <this.loading />
-        <DynamicActionButton
-          logout={this.props.signOutUser}
-          feed={false}
-          queue={this.props.navQueue}
-        />
+        <DynamicActionButton logout={this._signOut} feed={false} />
       </View>
     );
   }
+  // render() {
+  //   return (
+  //     <View style={styles.container}>
+  //       <this.loading />
+  //       <DynamicActionButton
+  //         logout={this._signOut}
+  //         feed={false}
+  //         queue={this.props.navigation.navigate('Queue')}
+  //       />
+  //     </View>
+  //   );
+  // }
 }
 
 export default connect(

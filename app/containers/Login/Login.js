@@ -28,9 +28,15 @@ class Login extends Component {
     signOutUser: PropTypes.func.isRequired,
   };
 
+  componentDidMount() {
+    if (this.props.appListeners.user) {
+      this.props.signOutUser();
+    }
+  }
+
   componentDidUpdate() {
     if (this.props.appListeners.user && this.props.appListeners.hasAccessToken) {
-      this.props.navigation.navigate('Feed');
+      this.props.navigation.navigate('AuthWithListeners');
     }
   }
 
