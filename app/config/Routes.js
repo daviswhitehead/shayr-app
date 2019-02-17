@@ -1,15 +1,11 @@
 import { createSwitchNavigator, createStackNavigator, createAppContainer } from 'react-navigation';
-import AuthLoading from '../containers/AuthLoading';
-import LoginListeners from '../containers/LoginListeners';
+import ListenersLoaded from '../containers/ListenersLoaded';
 import Feed from '../containers/Feed';
 import Queue from '../containers/Queue';
 import Login from '../containers/Login';
 import PostDetail from '../containers/PostDetail';
 
 const AppStack = createStackNavigator({
-  LoginListeners: {
-    screen: LoginListeners,
-  },
   Feed: {
     screen: Feed,
   },
@@ -24,21 +20,21 @@ const AppStack = createStackNavigator({
 const AuthStack = createStackNavigator({
   Login: {
     screen: Login,
-    // navigationOptions: ({ navigation }) => ({
-    //   header: null,
-    // }),
+    navigationOptions: () => ({
+      header: null,
+    }),
   },
 });
 
 export default createAppContainer(
   createSwitchNavigator(
     {
-      AuthLoading,
+      ListenersLoaded,
       App: AppStack,
       Auth: AuthStack,
     },
     {
-      initialRouteName: 'AuthLoading',
+      initialRouteName: 'ListenersLoaded',
     },
   ),
 );

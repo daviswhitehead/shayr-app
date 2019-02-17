@@ -10,32 +10,35 @@ import {
 } from '../../lib/NotificationListeners';
 import { notificationChannels } from '../../lib/NotificationChannels';
 // import { testScheduledNotification } from '../../lib/Notifications';
-import { authSubscription, locateAccessToken } from './actions';
+import { authSubscription, hasAccessToken, areListenersReady } from './actions';
 import RootNavigator from '../../config/Routes';
+import AppLoading from '../../components/AppLoading';
 
 const mapStateToProps = state => ({
-  auth: state.auth,
+  appListeners: state.appListeners,
 });
 
 const mapDispatchToProps = dispatch => ({
   authSubscription: () => dispatch(authSubscription()),
-  locateAccessToken: () => dispatch(locateAccessToken()),
+  hasAccessToken: () => dispatch(hasAccessToken()),
+  areListenersReady: areReady => dispatch(areListenersReady(areReady)),
 });
 
 class AppWithListeners extends Component {
   static propTypes = {
+    appListeners: PropTypes.instanceOf(Object).isRequired,
     authSubscription: PropTypes.func.isRequired,
-    locateAccessToken: PropTypes.func.isRequired,
-    auth: PropTypes.InstanceOf(Object).isRequired,
+    hasAccessToken: PropTypes.func.isRequired,
+    areListenersReady: PropTypes.func.isRequired,
   };
 
   async componentDidMount() {
-    const { auth, authSubscription, locateAccessToken } = this.props;
     // listen to app state changes
     AppState.addEventListener('change', this.handleAppStateChange);
 
-    // setup authentication listeners
-    this.unsubscribeAuthSubscription = authSubscription();
+    // check authentication and listen for updates
+    this.unsubscribeAuthSubscription = this.props.authSubscription();
+    this.props.hasAccessToken();
 
     // setup android notification channels
     notificationChannels.forEach((channel) => {
@@ -50,8 +53,6 @@ class AppWithListeners extends Component {
     // app launched by notification tap
     const notificationOpen = await firebase.notifications().getInitialNotification();
     if (notificationOpen) {
-      console.log('getInitialNotification');
-
       const { action, notification } = notificationOpen;
       firebase.notifications().removeDeliveredNotification(notification.notificationId);
     }
@@ -62,14 +63,19 @@ class AppWithListeners extends Component {
     // const test = firebase.notifications().scheduleNotification(testScheduledNotification, {
     //   fireDate: date.getTime(),
     // });
+
+    // firebase.auth().signOut();
+
+    this.props.areListenersReady(true);
   }
 
   componentWillUnmount() {
     AppState.removeEventListener('change', this.handleAppStateChange);
+    this.unsubscribeAuthSubscription();
     this.notificationDisplayedListener();
     this.notificationListener();
     this.notificationOpenedListener();
-    this.unsubscribeAuthSubscription();
+    this.props.areListenersReady(false);
   }
 
   handleAppStateChange = (nextAppState) => {
@@ -82,7 +88,10 @@ class AppWithListeners extends Component {
   };
 
   render() {
-    return <RootNavigator />;
+    if (this.props.appListeners.listenersReady) {
+      return <RootNavigator />;
+    }
+    return <AppLoading />;
   }
 }
 

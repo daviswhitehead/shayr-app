@@ -1,149 +1,136 @@
-import firebase from "react-native-firebase";
-import _ from "lodash";
+import firebase from 'react-native-firebase';
+import _ from 'lodash';
 import {
-  ts,
-  getUserId,
-  getDocShares,
-  getRefData
-} from "../../lib/FirebaseHelpers";
+  ts, getUserId, getDocShares, getRefData,
+} from '../../lib/FirebaseHelpers';
 
 // Action Types
 export const types = {
-  LOAD_POSTS_START: "LOAD_POSTS_START",
-  LOAD_POSTS_SUCCESS: "LOAD_POSTS_SUCCESS",
-  LOAD_POSTS_FAIL: "LOAD_POSTS_FAIL",
-  PAGINATE_POSTS_START: "PAGINATE_POSTS_START",
-  PAGINATE_POSTS_SUCCESS: "PAGINATE_POSTS_SUCCESS",
-  PAGINATE_POSTS_FAIL: "PAGINATE_POSTS_FAIL",
-  REFRESH: "REFRESH",
-  LAST_POST: "LAST_POST"
+  LOAD_POSTS_START: 'LOAD_POSTS_START',
+  LOAD_POSTS_SUCCESS: 'LOAD_POSTS_SUCCESS',
+  LOAD_POSTS_FAIL: 'LOAD_POSTS_FAIL',
+  PAGINATE_POSTS_START: 'PAGINATE_POSTS_START',
+  PAGINATE_POSTS_SUCCESS: 'PAGINATE_POSTS_SUCCESS',
+  PAGINATE_POSTS_FAIL: 'PAGINATE_POSTS_FAIL',
+  REFRESH: 'REFRESH',
+  LAST_POST: 'LAST_POST',
 };
 
 // Helper Functions
 const pageLimter = 10;
-const feedQuery = userId => {
-  return firebase
-    .firestore()
-    .collection("users_posts")
-    .where("userId", "==", userId)
-    .orderBy("createdAt", "desc");
-};
-const queueQuery = userId => {
-  return firebase
-    .firestore()
-    .collection("users_posts")
-    .where("userId", "==", userId)
-    .where("adds", "array-contains", userId)
-    .orderBy("updatedAt", "desc");
-};
+const feedQuery = userId => firebase
+  .firestore()
+  .collection('users_posts')
+  .where('userId', '==', userId)
+  .orderBy('createdAt', 'desc');
+const queueQuery = userId => firebase
+  .firestore()
+  .collection('users_posts')
+  .where('userId', '==', userId)
+  .where('adds', 'array-contains', userId)
+  .orderBy('updatedAt', 'desc');
 
 const firstPosts = (dispatch, userId, query) => {
   dispatch({ type: types.LOAD_POSTS_START });
   const queries = {
     feed: feedQuery(userId),
-    queue: queueQuery(userId)
+    queue: queueQuery(userId),
   };
   return queries[query].limit(pageLimter).onSnapshot(
-    querySnapshot => {
+    (querySnapshot) => {
       const posts = {};
-      querySnapshot.forEach(doc => {
+      querySnapshot.forEach((doc) => {
         posts[doc.id] = doc.data();
       });
-      let newLastPost = "done";
+      let newLastPost = 'done';
       if (querySnapshot.docs.length - 1 === pageLimter - 1) {
         newLastPost = querySnapshot.docs[querySnapshot.docs.length - 1];
       }
       dispatch({
         type: types.LAST_POST,
         payload: newLastPost,
-        query
+        query,
       });
       dispatch({
         type: types.LOAD_POSTS_SUCCESS,
         payload: posts,
-        query
+        query,
       });
     },
-    e => {
+    (e) => {
       console.error(e);
       dispatch({
         type: types.LOAD_POSTS_FAIL,
-        error: e
+        error: e,
       });
-    }
+    },
   );
 };
 
 const nextPosts = (dispatch, userId, query, lastPost) => {
-  if (lastPost == "done") {
+  if (lastPost == 'done') {
     return;
   }
   dispatch({ type: types.PAGINATE_POSTS_START });
   const queries = {
     feed: feedQuery(userId),
-    queue: queueQuery(userId)
+    queue: queueQuery(userId),
   };
   return queries[query]
     .startAfter(lastPost)
     .limit(pageLimter)
     .onSnapshot(
-      querySnapshot => {
+      (querySnapshot) => {
         const posts = {};
-        querySnapshot.forEach(doc => {
+        querySnapshot.forEach((doc) => {
           posts[doc.id] = doc.data();
         });
-        let newLastPost = "done";
+        let newLastPost = 'done';
         if (querySnapshot.docs.length - 1 === pageLimter - 1) {
           newLastPost = querySnapshot.docs[querySnapshot.docs.length - 1];
         }
         dispatch({
           type: types.LAST_POST,
           payload: newLastPost,
-          query
+          query,
         });
         dispatch({
           type: types.PAGINATE_POSTS_SUCCESS,
           payload: posts,
-          query
+          query,
         });
       },
-      e => {
+      (e) => {
         console.error(e);
         dispatch({
           type: types.PAGINATE_POSTS_FAIL,
-          error: e
+          error: e,
         });
-      }
+      },
     );
 };
 
 // Action Creators
-export const loadPosts = (userId, query) => {
-  return function(dispatch) {
-    return firstPosts(dispatch, userId, query);
-  };
+export const loadPosts = (userId, query) => function (dispatch) {
+  return firstPosts(dispatch, userId, query);
 };
 
-export const paginatePosts = (userId, query, lastPost) => {
-  return function(dispatch) {
-    return nextPosts(dispatch, userId, query, lastPost);
-  };
+export const paginatePosts = (userId, query, lastPost) => function (dispatch) {
+  return nextPosts(dispatch, userId, query, lastPost);
 };
 
-export const refreshPosts = (userId, query) => {
-  return function(dispatch) {
-    dispatch({ type: types.REFRESH });
-    return firstPosts(dispatch, userId, query);
-  };
+export const refreshPosts = (userId, query) => function (dispatch) {
+  dispatch({ type: types.REFRESH });
+  return firstPosts(dispatch, userId, query);
 };
 
-export const flattenPosts = posts => {
+export const flattenPosts = (posts) => {
   const data = [];
-  for (var postId in posts) {
+  for (const postId in posts) {
     if (posts.hasOwnProperty(postId)) {
       data.push({
         key: postId,
-        ...posts[postId]
+        ...posts[postId],
       });
     }
   }

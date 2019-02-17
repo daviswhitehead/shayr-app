@@ -20,9 +20,8 @@ import Header from '../../components/Header';
 import colors from '../../styles/Colors';
 
 const mapStateToProps = state => ({
-  auth: state.auth,
+  appListeners: state.appListeners,
   posts: state.posts,
-  social: state.social,
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -36,19 +35,19 @@ const mapDispatchToProps = dispatch => ({
 });
 
 class Feed extends Component {
-  constructor() {
-    super();
-    this.subscriptions = [];
-  }
-
   static navigationOptions = ({ navigation }) => ({
     header: (
       <Header backgroundColor={colors.YELLOW} statusBarStyle="dark-content" shadow title="feed" />
     ),
   });
 
+  constructor() {
+    super();
+    this.subscriptions = [];
+  }
+
   componentDidMount() {
-    this.subscriptions.push(this.props.loadPosts(this.props.auth.user.uid, 'feed'));
+    this.subscriptions.push(this.props.loadPosts(this.props.appListeners.user.uid, 'feed'));
     this.notificationDisplayedListener = firebase
       .notifications()
       .onNotificationDisplayed((notification) => {
@@ -72,45 +71,53 @@ class Feed extends Component {
     <ContentCard
       payload={item}
       friends={{
-        ...this.props.social.self,
-        ...this.props.social.friends,
+        ...this.props.appListeners.self,
+        ...this.props.appListeners.friends,
       }}
       // onTap={() => openURL(item.url)}
       onTap={() => this.props.postDetailView(item)}
       shareAction={{
         actionCount: item.shareCount,
-        actionUser: item.shares ? item.shares.includes(this.props.auth.user.uid) : false,
-        onPress: () => this.props.postAction('share', this.props.auth.user.uid, item.postId),
+        actionUser: item.shares ? item.shares.includes(this.props.appListeners.user.uid) : false,
+        onPress: () => this.props.postAction('share', this.props.appListeners.user.uid, item.postId),
       }}
       addAction={{
         actionCount: item.addCount,
-        actionUser: item.adds ? item.adds.includes(this.props.auth.user.uid) : false,
-        onPress: () => this.props.postAction('add', this.props.auth.user.uid, item.postId),
+        actionUser: item.adds ? item.adds.includes(this.props.appListeners.user.uid) : false,
+        onPress: () => this.props.postAction('add', this.props.appListeners.user.uid, item.postId),
       }}
       doneAction={{
         actionCount: item.doneCount,
-        actionUser: item.dones ? item.dones.includes(this.props.auth.user.uid) : false,
-        onPress: () => this.props.postAction('done', this.props.auth.user.uid, item.postId),
+        actionUser: item.dones ? item.dones.includes(this.props.appListeners.user.uid) : false,
+        onPress: () => this.props.postAction('done', this.props.appListeners.user.uid, item.postId),
       }}
       likeAction={{
         actionCount: item.likeCount,
-        actionUser: item.likes ? item.likes.includes(this.props.auth.user.uid) : false,
-        onPress: () => this.props.postAction('like', this.props.auth.user.uid, item.postId),
+        actionUser: item.likes ? item.likes.includes(this.props.appListeners.user.uid) : false,
+        onPress: () => this.props.postAction('like', this.props.appListeners.user.uid, item.postId),
       }}
     />
   );
 
   loading = () => {
-    if (!this.props.posts.feedPosts || !this.props.social.friends || !this.props.social.self) {
+    if (
+      !this.props.posts.feedPosts
+      || !this.props.appListeners.friends
+      || !this.props.appListeners.self
+    ) {
       return <Text>LOADING</Text>;
     }
     return (
       <List
         data={flattenPosts(this.props.posts.feedPosts)}
         renderItem={item => this.renderItem(item)}
-        onEndReached={() => this.props.paginatePosts(this.props.auth.user.uid, 'feed', this.props.posts.feedLastPost)
+        onEndReached={() => this.props.paginatePosts(
+          this.props.appListeners.user.uid,
+          'feed',
+          this.props.posts.feedLastPost,
+        )
         }
-        onRefresh={() => this.props.refreshPosts(this.props.auth.user.uid, 'feed')}
+        onRefresh={() => this.props.refreshPosts(this.props.appListeners.user.uid, 'feed')}
         refreshing={this.props.posts.refreshing}
       />
     );

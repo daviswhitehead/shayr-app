@@ -5,51 +5,36 @@ import {
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { LoginButton } from 'react-native-fbsdk';
-import {
-  authSubscription,
-  signOutUser,
-  locateAccessToken,
-  facebookAuthTap,
-  facebookAuth,
-  signedIn,
-} from './actions';
+import { facebookAuthTap, facebookAuth, signOutUser } from './actions';
 import styles from './styles';
 import vectorLogo from '../../assets/VectorLogo.png';
 
 const mapStateToProps = state => ({
-  auth: state.auth,
+  appListeners: state.appListeners,
 });
 
 const mapDispatchToProps = dispatch => ({
-  authSubscription: () => dispatch(authSubscription()),
-  signOutUser: () => dispatch(signOutUser()),
-  locateAccessToken: () => dispatch(locateAccessToken()),
   facebookAuthTap: () => dispatch(facebookAuthTap()),
   facebookAuth: (error, result) => dispatch(facebookAuth(error, result)),
-  signedIn: () => dispatch(signedIn()),
+  signOutUser: () => dispatch(signOutUser()),
 });
 
 class Login extends Component {
-  componentDidMount() {
-    // check authentication
-    this.unsubscribe = this.props.authSubscription();
-    this.props.locateAccessToken();
-  }
+  static propTypes = {
+    appListeners: PropTypes.instanceOf(Object).isRequired,
+    navigation: PropTypes.instanceOf(Object).isRequired,
+    facebookAuthTap: PropTypes.func.isRequired,
+    facebookAuth: PropTypes.func.isRequired,
+    signOutUser: PropTypes.func.isRequired,
+  };
 
-  componentWillUnmount() {
-    this.unsubscribe();
+  componentDidUpdate() {
+    if (this.props.appListeners.user && this.props.appListeners.hasAccessToken) {
+      this.props.navigation.navigate('Feed');
+    }
   }
 
   render() {
-    const { navigation } = this.props;
-    if (this.props.auth.error) {
-      console.error('authentication error');
-    }
-
-    if (this.props.auth.user && this.props.auth.accessTokenSaved) {
-      navigation.navigate('Auth');
-    }
-
     return (
       <View style={styles.container}>
         <View style={styles.brandContainer}>
@@ -62,7 +47,7 @@ class Login extends Component {
             <LoginButton
               readPermissions={['public_profile', 'email']}
               onLoginFinished={(error, result) => this.props.facebookAuth(error, result)}
-              onLogoutFinished={() => console.log('user logout')}
+              onLogoutFinished={() => this.props.signOutUser()}
             />
           </TouchableWithoutFeedback>
         </View>
