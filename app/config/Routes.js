@@ -9,7 +9,6 @@ import Feed from '../containers/Feed';
 import Queue from '../containers/Queue';
 import Login from '../containers/Login';
 import PostDetail from '../containers/PostDetail';
-import AuthWithListeners from '../containers/AuthWithListeners';
 
 // const TabStack = createBottomTabNavigator({
 //   Feed,
@@ -18,9 +17,6 @@ import AuthWithListeners from '../containers/AuthWithListeners';
 
 const AppStack = createStackNavigator(
   {
-    AuthWithListeners: {
-      screen: AuthWithListeners,
-    },
     Feed: {
       screen: Feed,
     },
@@ -32,7 +28,7 @@ const AppStack = createStackNavigator(
     },
   },
   {
-    initialRouteName: 'AuthWithListeners',
+    initialRouteName: 'Feed',
   },
 );
 

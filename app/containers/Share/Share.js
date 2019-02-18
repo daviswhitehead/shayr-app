@@ -2,12 +2,12 @@ import React, { Component } from 'react';
 import {
   Text, View, Modal, Image, TouchableOpacity, TouchableWithoutFeedback,
 } from 'react-native';
-
 import firebase from 'react-native-firebase';
 import ShareExtension from 'react-native-share-extension';
 import styles from './styles';
 import shareExtensionLogo from '../../assets/ShareExtensionLogo.png';
-import { retrieveAccessToken, getAuthCredential, getCurrentUser } from '../Login/actions';
+import { retrieveToken } from '../../lib/AppGroupTokens';
+import { getFBAuthCredential, getCurrentUser } from '../../lib/FirebaseLogin';
 import { createShare } from '../../lib/FirebaseHelpers';
 
 export default class MyComponent extends Component {
@@ -28,8 +28,8 @@ export default class MyComponent extends Component {
       }));
     });
     try {
-      const token = await retrieveAccessToken();
-      const credential = getAuthCredential(token);
+      const token = await retrieveToken('accessToken');
+      const credential = getFBAuthCredential(token);
       const currentUser = await getCurrentUser(credential);
 
       if (!currentUser) {

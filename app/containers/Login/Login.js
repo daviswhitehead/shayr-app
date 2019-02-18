@@ -5,12 +5,12 @@ import {
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { LoginButton } from 'react-native-fbsdk';
-import { facebookAuthTap, facebookAuth, signOutUser } from './actions';
+import { facebookAuthTap, facebookAuth, signOutUser } from '../../redux/auth/actions';
 import styles from './styles';
 import vectorLogo from '../../assets/VectorLogo.png';
 
 const mapStateToProps = state => ({
-  appListeners: state.appListeners,
+  auth: state.auth,
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -21,7 +21,7 @@ const mapDispatchToProps = dispatch => ({
 
 class Login extends Component {
   static propTypes = {
-    appListeners: PropTypes.instanceOf(Object).isRequired,
+    auth: PropTypes.instanceOf(Object).isRequired,
     navigation: PropTypes.instanceOf(Object).isRequired,
     facebookAuthTap: PropTypes.func.isRequired,
     facebookAuth: PropTypes.func.isRequired,
@@ -29,14 +29,14 @@ class Login extends Component {
   };
 
   componentDidMount() {
-    if (this.props.appListeners.user) {
+    if (this.props.auth.user) {
       this.props.signOutUser();
     }
   }
 
   componentDidUpdate() {
-    if (this.props.appListeners.user && this.props.appListeners.hasAccessToken) {
-      this.props.navigation.navigate('AuthWithListeners');
+    if (this.props.auth.user && this.props.auth.hasAccessToken && !this.props.auth.isSigningOut) {
+      this.props.navigation.navigate('App');
     }
   }
 

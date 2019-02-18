@@ -1,19 +1,21 @@
 import firebase from 'react-native-firebase';
 import { getFBToken, logoutFB } from '../../lib/FacebookLogin';
 import { getCurrentUser, signOut, getFBAuthCredential } from '../../lib/FirebaseLogin';
-import { storeToken } from '../../lib/AppGroupTokens';
+import { storeToken, retrieveToken } from '../../lib/AppGroupTokens';
 import { ts } from '../../lib/FirebaseHelpers';
+import { requestNotificationPermissionsRedux } from '../notifications/actions';
 
 export const types = {
-  // SIGN OUT
-  SIGN_OUT_USER: 'SIGN_OUT_USER',
-  FACEBOOK_SIGN_OUT_START: 'FACEBOOK_SIGN_OUT_START',
-  FACEBOOK_SIGN_OUT_SUCCESS: 'FACEBOOK_SIGN_OUT_SUCCESS',
-  APP_SIGN_OUT_START: 'APP_SIGN_OUT_START',
-  APP_SIGN_OUT_SUCCESS: 'APP_SIGN_OUT_SUCCESS',
+  // AUTHENTICATION LISTENER
+  AUTH_LISTENER_START: 'AUTH_LISTENER_START',
+  AUTH_STATUS: 'AUTH_STATUS',
 
   // TOKEN
+  ACCESS_TOKEN_STATUS: 'ACCESS_TOKEN_STATUS',
   ACCESS_TOKEN_SAVED: 'ACCESS_TOKEN_SAVED',
+
+  // LISTENERS READY
+  ARE_LISTENERS_READY: 'ARE_LISTENERS_READY',
 
   // FACEBOOK LOGIN
   FACEBOOK_AUTH_TAP: 'FACEBOOK_AUTH_TAP',
@@ -26,25 +28,57 @@ export const types = {
   SAVE_USER_START: 'SAVE_USER_START',
   SAVE_USER_SUCCESS: 'SAVE_USER_SUCCESS',
 
-  // NOTIFICATIONS
-  NOTIFICATION_PERMISSIONS_REQUEST_START: 'NOTIFICATION_PERMISSIONS_REQUEST_START',
-  NOTIFICATION_PERMISSIONS_REQUEST_SUCCESS: 'NOTIFICATION_PERMISSIONS_REQUEST_SUCCESS',
-  NOTIFICATION_PERMISSIONS_REQUEST_FAIL: 'NOTIFICATION_PERMISSIONS_REQUEST_FAIL',
+  // SIGN OUT
+  SIGN_OUT_START: 'SIGN_OUT_START',
+  FACEBOOK_SIGN_OUT_START: 'FACEBOOK_SIGN_OUT_START',
+  FACEBOOK_SIGN_OUT_SUCCESS: 'FACEBOOK_SIGN_OUT_SUCCESS',
+  APP_SIGN_OUT_START: 'APP_SIGN_OUT_START',
+  APP_SIGN_OUT_SUCCESS: 'APP_SIGN_OUT_SUCCESS',
+  SIGN_OUT_SUCCESS: 'SIGN_OUT_SUCCESS',
+  SIGN_OUT_FAIL: 'SIGN_OUT_FAIL',
 };
 
-export const requestNotificationPermissions = async () => {
-  if (!(await firebase.messaging().hasPermission())) {
-    try {
-      await firebase.messaging().requestPermission();
-    } catch (error) {
-      console.error(error);
-      return false;
-    }
-  }
-  return firebase.messaging().getToken();
-};
+// AUTHENTICATION LISTENERS
+export function authSubscription() {
+  return function _authSubscription(dispatch) {
+    dispatch({ type: types.AUTH_LISTENER_START });
+    return firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        dispatch({
+          type: types.AUTH_STATUS,
+          user,
+          isAuthenticated: true,
+          isSigningOut: false,
+        });
+      } else {
+        dispatch({
+          type: types.AUTH_STATUS,
+          isAuthenticated: false,
+          user: null,
+        });
+      }
+    });
+  };
+}
 
-export const saveUser = async (user, data) => {
+// TOKEN
+export function hasAccessToken() {
+  const token = retrieveToken('accessToken');
+
+  return {
+    type: types.ACCESS_TOKEN_STATUS,
+    hasAccessToken: !!token,
+  };
+}
+
+// LISTENERS READY
+export const areListenersReady = areReady => ({
+  type: types.ARE_LISTENERS_READY,
+  listenersReady: areReady,
+});
+
+// FACEBOOK LOGIN
+const saveUser = async (user, data) => {
   const ref = firebase
     .firestore()
     .collection('users')
@@ -83,12 +117,14 @@ export const saveUser = async (user, data) => {
     });
 };
 
+// FACEBOOK LOGIN
 export function facebookAuthTap() {
   return {
     type: types.FACEBOOK_AUTH_TAP,
   };
 }
 
+// FACEBOOK LOGIN
 export function facebookAuth(error, result) {
   return async function _facebookAuth(dispatch) {
     try {
@@ -111,14 +147,7 @@ export function facebookAuth(error, result) {
       await saveUser(currentUser.user, currentUser.additionalUserInfo.profile);
       dispatch({ type: types.SAVE_USER_SUCCESS });
 
-      dispatch({ type: types.NOTIFICATION_PERMISSIONS_REQUEST_START });
-      const token = await requestNotificationPermissions();
-
-      if (token) {
-        dispatch({ type: types.NOTIFICATION_PERMISSIONS_REQUEST_SUCCESS });
-      } else {
-        dispatch({ type: types.NOTIFICATION_PERMISSIONS_REQUEST_FAIL });
-      }
+      await requestNotificationPermissionsRedux(dispatch);
     } catch (e) {
       console.error(e);
       dispatch({
@@ -129,6 +158,12 @@ export function facebookAuth(error, result) {
   };
 }
 
+// SIGN OUT
+export function startSignOut() {
+  return { type: types.SIGN_OUT_START, isSigningOut: true };
+}
+
+// SIGN OUT
 export function signOutUser() {
   return async function _signOutUser(dispatch) {
     try {
@@ -139,11 +174,13 @@ export function signOutUser() {
       dispatch({ type: types.FACEBOOK_SIGN_OUT_START });
       await logoutFB();
       dispatch({ type: types.FACEBOOK_SIGN_OUT_SUCCESS });
-    } catch (e) {
-      console.error(e);
+
+      dispatch({ type: types.SIGN_OUT_SUCCESS });
+    } catch (error) {
+      console.error(error);
       dispatch({
-        type: types.AUTH_FAIL,
-        error: e,
+        type: types.SIGN_OUT_FAIL,
+        error,
       });
     }
   };

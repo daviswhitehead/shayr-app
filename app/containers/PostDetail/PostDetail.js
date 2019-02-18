@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { View, Text, ScrollView, TouchableOpacity } from "react-native";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { postAction } from "../../redux/postActions/PostActionsActions";
+import { postAction } from "../../redux/postActions/actions";
 import { postDetailBack } from "./actions";
 import Header from "../../components/Header";
 import colors from "../../styles/Colors";

@@ -9,13 +9,12 @@ import {
   notificationOpenedListener,
 } from '../../lib/NotificationListeners';
 import { notificationChannels } from '../../lib/NotificationChannels';
-// import { testScheduledNotification } from '../../lib/Notifications';
-import { authSubscription, hasAccessToken, areListenersReady } from './actions';
+import { authSubscription, hasAccessToken, areListenersReady } from '../../redux/auth/actions';
 import RootNavigator from '../../config/Routes';
 import AppLoading from '../../components/AppLoading';
 
 const mapStateToProps = state => ({
-  appListeners: state.appListeners,
+  auth: state.auth,
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -26,7 +25,7 @@ const mapDispatchToProps = dispatch => ({
 
 class AppWithListeners extends Component {
   static propTypes = {
-    appListeners: PropTypes.instanceOf(Object).isRequired,
+    auth: PropTypes.instanceOf(Object).isRequired,
     authSubscription: PropTypes.func.isRequired,
     hasAccessToken: PropTypes.func.isRequired,
     areListenersReady: PropTypes.func.isRequired,
@@ -37,7 +36,7 @@ class AppWithListeners extends Component {
     AppState.addEventListener('change', this.handleAppStateChange);
 
     // check authentication and listen for updates
-    this.unsubscribeAuthSubscription = this.props.authSubscription();
+    this.unsubscribeAuthListener = this.props.authSubscription();
     this.props.hasAccessToken();
 
     // setup android notification channels
@@ -57,21 +56,12 @@ class AppWithListeners extends Component {
       firebase.notifications().removeDeliveredNotification(notification.notificationId);
     }
 
-    // // to test (scheduled) notifications
-    // const date = new Date();
-    // date.setSeconds(date.getSeconds() + 5);
-    // const test = firebase.notifications().scheduleNotification(testScheduledNotification, {
-    //   fireDate: date.getTime(),
-    // });
-
-    // firebase.auth().signOut();
-
     this.props.areListenersReady(true);
   }
 
   componentWillUnmount() {
-    AppState.removeEventListener('change', this.handleAppStateChange);
-    this.unsubscribeAuthSubscription();
+    AppState.auth.removeEventListener('change', this.handleAppStateChange);
+    this.unsubscribeAuthListener();
     this.notificationDisplayedListener();
     this.notificationListener();
     this.notificationOpenedListener();
@@ -88,7 +78,7 @@ class AppWithListeners extends Component {
   };
 
   render() {
-    if (this.props.appListeners.listenersReady) {
+    if (this.props.auth.listenersReady) {
       return <RootNavigator />;
     }
     return <AppLoading />;

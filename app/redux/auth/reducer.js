@@ -1,14 +1,11 @@
 import { types } from './actions';
-import { types as loginTypes } from '../Login/actions';
 
 const initialState = {
   user: null,
   isAuthenticated: false,
   hasAccessToken: false,
+  isSigningOut: false,
   listenersReady: false,
-  self: null,
-  friendships: null,
-  friends: null,
   error: null,
 };
 
@@ -26,8 +23,10 @@ function appListenerReducer(state = initialState, action) {
     case types.AUTH_STATUS: {
       return {
         ...state,
-        isAuthenticated: action.isAuthenticated,
         user: action.user,
+        isAuthenticated: action.isAuthenticated,
+        authListenersGo: action.isAuthenticated,
+        isSigningOut: action.isSigningOut,
       };
     }
     case types.ACCESS_TOKEN_STATUS: {
@@ -36,34 +35,22 @@ function appListenerReducer(state = initialState, action) {
         hasAccessToken: action.hasAccessToken,
       };
     }
-    case loginTypes.ACCESS_TOKEN_SAVED: {
+    case types.ACCESS_TOKEN_SAVED: {
       return {
         ...state,
         hasAccessToken: action.hasAccessToken,
+      };
+    }
+    case types.SIGN_OUT_START: {
+      return {
+        ...state,
+        isSigningOut: action.isSigningOut,
       };
     }
     case types.ARE_LISTENERS_READY: {
       return {
         ...state,
         listenersReady: action.listenersReady,
-      };
-    }
-    case types.SUBSCRIBE_SELF_SUCCESS: {
-      return {
-        ...state,
-        self: action.self,
-      };
-    }
-    case types.SUBSCRIBE_FRIENDSHIPS_SUCCESS: {
-      return {
-        ...state,
-        friendships: action.friendships,
-      };
-    }
-    case types.SUBSCRIBE_FRIENDS_SUCCESS: {
-      return {
-        ...state,
-        friends: action.friends,
       };
     }
     default: {

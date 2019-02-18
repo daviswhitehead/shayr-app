@@ -4438,6 +4438,11 @@ object-keys@^1.0.8:
   version "1.0.11"
   resolved "https://registry.yarnpkg.com/object-keys/-/object-keys-1.0.11.tgz#c54601778ad560f1142ce0e01bcca8b56d13426d"
 
+object-path@^0.11.3:
+  version "0.11.4"
+  resolved "https://registry.yarnpkg.com/object-path/-/object-path-0.11.4.tgz#370ae752fbf37de3ea70a861c23bba8915691949"
+  integrity sha1-NwrnUvvzfePqcKhhwju6iRVpGUk=
+
 object.assign@^4.1.0:
   version "4.1.0"
   resolved "https://registry.yarnpkg.com/object.assign/-/object.assign-4.1.0.tgz#968bf1100d7956bb3ca086f006f846b3bc4008da"
@@ -5295,6 +5300,13 @@ redux-devtools-instrument@^1.9.3:
   dependencies:
     lodash "^4.2.0"
     symbol-observable "^1.0.2"
+
+redux-subscriber@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/redux-subscriber/-/redux-subscriber-1.1.0.tgz#3cac28a674cec07b6e9e015ca7aabbbdac155543"
+  integrity sha1-PKwopnTOwHtungFcp6q7vawVVUM=
+  dependencies:
+    object-path "^0.11.3"
 
 redux-thunk@^2.3.0:
   version "2.3.0"

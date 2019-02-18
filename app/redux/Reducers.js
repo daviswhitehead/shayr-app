@@ -1,14 +1,16 @@
 import { combineReducers } from 'redux';
-import appListenersReducer from '../containers/AppWithListeners/reducer';
+import authReducer from './auth/reducer';
+import usersReducer from './users/reducer';
+import notificationsReducer from './notifications/reducer';
 import postsReducer from './posts/PostsReducer';
-import postActionsReducer from './postActions/PostActionsReducer';
-import postDetailReducer from '../containers/PostDetail/reducer';
+// import postDetailReducer from '../containers/PostDetail/reducer';
 
 export const makeRootReducer = () => combineReducers({
-  appListeners: appListenersReducer,
+  auth: authReducer,
+  users: usersReducer,
+  notifications: notificationsReducer,
   posts: postsReducer,
-  postActions: postActionsReducer,
-  postDetail: postDetailReducer,
+  // postDetail: postDetailReducer,
 });
 
 export default makeRootReducer;

@@ -1,5 +1,4 @@
 import firebase from 'react-native-firebase';
-import { ts } from '../../lib/FirebaseHelpers';
 
 export const types = {
   // SELF
@@ -16,11 +15,6 @@ export const types = {
   SUBSCRIBE_FRIENDS_START: 'SUBSCRIBE_FRIENDS_START',
   SUBSCRIBE_FRIENDS_SUCCESS: 'SUBSCRIBE_FRIENDS_SUCCESS',
   SUBSCRIBE_FRIENDS_FAIL: 'SUBSCRIBE_FRIENDS_FAIL',
-
-  // NOTIFICATION_TOKEN
-  SUBSCRIBE_NOTIFICATION_TOKEN_START: 'SUBSCRIBE_NOTIFICATION_TOKEN_START',
-  SUBSCRIBE_NOTIFICATION_TOKEN_SUCCESS: 'SUBSCRIBE_NOTIFICATION_TOKEN_SUCCESS',
-  SUBSCRIBE_NOTIFICATION_TOKEN_FAIL: 'SUBSCRIBE_NOTIFICATION_TOKEN_FAIL',
 };
 
 // SELF
@@ -115,24 +109,4 @@ export const subscribeToFriendships = userId => function _subscribeToFriendships
         });
       },
     );
-};
-
-// NOTIFICATION_TOKEN
-export const subscribeNotificationTokenRefresh = userId => function _subscribeNotificationTokenRefresh(dispatch) {
-  dispatch({ type: types.SUBSCRIBE_NOTIFICATION_TOKEN_START });
-
-  return firebase.messaging().onTokenRefresh(notificationToken => firebase
-    .firestore()
-    .collection('users')
-    .doc(userId)
-    .update({ pushToken: notificationToken, updatedAt: ts })
-    .then(() => {
-      dispatch({ type: types.SUBSCRIBE_NOTIFICATION_TOKEN_SUCCESS });
-      return true;
-    })
-    .catch((error) => {
-      console.error(error);
-      dispatch({ type: types.SUBSCRIBE_NOTIFICATION_TOKEN_FAIL, error });
-      return false;
-    }));
 };

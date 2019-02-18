@@ -13,15 +13,14 @@ import ContentCard from "../../components/ContentCard";
 import { openURL } from "../../lib/Utils";
 import Header from "../../components/Header";
 import colors from "../../styles/Colors";
-
 import {
   loadPosts,
   paginatePosts,
   refreshPosts,
   flattenPosts
 } from "../../redux/posts/PostsActions";
-import { postAction } from "../../redux/postActions/PostActionsActions";
-import { signOutUser } from "../Login/actions";
+import { postAction } from '../../redux/postActions/actions';
+import { signOutUser } from '../../redux/auth/actions';
 
 const mapStateToProps = state => {
   return {

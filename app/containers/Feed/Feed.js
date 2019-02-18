@@ -12,13 +12,17 @@ import {
   refreshPosts,
   flattenPosts,
 } from '../../redux/posts/PostsActions';
-import { postAction } from '../../redux/postActions/PostActionsActions';
+import { postAction } from '../../redux/postActions/actions';
+import { startSignOut } from '../../redux/auth/actions';
 import { postDetailView } from '../PostDetail/actions';
 import Header from '../../components/Header';
 import colors from '../../styles/Colors';
+import { subscribeToSelf, subscribeToFriendships } from '../../redux/users/actions';
+import { subscribeNotificationTokenRefresh } from '../../redux/notifications/actions';
 
 const mapStateToProps = state => ({
-  appListeners: state.appListeners,
+  auth: state.auth,
+  users: state.users,
   posts: state.posts,
 });
 
@@ -28,13 +32,21 @@ const mapDispatchToProps = dispatch => ({
   paginatePosts: (userId, query, lastPost) => dispatch(paginatePosts(userId, query, lastPost)),
   refreshPosts: (userId, query) => dispatch(refreshPosts(userId, query)),
   postAction: (actionType, userId, postId) => dispatch(postAction(actionType, userId, postId)),
+  startSignOut: () => dispatch(startSignOut()),
+  subscribeToSelf: userId => dispatch(subscribeToSelf(userId)),
+  subscribeToFriendships: userId => dispatch(subscribeToFriendships(userId)),
+  subscribeNotificationTokenRefresh: userId => dispatch(subscribeNotificationTokenRefresh(userId)),
 });
 
 class Feed extends Component {
   static propTypes = {
-    appListeners: PropTypes.instanceOf(Object).isRequired,
-    navigation: PropTypes.instanceOf(Object).isRequired,
+    auth: PropTypes.instanceOf(Object).isRequired,
+    users: PropTypes.instanceOf(Object).isRequired,
     posts: PropTypes.instanceOf(Object).isRequired,
+    navigation: PropTypes.instanceOf(Object).isRequired,
+    subscribeToSelf: PropTypes.func.isRequired,
+    subscribeToFriendships: PropTypes.func.isRequired,
+    subscribeNotificationTokenRefresh: PropTypes.func.isRequired,
   };
 
   static navigationOptions = ({ navigation }) => ({
@@ -48,8 +60,13 @@ class Feed extends Component {
     this.subscriptions = [];
   }
 
-  componentDidMount() {
-    this.subscriptions.push(this.props.loadPosts(this.props.appListeners.user.uid, 'feed'));
+  async componentDidMount() {
+    this.subscriptions.push(await this.props.loadPosts(this.props.auth.user.uid, 'feed'));
+    this.subscriptions.push(await this.props.subscribeToSelf(this.props.auth.user.uid));
+    this.subscriptions.push(await this.props.subscribeToFriendships(this.props.auth.user.uid));
+    this.subscriptions.push(
+      await this.props.subscribeNotificationTokenRefresh(this.props.auth.user.uid),
+    );
   }
 
   componentWillUnmount() {
@@ -62,37 +79,37 @@ class Feed extends Component {
     <ContentCard
       payload={item}
       friends={{
-        ...this.props.appListeners.self,
-        ...this.props.appListeners.friends,
+        ...this.props.users.self,
+        ...this.props.users.friends,
       }}
       // onTap={() => openURL(item.url)}
       onTap={() => this.props.postDetailView(item)}
       shareAction={{
         actionCount: item.shareCount,
-        actionUser: item.shares ? item.shares.includes(this.props.appListeners.user.uid) : false,
-        onPress: () => this.props.postAction('share', this.props.appListeners.user.uid, item.postId),
+        actionUser: item.shares ? item.shares.includes(this.props.auth.user.uid) : false,
+        onPress: () => this.props.postAction('share', this.props.auth.user.uid, item.postId),
       }}
       addAction={{
         actionCount: item.addCount,
-        actionUser: item.adds ? item.adds.includes(this.props.appListeners.user.uid) : false,
-        onPress: () => this.props.postAction('add', this.props.appListeners.user.uid, item.postId),
+        actionUser: item.adds ? item.adds.includes(this.props.auth.user.uid) : false,
+        onPress: () => this.props.postAction('add', this.props.auth.user.uid, item.postId),
       }}
       doneAction={{
         actionCount: item.doneCount,
-        actionUser: item.dones ? item.dones.includes(this.props.appListeners.user.uid) : false,
-        onPress: () => this.props.postAction('done', this.props.appListeners.user.uid, item.postId),
+        actionUser: item.dones ? item.dones.includes(this.props.auth.user.uid) : false,
+        onPress: () => this.props.postAction('done', this.props.auth.user.uid, item.postId),
       }}
       likeAction={{
         actionCount: item.likeCount,
-        actionUser: item.likes ? item.likes.includes(this.props.appListeners.user.uid) : false,
-        onPress: () => this.props.postAction('like', this.props.appListeners.user.uid, item.postId),
+        actionUser: item.likes ? item.likes.includes(this.props.auth.user.uid) : false,
+        onPress: () => this.props.postAction('like', this.props.auth.user.uid, item.postId),
       }}
     />
   );
 
-  _paginate = () => {
+  paginate = () => {
     const unsubscribe = this.props.paginatePosts(
-      this.props.appListeners.user.uid,
+      this.props.auth.user.uid,
       'feed',
       this.props.posts.feedLastPost,
     );
@@ -101,44 +118,38 @@ class Feed extends Component {
     }
   };
 
-  _refresh = () => {
-    const unsubscribe = this.props.refreshPosts(this.props.appListeners.user.uid, 'feed');
+  refresh = () => {
+    const unsubscribe = this.props.refreshPosts(this.props.auth.user.uid, 'feed');
     if (unsubscribe) {
       this.subscriptions.push(unsubscribe);
     }
   };
 
   loading = () => {
-    if (
-      !this.props.posts.feedPosts
-      || !this.props.appListeners.friends
-      || !this.props.appListeners.self
-    ) {
+    if (!this.props.posts.feedPosts || !this.props.users.friends || !this.props.users.self) {
       return <Text>LOADING</Text>;
     }
     return (
       <List
         data={flattenPosts(this.props.posts.feedPosts)}
         renderItem={item => this.renderItem(item)}
-        onEndReached={() => this._paginate()}
-        onRefresh={() => this._refresh()}
+        onEndReached={() => this.paginate()}
+        onRefresh={() => this.refresh()}
         refreshing={this.props.posts.refreshing}
       />
     );
   };
 
-  _signOut = () => {
-    this.props.navigation.navigate('Auth');
+  signOut = () => {
+    this.props.startSignOut();
+    this.props.navigation.navigate('Login');
   };
 
   render() {
-    console.log(this.state);
-    console.log(this.props);
-
     return (
       <View style={styles.container}>
         <this.loading />
-        <DynamicActionButton logout={this._signOut} feed={false} />
+        <DynamicActionButton logout={this.signOut} feed={false} />
       </View>
     );
   }

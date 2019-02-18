@@ -1,15 +1,15 @@
-import { types } from "./actions";
+import { types } from './actions';
 
 const initialState = {
   post: null,
-  error: null
+  error: null,
 };
 
 function postDetailReducer(state = initialState, action) {
-  if (action.type.substr(action.type.length - 4) === "FAIL") {
+  if (action.type.substr(action.type.length - 4) === 'FAIL') {
     return {
       ...state,
-      error: action.error
+      error: action.error,
     };
   }
 
@@ -17,7 +17,7 @@ function postDetailReducer(state = initialState, action) {
     case types.POST_DETAIL_VIEW: {
       return {
         ...state,
-        post: action.payload
+        post: action.payload,
       };
     }
   }
@@ -26,7 +26,7 @@ function postDetailReducer(state = initialState, action) {
     case types.POST_DETAIL_BACK: {
       return {
         ...state,
-        post: null
+        post: null,
       };
     }
   }
