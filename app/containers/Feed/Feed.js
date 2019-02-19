@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, Linking } from 'react-native';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import styles from './styles';
@@ -67,6 +67,7 @@ class Feed extends Component {
     this.subscriptions.push(
       await this.props.subscribeNotificationTokenRefresh(this.props.auth.user.uid),
     );
+    Linking.openURL('https://shayr/post/test');
   }
 
   componentWillUnmount() {

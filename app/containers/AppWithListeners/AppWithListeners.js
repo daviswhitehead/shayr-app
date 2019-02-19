@@ -56,6 +56,13 @@ class AppWithListeners extends Component {
       firebase.notifications().removeDeliveredNotification(notification.notificationId);
     }
 
+    // app launched with dynamic link
+    firebase
+      .links()
+      .getInitialLink()
+      .then((url) => {
+        console.log(url);
+      });
     this.props.areListenersReady(true);
   }
 
@@ -79,7 +86,8 @@ class AppWithListeners extends Component {
 
   render() {
     if (this.props.auth.listenersReady) {
-      return <RootNavigator />;
+      const prefix = 'https://shayr/';
+      return <RootNavigator uriPrefix={prefix} />;
     }
     return <AppLoading />;
   }

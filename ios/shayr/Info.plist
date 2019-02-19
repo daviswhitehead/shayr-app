@@ -28,6 +28,16 @@
 				<string>fb152320078878051</string>
 			</array>
 		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>ShayrDevDyanmicLinks</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>ShayrDevDynamicLinksScheme</string>
+			</array>
+		</dict>
 	</array>
 	<key>CFBundleVersion</key>
 	<string>31</string>
@@ -72,7 +82,7 @@
 		</dict>
 	</dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string/>
+	<string></string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Entypo.ttf</string>

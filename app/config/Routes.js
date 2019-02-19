@@ -25,6 +25,7 @@ const AppStack = createStackNavigator(
     },
     PostDetail: {
       screen: PostDetail,
+      path: 'post/:users_posts',
     },
   },
   {

@@ -6,6 +6,7 @@ def shared_pods
   pod 'Firebase/Auth', '~>5.6.0'
   pod 'Firebase/Firestore', '~>5.6.0'
   pod 'Firebase/Messaging', '~>5.6.0'
+  pod 'Firebase/DynamicLinks', '~>5.6.0'
   pod 'Fabric', '~>1.7.5'
   pod 'Crashlytics', '~>3.10.4'
 end

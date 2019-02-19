@@ -15,6 +15,7 @@
 #import <Fabric/Fabric.h>
 #import <Crashlytics/Crashlytics.h>
 #import "ReactNativeConfig.h"
+#import "RNFirebaseLinks.h"
 
 @implementation AppDelegate
 
@@ -22,6 +23,9 @@
 {
   [[FBSDKApplicationDelegate sharedInstance] application:application
     didFinishLaunchingWithOptions:launchOptions];
+//  [FIROptions defaultOptions].deepLinkURLScheme = @"ShayrDevDynamicLinksScheme";
+  NSString *dynamicLinkScheme = [ReactNativeConfig envFor:@"DYNAMIC_LINK_SCHEME"];
+  [FIROptions defaultOptions].deepLinkURLScheme = dynamicLinkScheme;
   [FIRApp configure];
   [RNFirebaseNotifications configure];
   [Fabric with:@[[Crashlytics class]]];
@@ -75,7 +79,11 @@
     sourceApplication:options[UIApplicationOpenURLOptionsSourceApplicationKey]
     annotation:options[UIApplicationOpenURLOptionsAnnotationKey]
   ];
-  // Add any custom logic here.
+  
+  if (!handled) {
+    handled = [[RNFirebaseLinks instance] application:application openURL:url options:options];
+  }
+  
   return handled;
 }
 
@@ -91,4 +99,11 @@ fetchCompletionHandler:(nonnull void (^)(UIBackgroundFetchResult))completionHand
  - (void)application:(UIApplication *)application didRegisterUserNotificationSettings:(UIUserNotificationSettings *)notificationSettings {
   [[RNFirebaseMessaging instance] didRegisterUserNotificationSettings:notificationSettings];
 }
+
+- (BOOL)application:(UIApplication *)application
+continueUserActivity:(NSUserActivity *)userActivity
+ restorationHandler:(void (^)(NSArray *))restorationHandler {
+  return [[RNFirebaseLinks instance] application:application continueUserActivity:userActivity restorationHandler:restorationHandler];
+}
+
 @end
