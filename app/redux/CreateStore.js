@@ -2,6 +2,7 @@ import { applyMiddleware, compose, createStore } from 'redux';
 import thunk from 'redux-thunk';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import Config from 'react-native-config';
+import initSubscriber from 'redux-subscriber';
 import { makeRootReducer } from './Reducers';
 
 export default (initialState = {}) => {
@@ -19,6 +20,8 @@ export default (initialState = {}) => {
     initialState,
     composeEnhancers(applyMiddleware(...middleware)),
   );
+
+  initSubscriber(store);
 
   return store;
 };

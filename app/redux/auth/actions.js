@@ -1,30 +1,9 @@
 import firebase from 'react-native-firebase';
-import Config from 'react-native-config';
 import { getFBToken, logoutFB } from '../../lib/FacebookLogin';
 import { getCurrentUser, signOut, getFBAuthCredential } from '../../lib/FirebaseLogin';
 import { storeToken, retrieveToken } from '../../lib/AppGroupTokens';
 import { ts } from '../../lib/FirebaseHelpers';
 import { requestNotificationPermissionsRedux } from '../notifications/actions';
-
-console.log(Config);
-
-const link = new firebase.links.DynamicLink('TEST', 'shayrdev.page.link').android // android
-  .setPackageName(`${Config.APP_ID_ANDROID}${Config.APP_ID_SUFFIX_ANDROID}`)
-  // iOS
-  .ios.setBundleId(Config.APP_BUNDLE_ID_IOS)
-  .ios.setCustomScheme(Config.DYNAMIC_LINK_SCHEME);
-
-const test = firebase
-  .links()
-  .createDynamicLink(link, 'UNGUESSABLE')
-  // .createShortDynamicLink(link, 'UNGUESSABLE')
-  .then((url) => {
-    console.log(url);
-  })
-  .catch((error) => {
-    console.log(error);
-  });
-console.log(test);
 
 export const types = {
   // AUTHENTICATION LISTENER

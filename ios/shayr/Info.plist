@@ -32,10 +32,20 @@
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>CFBundleURLName</key>
-			<string>ShayrDevDyanmicLinks</string>
+			<string>com.daviswhitehead.shayr.ios.dev</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>ShayrDevDynamicLinksScheme</string>
+				<string>https://com.daviswhitehead.shayr.ios.dev</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>shayr</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>shayr</string>
 			</array>
 		</dict>
 	</array>

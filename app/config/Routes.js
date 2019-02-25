@@ -9,6 +9,7 @@ import Feed from '../containers/Feed';
 import Queue from '../containers/Queue';
 import Login from '../containers/Login';
 import PostDetail from '../containers/PostDetail';
+import HelloWorld from '../containers/HelloWorld';
 
 // const TabStack = createBottomTabNavigator({
 //   Feed,
@@ -25,7 +26,9 @@ const AppStack = createStackNavigator(
     },
     PostDetail: {
       screen: PostDetail,
-      path: 'post/:users_posts',
+    },
+    HelloWorld: {
+      screen: HelloWorld,
     },
   },
   {

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { View, Text, Linking } from 'react-native';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import { subscribe } from 'redux-subscriber';
 import styles from './styles';
 import DynamicActionButton from '../../components/DynamicActionButton';
 import List from '../../components/List';
@@ -19,11 +20,15 @@ import Header from '../../components/Header';
 import colors from '../../styles/Colors';
 import { subscribeToSelf, subscribeToFriendships } from '../../redux/users/actions';
 import { subscribeNotificationTokenRefresh } from '../../redux/notifications/actions';
+import { getTestLink } from '../../lib/DeepLinks';
+import NavigationService from '../../lib/NavigationService';
+import { navigateToRoute } from '../../redux/routing/actions';
 
 const mapStateToProps = state => ({
   auth: state.auth,
   users: state.users,
   posts: state.posts,
+  routing: state.routing,
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -36,6 +41,7 @@ const mapDispatchToProps = dispatch => ({
   subscribeToSelf: userId => dispatch(subscribeToSelf(userId)),
   subscribeToFriendships: userId => dispatch(subscribeToFriendships(userId)),
   subscribeNotificationTokenRefresh: userId => dispatch(subscribeNotificationTokenRefresh(userId)),
+  navigateToRoute: payload => dispatch(navigateToRoute(payload)),
 });
 
 class Feed extends Component {
@@ -47,6 +53,7 @@ class Feed extends Component {
     subscribeToSelf: PropTypes.func.isRequired,
     subscribeToFriendships: PropTypes.func.isRequired,
     subscribeNotificationTokenRefresh: PropTypes.func.isRequired,
+    navigateToRoute: PropTypes.func.isRequired,
   };
 
   static navigationOptions = ({ navigation }) => ({
@@ -61,13 +68,48 @@ class Feed extends Component {
   }
 
   async componentDidMount() {
-    this.subscriptions.push(await this.props.loadPosts(this.props.auth.user.uid, 'feed'));
+    // HOME - Respond to initial route and listen to routing updates
+    if (this.props.routing.screen) {
+      this.props.navigateToRoute(this.props.routing);
+    }
+    // HOME - Listen to routing updates
+    this.subscriptions.push(
+      subscribe('routing', (state) => {
+        if (state.routing.screen) {
+          this.props.navigateToRoute(state.routing);
+        }
+      }),
+    );
+
+    // HOME - Listen to global datasets
     this.subscriptions.push(await this.props.subscribeToSelf(this.props.auth.user.uid));
     this.subscriptions.push(await this.props.subscribeToFriendships(this.props.auth.user.uid));
+
+    // HOME - Listen to notification token changes
     this.subscriptions.push(
       await this.props.subscribeNotificationTokenRefresh(this.props.auth.user.uid),
     );
-    Linking.openURL('https://shayr/post/test');
+
+    // FEED - Listen to feed specific posts
+    this.subscriptions.push(await this.props.loadPosts(this.props.auth.user.uid, 'feed'));
+    const testLink = await getTestLink();
+    // NavigationService.navigate('HelloWorld');
+    // console.log(NavigationService);
+
+    // console.log(testLink);
+
+    // this.props.navigation.navigate('HelloWorld');
+    // this.props.navigation.navigate('shayrdev://hw');
+    // this.props.navigation.navigate('shayrdev://post');
+
+    // Linking.openURL('shayrdev://hw');
+    // Linking.openURL('shayrdev://post');
+    // Linking.openURL('asjdklfkajlsdkfjlk');
+    // Linking.openURL(testLink);
+    // console.log(this.props.routing.routePath);
+    // if (this.props.routing.routePath) {
+    //   Linking.openURL(this.props.routing.routePath);
+    // }
   }
 
   componentWillUnmount() {

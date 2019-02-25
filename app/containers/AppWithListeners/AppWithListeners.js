@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import firebase from 'react-native-firebase';
-import { AppState } from 'react-native';
+import { AppState, Linking } from 'react-native';
 import {
   notificationDisplayedListener,
   notificationListener,
@@ -10,8 +10,11 @@ import {
 } from '../../lib/NotificationListeners';
 import { notificationChannels } from '../../lib/NotificationChannels';
 import { authSubscription, hasAccessToken, areListenersReady } from '../../redux/auth/actions';
+import { handleDeepLink } from '../../redux/routing/actions';
 import RootNavigator from '../../config/Routes';
 import AppLoading from '../../components/AppLoading';
+import { dynamicLinkListener } from '../../lib/DeepLinks';
+import NavigationService from '../../lib/NavigationService';
 
 const mapStateToProps = state => ({
   auth: state.auth,
@@ -21,6 +24,7 @@ const mapDispatchToProps = dispatch => ({
   authSubscription: () => dispatch(authSubscription()),
   hasAccessToken: () => dispatch(hasAccessToken()),
   areListenersReady: areReady => dispatch(areListenersReady(areReady)),
+  handleDeepLink: (url, eventType) => dispatch(handleDeepLink(url, eventType)),
 });
 
 class AppWithListeners extends Component {
@@ -29,6 +33,7 @@ class AppWithListeners extends Component {
     authSubscription: PropTypes.func.isRequired,
     hasAccessToken: PropTypes.func.isRequired,
     areListenersReady: PropTypes.func.isRequired,
+    handleDeepLink: PropTypes.func.isRequired,
   };
 
   async componentDidMount() {
@@ -56,18 +61,25 @@ class AppWithListeners extends Component {
       firebase.notifications().removeDeliveredNotification(notification.notificationId);
     }
 
-    // app launched with dynamic link
-    firebase
-      .links()
-      .getInitialLink()
-      .then((url) => {
-        console.log(url);
-      });
+    // start deep link listeners
+    this.dynamicLinkListener = dynamicLinkListener(this.props.handleDeepLink);
+    Linking.addEventListener('url', this.props.handleDeepLink);
+
+    // app launched with deep link
+    const dynamicLink = await firebase.links().getInitialLink(); // Firebase link
+    if (dynamicLink) {
+      this.props.handleDeepLink(dynamicLink, 'launch');
+    }
+    const deepLink = await Linking.getInitialURL(); // App link
+    if (deepLink) {
+      this.props.handleDeepLink(deepLink, 'launch');
+    }
     this.props.areListenersReady(true);
   }
 
   componentWillUnmount() {
-    AppState.auth.removeEventListener('change', this.handleAppStateChange);
+    AppState.removeEventListener('change', this.handleAppStateChange);
+    Linking.removeEventListener('url', this.props.handleDeepLink);
     this.unsubscribeAuthListener();
     this.notificationDisplayedListener();
     this.notificationListener();
@@ -86,8 +98,14 @@ class AppWithListeners extends Component {
 
   render() {
     if (this.props.auth.listenersReady) {
-      const prefix = 'https://shayr/';
-      return <RootNavigator uriPrefix={prefix} />;
+      return (
+        <RootNavigator
+          ref={(navigatorRef) => {
+            NavigationService.setTopLevelNavigator(navigatorRef);
+          }}
+          uriPrefix="shayrdev://"
+        />
+      );
     }
     return <AppLoading />;
   }
