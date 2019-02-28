@@ -1,10 +1,11 @@
-const config = require("./Config");
-const utility = require("./Utility");
+const config = require('./Config');
+const utility = require('./Utility');
+const deepLinking = require('../app/lib/DeepLinks');
 
-const newShareNotification = (name, postTitle, postId) => {
+const newShareNotification = (name, post) => {
   const copy = {
-    title: "New Shayr!",
-    body: `${name} wants you to check out "${postTitle}"`
+    title: 'New Shayr!',
+    body: `${name} wants you to check out "${post.title}"`
   };
 
   const message = {
@@ -13,12 +14,16 @@ const newShareNotification = (name, postTitle, postId) => {
     },
     data: {
       ...copy,
-      channelId: "General",
-      navigation: "TRUE",
-      postId
+      channelId: 'General',
+      appLink: deepLinking.buildAppLink(
+        (protocol = 'shayr'),
+        (hostname = 'shayr'),
+        (screen = 'PostDetail'),
+        (params = { ...post })
+      )
     },
     android: {
-      priority: "high"
+      priority: 'high'
     },
     apns: {
       payload: {
@@ -36,7 +41,7 @@ const newShareNotification = (name, postTitle, postId) => {
 
 const newDoneNotification = (name, postTitle, postId) => {
   const copy = {
-    title: "New Done!",
+    title: 'New Done!',
     body: `${name} finished checking out your shayr. Ask them what they think!`
   };
 
@@ -46,12 +51,10 @@ const newDoneNotification = (name, postTitle, postId) => {
     },
     data: {
       ...copy,
-      channelId: "General",
-      navigation: "TRUE",
-      postId
+      channelId: 'General'
     },
     android: {
-      priority: "high"
+      priority: 'high'
     },
     apns: {
       payload: {
@@ -69,7 +72,7 @@ const newDoneNotification = (name, postTitle, postId) => {
 
 const newLikeNotification = (name, postTitle, postId) => {
   const copy = {
-    title: "New Like!",
+    title: 'New Like!',
     body: `${name} liked your shayr`
   };
 
@@ -79,12 +82,10 @@ const newLikeNotification = (name, postTitle, postId) => {
     },
     data: {
       ...copy,
-      channelId: "General",
-      navigation: "TRUE",
-      postId
+      channelId: 'General'
     },
     android: {
-      priority: "high"
+      priority: 'high'
     },
     apns: {
       payload: {
@@ -112,19 +113,20 @@ exports.sendNewSharePushNotificationToFriends = async resources => {
       );
 
       if (friend && friend.pushToken) {
+        console.log(
+          newShareNotification(resources.user.firstName, resources.post)
+        );
+
         messages.push(
           config.msg.send({
-            ...newShareNotification(
-              resources.user.firstName,
-              resources.post.title,
-              resources.post.id
-            ),
+            ...newShareNotification(resources.user.firstName, resources.post),
             token: friend.pushToken
           })
         );
       }
     }
   }
+  console.log(messages);
 
   return Promise.all(messages);
 };

@@ -2,6 +2,8 @@ import { types } from './actions';
 
 const initialState = {
   url: null,
+  protocol: null,
+  hostname: null,
   screen: null,
   params: {},
   eventType: null,
@@ -29,6 +31,8 @@ function routingReducer(state = initialState, action) {
       return {
         ...state,
         url: action.url,
+        protocol: action.protocol,
+        hostname: action.hostname,
         screen: action.screen,
         params: action.params,
       };
@@ -37,6 +41,8 @@ function routingReducer(state = initialState, action) {
       return {
         ...state,
         url: null,
+        protocol: null,
+        hostname: null,
         screen: null,
         params: {},
       };

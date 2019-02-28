@@ -13,7 +13,7 @@ import { authSubscription, hasAccessToken, areListenersReady } from '../../redux
 import { handleDeepLink } from '../../redux/routing/actions';
 import RootNavigator from '../../config/Routes';
 import AppLoading from '../../components/AppLoading';
-import { dynamicLinkListener } from '../../lib/DeepLinks';
+import { dynamicLinkListener } from '../../lib/FirebaseDynamicLinks';
 import NavigationService from '../../lib/NavigationService';
 
 const mapStateToProps = state => ({

@@ -1,37 +1,48 @@
-import Config from 'react-native-config';
-import firebase from 'react-native-firebase';
+// https://github.com/medialize/URI.js
+const URI = require('urijs');
+const _ = require('lodash');
+// import URI from 'urijs';
+// import _ from 'lodash';
 
-export const protocols = ['shayr', 'https'];
+// run the below to test deeplinking
+// xcrun simctl openurl booted shayr://com.daviswhitehead.shayr.ios.dev/Feed?param=meow
+// online resources
+// // https://medium.com/react-native-training/deep-linking-your-react-native-app-d87c39a1ad5e
 
-export const dynamicLinkListener = linkHandler => firebase.links().onLink((url) => {
-  if (url) {
-    linkHandler(url);
-  }
-});
+// valid deeplink protocols
+const protocols = ['shayr', 'https'];
+// export const protocols = ['shayr', 'https'];
 
-export const getTestLink = async () => {
-  // https://rnfirebase.io/docs/v5.x.x/links/reference/DynamicLink
-  // https://rnfirebase.io/docs/v5.x.x/links/reference/AndroidParameters
-  // https://rnfirebase.io/docs/v5.x.x/links/reference/IOSParameters
-  const link = new firebase.links.DynamicLink(
-    'https://com.daviswhitehead.shayr.ios.dev/hw',
-    'shayrdev.page.link',
-  ).android
-    .setPackageName(`${Config.APP_ID_ANDROID}${Config.APP_ID_SUFFIX_ANDROID}`)
-    // .ios.setAppStoreId(Config.APP_BUNDLE_ID_IOS)
-    .ios.setBundleId(Config.APP_BUNDLE_ID_IOS);
-  // .ios.setCustomScheme(Config.DYNAMIC_LINK_SCHEME);
-  // console.log(link);
+// takes an object and turns it into a URL query
+const objectToURLQuery = params => Object.keys(params)
+  .map(key => `${key}=${encodeURIComponent(params[key])}`)
+  .join('&');
 
-  const dynamicLink = await firebase
-    .links()
-    .createDynamicLink(link)
-    // .createShortDynamicLink(link, 'UNGUESSABLE')
-    .then(url => url)
-    .catch((error) => {
-      console.log(error);
-    });
-  // console.log(dynamicLink);
+// takes an app link URL and parses into protocol, hostname, screen, params
+const parseAppLink = (url) => {
+  // expects to find urls in the following format [protocol][hostname][path][query]
+  // format should map to [protocol][bundle_id][screen][screen params]
+  // // e.g. shayr://com.daviswhitehead.shayr.ios.dev/Feed?param=meow
+  // // protocol: shayr, hostname: com.daviswhitehead.shayr.ios.dev,
+  // // path: /Feed, query: param=meow
 
-  return dynamicLink;
+  const uri = new URI(url);
+  const params = uri._parts.query
+    ? _.fromPairs(Array.from(new URLSearchParams(uri._parts.query).entries()))
+    : {};
+  return {
+    url,
+    protocol: uri._parts.protocol,
+    hostname: uri._parts.hostname,
+    screen: uri._parts.path.replace('/', ''),
+    params,
+  };
 };
+
+// takes a desired screen and its paramaters and builds a link the app can handle
+const buildAppLink = (protocol = 'shayr', hostname = 'shayr', screen, params) => `${protocol}://${hostname}/${screen}?${objectToURLQuery(params)}`;
+
+exports.protocols = protocols;
+exports.objectToURLQuery = objectToURLQuery;
+exports.parseAppLink = parseAppLink;
+exports.buildAppLink = buildAppLink;

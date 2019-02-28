@@ -20,8 +20,6 @@ import Header from '../../components/Header';
 import colors from '../../styles/Colors';
 import { subscribeToSelf, subscribeToFriendships } from '../../redux/users/actions';
 import { subscribeNotificationTokenRefresh } from '../../redux/notifications/actions';
-import { getTestLink } from '../../lib/DeepLinks';
-import NavigationService from '../../lib/NavigationService';
 import { navigateToRoute } from '../../redux/routing/actions';
 
 const mapStateToProps = state => ({
@@ -92,24 +90,6 @@ class Feed extends Component {
 
     // FEED - Listen to feed specific posts
     this.subscriptions.push(await this.props.loadPosts(this.props.auth.user.uid, 'feed'));
-    const testLink = await getTestLink();
-    // NavigationService.navigate('HelloWorld');
-    // console.log(NavigationService);
-
-    // console.log(testLink);
-
-    // this.props.navigation.navigate('HelloWorld');
-    // this.props.navigation.navigate('shayrdev://hw');
-    // this.props.navigation.navigate('shayrdev://post');
-
-    // Linking.openURL('shayrdev://hw');
-    // Linking.openURL('shayrdev://post');
-    // Linking.openURL('asjdklfkajlsdkfjlk');
-    // Linking.openURL(testLink);
-    // console.log(this.props.routing.routePath);
-    // if (this.props.routing.routePath) {
-    //   Linking.openURL(this.props.routing.routePath);
-    // }
   }
 
   componentWillUnmount() {

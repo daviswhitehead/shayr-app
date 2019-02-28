@@ -16,7 +16,8 @@
     "firebase-admin": "^6.5.1",
     "firebase-functions": "^2.1.0",
     "lodash": "^4.17.5",
-    "open-graph-scraper": "^3.1.5"
+    "open-graph-scraper": "^3.1.5",
+    "urijs": "^1.19.1"
   },
   "devDependencies": {
     "babel-eslint": "^10.0.1",
