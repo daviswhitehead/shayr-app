@@ -8,10 +8,16 @@ export const dynamicLinkListener = linkHandler => firebase.links().onLink((url) 
   }
 });
 
-export const getTestLink = async (screen = 'Feed', params = {}) => {
+export const getTestLink = async (screen = '', params = {}) => {
   // https://rnfirebase.io/docs/v5.x.x/links/reference/DynamicLink
   // https://rnfirebase.io/docs/v5.x.x/links/reference/AndroidParameters
   // https://rnfirebase.io/docs/v5.x.x/links/reference/IOSParameters
+
+  // import { Linking } from 'react-native';
+  // import { getTestLink } from '../../lib/FirebaseDynamicLinks';
+  // const test = await getTestLink('HelloWorld');
+  // console.log(test);
+  // Linking.openURL(test);
 
   const appLink = Platform.OS === 'ios'
     ? `https://${Config.APP_BUNDLE_ID_IOS}/${screen}?${params}`

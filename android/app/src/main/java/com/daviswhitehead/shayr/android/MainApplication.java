@@ -7,6 +7,7 @@ import java.util.List;
 
 // React Native
 import com.facebook.react.ReactApplication;
+import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
 import org.devio.rn.splashscreen.SplashScreenReactPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
@@ -27,9 +28,9 @@ import io.invertase.firebase.auth.RNFirebaseAuthPackage;
 // // Cloud Storage
 // import io.invertase.firebase.storage.RNFirebaseStoragePackage;
 // // Invites
-// import io.invertase.firebase.invites.RNFirebaseInvitesPackage;
+import io.invertase.firebase.invites.RNFirebaseInvitesPackage;
 // // Dynamic Links
-// import io.invertase.firebase.links.RNFirebaseLinksPackage;
+import io.invertase.firebase.links.RNFirebaseLinksPackage;
 // // Cloud Firestore
 import io.invertase.firebase.firestore.RNFirebaseFirestorePackage;
 // // Cloud Messaging / FCM
@@ -74,21 +75,12 @@ public class MainApplication extends Application implements ReactApplication {
 
     @Override
     protected List<ReactPackage> getPackages() {
-      return Arrays.<ReactPackage>asList(
-          new MainReactPackage(),
-            new SplashScreenReactPackage(),
-            new ReactNativeConfigPackage(),
-            new VectorIconsPackage(),
-            new RNSKPackage(),
-            new SharePackage(),
-            new RNFirebasePackage(),
-            new RNFirebaseAuthPackage(),
-            new RNFirebaseFirestorePackage(),
-            new RNFirebaseCrashlyticsPackage(),
-            new RNFirebaseMessagingPackage(),
-            new RNFirebaseNotificationsPackage(),
-            new FBSDKPackage(mCallbackManager)
-      );
+      return Arrays.<ReactPackage>asList(new MainReactPackage(),
+            new RNGestureHandlerPackage(), new SplashScreenReactPackage(),
+          new ReactNativeConfigPackage(), new VectorIconsPackage(), new RNSKPackage(), new SharePackage(),
+          new RNFirebasePackage(), new RNFirebaseAuthPackage(), new RNFirebaseFirestorePackage(),
+          new RNFirebaseCrashlyticsPackage(), new RNFirebaseMessagingPackage(), new RNFirebaseNotificationsPackage(),
+          new RNFirebaseLinksPackage(), new RNFirebaseInvitesPackage(), new FBSDKPackage(mCallbackManager));
     }
 
     @Override

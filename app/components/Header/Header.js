@@ -14,6 +14,8 @@ class Header extends Component {
     title: PropTypes.string.isRequired,
     shadow: PropTypes.bool,
     back: PropTypes.func,
+    statusBarTranslucent: PropTypes.bool,
+    statusBarHidden: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -33,7 +35,8 @@ class Header extends Component {
         }}
       >
         <ShayrStatusBar
-          translucent
+          translucent={this.props.statusBarTranslucent || true}
+          hidden={this.props.statusBarHidden || false}
           barStyle={this.props.statusBarStyle}
           backgroundColor={this.props.backgroundColor}
         />

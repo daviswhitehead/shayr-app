@@ -13,7 +13,6 @@ import { createShare } from '../../lib/FirebaseHelpers';
 export default class MyComponent extends Component {
   constructor() {
     super();
-    console.log('JAVASCRIPT LOADED');
     this.state = {
       modalVisible: true,
       shareText: 'Shayring...',

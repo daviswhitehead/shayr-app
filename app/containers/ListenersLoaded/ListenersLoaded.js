@@ -15,6 +15,7 @@ class ListenersLoaded extends React.Component {
 
   constructor(props) {
     super(props);
+    // this.props.navigation.navigate('Auth');
     this.props.navigation.navigate(this.props.auth.isAuthenticated ? 'App' : 'Auth');
   }
 

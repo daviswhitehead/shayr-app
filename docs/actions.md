@@ -95,10 +95,6 @@ LAST_POST
         friendships: null,
         friends: null,
         error: null,
-    }
-    postDetails: {
-        post: null,
-        error: null,
     },
     posts: {
         feedPosts: null,
@@ -107,6 +103,7 @@ LAST_POST
         queueLastPost: null,
         feedRefreshing: false,
         queueRefreshing: false,
+        postDetail: null,
         error: null,
     }
 }

@@ -6,7 +6,6 @@ const initialState = {
   hostname: null,
   screen: null,
   params: {},
-  eventType: null,
   error: null,
 };
 
@@ -21,12 +20,6 @@ function routingReducer(state = initialState, action) {
 
   // Case Handling
   switch (action.type) {
-    case types.DEEP_LINK_LAUNCHED: {
-      return {
-        ...state,
-        eventType: action.eventType,
-      };
-    }
     case types.ROUTE_ADDED: {
       return {
         ...state,

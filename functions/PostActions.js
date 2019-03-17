@@ -1,8 +1,8 @@
-const _ = require("lodash");
-const utility = require("./Utility");
-const counters = require("./Counters");
-const atoms = require("./Atoms");
-const notifications = require("./Notifications");
+const _ = require('lodash');
+const utility = require('./Utility');
+const counters = require('./Counters');
+const atoms = require('./Atoms');
+const notifications = require('./Notifications');
 
 const createUserPostPayload = async (
   db,
@@ -59,10 +59,10 @@ const sharedActionResources = async (db, change, context) => {
   );
   let friends = await utility.getDocumentsInCollection(
     db
-      .collection("friends")
-      .where("userIds", "array-contains", afterData.userId)
-      .where("status", "==", "accepted"),
-    "friends"
+      .collection('friends')
+      .where('userIds', 'array-contains', afterData.userId)
+      .where('status', '==', 'accepted'),
+    'friends'
   );
   friends = utility.organizeFriends(afterData.userId, friends);
 
@@ -81,7 +81,7 @@ const sharedActionWrites = async (db, resources, action) => {
 
   // if active changed
   if (resources.afterData.active !== resources.beforeData.active) {
-    console.log("write Post with new count");
+    console.log('write Post with new count');
     batch.set(
       db.doc(`posts/${resources.post.id}`),
       await counters.getUpdatedCount(
@@ -94,9 +94,9 @@ const sharedActionWrites = async (db, resources, action) => {
     );
   }
 
-  console.log("write Post to users_posts for self and friends");
+  console.log('write Post to users_posts for self and friends');
   console.log(
-    "update array of users sharing the matching Posts in users_posts object"
+    'update array of users sharing the matching Posts in users_posts object'
   );
   const postAtom = atoms.createPostAtom(resources.post);
 
@@ -133,7 +133,7 @@ exports._onWriteAdd = async (db, change, context) => {
   // "adds/{addId}" where addId equals `${userId}_${postId}`
   const resources = await sharedActionResources(db, change, context);
 
-  return sharedActionWrites(db, resources, "add");
+  return sharedActionWrites(db, resources, 'add');
 };
 
 // onWriteDone({before: {}, after: {active: true, createdAt: null, postId: "JA81g0b9mPUp8FmchL9M", updatedAt: null, url: "https://hackernoon.com/5-tips-for-building-effective-product-management-teams-c320ce54a4bb", userId: "0"}}, {params: {doneId: "0_JA81g0b9mPUp8FmchL9M"}})
@@ -141,18 +141,18 @@ exports._onWriteDone = async (db, change, context) => {
   // "dones/{doneId}" where doneId equals `${userId}_${postId}`
   const resources = await sharedActionResources(db, change, context);
 
-  return sharedActionWrites(db, resources, "done")
+  return sharedActionWrites(db, resources, 'done')
     .then(value => {
       if (resources.newAction) {
-        console.log("send a notification to friends");
+        console.log('send a notification to friends');
         return notifications.sendNewDonePushNotificationToFriends(resources);
       } else {
-        console.log("not sending notification due to old action");
+        console.log('not sending notification due to old action');
         return value;
       }
     })
     .then(value => {
-      console.log("success");
+      console.log('success');
       return value;
     })
     .catch(e => {
@@ -166,18 +166,18 @@ exports._onWriteLike = async (db, change, context) => {
   // "likes/{likeId}" where likeId equals `${userId}_${postId}`
   const resources = await sharedActionResources(db, change, context);
 
-  return sharedActionWrites(db, resources, "like")
+  return sharedActionWrites(db, resources, 'like')
     .then(value => {
       if (resources.newAction) {
-        console.log("send a notification to friends");
+        console.log('send a notification to friends');
         return notifications.sendNewLikePushNotificationToFriends(resources);
       } else {
-        console.log("not sending notification due to old action");
+        console.log('not sending notification due to old action');
         return value;
       }
     })
     .then(value => {
-      console.log("success");
+      console.log('success');
       return value;
     })
     .catch(e => {
@@ -191,18 +191,18 @@ exports._onWriteShare = async (db, change, context) => {
   // "shares/{shareId}" where shareId equals `${userId}_${postId}`
   const resources = await sharedActionResources(db, change, context);
 
-  return sharedActionWrites(db, resources, "share")
+  return sharedActionWrites(db, resources, 'share')
     .then(value => {
       if (resources.newAction) {
-        console.log("send a notification to friends");
+        console.log('send a notification to friends');
         return notifications.sendNewSharePushNotificationToFriends(resources);
       } else {
-        console.log("not sending notification due to old action");
+        console.log('not sending notification due to old action');
         return value;
       }
     })
     .then(value => {
-      console.log("success");
+      console.log('success');
       return value;
     })
     .catch(e => {

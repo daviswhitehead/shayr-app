@@ -43,8 +43,6 @@ export default StyleSheet.create({
   },
   imageBox: {
     padding: layout.PADDING_MEDIUM,
-    borderColor: 'blue',
-    borderWidth: 5,
   },
   image: {
     width: 100,
@@ -57,15 +55,11 @@ export default StyleSheet.create({
     justifyContent: 'flex-start',
     backgroundColor: 'white',
     padding: layout.PADDING_MEDIUM,
-    borderColor: 'blue',
-    borderWidth: 5,
   },
   textBox: {
     flex: 100,
     flexDirection: 'column',
     backgroundColor: 'white',
-    borderColor: 'blue',
-    borderWidth: 5,
   },
   titleText: {
     ...fonts.BOLD,
@@ -81,8 +75,6 @@ export default StyleSheet.create({
     // justifyContent: 'space-between',
     justifyContent: 'flex-start',
     alignContent: 'center',
-    borderColor: 'red',
-    borderWidth: 5,
   },
   action: {
     padding: layout.PADDING_MEDIUM,

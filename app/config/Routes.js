@@ -20,12 +20,18 @@ const AppStack = createStackNavigator(
   {
     Feed: {
       screen: Feed,
+      navigationOptions: () => ({
+        header: null,
+      }),
     },
     Queue: {
       screen: Queue,
     },
     PostDetail: {
       screen: PostDetail,
+      navigationOptions: () => ({
+        header: null,
+      }),
     },
     HelloWorld: {
       screen: HelloWorld,

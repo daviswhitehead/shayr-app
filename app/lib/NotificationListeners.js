@@ -25,8 +25,13 @@ export const notificationListener = () => firebase.notifications().onNotificatio
   firebase.notifications().removeDeliveredNotification(localNotification.notificationId);
 });
 
-export const notificationOpenedListener = () => firebase.notifications().onNotificationOpened((notificationOpen) => {
+export const notificationOpenedListener = handleRouting => firebase.notifications().onNotificationOpened((notificationOpen) => {
   const { action, notification } = notificationOpen;
+  if (notification.data.appLink) {
+    handleRouting(notification.data.appLink);
+  }
+  console.log(action);
+  console.log(notification);
 
   firebase.notifications().removeDeliveredNotification(notification.notificationId);
 });

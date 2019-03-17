@@ -10,7 +10,7 @@ import {
 } from '../../lib/NotificationListeners';
 import { notificationChannels } from '../../lib/NotificationChannels';
 import { authSubscription, hasAccessToken, areListenersReady } from '../../redux/auth/actions';
-import { handleDeepLink } from '../../redux/routing/actions';
+import { handleURLRoute } from '../../redux/routing/actions';
 import RootNavigator from '../../config/Routes';
 import AppLoading from '../../components/AppLoading';
 import { dynamicLinkListener } from '../../lib/FirebaseDynamicLinks';
@@ -24,7 +24,7 @@ const mapDispatchToProps = dispatch => ({
   authSubscription: () => dispatch(authSubscription()),
   hasAccessToken: () => dispatch(hasAccessToken()),
   areListenersReady: areReady => dispatch(areListenersReady(areReady)),
-  handleDeepLink: (url, eventType) => dispatch(handleDeepLink(url, eventType)),
+  handleURLRoute: url => dispatch(handleURLRoute(url)),
 });
 
 class AppWithListeners extends Component {
@@ -33,7 +33,7 @@ class AppWithListeners extends Component {
     authSubscription: PropTypes.func.isRequired,
     hasAccessToken: PropTypes.func.isRequired,
     areListenersReady: PropTypes.func.isRequired,
-    handleDeepLink: PropTypes.func.isRequired,
+    handleURLRoute: PropTypes.func.isRequired,
   };
 
   async componentDidMount() {
@@ -52,34 +52,38 @@ class AppWithListeners extends Component {
     // start notification listeners
     this.notificationDisplayedListener = notificationDisplayedListener();
     this.notificationListener = notificationListener();
-    this.notificationOpenedListener = notificationOpenedListener();
+    this.notificationOpenedListener = notificationOpenedListener(this.props.handleURLRoute);
 
     // app launched by notification tap
     const notificationOpen = await firebase.notifications().getInitialNotification();
     if (notificationOpen) {
       const { action, notification } = notificationOpen;
+
+      // this.props.handleURLRoute(notification.)
+
       firebase.notifications().removeDeliveredNotification(notification.notificationId);
     }
 
     // start deep link listeners
-    this.dynamicLinkListener = dynamicLinkListener(this.props.handleDeepLink);
-    Linking.addEventListener('url', this.props.handleDeepLink);
+    this.dynamicLinkListener = dynamicLinkListener(this.props.handleURLRoute); // Firebase link
+    Linking.addEventListener('url', this.props.handleURLRoute); // App link
 
     // app launched with deep link
     const dynamicLink = await firebase.links().getInitialLink(); // Firebase link
     if (dynamicLink) {
-      this.props.handleDeepLink(dynamicLink, 'launch');
+      this.props.handleURLRoute(dynamicLink);
     }
     const deepLink = await Linking.getInitialURL(); // App link
     if (deepLink) {
-      this.props.handleDeepLink(deepLink, 'launch');
+      this.props.handleURLRoute(deepLink);
     }
+
     this.props.areListenersReady(true);
   }
 
   componentWillUnmount() {
     AppState.removeEventListener('change', this.handleAppStateChange);
-    Linking.removeEventListener('url', this.props.handleDeepLink);
+    Linking.removeEventListener('url', this.props.handleURLRoute);
     this.unsubscribeAuthListener();
     this.notificationDisplayedListener();
     this.notificationListener();

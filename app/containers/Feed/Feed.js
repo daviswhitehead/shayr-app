@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Linking } from 'react-native';
+import { View, Text } from 'react-native';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { subscribe } from 'redux-subscriber';
@@ -8,19 +8,16 @@ import DynamicActionButton from '../../components/DynamicActionButton';
 import List from '../../components/List';
 import ContentCard from '../../components/ContentCard';
 import {
-  loadPosts,
-  paginatePosts,
-  refreshPosts,
-  flattenPosts,
-} from '../../redux/posts/PostsActions';
+  loadPosts, paginatePosts, refreshPosts, flattenPosts,
+} from '../../redux/posts/actions';
 import { postAction } from '../../redux/postActions/actions';
 import { startSignOut } from '../../redux/auth/actions';
-import { postDetailView } from '../PostDetail/actions';
 import Header from '../../components/Header';
 import colors from '../../styles/Colors';
 import { subscribeToSelf, subscribeToFriendships } from '../../redux/users/actions';
 import { subscribeNotificationTokenRefresh } from '../../redux/notifications/actions';
-import { navigateToRoute } from '../../redux/routing/actions';
+import { handleURLRoute, navigateToRoute } from '../../redux/routing/actions';
+import { buildAppLink } from '../../lib/DeepLinks';
 
 const mapStateToProps = state => ({
   auth: state.auth,
@@ -30,7 +27,6 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  postDetailView: post => dispatch(postDetailView(post)),
   loadPosts: (userId, query) => dispatch(loadPosts(userId, query)),
   paginatePosts: (userId, query, lastPost) => dispatch(paginatePosts(userId, query, lastPost)),
   refreshPosts: (userId, query) => dispatch(refreshPosts(userId, query)),
@@ -40,6 +36,7 @@ const mapDispatchToProps = dispatch => ({
   subscribeToFriendships: userId => dispatch(subscribeToFriendships(userId)),
   subscribeNotificationTokenRefresh: userId => dispatch(subscribeNotificationTokenRefresh(userId)),
   navigateToRoute: payload => dispatch(navigateToRoute(payload)),
+  handleURLRoute: payload => dispatch(handleURLRoute(payload)),
 });
 
 class Feed extends Component {
@@ -53,12 +50,6 @@ class Feed extends Component {
     subscribeNotificationTokenRefresh: PropTypes.func.isRequired,
     navigateToRoute: PropTypes.func.isRequired,
   };
-
-  static navigationOptions = ({ navigation }) => ({
-    header: (
-      <Header backgroundColor={colors.YELLOW} statusBarStyle="dark-content" shadow title="feed" />
-    ),
-  });
 
   constructor() {
     super();
@@ -98,37 +89,40 @@ class Feed extends Component {
     });
   }
 
-  renderItem = item => (
-    <ContentCard
-      payload={item}
-      friends={{
-        ...this.props.users.self,
-        ...this.props.users.friends,
-      }}
-      // onTap={() => openURL(item.url)}
-      onTap={() => this.props.postDetailView(item)}
-      shareAction={{
-        actionCount: item.shareCount,
-        actionUser: item.shares ? item.shares.includes(this.props.auth.user.uid) : false,
-        onPress: () => this.props.postAction('share', this.props.auth.user.uid, item.postId),
-      }}
-      addAction={{
-        actionCount: item.addCount,
-        actionUser: item.adds ? item.adds.includes(this.props.auth.user.uid) : false,
-        onPress: () => this.props.postAction('add', this.props.auth.user.uid, item.postId),
-      }}
-      doneAction={{
-        actionCount: item.doneCount,
-        actionUser: item.dones ? item.dones.includes(this.props.auth.user.uid) : false,
-        onPress: () => this.props.postAction('done', this.props.auth.user.uid, item.postId),
-      }}
-      likeAction={{
-        actionCount: item.likeCount,
-        actionUser: item.likes ? item.likes.includes(this.props.auth.user.uid) : false,
-        onPress: () => this.props.postAction('like', this.props.auth.user.uid, item.postId),
-      }}
-    />
-  );
+  renderItem = (item) => {
+    const routeURL = buildAppLink('shayr', 'shayr', 'PostDetail', { id: item.postId });
+
+    return (
+      <ContentCard
+        payload={item}
+        friends={{
+          ...this.props.users.self,
+          ...this.props.users.friends,
+        }}
+        onTap={() => this.props.handleURLRoute(routeURL)}
+        shareAction={{
+          actionCount: item.shareCount,
+          actionUser: item.shares ? item.shares.includes(this.props.auth.user.uid) : false,
+          onPress: () => this.props.postAction('share', this.props.auth.user.uid, item.postId),
+        }}
+        addAction={{
+          actionCount: item.addCount,
+          actionUser: item.adds ? item.adds.includes(this.props.auth.user.uid) : false,
+          onPress: () => this.props.postAction('add', this.props.auth.user.uid, item.postId),
+        }}
+        doneAction={{
+          actionCount: item.doneCount,
+          actionUser: item.dones ? item.dones.includes(this.props.auth.user.uid) : false,
+          onPress: () => this.props.postAction('done', this.props.auth.user.uid, item.postId),
+        }}
+        likeAction={{
+          actionCount: item.likeCount,
+          actionUser: item.likes ? item.likes.includes(this.props.auth.user.uid) : false,
+          onPress: () => this.props.postAction('like', this.props.auth.user.uid, item.postId),
+        }}
+      />
+    );
+  };
 
   paginate = () => {
     const unsubscribe = this.props.paginatePosts(
@@ -170,24 +164,15 @@ class Feed extends Component {
 
   render() {
     return (
-      <View style={styles.container}>
-        <this.loading />
-        <DynamicActionButton logout={this.signOut} feed={false} />
+      <View style={styles.screen}>
+        <Header backgroundColor={colors.YELLOW} statusBarStyle="dark-content" shadow title="feed" />
+        <View style={styles.container}>
+          <this.loading />
+          <DynamicActionButton logout={this.signOut} feed={false} />
+        </View>
       </View>
     );
   }
-  // render() {
-  //   return (
-  //     <View style={styles.container}>
-  //       <this.loading />
-  //       <DynamicActionButton
-  //         logout={this._signOut}
-  //         feed={false}
-  //         queue={this.props.navigation.navigate('Queue')}
-  //       />
-  //     </View>
-  //   );
-  // }
 }
 
 export default connect(

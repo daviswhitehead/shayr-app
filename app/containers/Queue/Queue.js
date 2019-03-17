@@ -18,7 +18,7 @@ import {
   paginatePosts,
   refreshPosts,
   flattenPosts
-} from "../../redux/posts/PostsActions";
+} from "../../redux/posts/actions";
 import { postAction } from '../../redux/postActions/actions';
 import { signOutUser } from '../../redux/auth/actions';
 

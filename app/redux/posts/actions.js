@@ -10,6 +10,7 @@ export const types = {
   PAGINATE_POSTS_FAIL: 'PAGINATE_POSTS_FAIL',
   REFRESH: 'REFRESH',
   LAST_POST: 'LAST_POST',
+  RESET_POST_DETAIL: 'RESET_POST_DETAIL',
 };
 
 // Helper Functions
@@ -106,9 +107,38 @@ const nextPosts = (dispatch, userId, query, lastPost) => {
     );
 };
 
-// Action Creators
 export const loadPosts = (userId, query) => function _loadPosts(dispatch) {
   return firstPosts(dispatch, userId, query);
+};
+
+export const loadPostDetails = (userId, postId) => function _loadPostDetails(dispatch) {
+  dispatch({ type: types.LOAD_POSTS_START });
+
+  return firebase
+    .firestore()
+    .collection('users_posts')
+    .where('userId', '==', userId)
+    .where('postId', '==', postId)
+    .onSnapshot(
+      (querySnapshot) => {
+        const post = {};
+        querySnapshot.forEach((doc) => {
+          post[doc.id] = doc.data();
+        });
+        dispatch({
+          type: types.LOAD_POSTS_SUCCESS,
+          payload: post,
+          query: 'postDetail',
+        });
+      },
+      (e) => {
+        console.error(e);
+        dispatch({
+          type: types.LOAD_POSTS_FAIL,
+          error: e,
+        });
+      },
+    );
 };
 
 export const paginatePosts = (userId, query, lastPost) => function _paginatePosts(dispatch) {
@@ -131,3 +161,7 @@ export const flattenPosts = (posts) => {
 
   return data;
 };
+
+export const resetPostDetail = () => ({
+  type: types.RESET_POST_DETAIL,
+});

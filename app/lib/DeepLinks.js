@@ -5,13 +5,15 @@ const _ = require('lodash');
 // import _ from 'lodash';
 
 // run the below to test deeplinking
-// xcrun simctl openurl booted shayr://com.daviswhitehead.shayr.ios.dev/Feed?param=meow
+// // iOS: xcrun simctl openurl booted shayr://com.daviswhitehead.shayr.ios.dev/Feed?param=meow
+// // Android: adb shell am start -W -a android.intent.action.VIEW -d "shayr://com.daviswhitehead.shayr.android.dev/HelloWorld?param=meow" com.daviswhitehead.shayr.android.dev
 // online resources
 // // https://medium.com/react-native-training/deep-linking-your-react-native-app-d87c39a1ad5e
+// // https://reactnavigation.org/docs/en/deep-linking.html#set-up-with-react-native-init-projects
+// // https://facebook.github.io/react-native/docs/linking
 
 // valid deeplink protocols
 const protocols = ['shayr', 'https'];
-// export const protocols = ['shayr', 'https'];
 
 // takes an object and turns it into a URL query
 const objectToURLQuery = params => Object.keys(params)

@@ -5,6 +5,12 @@ import layout from '../../styles/Layout';
 import { fontSystem } from '../../styles/Fonts';
 
 export default StyleSheet.create({
+  screen: {
+    flex: 1,
+    flexDirection: 'column',
+    alignItems: 'stretch',
+    justifyContent: 'flex-start',
+  },
   container: {
     flex: 1,
     flexDirection: 'column',

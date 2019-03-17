@@ -9,7 +9,7 @@ export const types = {
   POST_ACTION_FAIL: 'POST_ACTION_FAIL',
 };
 
-export const postAction = (actionType, userId, postId) => function (dispatch) {
+export const postAction = (actionType, userId, postId) => function _postAction(dispatch) {
   dispatch({
     type: types.POST_ACTION_START,
     payload: actionType,

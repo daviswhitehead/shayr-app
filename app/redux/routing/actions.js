@@ -2,27 +2,17 @@ import { protocols, parseAppLink } from '../../lib/DeepLinks';
 import NavigationService from '../../lib/NavigationService';
 
 export const types = {
-  DEEP_LINK_LAUNCHED: 'DEEP_LINK_LAUNCHED',
   ROUTE_ADDED: 'ROUTE_ADDED',
   ROUTE_REMOVED: 'ROUTE_REMOVED',
 };
-
-export const addRoute = payload => ({
-  type: types.ROUTE_ADDED,
-  url: payload.url,
-  screen: payload.screen,
-  params: payload.params,
-});
 
 export function navigateToRoute(payload) {
   NavigationService.navigate(payload.screen, payload.params);
   return { type: types.ROUTE_REMOVED };
 }
 
-export function handleDeepLink(payload, eventType = 'inapp') {
-  return function _handleDeepLink(dispatch) {
-    dispatch({ type: types.DEEP_LINK_LAUNCHED, eventType });
-
+export function handleURLRoute(payload) {
+  return function _handleURLRoute(dispatch) {
     let url;
     if (payload) {
       url = payload.url ? payload.url : payload;
@@ -31,11 +21,12 @@ export function handleDeepLink(payload, eventType = 'inapp') {
     const appLink = parseAppLink(url);
 
     if (protocols.includes(appLink.protocol)) {
-      dispatch(
-        addRoute({
-          ...appLink,
-        }),
-      );
+      dispatch({
+        type: types.ROUTE_ADDED,
+        url: appLink.url,
+        screen: appLink.screen,
+        params: appLink.params,
+      });
     }
   };
 }

@@ -204,7 +204,7 @@ dependencies {
     // // // Invites
     implementation "com.google.firebase:firebase-invites:16.0.4"
     // // // Dynamic Links
-    // implementation "com.google.firebase:firebase-dynamic-links:16.1.2"
+    implementation "com.google.firebase:firebase-dynamic-links:16.1.2"
     // // // Cloud Firestore
     implementation "com.google.firebase:firebase-firestore:17.1.2"
     // // // Cloud Messaging / FCM

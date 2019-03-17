@@ -1,7 +1,7 @@
 import firebase from 'react-native-firebase';
 import { getFBToken, logoutFB } from '../../lib/FacebookLogin';
 import { getCurrentUser, signOut, getFBAuthCredential } from '../../lib/FirebaseLogin';
-import { storeToken, retrieveToken } from '../../lib/AppGroupTokens';
+import { saveToken, retrieveToken } from '../../lib/AppGroupTokens';
 import { ts } from '../../lib/FirebaseHelpers';
 import { requestNotificationPermissionsRedux } from '../notifications/actions';
 
@@ -63,11 +63,12 @@ export function authSubscription() {
 
 // TOKEN
 export function hasAccessToken() {
-  const token = retrieveToken('accessToken');
-
-  return {
-    type: types.ACCESS_TOKEN_STATUS,
-    hasAccessToken: !!token,
+  return async function _hasAccessToken(dispatch) {
+    const token = await retrieveToken('accessToken');
+    dispatch({
+      type: types.ACCESS_TOKEN_STATUS,
+      hasAccessToken: !!token,
+    });
   };
 }
 
@@ -132,7 +133,7 @@ export function facebookAuth(error, result) {
       const tokenData = await getFBToken(error, result);
       dispatch({ type: types.FACEBOOK_AUTH_SUCCESS });
 
-      storeToken('accessToken', tokenData.accessToken);
+      saveToken('accessToken', tokenData.accessToken);
       dispatch({ type: types.ACCESS_TOKEN_SAVED, hasAccessToken: true });
 
       dispatch({ type: types.FACEBOOK_CREDENTIAL_START });
@@ -147,7 +148,7 @@ export function facebookAuth(error, result) {
       await saveUser(currentUser.user, currentUser.additionalUserInfo.profile);
       dispatch({ type: types.SAVE_USER_SUCCESS });
 
-      await requestNotificationPermissionsRedux(dispatch);
+      await requestNotificationPermissionsRedux(currentUser.user.uid, dispatch);
     } catch (e) {
       console.error(e);
       dispatch({

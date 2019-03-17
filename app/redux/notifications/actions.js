@@ -8,67 +8,45 @@ export const types = {
   NOTIFICATION_PERMISSIONS_REQUEST_SUCCESS: 'NOTIFICATION_PERMISSIONS_REQUEST_SUCCESS',
   NOTIFICATION_PERMISSIONS_REQUEST_FAIL: 'NOTIFICATION_PERMISSIONS_REQUEST_FAIL',
 
-  // HANDLING
-  NOTIFICATION_TAPPED: 'NOTIFICATION_TAPPED',
-  NOTIFICATION_NAVIGATION_PROCESSED: 'NOTIFICATION_NAVIGATION_PROCESSED',
-  NOTIFICATION_SUCCESS: 'NOTIFICATION_SUCCESS',
-  NOTIFICATION_FAIL: 'NOTIFICATION_FAIL',
-
   // NOTIFICATION TOKEN REFRESH
   SUBSCRIBE_NOTIFICATION_TOKEN_REFRESH_START: 'SUBSCRIBE_NOTIFICATION_TOKEN_REFRESH_START',
   SUBSCRIBE_NOTIFICATION_TOKEN_REFRESH_SUCCESS: 'SUBSCRIBE_NOTIFICATION_TOKEN_REFRESH_SUCCESS',
   SUBSCRIBE_NOTIFICATION_TOKEN_REFRESH_FAIL: 'SUBSCRIBE_NOTIFICATION_TOKEN_REFRESH_FAIL',
 };
 
+const saveNotificationToken = async (userId, token) => {
+  const didTokenUpdate = await firebase
+    .firestore()
+    .collection('users')
+    .doc(userId)
+    .update({ pushToken: token, updatedAt: ts })
+    .then(() => true)
+    .catch((error) => {
+      console.error(error);
+      return false;
+    });
+  return didTokenUpdate;
+};
+
 // PERMISSIONS
-export const requestNotificationPermissionsRedux = async (dispatch) => {
+export const requestNotificationPermissionsRedux = async (userId, dispatch) => {
   dispatch({ type: types.NOTIFICATION_PERMISSIONS_REQUEST_START });
   const token = await requestNotificationPermissions();
 
   if (token) {
     dispatch({ type: types.NOTIFICATION_PERMISSIONS_REQUEST_SUCCESS });
+    saveNotificationToken(userId, token);
   } else {
     dispatch({ type: types.NOTIFICATION_PERMISSIONS_REQUEST_FAIL });
-  }
-};
-
-// HANDLING
-export const saveNotificationNavigation = async (dispatch, notification) => {
-  dispatch({ type: types.NOTIFICATION_TAPPED });
-
-  try {
-    if (notification.data.navigation === 'TRUE') {
-      dispatch({
-        type: types.NOTIFICATION_NAVIGATION_PROCESSED,
-        payload: notification.data.postId,
-      });
-    }
-
-    dispatch({ type: types.NOTIFICATION_SUCCESS });
-  } catch (error) {
-    dispatch({
-      type: types.NOTIFICATION_FAIL,
-      error,
-    });
   }
 };
 
 // NOTIFICATION TOKEN REFRESH
 export const subscribeNotificationTokenRefresh = userId => function _subscribeNotificationTokenRefresh(dispatch) {
   dispatch({ type: types.SUBSCRIBE_NOTIFICATION_TOKEN_REFRESH_START });
+  requestNotificationPermissionsRedux(userId, dispatch);
 
-  return firebase.messaging().onTokenRefresh(notificationToken => firebase
-    .firestore()
-    .collection('users')
-    .doc(userId)
-    .update({ pushToken: notificationToken, updatedAt: ts })
-    .then(() => {
-      dispatch({ type: types.SUBSCRIBE_NOTIFICATION_TOKEN_REFRESH_SUCCESS });
-      return true;
-    })
-    .catch((error) => {
-      console.error(error);
-      dispatch({ type: types.SUBSCRIBE_NOTIFICATION_TOKEN_REFRESH_FAIL, error });
-      return false;
-    }));
+  return firebase
+    .messaging()
+    .onTokenRefresh(notificationToken => saveNotificationToken(userId, notificationToken));
 };

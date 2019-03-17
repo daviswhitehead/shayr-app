@@ -25,7 +25,6 @@ function appListenerReducer(state = initialState, action) {
         ...state,
         user: action.user,
         isAuthenticated: action.isAuthenticated,
-        authListenersGo: action.isAuthenticated,
         isSigningOut: action.isSigningOut,
       };
     }
