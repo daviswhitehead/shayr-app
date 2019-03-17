@@ -1,9 +1,9 @@
-const utility = require("./Utility");
-const _ = require("lodash");
+const _ = require('lodash');
+const utility = require('./Utility');
 
 exports.createPostAtom = (post, postId = false) => {
   return {
-    ..._.omit(post, "createdAt", "updatedAt", "id", "ref"),
+    ..._.omit(post, 'createdAt', 'updatedAt', 'id', 'ref'),
     postId: postId ? postId : post.id
   };
 };

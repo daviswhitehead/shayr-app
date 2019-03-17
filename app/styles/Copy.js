@@ -1,13 +1,13 @@
 export const actionTypeActiveToasts = {
   share: 'shayred',
   add: 'added',
-  done: 'checked',
+  done: 'marked as done',
   like: 'liked',
 };
 
 export const actionTypeInactiveToasts = {
   share: 'shayr removed',
   add: 'add removed',
-  done: 'check removed',
+  done: 'done removed',
   like: 'like removed',
 };

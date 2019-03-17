@@ -44,11 +44,18 @@ class Feed extends Component {
     auth: PropTypes.instanceOf(Object).isRequired,
     users: PropTypes.instanceOf(Object).isRequired,
     posts: PropTypes.instanceOf(Object).isRequired,
+    routing: PropTypes.instanceOf(Object).isRequired,
     navigation: PropTypes.instanceOf(Object).isRequired,
     subscribeToSelf: PropTypes.func.isRequired,
     subscribeToFriendships: PropTypes.func.isRequired,
     subscribeNotificationTokenRefresh: PropTypes.func.isRequired,
     navigateToRoute: PropTypes.func.isRequired,
+    loadPosts: PropTypes.func.isRequired,
+    handleURLRoute: PropTypes.func.isRequired,
+    postAction: PropTypes.func.isRequired,
+    paginatePosts: PropTypes.func.isRequired,
+    refreshPosts: PropTypes.func.isRequired,
+    startSignOut: PropTypes.func.isRequired,
   };
 
   constructor() {
@@ -57,6 +64,15 @@ class Feed extends Component {
   }
 
   async componentDidMount() {
+    // HOME - Listen to global datasets
+    this.subscriptions.push(await this.props.subscribeToSelf(this.props.auth.user.uid));
+    this.subscriptions.push(await this.props.subscribeToFriendships(this.props.auth.user.uid));
+
+    // HOME - Listen to notification token changes
+    this.subscriptions.push(
+      await this.props.subscribeNotificationTokenRefresh(this.props.auth.user.uid),
+    );
+
     // HOME - Respond to initial route and listen to routing updates
     if (this.props.routing.screen) {
       this.props.navigateToRoute(this.props.routing);
@@ -68,15 +84,6 @@ class Feed extends Component {
           this.props.navigateToRoute(state.routing);
         }
       }),
-    );
-
-    // HOME - Listen to global datasets
-    this.subscriptions.push(await this.props.subscribeToSelf(this.props.auth.user.uid));
-    this.subscriptions.push(await this.props.subscribeToFriendships(this.props.auth.user.uid));
-
-    // HOME - Listen to notification token changes
-    this.subscriptions.push(
-      await this.props.subscribeNotificationTokenRefresh(this.props.auth.user.uid),
     );
 
     // FEED - Listen to feed specific posts
@@ -168,7 +175,11 @@ class Feed extends Component {
         <Header backgroundColor={colors.YELLOW} statusBarStyle="dark-content" shadow title="feed" />
         <View style={styles.container}>
           <this.loading />
-          <DynamicActionButton logout={this.signOut} feed={false} />
+          <DynamicActionButton
+            logout={this.signOut}
+            feed={false}
+            queue={() => this.props.navigation.navigate('Queue')}
+          />
         </View>
       </View>
     );

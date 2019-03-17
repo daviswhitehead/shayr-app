@@ -6,7 +6,7 @@ const _ = require('lodash');
 
 // run the below to test deeplinking
 // // iOS: xcrun simctl openurl booted shayr://com.daviswhitehead.shayr.ios.dev/Feed?param=meow
-// // Android: adb shell am start -W -a android.intent.action.VIEW -d "shayr://com.daviswhitehead.shayr.android.dev/HelloWorld?param=meow" com.daviswhitehead.shayr.android.dev
+// // Android: adb shell am start -W -a android.intent.action.VIEW -d "shayr://shayr/HelloWorld?param=meow" com.daviswhitehead.shayr.android.dev
 // online resources
 // // https://medium.com/react-native-training/deep-linking-your-react-native-app-d87c39a1ad5e
 // // https://reactnavigation.org/docs/en/deep-linking.html#set-up-with-react-native-init-projects
@@ -42,7 +42,7 @@ const parseAppLink = (url) => {
 };
 
 // takes a desired screen and its paramaters and builds a link the app can handle
-const buildAppLink = (protocol = 'shayr', hostname = 'shayr', screen, params) => `${protocol}://${hostname}/${screen}?${objectToURLQuery(params)}`;
+const buildAppLink = (protocol, hostname, screen, params) => `${protocol}://${hostname}/${screen}?${objectToURLQuery(params)}`;
 
 exports.protocols = protocols;
 exports.objectToURLQuery = objectToURLQuery;

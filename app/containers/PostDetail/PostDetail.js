@@ -77,7 +77,7 @@ class PostDetail extends Component {
     Object.values(this.subscriptions).forEach((subscription) => {
       subscription();
     });
-    this.props.resetPostDetail()
+    this.props.resetPostDetail();
   }
 
   collectFeaturedProfiles = (users, userIds) => {

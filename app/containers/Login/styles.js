@@ -25,10 +25,12 @@ export default StyleSheet.create({
     fontWeight: '900',
     fontSize: 60,
     paddingTop: 20,
+    color: colors.BLACK,
   },
   tagline: {
     fontWeight: '100',
     fontSize: 25,
+    color: colors.DARK_GRAY,
   },
   loginContainer: {
     flex: 1,

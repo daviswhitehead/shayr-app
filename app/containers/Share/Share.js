@@ -1,6 +1,12 @@
 import React, { Component } from 'react';
 import {
-  Text, View, Modal, Image, TouchableOpacity, TouchableWithoutFeedback,
+  Text,
+  View,
+  Modal,
+  Image,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  Linking,
 } from 'react-native';
 import firebase from 'react-native-firebase';
 import ShareExtension from 'react-native-share-extension';
@@ -9,6 +15,20 @@ import shareExtensionLogo from '../../assets/ShareExtensionLogo.png';
 import { retrieveToken } from '../../lib/AppGroupTokens';
 import { getFBAuthCredential, getCurrentUser } from '../../lib/FirebaseLogin';
 import { createShare } from '../../lib/FirebaseHelpers';
+import { buildAppLink } from '../../lib/DeepLinks';
+
+const tapShareExtension = () => {
+  const url = buildAppLink('shayr', 'shayr', 'Feed', {});
+  Linking.canOpenURL(url)
+    .then((supported) => {
+      if (!supported) {
+        console.log(`Can't handle url: ${url}`);
+        return false;
+      }
+      return Linking.openURL(url);
+    })
+    .catch(err => console.error('An error occurred', err));
+};
 
 export default class MyComponent extends Component {
   constructor() {
@@ -98,7 +118,7 @@ export default class MyComponent extends Component {
           }}
         >
           <View style={styles.container}>
-            <TouchableOpacity onPress={() => {}} style={styles.modal}>
+            <TouchableOpacity onPress={() => tapShareExtension()} style={styles.modal}>
               <Image source={shareExtensionLogo} style={styles.logo} />
               <Text style={styles.text}>{this.state.shareText}</Text>
             </TouchableOpacity>

@@ -26,6 +26,9 @@ const AppStack = createStackNavigator(
     },
     Queue: {
       screen: Queue,
+      navigationOptions: () => ({
+        header: null,
+      }),
     },
     PostDetail: {
       screen: PostDetail,

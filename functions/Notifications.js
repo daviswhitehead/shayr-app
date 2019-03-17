@@ -2,11 +2,26 @@ const config = require('./Config');
 const utility = require('./Utility');
 const deepLinking = require('../app/lib/DeepLinks');
 
-const newShareNotification = (name, post) => {
-  const copy = {
-    title: 'New Shayr!',
-    body: `${name} wants you to check out "${post.title}"`
+const copyVariants = (type, name, post) => {
+  const variants = {
+    share: {
+      title: `New shayr from ${name}`,
+      body: `${name} wants you to check out "${post.title}"`
+    },
+    done: {
+      title: `${name} marked your shayr as done`,
+      body: `${name} finished checking out your shayr! Ask them how they liked it?`
+    },
+    like: {
+      title: `${name} liked your shayr`,
+      body: `${name} liked "${post.title}"`
+    }
   };
+  return variants[type];
+};
+
+const buildPostDetailNotification = (type, name, post) => {
+  const copy = copyVariants(type, name, post);
 
   const message = {
     notification: {
@@ -15,11 +30,7 @@ const newShareNotification = (name, post) => {
     data: {
       ...copy,
       channelId: 'General',
-      appLink: deepLinking.buildAppLink(
-        (protocol = 'shayr'),
-        (hostname = 'shayr'),
-        (screen = 'PostDetail'),
-        (params = { ...post })
+      appLink: deepLinking.buildAppLink('shayr', 'shayr', 'PostDetail', { ...post })
       )
     },
     android: {
@@ -39,69 +50,8 @@ const newShareNotification = (name, post) => {
   return message;
 };
 
-const newDoneNotification = (name, postTitle, postId) => {
-  const copy = {
-    title: 'New Done!',
-    body: `${name} finished checking out your shayr. Ask them what they think!`
-  };
-
-  const message = {
-    notification: {
-      ...copy
-    },
-    data: {
-      ...copy,
-      channelId: 'General'
-    },
-    android: {
-      priority: 'high'
-    },
-    apns: {
-      payload: {
-        aps: {
-          alert: {
-            ...copy
-          },
-          badge: 1
-        }
-      }
-    }
-  };
-  return message;
-};
-
-const newLikeNotification = (name, postTitle, postId) => {
-  const copy = {
-    title: 'New Like!',
-    body: `${name} liked your shayr`
-  };
-
-  const message = {
-    notification: {
-      ...copy
-    },
-    data: {
-      ...copy,
-      channelId: 'General'
-    },
-    android: {
-      priority: 'high'
-    },
-    apns: {
-      payload: {
-        aps: {
-          alert: {
-            ...copy
-          },
-          badge: 1
-        }
-      }
-    }
-  };
-  return message;
-};
-
-exports.sendNewSharePushNotificationToFriends = async resources => {
+exports.sendPostDetailNotificationToFriends = async (type, resources) => {
+  // support type(s): [share, done, like]
   var messages = [];
 
   for (var friendId in resources.friends) {
@@ -114,70 +64,19 @@ exports.sendNewSharePushNotificationToFriends = async resources => {
 
       if (friend && friend.pushToken) {
         console.log(
-          newShareNotification(resources.user.firstName, resources.post)
+          buildPostDetailNotification(
+            type,
+            resources.user.firstName,
+            resources.post
+          )
         );
 
         messages.push(
           config.msg.send({
-            ...newShareNotification(resources.user.firstName, resources.post),
-            token: friend.pushToken
-          })
-        );
-      }
-    }
-  }
-  console.log(messages);
-
-  return Promise.all(messages);
-};
-
-exports.sendNewDonePushNotificationToFriends = async resources => {
-  var messages = [];
-
-  for (var friendId in resources.friends) {
-    if (resources.friends.hasOwnProperty(friendId)) {
-      // eslint-disable-next-line no-await-in-loop
-      var friend = await utility.getDocument(
-        config.db.doc(`users/${resources.friends[friendId].friendUserId}`),
-        `users/${resources.friends[friendId].friendUserId}`
-      );
-
-      if (friend && friend.pushToken) {
-        messages.push(
-          config.msg.send({
-            ...newDoneNotification(
+            ...buildPostDetailNotification(
+              type,
               resources.user.firstName,
-              resources.post.title,
-              resources.post.id
-            ),
-            token: friend.pushToken
-          })
-        );
-      }
-    }
-  }
-
-  return Promise.all(messages);
-};
-
-exports.sendNewLikePushNotificationToFriends = async resources => {
-  var messages = [];
-
-  for (var friendId in resources.friends) {
-    if (resources.friends.hasOwnProperty(friendId)) {
-      // eslint-disable-next-line no-await-in-loop
-      var friend = await utility.getDocument(
-        config.db.doc(`users/${resources.friends[friendId].friendUserId}`),
-        `users/${resources.friends[friendId].friendUserId}`
-      );
-
-      if (friend && friend.pushToken) {
-        messages.push(
-          config.msg.send({
-            ...newLikeNotification(
-              resources.user.firstName,
-              resources.post.title,
-              resources.post.id
+              resources.post
             ),
             token: friend.pushToken
           })

@@ -59,7 +59,7 @@ class AppWithListeners extends Component {
     if (notificationOpen) {
       const { action, notification } = notificationOpen;
 
-      // this.props.handleURLRoute(notification.)
+      this.props.handleURLRoute(notification.data.appLink);
 
       firebase.notifications().removeDeliveredNotification(notification.notificationId);
     }

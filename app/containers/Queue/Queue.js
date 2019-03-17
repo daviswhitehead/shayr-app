@@ -1,168 +1,150 @@
-import React, { Component } from "react";
-import { View, Text } from "react-native";
-import { connect } from "react-redux";
-import { NavigationActions } from "react-navigation";
-import firebase from "react-native-firebase";
-import Icon from "react-native-vector-icons/MaterialIcons";
-import _ from "lodash";
-import { LoginManager } from "react-native-fbsdk";
-import styles from "./styles";
-import DynamicActionButton from "../../components/DynamicActionButton";
-import List from "../../components/List";
-import ContentCard from "../../components/ContentCard";
-import { openURL } from "../../lib/Utils";
-import Header from "../../components/Header";
-import colors from "../../styles/Colors";
+import React, { Component } from 'react';
+import { View, Text } from 'react-native';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+import styles from './styles';
+import DynamicActionButton from '../../components/DynamicActionButton';
+import List from '../../components/List';
+import ContentCard from '../../components/ContentCard';
+import Header from '../../components/Header';
+import colors from '../../styles/Colors';
 import {
-  loadPosts,
-  paginatePosts,
-  refreshPosts,
-  flattenPosts
-} from "../../redux/posts/actions";
+  loadPosts, paginatePosts, refreshPosts, flattenPosts,
+} from '../../redux/posts/actions';
 import { postAction } from '../../redux/postActions/actions';
-import { signOutUser } from '../../redux/auth/actions';
+import { handleURLRoute } from '../../redux/routing/actions';
+import { buildAppLink } from '../../lib/DeepLinks';
+import { startSignOut } from '../../redux/auth/actions';
 
-const mapStateToProps = state => {
-  return {
-    auth: state.auth,
-    posts: state.posts,
-    social: state.social
-  };
-};
+const mapStateToProps = state => ({
+  auth: state.auth,
+  users: state.users,
+  posts: state.posts,
+});
 
 const mapDispatchToProps = dispatch => ({
-  navFeed: () => dispatch(NavigationActions.navigate({ routeName: "Feed" })),
-  navPostDetails: () =>
-    dispatch(NavigationActions.navigate({ routeName: "PostDetails" })),
   loadPosts: (userId, query) => dispatch(loadPosts(userId, query)),
-  paginatePosts: (userId, query, lastPost) =>
-    dispatch(paginatePosts(userId, query, lastPost)),
+  paginatePosts: (userId, query, lastPost) => dispatch(paginatePosts(userId, query, lastPost)),
   refreshPosts: (userId, query) => dispatch(refreshPosts(userId, query)),
-  signOutUser: () => dispatch(signOutUser()),
-  postAction: (actionType, userId, postId) =>
-    dispatch(postAction(actionType, userId, postId))
+  postAction: (actionType, userId, postId) => dispatch(postAction(actionType, userId, postId)),
+  startSignOut: () => dispatch(startSignOut()),
+  handleURLRoute: payload => dispatch(handleURLRoute(payload)),
 });
 
 class Queue extends Component {
+  static propTypes = {
+    auth: PropTypes.instanceOf(Object).isRequired,
+    users: PropTypes.instanceOf(Object).isRequired,
+    posts: PropTypes.instanceOf(Object).isRequired,
+    navigation: PropTypes.instanceOf(Object).isRequired,
+    loadPosts: PropTypes.func.isRequired,
+    handleURLRoute: PropTypes.func.isRequired,
+    postAction: PropTypes.func.isRequired,
+    paginatePosts: PropTypes.func.isRequired,
+    refreshPosts: PropTypes.func.isRequired,
+    startSignOut: PropTypes.func.isRequired,
+  };
+
   constructor() {
     super();
     this.subscriptions = [];
   }
 
-  static navigationOptions = ({ navigation }) => {
-    return {
-      header: (
-        <Header
-          backgroundColor={colors.YELLOW}
-          statusBarStyle="dark-content"
-          shadow
-          title="queue"
-        />
-      )
-    };
-  };
-
   componentDidMount() {
-    this.subscriptions.push(
-      this.props.loadPosts(this.props.auth.user.uid, "queue")
-    );
+    this.subscriptions.push(this.props.loadPosts(this.props.auth.user.uid, 'queue'));
   }
 
   componentWillUnmount() {
-    for (var subscription in this.subscriptions) {
-      if (this.subscriptions.hasOwnProperty(subscription)) {
-        console.log(this.subscriptions[subscription]);
-        this.subscriptions[subscription]();
-      }
-    }
+    Object.values(this.subscriptions).forEach((subscription) => {
+      subscription();
+    });
   }
 
-  renderItem = item => {
+  renderItem = (item) => {
+    const routeURL = buildAppLink('shayr', 'shayr', 'PostDetail', { id: item.postId });
+
     return (
       <ContentCard
         payload={item}
         friends={{
-          ...this.props.social.self,
-          ...this.props.social.friends
+          ...this.props.users.self,
+          ...this.props.users.friends,
         }}
-        // onTap={() => openURL(item.url)}
-        onTap={this.props.navPostDetails}
+        onTap={() => this.props.handleURLRoute(routeURL)}
         shareAction={{
           actionCount: item.shareCount,
-          actionUser: item.shares
-            ? item.shares.includes(this.props.auth.user.uid)
-            : false,
-          onPress: () =>
-            this.props.postAction(
-              "share",
-              this.props.auth.user.uid,
-              item.postId
-            )
+          actionUser: item.shares ? item.shares.includes(this.props.auth.user.uid) : false,
+          onPress: () => this.props.postAction('share', this.props.auth.user.uid, item.postId),
         }}
         addAction={{
           actionCount: item.addCount,
-          actionUser: item.adds
-            ? item.adds.includes(this.props.auth.user.uid)
-            : false,
-          onPress: () =>
-            this.props.postAction("add", this.props.auth.user.uid, item.postId)
+          actionUser: item.adds ? item.adds.includes(this.props.auth.user.uid) : false,
+          onPress: () => this.props.postAction('add', this.props.auth.user.uid, item.postId),
         }}
         doneAction={{
           actionCount: item.doneCount,
-          actionUser: item.dones
-            ? item.dones.includes(this.props.auth.user.uid)
-            : false,
-          onPress: () =>
-            this.props.postAction("done", this.props.auth.user.uid, item.postId)
+          actionUser: item.dones ? item.dones.includes(this.props.auth.user.uid) : false,
+          onPress: () => this.props.postAction('done', this.props.auth.user.uid, item.postId),
         }}
         likeAction={{
           actionCount: item.likeCount,
-          actionUser: item.likes
-            ? item.likes.includes(this.props.auth.user.uid)
-            : false,
-          onPress: () =>
-            this.props.postAction("like", this.props.auth.user.uid, item.postId)
+          actionUser: item.likes ? item.likes.includes(this.props.auth.user.uid) : false,
+          onPress: () => this.props.postAction('like', this.props.auth.user.uid, item.postId),
         }}
       />
     );
   };
 
+  paginate = () => {
+    const unsubscribe = this.props.paginatePosts(
+      this.props.auth.user.uid,
+      'queue',
+      this.props.posts.queueLastPost,
+    );
+    if (unsubscribe) {
+      this.subscriptions.push(unsubscribe);
+    }
+  };
+
+  refresh = () => {
+    const unsubscribe = this.props.refreshPosts(this.props.auth.user.uid, 'queue');
+    if (unsubscribe) {
+      this.subscriptions.push(unsubscribe);
+    }
+  };
+
   loading = () => {
-    if (
-      !this.props.posts.queuePosts ||
-      !this.props.social.friends ||
-      !this.props.social.self
-    ) {
+    if (!this.props.posts.queuePosts || !this.props.users.friends || !this.props.users.self) {
       return <Text>LOADING</Text>;
     }
     return (
       <List
         data={flattenPosts(this.props.posts.queuePosts)}
         renderItem={item => this.renderItem(item)}
-        onEndReached={() =>
-          this.props.paginatePosts(
-            this.props.auth.user.uid,
-            "queue",
-            this.props.posts.queueLastPost
-          )
-        }
-        onRefresh={() =>
-          this.props.refreshPosts(this.props.auth.user.uid, "queue")
-        }
+        onEndReached={() => this.paginate()}
+        onRefresh={() => this.refresh()}
         refreshing={this.props.posts.refreshing}
       />
     );
   };
 
+  signOut = () => {
+    this.props.startSignOut();
+    this.props.navigation.navigate('Login');
+  };
+
   render() {
     return (
-      <View style={styles.container}>
-        <this.loading />
-        <DynamicActionButton
-          logout={this.props.signOutUser}
-          feed={this.props.navFeed}
-          queue={false}
-        />
+      <View style={styles.screen}>
+        <Header backgroundColor={colors.YELLOW} statusBarStyle="dark-content" shadow title="queue" />
+        <View style={styles.container}>
+          <this.loading />
+          <DynamicActionButton
+            logout={this.signOut}
+            feed={() => this.props.navigation.navigate('Feed')}
+            queue={false}
+          />
+        </View>
       </View>
     );
   }
@@ -170,5 +152,5 @@ class Queue extends Component {
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(Queue);

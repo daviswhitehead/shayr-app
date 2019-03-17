@@ -30,8 +30,5 @@ export const notificationOpenedListener = handleRouting => firebase.notification
   if (notification.data.appLink) {
     handleRouting(notification.data.appLink);
   }
-  console.log(action);
-  console.log(notification);
-
   firebase.notifications().removeDeliveredNotification(notification.notificationId);
 });

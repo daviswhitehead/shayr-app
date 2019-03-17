@@ -145,7 +145,10 @@ exports._onWriteDone = async (db, change, context) => {
     .then(value => {
       if (resources.newAction) {
         console.log('send a notification to friends');
-        return notifications.sendNewDonePushNotificationToFriends(resources);
+        return notifications.sendPostDetailNotificationToFriends(
+          'done',
+          resources
+        );
       } else {
         console.log('not sending notification due to old action');
         return value;
@@ -170,7 +173,10 @@ exports._onWriteLike = async (db, change, context) => {
     .then(value => {
       if (resources.newAction) {
         console.log('send a notification to friends');
-        return notifications.sendNewLikePushNotificationToFriends(resources);
+        return notifications.sendPostDetailNotificationToFriends(
+          'like',
+          resources
+        );
       } else {
         console.log('not sending notification due to old action');
         return value;
@@ -195,7 +201,10 @@ exports._onWriteShare = async (db, change, context) => {
     .then(value => {
       if (resources.newAction) {
         console.log('send a notification to friends');
-        return notifications.sendNewSharePushNotificationToFriends(resources);
+        return notifications.sendPostDetailNotificationToFriends(
+          'share',
+          resources
+        );
       } else {
         console.log('not sending notification due to old action');
         return value;
