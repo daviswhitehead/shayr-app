@@ -109,7 +109,7 @@ android {
         applicationIdSuffix project.env.get("APP_ID_SUFFIX_ANDROID")
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 44
+        versionCode 45
         versionName "2.0.0"
         ndk {
             abiFilters "armeabi-v7a", "x86"
