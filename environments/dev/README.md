@@ -21,3 +21,4 @@ ENVFILE=./environments/dev/.env.dev react-native run-ios
 # Deployment
 
 - https://firebase.google.com/docs/cli/#deployment
+- `firebase deploy --only firestore`

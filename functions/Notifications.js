@@ -1,6 +1,6 @@
 const config = require('./Config');
 const utility = require('./Utility');
-const deepLinking = require('../app/lib/DeepLinks');
+const deepLinking = require('./lib/DeepLinks');
 
 const copyVariants = (type, name, post) => {
   const variants = {
@@ -30,8 +30,9 @@ const buildPostDetailNotification = (type, name, post) => {
     data: {
       ...copy,
       channelId: 'General',
-      appLink: deepLinking.buildAppLink('shayr', 'shayr', 'PostDetail', { ...post })
-      )
+      appLink: deepLinking.buildAppLink('shayr', 'shayr', 'PostDetail', {
+        ...post
+      })
     },
     android: {
       priority: 'high'

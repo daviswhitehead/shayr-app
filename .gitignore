@@ -68,6 +68,7 @@ GoogleService-Info-ShareExtension.plist
 google-services.json
 devices.txt
 .env
+.env.alpha
 .env.dev
 .env.prod
 .env.staging
