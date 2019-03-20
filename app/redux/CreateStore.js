@@ -7,7 +7,8 @@ import { makeRootReducer } from './Reducers';
 
 export default (initialState = {}) => {
   let composeEnhancers;
-  if (Config.ENV_NAME === 'prod' || Config.ENV_NAME === 'alpha') {
+  // if (Config.ENV_NAME === 'prod' || Config.ENV_NAME === 'alpha') {
+  if (Config.ENV_NAME === 'prod') {
     composeEnhancers = compose();
   } else {
     composeEnhancers = composeWithDevTools({});

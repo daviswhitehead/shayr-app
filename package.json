@@ -6,16 +6,16 @@
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "test": "jest",
     "dsyms": "find ./ios/ -name \"*.dSYM\" | xargs -I {} /Applications/Fabric.app/Contents/MacOS/upload-symbols -a <api-key> -p ios {}",
-    "release:ios:alpha": "sh scripts/env_manager.sh alpha && bundle exec fastlane ios beta --env default",
     "release:android:alpha": "sh scripts/env_manager.sh alpha && bundle exec fastlane android beta --env default",
-    "release:ios:beta": "sh scripts/env_manager.sh prod && bundle exec fastlane ios beta",
     "release:android:beta": "sh scripts/env_manager.sh prod && bundle exec fastlane android beta",
-    "release:ios:prod": "sh scripts/env_manager.sh prod && bundle exec fastlane ios prod",
     "release:android:prod": "sh scripts/env_manager.sh prod && bundle exec fastlane android prod",
+    "release:ios:alpha": "sh scripts/env_manager.sh alpha && bundle exec fastlane ios beta --env default",
+    "release:ios:beta": "sh scripts/env_manager.sh prod && bundle exec fastlane ios beta",
+    "release:ios:prod": "sh scripts/env_manager.sh prod && bundle exec fastlane ios prod",
     "debugger": "open \"rndebugger://set-debugger-loc?host=localhost&port=8081\"",
     "android:dev": "sh scripts/env_manager.sh dev && ENVFILE=./environments/dev/.env.dev react-native run-android",
-    "android:alpha": "sh scripts/env_manager.sh alpha && ENVFILE=./environments/alpha/.env.alpha react-native run-android",
-    "android:prod": "sh scripts/env_manager.sh prod && ENVFILE=./environments/prod/.env.prod react-native run-android",
+    "android:alpha": "sh scripts/env_manager.sh alpha && ENVFILE=./environments/alpha/.env.alpha react-native run-android --variant=release",
+    "android:prod": "sh scripts/env_manager.sh prod && ENVFILE=./environments/prod/.env.prod react-native run-android --variant=release",
     "android:staging": "sh scripts/env_manager.sh staging && ENVFILE=./environments/staging/.env.staging react-native run-android",
     "ios:dev": "sh scripts/env_manager.sh dev && ENVFILE=./environments/dev/.env.dev react-native run-ios --scheme shayr-dev --simulator=\"iPhone X\"",
     "ios:alpha": "sh scripts/env_manager.sh alpha && ENVFILE=./environments/alpha/.env.alpha react-native run-ios --scheme shayr-alpha --simulator=\"iPhone X\"",
@@ -47,6 +47,7 @@
     "react-navigation": "^3.2.1",
     "react-redux": "^5.0.7",
     "redux": "^4.0.0",
+    "redux-devtools-extension": "^2.13.8",
     "redux-subscriber": "^1.1.0",
     "redux-thunk": "^2.3.0",
     "urijs": "^1.19.1"
@@ -64,9 +65,7 @@
     "metro-react-native-babel-preset": "^0.49.0",
     "prettier": "^1.14.3",
     "prettier-eslint": "^8.8.2",
-    "react-test-renderer": "16.2.0",
-    "redux-devtools-extension": "^2.13.5",
-    "remote-redux-devtools": "^0.5.13"
+    "react-test-renderer": "16.2.0"
   },
   "jest": {
     "preset": "react-native"
