@@ -17,9 +17,9 @@
     "android:dev": "sh scripts/env_manager.sh dev && ENVFILE=./environments/dev/.env.dev react-native run-android",
     "android:prod": "sh scripts/env_manager.sh prod && ENVFILE=./environments/prod/.env.prod react-native run-android --variant=release",
     "android:staging": "sh scripts/env_manager.sh staging && ENVFILE=./environments/staging/.env.staging react-native run-android",
-    "ios:alpha": "sh scripts/env_manager.sh alpha && ENVFILE=./environments/alpha/.env.alpha react-native run-ios --scheme shayr-alpha --simulator=\"iPhone X\" --variant=release",
+    "ios:alpha": "sh scripts/env_manager.sh alpha && ENVFILE=./environments/alpha/.env.alpha react-native run-ios --scheme shayr-alpha --simulator=\"iPhone X\" --configuration Release",
     "ios:dev": "sh scripts/env_manager.sh dev && ENVFILE=./environments/dev/.env.dev react-native run-ios --scheme shayr-dev --simulator=\"iPhone X\"",
-    "ios:prod": "sh scripts/env_manager.sh prod && ENVFILE=./environments/prod/.env.prod react-native run-ios --scheme shayr-prod --simulator=\"iPhone X\" --variant=release",
+    "ios:prod": "sh scripts/env_manager.sh prod && ENVFILE=./environments/prod/.env.prod react-native run-ios --scheme shayr-prod --simulator=\"iPhone X\" --configuration Release",
     "ios:staging": "sh scripts/env_manager.sh staging && ENVFILE=./environments/staging/.env.staging react-native run-ios --scheme shayr-prod --simulator=\"iPhone X\"",
     "reset_node_modules": "rm -rf node_modules/ && npm cache verify && npm install",
     "reset": "sh scripts/package_reinstaller.sh"

@@ -55,15 +55,61 @@ exports.sendPostDetailNotificationToFriends = async (type, resources) => {
   // support type(s): [share, done, like]
   var messages = [];
 
-  for (var friendId in resources.friends) {
-    if (resources.friends.hasOwnProperty(friendId)) {
+  if (type === 'share') {
+    for (var friendId in resources.friends) {
+      if (resources.friends.hasOwnProperty(friendId)) {
+        // eslint-disable-next-line no-await-in-loop
+        var friend = await utility.getDocument(
+          config.db.doc(`users/${resources.friends[friendId].friendUserId}`),
+          `users/${resources.friends[friendId].friendUserId}`
+        );
+
+        if (friend && friend.pushToken) {
+          console.log(
+            `queueing up a notification to ${friend.firstName} ${
+              friend.lastName
+            }`
+          );
+
+          console.log(
+            buildPostDetailNotification(
+              type,
+              resources.user.firstName,
+              resources.post
+            )
+          );
+
+          messages.push(
+            config.msg.send({
+              ...buildPostDetailNotification(
+                type,
+                resources.user.firstName,
+                resources.post
+              ),
+              token: friend.pushToken
+            })
+          );
+        }
+      }
+    }
+  } else {
+    var user_post = await utility.getDocument(
+      config.db.doc(`users_posts/${resources.user.id}_${resources.post.id}`),
+      `users_posts/${resources.user.id}_${resources.post.id}`
+    );
+
+    user_post.shares.forEach(async userId => {
       // eslint-disable-next-line no-await-in-loop
-      var friend = await utility.getDocument(
-        config.db.doc(`users/${resources.friends[friendId].friendUserId}`),
-        `users/${resources.friends[friendId].friendUserId}`
+      var user = await utility.getDocument(
+        config.db.doc(`users/${userId}`),
+        `users/${userId}`
       );
 
-      if (friend && friend.pushToken) {
+      if (user && user.pushToken && userId !== resources.user.id) {
+        console.log(
+          `queueing up a notification to ${user.firstName} ${user.lastName}`
+        );
+
         console.log(
           buildPostDetailNotification(
             type,
@@ -79,11 +125,11 @@ exports.sendPostDetailNotificationToFriends = async (type, resources) => {
               resources.user.firstName,
               resources.post
             ),
-            token: friend.pushToken
+            token: user.pushToken
           })
         );
       }
-    }
+    });
   }
 
   return Promise.all(messages);
