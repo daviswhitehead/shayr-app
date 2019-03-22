@@ -92,6 +92,10 @@ platform :ios do
     # get_push_certificate
     # capture_screenshots
     build(method: 'app-store')
+    crashlytics(
+      api_token: ENV['FABRIC_API_KEY'],
+      build_secret: ENV['FABRIC_BUILD_SECRET']
+    )
     upload_to_app_store
     # commit_version_bump(
     #   message: 'bump build',
