@@ -9,7 +9,7 @@ import ContentCard from '../../components/ContentCard';
 import Header from '../../components/Header';
 import colors from '../../styles/Colors';
 import {
-  loadPosts, paginatePosts, refreshPosts, flattenPosts,
+  loadPosts, paginatePosts, refreshPosts, flattenPostsQueue,
 } from '../../redux/posts/actions';
 import { postAction } from '../../redux/postActions/actions';
 import { handleURLRoute } from '../../redux/routing/actions';
@@ -119,7 +119,7 @@ class Queue extends Component {
     }
     return (
       <List
-        data={flattenPosts(this.props.posts.queuePosts)}
+        data={flattenPostsQueue(this.props.auth.user.uid, this.props.posts.queuePosts)}
         renderItem={item => this.renderItem(item)}
         onEndReached={() => this.paginate()}
         onRefresh={() => this.refresh()}

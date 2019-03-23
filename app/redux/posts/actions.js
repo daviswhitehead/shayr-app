@@ -165,3 +165,17 @@ export const flattenPosts = (posts) => {
 export const resetPostDetail = () => ({
   type: types.RESET_POST_DETAIL,
 });
+
+export const flattenPostsQueue = (userId, posts) => {
+  const data = [];
+  Object.keys(posts).forEach((postId) => {
+    if (!posts[postId].dones || !posts[postId].dones.includes(userId)) {
+      data.push({
+        key: postId,
+        ...posts[postId],
+      });
+    }
+  });
+
+  return data;
+};
