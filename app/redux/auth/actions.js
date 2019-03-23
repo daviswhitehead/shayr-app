@@ -1,5 +1,5 @@
 import firebase from 'react-native-firebase';
-import { getFBToken, logoutFB } from '../../lib/FacebookLogin';
+import { getFBToken, logoutFB, getFBProfile } from '../../lib/FacebookRequests';
 import { getCurrentUser, signOut, getFBAuthCredential } from '../../lib/FirebaseLogin';
 import { saveToken, retrieveToken } from '../../lib/AppGroupTokens';
 import { ts } from '../../lib/FirebaseHelpers';
@@ -79,7 +79,7 @@ export const areListenersReady = areReady => ({
 });
 
 // FACEBOOK LOGIN
-const saveUser = async (user, data) => {
+const saveUser = async (user, data, FBProfile) => {
   const ref = firebase
     .firestore()
     .collection('users')
@@ -94,7 +94,7 @@ const saveUser = async (user, data) => {
           firstName: data.first_name,
           lastName: data.last_name,
           email: data.email,
-          facebookProfilePhoto: user._user.photoURL,
+          facebookProfilePhoto: FBProfile.picture.data.url,
         });
       } else {
         ref.set(
@@ -103,7 +103,7 @@ const saveUser = async (user, data) => {
             firstName: data.first_name,
             lastName: data.last_name,
             email: data.email,
-            facebookProfilePhoto: user._user.photoURL,
+            facebookProfilePhoto: FBProfile.picture.data.url,
           },
           {
             merge: true,
@@ -130,14 +130,16 @@ export function facebookAuth(error, result) {
   return async function _facebookAuth(dispatch) {
     try {
       dispatch({ type: types.FACEBOOK_AUTH_START });
-      const tokenData = await getFBToken(error, result);
+      const currentAccessToken = await getFBToken(error, result);
       dispatch({ type: types.FACEBOOK_AUTH_SUCCESS });
 
-      saveToken('accessToken', tokenData.accessToken);
+      const FBProfile = await getFBProfile(currentAccessToken.accessToken);
+
+      saveToken('accessToken', currentAccessToken.accessToken);
       dispatch({ type: types.ACCESS_TOKEN_SAVED, hasAccessToken: true });
 
       dispatch({ type: types.FACEBOOK_CREDENTIAL_START });
-      const credential = getFBAuthCredential(tokenData.accessToken);
+      const credential = getFBAuthCredential(currentAccessToken.accessToken);
       dispatch({ type: types.FACEBOOK_CREDENTIAL_SUCCESS });
 
       dispatch({ type: types.CURRENT_USER_START });
@@ -145,7 +147,7 @@ export function facebookAuth(error, result) {
       dispatch({ type: types.CURRENT_USER_SUCCESS });
 
       dispatch({ type: types.SAVE_USER_START });
-      await saveUser(currentUser.user, currentUser.additionalUserInfo.profile);
+      await saveUser(currentUser.user, currentUser.additionalUserInfo.profile, FBProfile);
       dispatch({ type: types.SAVE_USER_SUCCESS });
 
       await requestNotificationPermissionsRedux(currentUser.user.uid, dispatch);

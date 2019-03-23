@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
+    "dev_menu": "adb shell input keyevent 82",
     "test": "jest",
     "dsyms": "find ./ios/ -name \"*.dSYM\" | xargs -I {} /Applications/Fabric.app/Contents/MacOS/upload-symbols -a <api-key> -p ios {}",
     "release:android:alpha": "sh scripts/env_manager.sh alpha && bundle exec fastlane android beta --env default",
@@ -26,6 +27,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.1.2",
+    "bluebird": "^3.5.3",
     "fb": "^2.0.0",
     "fbjs": "^0.8.16",
     "fsevents": "^1.2.7",

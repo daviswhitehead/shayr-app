@@ -5,7 +5,9 @@ export const getCurrentUser = credential => firebase.auth().signInWithCredential
 
 // Sign Out
 export const signOut = () => {
-  firebase.auth().signOut();
+  if (firebase.auth().currentUser) {
+    firebase.auth().signOut();
+  }
 };
 
 // Providers
