@@ -1,7 +1,7 @@
-const utility = require("./Utility");
-const counters = require("./Counters");
-const atoms = require("./Atoms");
-const _ = require("lodash");
+const _ = require('lodash');
+const utility = require('./Utility');
+const counters = require('./Counters');
+const atoms = require('./Atoms');
 
 // onWritePost({before: {}, after: {createdAt: null, description: "The question at the heart of this gamble is: are people really going to hang out in virtual reality?", image: "https://wp-assets.futurism.com/2018/06/realestate-600x315.png", medium: "article", publisher: {logo: "", name: "Futurism"}, title: "People are paying insane amounts of real money for 'virtual real estate'", updatedAt: null, url: 'https://futurism.com/virtual-real-estate/amp/'}}, {params: {postId: "yDZVi7G4U5yThribDE7G"}})
 
@@ -15,7 +15,7 @@ exports._onWritePost = async (db, change, context) => {
 
   // get all matching Posts in users_posts
   const users_posts = await utility.getDocumentsInCollection(
-    db.collection(`users_posts`).where("postId", "==", postId),
+    db.collection(`users_posts`).where('postId', '==', postId),
     `users_posts`
   );
 

@@ -1,27 +1,68 @@
-import { createStackNavigator } from "react-navigation";
-import LoginListeners from "../containers/LoginListeners";
-import Feed from "../containers/Feed";
-import Queue from "../containers/Queue";
-import Login from "../containers/Login";
-import PostDetail from "../containers/PostDetail";
+import {
+  createSwitchNavigator,
+  createStackNavigator,
+  createAppContainer,
+  // createBottomTabNavigator,
+} from 'react-navigation';
+import ListenersLoaded from '../containers/ListenersLoaded';
+import Feed from '../containers/Feed';
+import Queue from '../containers/Queue';
+import Login from '../containers/Login';
+import PostDetail from '../containers/PostDetail';
+import HelloWorld from '../containers/HelloWorld';
 
-export const RootNavigator = createStackNavigator({
+// const TabStack = createBottomTabNavigator({
+//   Feed,
+//   Queue,
+// });
+
+const AppStack = createStackNavigator(
+  {
+    Feed: {
+      screen: Feed,
+      navigationOptions: () => ({
+        header: null,
+      }),
+    },
+    Queue: {
+      screen: Queue,
+      navigationOptions: () => ({
+        header: null,
+      }),
+    },
+    PostDetail: {
+      screen: PostDetail,
+      navigationOptions: () => ({
+        header: null,
+      }),
+    },
+    HelloWorld: {
+      screen: HelloWorld,
+    },
+  },
+  {
+    initialRouteName: 'Feed',
+  },
+);
+
+const AuthStack = createStackNavigator({
   Login: {
     screen: Login,
-    navigationOptions: ({ navigation }) => ({
-      header: null
-    })
+    navigationOptions: () => ({
+      header: null,
+    }),
   },
-  LoginListeners: {
-    screen: LoginListeners
-  },
-  Feed: {
-    screen: Feed
-  },
-  Queue: {
-    screen: Queue
-  },
-  PostDetail: {
-    screen: PostDetail
-  }
 });
+
+export default createAppContainer(
+  createSwitchNavigator(
+    {
+      ListenersLoaded,
+      App: AppStack,
+      Auth: AuthStack,
+    },
+    {
+      initialRouteName: 'ListenersLoaded',
+    },
+  ),
+);

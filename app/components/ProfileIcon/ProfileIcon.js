@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { View, Image, Text } from "react-native";
 import PropTypes from "prop-types";
 import StyleSheetFactory from "./styles";
-import { colors } from "../../styles/Colors";
+import colors from "../../styles/Colors";
 
 export default class ProfileIcon extends Component {
   static propTypes = {

@@ -6,6 +6,7 @@ def shared_pods
   pod 'Firebase/Auth', '~>5.6.0'
   pod 'Firebase/Firestore', '~>5.6.0'
   pod 'Firebase/Messaging', '~>5.6.0'
+  pod 'Firebase/DynamicLinks', '~>5.6.0'
   pod 'Fabric', '~>1.7.5'
   pod 'Crashlytics', '~>3.10.4'
 end
@@ -14,6 +15,8 @@ target 'shayr' do
   shared_pods
   # pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
   # pod 'react-native-config', :path => '../node_modules/react-native-config'
+  # pod 'react-native-splash-screen', :path => '../node_modules/react-native-splash-screen'
+  # pod 'RNGestureHandler', :path => '../node_modules/react-native-gesture-handler'
 
 end
 

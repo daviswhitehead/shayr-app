@@ -1,20 +1,16 @@
-import { combineReducers } from "redux";
-import navigationReducer from "./navigation/NavigationReducer";
-import authenticationReducer from "./authentication/AuthenticationReducer";
-import postsReducer from "./posts/PostsReducer";
-import postActionsReducer from "./postActions/PostActionsReducer";
-import socialReducer from "./social/SocialReducer";
-import postDetailReducer from "../containers/PostDetail/reducer";
+import { combineReducers } from 'redux';
+import authReducer from './auth/reducer';
+import usersReducer from './users/reducer';
+import notificationsReducer from './notifications/reducer';
+import postsReducer from './posts/reducer';
+import routingReducer from './routing/reducer';
 
-export const makeRootReducer = () => {
-  return combineReducers({
-    nav: navigationReducer,
-    auth: authenticationReducer,
-    posts: postsReducer,
-    postActions: postActionsReducer,
-    social: socialReducer,
-    postDetail: postDetailReducer
-  });
-};
+export const makeRootReducer = () => combineReducers({
+  auth: authReducer,
+  users: usersReducer,
+  notifications: notificationsReducer,
+  posts: postsReducer,
+  routing: routingReducer,
+});
 
 export default makeRootReducer;

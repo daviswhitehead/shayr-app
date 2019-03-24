@@ -1,6 +1,6 @@
 import { StyleSheet } from "react-native";
 
-import { layout } from "../../styles/Layout";
+import layout from "../../styles/Layout";
 
 export default class StyleSheetFactory {
   static getSheet(view) {

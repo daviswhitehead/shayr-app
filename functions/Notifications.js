@@ -1,28 +1,136 @@
-const config = require("./Config");
-const utility = require("./Utility");
+const config = require('./Config');
+const utility = require('./Utility');
+const deepLinking = require('./lib/DeepLinks');
 
-exports.sendNewSharePushNotificationToFriends = async resources => {
-  let payload = {
-    notification: {
-      title: "New Shayr",
-      body: `${resources.user.firstName} shayred something new!`,
-      badge: "1",
-      channelId: "new-shayr-channel"
+const copyVariants = (type, name, post) => {
+  const variants = {
+    share: {
+      title: `New shayr from ${name}`,
+      body: `${name} wants you to check out "${post.title}"`
+    },
+    done: {
+      title: `${name} marked your shayr as done`,
+      body: `${name} finished checking out your shayr! Ask them how they liked it?`
+    },
+    like: {
+      title: `${name} liked your shayr`,
+      body: `${name} liked "${post.title}"`
     }
   };
-  var messages = [];
+  return variants[type];
+};
 
-  for (var friendId in resources.friends) {
-    if (resources.friends.hasOwnProperty(friendId)) {
-      // eslint-disable-next-line no-await-in-loop
-      var friend = await utility.getDocument(
-        config.db.doc(`users/${resources.friends[friendId].friendUserId}`),
-        `users/${resources.friends[friendId].friendUserId}`
-      );
-      if (friend && friend.pushToken) {
-        messages.push(config.msg.sendToDevice(friend.pushToken, payload));
+const buildPostDetailNotification = (type, name, post) => {
+  const copy = copyVariants(type, name, post);
+
+  const message = {
+    notification: {
+      ...copy
+    },
+    data: {
+      ...copy,
+      channelId: 'General',
+      appLink: deepLinking.buildAppLink('shayr', 'shayr', 'PostDetail', {
+        ...post
+      })
+    },
+    android: {
+      priority: 'high'
+    },
+    apns: {
+      payload: {
+        aps: {
+          alert: {
+            ...copy
+          },
+          badge: 1
+        }
       }
     }
+  };
+  return message;
+};
+
+exports.sendPostDetailNotificationToFriends = async (type, resources) => {
+  // support type(s): [share, done, like]
+  var messages = [];
+
+  if (type === 'share') {
+    for (var friendId in resources.friends) {
+      if (resources.friends.hasOwnProperty(friendId)) {
+        // eslint-disable-next-line no-await-in-loop
+        var friend = await utility.getDocument(
+          config.db.doc(`users/${resources.friends[friendId].friendUserId}`),
+          `users/${resources.friends[friendId].friendUserId}`
+        );
+
+        if (friend && friend.pushToken) {
+          console.log(
+            `queueing up a notification to ${friend.firstName} ${
+              friend.lastName
+            }`
+          );
+
+          console.log(
+            buildPostDetailNotification(
+              type,
+              resources.user.firstName,
+              resources.post
+            )
+          );
+
+          messages.push(
+            config.msg.send({
+              ...buildPostDetailNotification(
+                type,
+                resources.user.firstName,
+                resources.post
+              ),
+              token: friend.pushToken
+            })
+          );
+        }
+      }
+    }
+  } else {
+    var user_post = await utility.getDocument(
+      config.db.doc(`users_posts/${resources.user.id}_${resources.post.id}`),
+      `users_posts/${resources.user.id}_${resources.post.id}`
+    );
+
+    user_post.shares.forEach(async userId => {
+      // eslint-disable-next-line no-await-in-loop
+      var user = await utility.getDocument(
+        config.db.doc(`users/${userId}`),
+        `users/${userId}`
+      );
+
+      if (user && user.pushToken && userId !== resources.user.id) {
+        console.log(
+          `queueing up a notification to ${user.firstName} ${user.lastName}`
+        );
+
+        console.log(
+          buildPostDetailNotification(
+            type,
+            resources.user.firstName,
+            resources.post
+          )
+        );
+
+        messages.push(
+          config.msg.send({
+            ...buildPostDetailNotification(
+              type,
+              resources.user.firstName,
+              resources.post
+            ),
+            token: user.pushToken
+          })
+        );
+      }
+    });
   }
+
   return Promise.all(messages);
 };

@@ -26,6 +26,11 @@ release certificates and provisioning profiles
 fastlane ios development_certificates
 ```
 development certificates and provisioning profiles
+### ios update_bundle_ids
+```
+fastlane ios update_bundle_ids
+```
+update bundle ids per environment
 ### ios beta
 ```
 fastlane ios beta

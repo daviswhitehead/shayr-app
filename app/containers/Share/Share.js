@@ -1,86 +1,82 @@
-import React, { Component } from "react";
+import React, { Component } from 'react';
 import {
   Text,
   View,
   Modal,
   Image,
   TouchableOpacity,
-  TouchableWithoutFeedback
-} from "react-native";
+  TouchableWithoutFeedback,
+  Linking,
+} from 'react-native';
+import firebase from 'react-native-firebase';
+import ShareExtension from 'react-native-share-extension';
+import styles from './styles';
+import shareExtensionLogo from '../../assets/ShareExtensionLogo.png';
+import { retrieveToken } from '../../lib/AppGroupTokens';
+import { getFBAuthCredential, getCurrentUser } from '../../lib/FirebaseLogin';
+import { createShare } from '../../lib/FirebaseHelpers';
+import { buildAppLink } from '../../lib/DeepLinks';
 
-import firebase from "react-native-firebase";
-import ShareExtension from "react-native-share-extension";
-import styles from "./styles";
-import shareExtensionLogo from "../../assets/ShareExtensionLogo.png";
-import {
-  retrieveAccessToken,
-  getAuthCredential,
-  getCurrentUser
-} from "../../redux/authentication/AuthenticationActions";
-import { createShare } from "../../lib/FirebaseHelpers";
+const tapShareExtension = () => {
+  const url = buildAppLink('shayr', 'shayr', 'Feed', {});
+  Linking.canOpenURL(url)
+    .then((supported) => {
+      if (!supported) {
+        console.log(`Can't handle url: ${url}`);
+        return false;
+      }
+      return Linking.openURL(url);
+    })
+    .catch(err => console.error('An error occurred', err));
+};
 
 export default class MyComponent extends Component {
   constructor() {
     super();
-    console.log("JAVASCRIPT LOADED");
     this.state = {
       modalVisible: true,
-      loading: true,
-      shareText: "Shayring..."
+      shareText: 'Shayring...',
     };
   }
 
   async componentDidMount() {
-    this.authSubscription = firebase.auth().onAuthStateChanged(user => {
-      this.setState(previousState => {
-        return {
-          ...previousState,
-          loading: false,
-          user
-        };
-      });
+    this.authSubscription = firebase.auth().onAuthStateChanged((user) => {
+      this.setState(previousState => ({
+        ...previousState,
+        user,
+      }));
     });
     try {
-      let token = await retrieveAccessToken();
-      console.log("TOKEN LOADED");
-
-      const credential = getAuthCredential(token);
-      console.log("CREDENTIAL LOADED");
-
+      const token = await retrieveToken('accessToken');
+      const credential = getFBAuthCredential(token);
       const currentUser = await getCurrentUser(credential);
-      console.log("CURRENTUSER LOADED");
+
       if (!currentUser) {
-        throw new Error("unable to authenticate");
+        throw new Error('unable to authenticate');
       }
 
       const ref = firebase
         .firestore()
-        .collection("users")
+        .collection('users')
         .doc(currentUser.user.uid);
-      console.log("REF LOADED");
 
       const { type, value } = await ShareExtension.data();
-      console.log("DATA LOADED");
 
       const share = await createShare(ref, value);
 
       if (share) {
         setTimeout(() => {
-          this.setState(previousState => {
-            return {
-              ...previousState,
-              shareText: "Success!"
-            };
-          });
+          this.setState(previousState => ({
+            ...previousState,
+            shareText: 'Success!',
+          }));
         }, 500);
       } else {
         setTimeout(() => {
-          this.setState(previousState => {
-            return {
-              ...previousState,
-              shareText: "Failed."
-            };
-          });
+          this.setState(previousState => ({
+            ...previousState,
+            shareText: 'Failed.',
+          }));
         }, 2000);
       }
     } catch (error) {
@@ -93,21 +89,17 @@ export default class MyComponent extends Component {
   }
 
   openModal() {
-    this.setState(previousState => {
-      return {
-        ...previousState,
-        modalVisible: true
-      };
-    });
+    this.setState(previousState => ({
+      ...previousState,
+      modalVisible: true,
+    }));
   }
 
   closeModal() {
-    this.setState(previousState => {
-      return {
-        ...previousState,
-        modalVisible: false
-      };
-    });
+    this.setState(previousState => ({
+      ...previousState,
+      modalVisible: false,
+    }));
     ShareExtension.close();
   }
 
@@ -115,9 +107,9 @@ export default class MyComponent extends Component {
     return (
       <Modal
         visible={this.state.modalVisible}
-        animationType={"slide"}
+        animationType="slide"
         onRequestClose={() => this.closeModal()}
-        supportedOrientations={["portrait"]}
+        supportedOrientations={['portrait']}
         transparent
       >
         <TouchableWithoutFeedback
@@ -126,7 +118,7 @@ export default class MyComponent extends Component {
           }}
         >
           <View style={styles.container}>
-            <TouchableOpacity onPress={() => {}} style={styles.modal}>
+            <TouchableOpacity onPress={() => tapShareExtension()} style={styles.modal}>
               <Image source={shareExtensionLogo} style={styles.logo} />
               <Text style={styles.text}>{this.state.shareText}</Text>
             </TouchableOpacity>

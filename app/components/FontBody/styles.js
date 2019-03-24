@@ -1,14 +1,14 @@
-import { StyleSheet } from "react-native";
-import { fonts } from "../../styles/Fonts";
-import { colors } from "../../styles/Colors";
+import { StyleSheet } from 'react-native';
+import { fonts } from '../../styles/Fonts';
+import colors from '../../styles/Colors';
 
 export default StyleSheet.create({
   box: {
-    textAlign: "left"
+    textAlign: 'left',
   },
   text: {
     ...fonts.EXTRA_LIGHT,
     color: colors.BLACK,
-    fontSize: 12
-  }
+    fontSize: 12,
+  },
 });

@@ -14,7 +14,7 @@ buildscript {
         maven { url 'https://maven.fabric.io/public' }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.2.0'
+        classpath 'com.android.tools.build:gradle:3.2.1'
         classpath 'com.google.gms:google-services:4.0.1'
         classpath 'com.google.firebase:firebase-plugins:1.1.5'
         classpath 'io.fabric.tools:gradle:1.25.4'
@@ -40,7 +40,19 @@ allprojects {
     }
 }
 
+subprojects {
+    afterEvaluate {project ->
+    // force libs to use recent buildtools
+        if (project.hasProperty("android")) {
+            android {
+                compileSdkVersion = 27
+                buildToolsVersion = "28.0.2"
+            }
+        }
+    }
+}
+
 task wrapper(type: Wrapper) {
-  gradleVersion = '4.6'
+  gradleVersion = '4.8'
   distributionUrl = distributionUrl.replace("bin", "all")
 }

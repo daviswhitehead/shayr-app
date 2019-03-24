@@ -68,9 +68,11 @@ GoogleService-Info-ShareExtension.plist
 google-services.json
 devices.txt
 .env
+.env.alpha
 .env.dev
 .env.prod
 .env.staging
+.env.default
 # Bundle artifact
 *.jsbundle
 Google\ Play\ Android\ Developer-b7a9e408df80.json

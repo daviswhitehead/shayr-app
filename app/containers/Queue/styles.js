@@ -1,12 +1,18 @@
 import { StyleSheet } from 'react-native';
 
-import { colors } from '../../styles/Colors';
+import colors from '../../styles/Colors';
 
 export default StyleSheet.create({
+  screen: {
+    flex: 1,
+    flexDirection: 'column',
+    alignItems: 'stretch',
+    justifyContent: 'flex-start',
+  },
   container: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   leftSwipeItem: {
     flex: 1,

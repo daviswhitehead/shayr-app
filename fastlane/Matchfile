@@ -3,8 +3,10 @@ git_url("git@github.com:daviswhitehead/shayr-internal.git")
 type("development") # The default type, can be: appstore, adhoc, enterprise or development
 username("whitehead.davis@gmail.com") # Your Apple Developer Portal username
 app_identifier([
-  "com.daviswhitehead.shayr.ios",
-  "com.daviswhitehead.shayr.ios.ShareExtension"
+  "com.daviswhitehead.shayr.ios.alpha",
+  "com.daviswhitehead.shayr.ios.alpha.ShareExtension",
+  "com.daviswhitehead.shayr.ios.prod",
+  "com.daviswhitehead.shayr.ios.prod.ShareExtension"
   ])
 
 # For all available options run `fastlane match --help`
