@@ -14,6 +14,7 @@ import { handleURLRoute } from '../../redux/routing/actions';
 import RootNavigator from '../../config/Routes';
 import AppLoading from '../../components/AppLoading';
 import { dynamicLinkListener } from '../../lib/FirebaseDynamicLinks';
+import { currentScreenAnalytics } from '../../lib/FirebaseAnalytics';
 import NavigationService from '../../lib/NavigationService';
 
 const mapStateToProps = state => ({
@@ -97,6 +98,7 @@ class AppWithListeners extends Component {
       // clear notification badge
       firebase.notifications().setBadge(0);
       firebase.notifications().removeAllDeliveredNotifications();
+      firebase.analytics().logEvent('APP_LAUNCH');
     }
   };
 
@@ -108,6 +110,9 @@ class AppWithListeners extends Component {
             NavigationService.setTopLevelNavigator(navigatorRef);
           }}
           uriPrefix="shayrdev://"
+          onNavigationStateChange={(prevState, currentState) => {
+            currentScreenAnalytics(prevState, currentState);
+          }}
         />
       );
     }

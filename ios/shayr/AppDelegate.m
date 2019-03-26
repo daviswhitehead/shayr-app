@@ -28,7 +28,6 @@
     didFinishLaunchingWithOptions:launchOptions];
   
   // Firebase Deeplinking URL Scheme
-//  [FIROptions defaultOptions].deepLinkURLScheme = @"com.daviswhitehead.shayr.ios.dev";
   NSString *dynamicLinkScheme = [ReactNativeConfig envFor:@"APP_BUNDLE_ID_IOS"];
   [FIROptions defaultOptions].deepLinkURLScheme = dynamicLinkScheme;
   

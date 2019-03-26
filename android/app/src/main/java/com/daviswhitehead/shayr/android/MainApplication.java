@@ -20,7 +20,7 @@ import io.invertase.firebase.RNFirebasePackage;
 // // Authentication
 import io.invertase.firebase.auth.RNFirebaseAuthPackage;
 // // Analytics
-// import io.invertase.firebase.analytics.RNFirebaseAnalyticsPackage;
+import io.invertase.firebase.analytics.RNFirebaseAnalyticsPackage;
 // // Performance Monitoring
 // import io.invertase.firebase.perf.RNFirebasePerformancePackage;
 // // Remote Config
@@ -75,12 +75,12 @@ public class MainApplication extends Application implements ReactApplication {
 
     @Override
     protected List<ReactPackage> getPackages() {
-      return Arrays.<ReactPackage>asList(new MainReactPackage(),
-            new RNGestureHandlerPackage(), new SplashScreenReactPackage(),
-          new ReactNativeConfigPackage(), new VectorIconsPackage(), new RNSKPackage(), new SharePackage(),
-          new RNFirebasePackage(), new RNFirebaseAuthPackage(), new RNFirebaseFirestorePackage(),
-          new RNFirebaseCrashlyticsPackage(), new RNFirebaseMessagingPackage(), new RNFirebaseNotificationsPackage(),
-          new RNFirebaseLinksPackage(), new RNFirebaseInvitesPackage(), new FBSDKPackage(mCallbackManager));
+      return Arrays.<ReactPackage>asList(new MainReactPackage(), new RNFirebaseAnalyticsPackage(),
+          new RNGestureHandlerPackage(), new SplashScreenReactPackage(), new ReactNativeConfigPackage(),
+          new VectorIconsPackage(), new RNSKPackage(), new SharePackage(), new RNFirebasePackage(),
+          new RNFirebaseAuthPackage(), new RNFirebaseFirestorePackage(), new RNFirebaseCrashlyticsPackage(),
+          new RNFirebaseMessagingPackage(), new RNFirebaseNotificationsPackage(), new RNFirebaseLinksPackage(),
+          new RNFirebaseInvitesPackage(), new FBSDKPackage(mCallbackManager));
     }
 
     @Override

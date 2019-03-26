@@ -46,6 +46,9 @@ export default class MyComponent extends Component {
         user,
       }));
     });
+
+    firebase.analytics().logEvent('SHARE_EXTENSION_LAUNCH');
+
     try {
       const token = await retrieveToken('accessToken');
       const credential = getFBAuthCredential(token);

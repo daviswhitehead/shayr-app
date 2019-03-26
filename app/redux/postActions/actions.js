@@ -14,6 +14,8 @@ export const postAction = (actionType, userId, postId) => function _postAction(d
     type: types.POST_ACTION_START,
     payload: actionType,
   });
+  firebase.analytics().logEvent(`${types.POST_ACTION_START}__${actionType}`.toUpperCase());
+
   const actionRef = firebase
     .firestore()
     .collection(`${actionType}s`)

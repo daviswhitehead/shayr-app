@@ -17,6 +17,7 @@ import ProfileIcon from '../../components/ProfileIcon';
 import FontBody from '../../components/FontBody';
 import { openURL } from '../../lib/Utils';
 import { getProfile } from '../../lib/SocialConnectors';
+import firebase from 'react-native-firebase';
 
 const mapStateToProps = state => ({
   auth: state.auth,
