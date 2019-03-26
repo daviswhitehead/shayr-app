@@ -5,57 +5,57 @@
     
     
       
-      <testcase classname="fastlane.lanes" name="00: Verifying fastlane version" time="0.002736">
+      <testcase classname="fastlane.lanes" name="00: Verifying fastlane version" time="0.001851">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="01: Switch to ios development_certificates lane" time="0.002455">
+      <testcase classname="fastlane.lanes" name="01: Switch to ios development_certificates lane" time="0.001238">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="02: register_devices" time="3.207737">
+      <testcase classname="fastlane.lanes" name="02: register_devices" time="6.652965">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="03: match" time="14.413091">
+      <testcase classname="fastlane.lanes" name="03: match" time="26.676558">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="04: Switch to ios update_bundle_ids lane" time="0.001914">
+      <testcase classname="fastlane.lanes" name="04: Switch to ios update_bundle_ids lane" time="0.001861">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="05: update_app_identifier" time="0.235511">
+      <testcase classname="fastlane.lanes" name="05: update_app_identifier" time="0.156217">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="06: update_app_identifier" time="0.122477">
+      <testcase classname="fastlane.lanes" name="06: update_app_identifier" time="0.07773">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="07: Switch to ios build lane" time="0.001516">
+      <testcase classname="fastlane.lanes" name="07: Switch to ios build lane" time="0.000966">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="08: increment_build_number" time="2.630045">
+      <testcase classname="fastlane.lanes" name="08: increment_build_number" time="1.703765">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="09: gym" time="961.970416">
+      <testcase classname="fastlane.lanes" name="09: gym" time="1239.620749">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="10: crashlytics" time="8.392165">
+      <testcase classname="fastlane.lanes" name="10: crashlytics" time="9.277222">
         
       </testcase>
     
