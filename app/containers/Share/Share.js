@@ -16,6 +16,7 @@ import { retrieveToken } from '../../lib/AppGroupTokens';
 import { getFBAuthCredential, getCurrentUser } from '../../lib/FirebaseLogin';
 import { createShare } from '../../lib/FirebaseHelpers';
 import { buildAppLink } from '../../lib/DeepLinks';
+import { userAnalytics } from '../../lib/FirebaseAnalytics';
 
 const tapShareExtension = () => {
   const url = buildAppLink('shayr', 'shayr', 'Feed', {});
@@ -47,8 +48,6 @@ export default class MyComponent extends Component {
       }));
     });
 
-    firebase.analytics().logEvent('SHARE_EXTENSION_LAUNCH');
-
     try {
       const token = await retrieveToken('accessToken');
       const credential = getFBAuthCredential(token);
@@ -57,6 +56,9 @@ export default class MyComponent extends Component {
       if (!currentUser) {
         throw new Error('unable to authenticate');
       }
+
+      userAnalytics(currentUser.user.uid);
+      firebase.analytics().logEvent('SHARE_EXTENSION_LAUNCH');
 
       const ref = firebase
         .firestore()
