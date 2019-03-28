@@ -1,9 +1,9 @@
-const config = require("../Config");
-const utility = require("../Utility");
+const config = require('../Config');
+const utility = require('../Utility');
 
 const createFriends = db => {
   return db
-    .collection("users")
+    .collection('users')
     .get()
     .then(querySnapshot => {
       var batch = db.batch();
@@ -19,6 +19,7 @@ const createFriends = db => {
 
       for (var initiatingUserId in users) {
         if (users.hasOwnProperty(initiatingUserId)) {
+          console.log(initiatingUserId);
           for (var receivingUserId in users) {
             if (
               users.hasOwnProperty(receivingUserId) &&
@@ -27,16 +28,17 @@ const createFriends = db => {
               var friendship = {
                 initiatingUserId: `${initiatingUserId}`,
                 receivingUserId: `${receivingUserId}`,
-                status: "accepted",
+                status: 'accepted',
                 userIds: [initiatingUserId, receivingUserId]
               };
 
               batch.set(
                 db
-                  .collection("friends")
+                  .collection('friends')
                   .doc(`${initiatingUserId}_${receivingUserId}`),
                 utility.addUpdatedAt(utility.addCreatedAt(friendship))
               );
+              console.log(receivingUserId);
             }
           }
           delete users[initiatingUserId];
