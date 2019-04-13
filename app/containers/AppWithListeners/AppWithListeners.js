@@ -95,11 +95,15 @@ class AppWithListeners extends Component {
   handleAppStateChange = (nextAppState) => {
     // https://facebook.github.io/react-native/docs/appstate
     if (nextAppState === 'active') {
-      // clear notification badge
-      firebase.notifications().setBadge(0);
+      firebase.analytics().logEvent('APP_STATE_ACTIVE');
+
+      // clear notifications and badge
       firebase.notifications().removeAllDeliveredNotifications();
-      firebase.analytics().logEvent('APP_LAUNCH');
+      firebase.notifications().setBadge(0);
+    } else if (nextAppState === 'background') {
+      firebase.analytics().logEvent('APP_STATE_BACKGROUND');
     }
+    // firebase.analytics().logEvent('APP_STATE_INACTIVE');
   };
 
   render() {

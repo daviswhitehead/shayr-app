@@ -38,6 +38,7 @@ export default class MyComponent extends Component {
       modalVisible: true,
       shareText: 'Shayring...',
     };
+    firebase.analytics().logEvent('SHARE_EXTENSION_LAUNCH');
   }
 
   async componentDidMount() {
@@ -58,7 +59,6 @@ export default class MyComponent extends Component {
       }
 
       userAnalytics(currentUser.user.uid);
-      firebase.analytics().logEvent('SHARE_EXTENSION_LAUNCH');
 
       const ref = firebase
         .firestore()
@@ -70,6 +70,9 @@ export default class MyComponent extends Component {
       const share = await createShare(ref, value);
 
       if (share) {
+        firebase.analytics().logEvent('SHARE_EXTENSION_SUCCESS', {
+          share: value.substring(0, 99),
+        });
         setTimeout(() => {
           this.setState(previousState => ({
             ...previousState,
@@ -77,12 +80,13 @@ export default class MyComponent extends Component {
           }));
         }, 500);
       } else {
+        firebase.analytics().logEvent('SHARE_EXTENSION_FAIL');
         setTimeout(() => {
           this.setState(previousState => ({
             ...previousState,
             shareText: 'Failed.',
           }));
-        }, 2000);
+        }, 1000);
       }
     } catch (error) {
       console.log(error);
