@@ -6,7 +6,7 @@ for_platform :ios do
 end
 
 for_platform :android do
-  json_key_file('./android/api-7908874432955924785-959265-ec6b282bc765.json') # Path to the json secret file - Follow https://docs.fastlane.tools/actions/supply/#setup to get one
+  json_key_file('./android/api-7908874432955924785-959265-f86856ffe265.json') # Path to the json secret file - Follow https://docs.fastlane.tools/actions/supply/#setup to get one
 end
 
 # For more information about the Appfile, see:
