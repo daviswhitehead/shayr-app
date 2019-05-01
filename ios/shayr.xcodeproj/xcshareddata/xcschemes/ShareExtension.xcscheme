@@ -80,7 +80,6 @@
             BlueprintName = "shayr"
             ReferencedContainer = "container:shayr.xcodeproj">
          </BuildableReference>
-<<<<<<< HEAD
       </BuildableProductRunnable>
       <CommandLineArguments>
          <CommandLineArgument
@@ -92,9 +91,6 @@
             isEnabled = "YES">
          </CommandLineArgument>
       </CommandLineArguments>
-=======
-      </MacroExpansion>
->>>>>>> master
       <AdditionalOptions>
       </AdditionalOptions>
    </LaunchAction>

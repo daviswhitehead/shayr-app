@@ -5,81 +5,32 @@
     
     
       
-<<<<<<< HEAD
-      <testcase classname="fastlane.lanes" name="00: Verifying fastlane version" time="0.001485">
-=======
       <testcase classname="fastlane.lanes" name="0: Verifying fastlane version" time="0.003612">
->>>>>>> master
         
       </testcase>
     
       
-<<<<<<< HEAD
-      <testcase classname="fastlane.lanes" name="01: Switch to ios development_certificates lane" time="0.001706">
-=======
       <testcase classname="fastlane.lanes" name="1: gradle" time="3.634257">
->>>>>>> master
         
       </testcase>
     
       
-<<<<<<< HEAD
-      <testcase classname="fastlane.lanes" name="02: register_devices" time="3.042252">
-=======
       <testcase classname="fastlane.lanes" name="2: increment_version_code" time="0.007701">
->>>>>>> master
         
       </testcase>
     
       
-<<<<<<< HEAD
-      <testcase classname="fastlane.lanes" name="03: match" time="25.914705">
-=======
       <testcase classname="fastlane.lanes" name="3: gradle" time="65.767426">
->>>>>>> master
         
       </testcase>
     
       
-<<<<<<< HEAD
-      <testcase classname="fastlane.lanes" name="04: Switch to ios update_bundle_ids lane" time="0.001782">
-=======
       <testcase classname="fastlane.lanes" name="4: crashlytics" time="11.749299">
->>>>>>> master
         
       </testcase>
     
       
-<<<<<<< HEAD
-      <testcase classname="fastlane.lanes" name="05: update_app_identifier" time="0.173078">
-        
-      </testcase>
-    
-      
-      <testcase classname="fastlane.lanes" name="06: update_app_identifier" time="0.079863">
-        
-      </testcase>
-    
-      
-      <testcase classname="fastlane.lanes" name="07: Switch to ios build lane" time="0.000923">
-        
-      </testcase>
-    
-      
-      <testcase classname="fastlane.lanes" name="08: increment_build_number" time="2.075652">
-        
-      </testcase>
-    
-      
-      <testcase classname="fastlane.lanes" name="09: gym" time="1114.265967">
-        
-      </testcase>
-    
-      
-      <testcase classname="fastlane.lanes" name="10: crashlytics" time="12.000237">
-=======
       <testcase classname="fastlane.lanes" name="5: upload_to_play_store" time="18.268266">
->>>>>>> master
         
       </testcase>
     
