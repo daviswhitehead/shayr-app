@@ -31,7 +31,7 @@ const tapShareExtension = () => {
     .catch(err => console.error('An error occurred', err));
 };
 
-export default class MyComponent extends Component {
+class Share extends Component {
   constructor() {
     super();
     this.state = {
@@ -137,3 +137,5 @@ export default class MyComponent extends Component {
     );
   }
 }
+
+export default Share;

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Provider } from 'react-redux';
 import createStore from '../../redux/CreateStore';
 import AppWithListeners from '../AppWithListeners';
-// import HelloWorld from '../HelloWorld';
+import HelloWorld from '../HelloWorld';
 import styles from './styles';
 import codePush from "react-native-code-push";
 
@@ -14,8 +14,8 @@ class App extends Component {
   render() {
     return (
       <Provider store={store} style={styles.container}>
-        <AppWithListeners />
-        {/* <HelloWorld /> */}
+        {/* <AppWithListeners /> */}
+        <HelloWorld />
       </Provider>
     );
   }
