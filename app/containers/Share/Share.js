@@ -16,6 +16,7 @@ import { retrieveToken } from '../../lib/AppGroupTokens';
 import { getFBAuthCredential, getCurrentUser } from '../../lib/FirebaseLogin';
 import { createShare } from '../../lib/FirebaseHelpers';
 import { buildAppLink } from '../../lib/DeepLinks';
+import { userAnalytics } from '../../lib/FirebaseAnalytics';
 
 const tapShareExtension = () => {
   const url = buildAppLink('shayr', 'shayr', 'Feed', {});
@@ -37,6 +38,7 @@ export default class MyComponent extends Component {
       modalVisible: true,
       shareText: 'Shayring...',
     };
+    firebase.analytics().logEvent('SHARE_EXTENSION_LAUNCH');
   }
 
   async componentDidMount() {
@@ -46,6 +48,7 @@ export default class MyComponent extends Component {
         user,
       }));
     });
+
     try {
       const token = await retrieveToken('accessToken');
       const credential = getFBAuthCredential(token);
@@ -54,6 +57,8 @@ export default class MyComponent extends Component {
       if (!currentUser) {
         throw new Error('unable to authenticate');
       }
+
+      userAnalytics(currentUser.user.uid);
 
       const ref = firebase
         .firestore()
@@ -65,6 +70,9 @@ export default class MyComponent extends Component {
       const share = await createShare(ref, value);
 
       if (share) {
+        firebase.analytics().logEvent('SHARE_EXTENSION_SUCCESS', {
+          share: value.substring(0, 99),
+        });
         setTimeout(() => {
           this.setState(previousState => ({
             ...previousState,
@@ -72,12 +80,13 @@ export default class MyComponent extends Component {
           }));
         }, 500);
       } else {
+        firebase.analytics().logEvent('SHARE_EXTENSION_FAIL');
         setTimeout(() => {
           this.setState(previousState => ({
             ...previousState,
             shareText: 'Failed.',
           }));
-        }, 2000);
+        }, 1000);
       }
     } catch (error) {
       console.log(error);

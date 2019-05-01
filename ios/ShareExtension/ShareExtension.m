@@ -37,7 +37,7 @@ RCT_EXPORT_MODULE();
   rootView.backgroundColor = nil;
   
   // Uncomment for console output in Xcode console for release mode on device:
-   RCTSetLogThreshold(RCTLogLevelInfo - 1);
+  RCTSetLogThreshold(RCTLogLevelInfo - 1);
   
   return rootView;
 }

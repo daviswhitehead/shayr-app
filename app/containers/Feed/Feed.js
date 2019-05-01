@@ -18,6 +18,7 @@ import { subscribeToSelf, subscribeToFriendships } from '../../redux/users/actio
 import { subscribeNotificationTokenRefresh } from '../../redux/notifications/actions';
 import { handleURLRoute, navigateToRoute } from '../../redux/routing/actions';
 import { buildAppLink } from '../../lib/DeepLinks';
+import { userAnalytics } from '../../lib/FirebaseAnalytics';
 
 const mapStateToProps = state => ({
   auth: state.auth,
@@ -64,6 +65,9 @@ class Feed extends Component {
   }
 
   async componentDidMount() {
+    // HOME - Track user
+    userAnalytics(this.props.auth.user.uid);
+
     // HOME - Listen to global datasets
     this.subscriptions.push(await this.props.subscribeToSelf(this.props.auth.user.uid));
     this.subscriptions.push(await this.props.subscribeToFriendships(this.props.auth.user.uid));
