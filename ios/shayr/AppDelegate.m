@@ -17,6 +17,7 @@
 #import "ReactNativeConfig.h"
 #import "RNFirebaseLinks.h"
 #import <React/RCTLinkingManager.h>
+#import <CodePush/CodePush.h>
 
 
 @implementation AppDelegate
@@ -45,7 +46,8 @@
   NSString *envName = [ReactNativeConfig envFor:@"ENV_NAME"];
   if ([envName isEqualToString:@"prod"] || [envName isEqualToString:@"alpha"])
   {
-    jsCodeLocation = [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];
+    // jsCodeLocation = [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];
+    jsCodeLocation = [CodePush bundleURL];
   }
   else
   {
