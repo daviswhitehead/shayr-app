@@ -57,6 +57,7 @@ buck-out/
 */fastlane/Preview.html
 */fastlane/screenshots
 shayr.app.dSYM.zip
+android/api*.json
 
 
 # Secrets
