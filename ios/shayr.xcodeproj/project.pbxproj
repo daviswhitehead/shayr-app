@@ -1949,7 +1949,7 @@
 					"$(SRCROOT)/../node_modules/react-native-share-extension/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-share-firebase/ios/RNFirebase/**",
 					"$(SRCROOT)/../node_modules/react-native-swiss-knife/ios/RNSKText/**",
-					"$(SRCROOT)/../node_modules/react-native-config/io/ReactNativeConfig",
+					"$(SRCROOT)/../node_modules/react-native-config/ios/ReactNativeConfig",
 					"${PODS_ROOT}/Fabric/**",
 					"${PODS_ROOT}/Crashlytics/**",
 				);
@@ -2015,7 +2015,7 @@
 					"$(SRCROOT)/../node_modules/react-native-share-extension/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-share-firebase/ios/RNFirebase/**",
 					"$(SRCROOT)/../node_modules/react-native-swiss-knife/ios/RNSKText/**",
-					"$(SRCROOT)/../node_modules/react-native-config/io/ReactNativeConfig",
+					"$(SRCROOT)/../node_modules/react-native-config/ios/ReactNativeConfig",
 					"${PODS_ROOT}/Fabric/**",
 					"${PODS_ROOT}/Crashlytics/**",
 				);

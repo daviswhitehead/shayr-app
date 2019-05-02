@@ -46,8 +46,9 @@
   NSString *envName = [ReactNativeConfig envFor:@"ENV_NAME"];
   if ([envName isEqualToString:@"prod"] || [envName isEqualToString:@"alpha"])
   {
-    // jsCodeLocation = [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];
     jsCodeLocation = [CodePush bundleURL];
+    // Uncomment for console output in Xcode console for release mode on device:
+    // RCTSetLogThreshold(RCTLogLevelInfo - 1);
   }
   else
   {

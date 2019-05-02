@@ -37,8 +37,7 @@ class Share extends Component {
     super();
     this.state = {
       modalVisible: true,
-      // shareText: 'Shayring...',
-      shareText: 'MEOWWWWLAKSJLKDJ',
+      shareText: 'Shayring...',
     };
     firebase.analytics().logEvent('SHARE_EXTENSION_LAUNCH');
   }
@@ -141,4 +140,3 @@ class Share extends Component {
 }
 
 export default codePush(Share);
-// export default Share;
