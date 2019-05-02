@@ -113,12 +113,12 @@ export const removeAddedPost = (user, postId) => {
     });
 };
 
-export const createShare = (ref, url) => ref
+export const createShare = (ref, payload) => ref
   .collection('inboundShares')
   .add({
     createdAt: ts,
     updatedAt: ts,
-    url,
+    payload,
   })
   .then((ref) => {
     console.log('createShare success');
