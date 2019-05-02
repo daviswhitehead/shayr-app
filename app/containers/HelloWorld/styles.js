@@ -10,7 +10,8 @@ export default StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'flex-start',
     alignItems: 'stretch',
-    backgroundColor: colors.WHITE,
+    // backgroundColor: colors.WHITE,
+    backgroundColor: 'blue',
   },
   contentBox: {
     flexDirection: 'row',

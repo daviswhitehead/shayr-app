@@ -14,6 +14,8 @@
 #import <Firebase.h>
 #import <Fabric/Fabric.h>
 #import <Crashlytics/Crashlytics.h>
+#import "ReactNativeConfig.h"
+#import <CodePush/CodePush.h>
 
 @interface ShareExtension : ReactNativeShareExtension
 @end
@@ -23,21 +25,28 @@
 RCT_EXPORT_MODULE();
 
 - (UIView*) shareView {
-  NSURL *jsCodeLocation;
-  
   [FIRApp configure];
   [Fabric with:@[[Crashlytics class]]];
   
-  jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index" fallbackResource:nil];
+  // JavaScript Code Location
+  NSURL *jsCodeLocation;
+  NSString *envName = [ReactNativeConfig envFor:@"ENV_NAME"];
+  if ([envName isEqualToString:@"prod"] || [envName isEqualToString:@"alpha"])
+  {
+    jsCodeLocation = [CodePush bundleURL];
+    // Uncomment for console output in Xcode console for release mode on device:
+    // RCTSetLogThreshold(RCTLogLevelInfo - 1);
+  }
+  else
+  {
+    jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index" fallbackResource:nil];
+  }
   
   RCTRootView *rootView = [[RCTRootView alloc] initWithBundleURL:jsCodeLocation
                                                       moduleName:@"ShareExtension"
                                                initialProperties:nil
                                                    launchOptions:nil];
   rootView.backgroundColor = nil;
-  
-  // Uncomment for console output in Xcode console for release mode on device:
-  RCTSetLogThreshold(RCTLogLevelInfo - 1);
   
   return rootView;
 }

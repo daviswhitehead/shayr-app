@@ -24,6 +24,7 @@ DerivedData
 project.xcworkspace
 ios/Index/DataStore
 ios/Pods/
+ios/shayr/Images.xcassets/AppIcon.appiconset/*
 
 # Android/IntelliJ
 #
@@ -34,6 +35,7 @@ local.properties
 *.iml
 gradle.properties
 shayr-key.jks
+android/app/src/main/res/*/ic_launcher*.png
 
 # node.js
 #
@@ -56,6 +58,7 @@ buck-out/
 */fastlane/report.xml
 */fastlane/Preview.html
 */fastlane/screenshots
+fastlane/.env.default
 shayr.app.dSYM.zip
 android/api*.json
 

@@ -17,6 +17,7 @@ import { getFBAuthCredential, getCurrentUser } from '../../lib/FirebaseLogin';
 import { createShare } from '../../lib/FirebaseHelpers';
 import { buildAppLink } from '../../lib/DeepLinks';
 import { userAnalytics } from '../../lib/FirebaseAnalytics';
+import codePush from "react-native-code-push";
 
 const tapShareExtension = () => {
   const url = buildAppLink('shayr', 'shayr', 'Feed', {});
@@ -31,7 +32,7 @@ const tapShareExtension = () => {
     .catch(err => console.error('An error occurred', err));
 };
 
-export default class MyComponent extends Component {
+class Share extends Component {
   constructor() {
     super();
     this.state = {
@@ -137,3 +138,5 @@ export default class MyComponent extends Component {
     );
   }
 }
+
+export default codePush(Share);
