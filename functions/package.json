@@ -9,7 +9,7 @@
     "logs": "firebase functions:log",
     "test": "mocha --reporter spec",
     "dev": "firebase use shayr-dev",
-    "prod": "firebase use shayr",
+    "prod": "firebase use shayr-a2346",
     "lint": "eslint ."
   },
   "dependencies": {
