@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import firebase from 'react-native-firebase';
 import ShareExtension from 'react-native-share-extension';
+import codePush from 'react-native-code-push';
 import styles from './styles';
 import shareExtensionLogo from '../../assets/ShareExtensionLogo.png';
 import { retrieveToken } from '../../lib/AppGroupTokens';
@@ -17,10 +18,9 @@ import { getFBAuthCredential, getCurrentUser } from '../../lib/FirebaseLogin';
 import { createShare } from '../../lib/FirebaseHelpers';
 import { buildAppLink } from '../../lib/DeepLinks';
 import { userAnalytics } from '../../lib/FirebaseAnalytics';
-import codePush from "react-native-code-push";
 
 const tapShareExtension = () => {
-  const url = buildAppLink('shayr', 'shayr', 'Feed', {});
+  const url = buildAppLink('shayr', 'shayr', 'Discover', {});
   Linking.canOpenURL(url)
     .then((supported) => {
       if (!supported) {

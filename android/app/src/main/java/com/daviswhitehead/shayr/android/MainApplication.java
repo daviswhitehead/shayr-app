@@ -60,6 +60,8 @@ import com.oblador.vectoricons.VectorIconsPackage;
 import com.alinz.parkerdan.shareextension.SharePackage;
 import com.github.alinz.rnsk.RNSKPackage;
 
+// React Native SVG 
+
 public class MainApplication extends Application implements ReactApplication {
 
   private static CallbackManager mCallbackManager = CallbackManager.Factory.create();
@@ -83,7 +85,8 @@ public class MainApplication extends Application implements ReactApplication {
     @Override
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(new MainReactPackage(),
-          new CodePush(BuildConfig.ANDROID_CODEPUSH_DEPLOYMENT_KEY, getApplicationContext(), BuildConfig.DEBUG), new RNFirebaseAnalyticsPackage(),
+          new CodePush(BuildConfig.ANDROID_CODEPUSH_DEPLOYMENT_KEY, getApplicationContext(), BuildConfig.DEBUG),
+          new RNFirebaseAnalyticsPackage(),
           new RNGestureHandlerPackage(), new SplashScreenReactPackage(), new ReactNativeConfigPackage(),
           new VectorIconsPackage(), new RNSKPackage(), new SharePackage(), new RNFirebasePackage(),
           new RNFirebaseAuthPackage(), new RNFirebaseFirestorePackage(), new RNFirebaseCrashlyticsPackage(),

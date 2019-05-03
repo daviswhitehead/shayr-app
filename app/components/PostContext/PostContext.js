@@ -1,17 +1,14 @@
-import React, { Component } from "react";
-import { View, Text } from "react-native";
-import PropTypes from "prop-types";
-import styles from "./styles";
-import FontHeadingOne from "../FontHeadingOne";
+import React, { Component } from 'react';
+import { View, Text } from 'react-native';
+import PropTypes from 'prop-types';
+import styles from './styles';
+import FontHeadingOne from '../Text/FontHeadingOne';
 
 export default class PostContext extends Component {
   static propTypes = {
     title: PropTypes.string.isRequired,
     publisher: PropTypes.string.isRequired,
-    actions: PropTypes.oneOfType([
-      PropTypes.arrayOf(PropTypes.element),
-      PropTypes.bool
-    ])
+    actions: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.element), PropTypes.bool]),
   };
 
   render() {

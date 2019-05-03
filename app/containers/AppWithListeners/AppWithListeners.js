@@ -15,7 +15,7 @@ import RootNavigator from '../../config/Routes';
 import AppLoading from '../../components/AppLoading';
 import { dynamicLinkListener } from '../../lib/FirebaseDynamicLinks';
 import { currentScreenAnalytics } from '../../lib/FirebaseAnalytics';
-import NavigationService from '../../lib/NavigationService';
+import { setTopLevelNavigator } from '../../lib/ReactNavigationHelpers';
 
 const mapStateToProps = state => ({
   auth: state.auth,
@@ -111,7 +111,7 @@ class AppWithListeners extends Component {
       return (
         <RootNavigator
           ref={(navigatorRef) => {
-            NavigationService.setTopLevelNavigator(navigatorRef);
+            setTopLevelNavigator(navigatorRef);
           }}
           uriPrefix="shayrdev://"
           onNavigationStateChange={(prevState, currentState) => {

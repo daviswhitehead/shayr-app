@@ -29,6 +29,7 @@ def shared_pods
   # pod 'react-native-config', :path => '../node_modules/react-native-config'
   pod 'react-native-splash-screen', :path => '../node_modules/react-native-splash-screen'
   pod 'RNGestureHandler', :path => '../node_modules/react-native-gesture-handler'
+  # pod 'RNSVG', :path => '../node_modules/react-native-svg'
 
   # Firebase
   pod 'Firebase/Auth', '~> 5.20.1'

@@ -1,5 +1,5 @@
 import { protocols, parseAppLink } from '../../lib/DeepLinks';
-import NavigationService from '../../lib/NavigationService';
+import { navigate } from '../../lib/ReactNavigationHelpers';
 
 export const types = {
   ROUTE_ADDED: 'ROUTE_ADDED',
@@ -7,7 +7,7 @@ export const types = {
 };
 
 export function navigateToRoute(payload) {
-  NavigationService.navigate(payload.screen, payload.params);
+  navigate(payload.screen, payload.params);
   return { type: types.ROUTE_REMOVED };
 }
 

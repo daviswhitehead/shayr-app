@@ -2,48 +2,60 @@ import {
   createSwitchNavigator,
   createStackNavigator,
   createAppContainer,
-  // createBottomTabNavigator,
+  createBottomTabNavigator,
 } from 'react-navigation';
 import ListenersLoaded from '../containers/ListenersLoaded';
-import Feed from '../containers/Feed';
-import Queue from '../containers/Queue';
+import Discover from '../containers/Discover';
+import MyList from '../containers/MyList';
 import Login from '../containers/Login';
 import PostDetail from '../containers/PostDetail';
-import HelloWorld from '../containers/HelloWorld';
+import ComingSoon from '../containers/ComingSoon';
+import TabBar from '../components/TabBar';
 
-// const TabStack = createBottomTabNavigator({
-//   Feed,
-//   Queue,
-// });
+const DiscoverStack = createStackNavigator({
+  Discover: {
+    screen: Discover,
+    navigationOptions: () => ({
+      header: null,
+    }),
+  },
+  PostDetail: {
+    screen: PostDetail,
+    navigationOptions: () => ({
+      header: null,
+    }),
+  },
+});
 
-const AppStack = createStackNavigator(
-  {
-    Feed: {
-      screen: Feed,
-      navigationOptions: () => ({
-        header: null,
-      }),
-    },
-    Queue: {
-      screen: Queue,
-      navigationOptions: () => ({
-        header: null,
-      }),
-    },
-    PostDetail: {
-      screen: PostDetail,
-      navigationOptions: () => ({
-        header: null,
-      }),
-    },
-    HelloWorld: {
-      screen: HelloWorld,
-    },
+const MyListStack = createStackNavigator({
+  MyList: {
+    screen: MyList,
+    navigationOptions: () => ({
+      header: null,
+    }),
   },
-  {
-    initialRouteName: 'Feed',
+  PostDetail: {
+    screen: PostDetail,
+    navigationOptions: () => ({
+      header: null,
+    }),
   },
-);
+  Settings: {
+    screen: ComingSoon,
+    navigationOptions: () => ({
+      header: null,
+    }),
+  },
+});
+
+const FriendsStack = createStackNavigator({
+  ComingSoon: {
+    screen: ComingSoon,
+    navigationOptions: () => ({
+      header: null,
+    }),
+  },
+});
 
 const AuthStack = createStackNavigator({
   Login: {
@@ -53,12 +65,23 @@ const AuthStack = createStackNavigator({
     }),
   },
 });
+const TabStack = createBottomTabNavigator(
+  {
+    Discover: DiscoverStack,
+    MyList: MyListStack,
+    Friends: FriendsStack,
+  },
+  {
+    initialRouteName: 'Discover',
+    tabBarComponent: TabBar,
+  },
+);
 
 export default createAppContainer(
   createSwitchNavigator(
     {
       ListenersLoaded,
-      App: AppStack,
+      App: TabStack,
       Auth: AuthStack,
     },
     {

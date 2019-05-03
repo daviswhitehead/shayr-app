@@ -7,8 +7,8 @@ import _ from 'lodash';
 import styles from './styles';
 import article from '../../assets/Article.png';
 import PostAction from '../PostAction';
-import FontHeadingTwo from '../FontHeadingTwo';
-import FontSubHeading from '../FontSubHeading';
+import FontHeadingTwo from '../Text/FontHeadingTwo';
+import FontSubHeading from '../Text/FontSubHeading';
 
 export default class ContentCard extends Component {
   static propTypes = {
