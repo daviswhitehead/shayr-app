@@ -9,7 +9,6 @@ export default StyleSheet.create({
     flex: 1,
     flexDirection: 'column',
     justifyContent: 'center',
-    backgroundColor: 'white',
   },
   headerBox: {
     flex: 1,

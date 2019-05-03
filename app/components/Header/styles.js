@@ -3,7 +3,9 @@ import layout from '../../styles/Layout';
 import { fontSystem } from '../../styles/Fonts';
 
 export default StyleSheet.create({
-  container: {},
+  container: {
+    overflow: 'visible',
+  },
   header: {
     height: Platform.OS === 'ios' ? 44 : 56,
   },

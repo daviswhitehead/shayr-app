@@ -14,10 +14,9 @@ import PostImage from '../../components/PostImage';
 import PostContext from '../../components/PostContext';
 import PostAction from '../../components/PostAction';
 import ProfileIcon from '../../components/ProfileIcon';
-import FontBody from '../../components/FontBody';
+import FontBody from '../../components/Text/FontBody';
 import { openURL } from '../../lib/Utils';
 import { getProfile } from '../../lib/SocialConnectors';
-import firebase from 'react-native-firebase';
 
 const mapStateToProps = state => ({
   auth: state.auth,
@@ -30,7 +29,6 @@ const mapDispatchToProps = dispatch => ({
   postAction: (actionType, userId, postId) => dispatch(postAction(actionType, userId, postId)),
   resetPostDetail: () => dispatch(resetPostDetail()),
 });
-
 
 class PostDetail extends Component {
   static propTypes = {
@@ -230,7 +228,9 @@ class PostDetail extends Component {
   }
 }
 
-export default withNavigationFocus(connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(PostDetail));
+export default withNavigationFocus(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps,
+  )(PostDetail),
+);

@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import { View, SafeAreaView } from 'react-native';
 import PropTypes from 'prop-types';
 import styles from './styles';
-import ShayrStatusBar from '../ShayrStatusBar';
-import FontTitle from '../FontTitle';
+import ShayrStatusBar from './ShayrStatusBar';
+import FontTitle from '../Text/FontTitle';
 import createShadow from '../../styles/Shadows';
-import HeaderBack from '../HeaderBack';
+import HeaderBack from './HeaderBack';
 
 class Header extends Component {
   static propTypes = {
@@ -21,10 +21,12 @@ class Header extends Component {
   static defaultProps = {
     shadow: false,
     back: null,
+    statusBarTranslucent: true,
+    statusBarHidden: false,
   };
 
   render() {
-    const shadowStyle = this.props.shadow ? createShadow(5) : {};
+    const shadowStyle = this.props.shadow ? createShadow(4) : {};
 
     return (
       <View
@@ -35,8 +37,8 @@ class Header extends Component {
         }}
       >
         <ShayrStatusBar
-          translucent={this.props.statusBarTranslucent || true}
-          hidden={this.props.statusBarHidden || false}
+          translucent={this.props.statusBarTranslucent}
+          hidden={this.props.statusBarHidden}
           barStyle={this.props.statusBarStyle}
           backgroundColor={this.props.backgroundColor}
         />

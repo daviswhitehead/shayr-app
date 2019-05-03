@@ -5,7 +5,7 @@
   "rules": {
     "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
     "react/prefer-stateless-function": [0, { "ignorePureComponents": true }],
-    "react/destructuring-assignment": [1, "never"],
+    "react/destructuring-assignment": [0, "never"],
     "no-underscore-dangle": [0, { "allow": true }]
   }
 }

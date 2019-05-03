@@ -83,7 +83,8 @@ public class MainApplication extends Application implements ReactApplication {
     @Override
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(new MainReactPackage(),
-          new CodePush(BuildConfig.ANDROID_CODEPUSH_DEPLOYMENT_KEY, getApplicationContext(), BuildConfig.DEBUG), new RNFirebaseAnalyticsPackage(),
+          new CodePush(BuildConfig.ANDROID_CODEPUSH_DEPLOYMENT_KEY, getApplicationContext(), BuildConfig.DEBUG),
+          new RNFirebaseAnalyticsPackage(),
           new RNGestureHandlerPackage(), new SplashScreenReactPackage(), new ReactNativeConfigPackage(),
           new VectorIconsPackage(), new RNSKPackage(), new SharePackage(), new RNFirebasePackage(),
           new RNFirebaseAuthPackage(), new RNFirebaseFirestorePackage(), new RNFirebaseCrashlyticsPackage(),

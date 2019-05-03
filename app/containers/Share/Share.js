@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import firebase from 'react-native-firebase';
 import ShareExtension from 'react-native-share-extension';
+import codePush from 'react-native-code-push';
 import styles from './styles';
 import shareExtensionLogo from '../../assets/ShareExtensionLogo.png';
 import { retrieveToken } from '../../lib/AppGroupTokens';
@@ -18,7 +19,6 @@ import { getFBAuthCredential, getCurrentUser } from '../../lib/FirebaseLogin';
 import { createShare } from '../../lib/FirebaseHelpers';
 import { buildAppLink } from '../../lib/DeepLinks';
 import { userAnalytics } from '../../lib/FirebaseAnalytics';
-import codePush from "react-native-code-push";
 
 const tapShareExtension = async () => {
   const url = buildAppLink('shayr', 'shayr', 'Feed', {});
@@ -41,6 +41,7 @@ class Share extends Component {
   }
 
   async componentDidMount() {
+    firebase.analytics().setCurrentScreen('Share');
     this.authSubscription = firebase.auth().onAuthStateChanged((user) => {
       this.setState(previousState => ({
         ...previousState,
