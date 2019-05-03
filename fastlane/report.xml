@@ -5,32 +5,47 @@
     
     
       
-      <testcase classname="fastlane.lanes" name="0: Verifying fastlane version" time="0.003612">
+      <testcase classname="fastlane.lanes" name="0: Verifying fastlane version" time="0.004156">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="1: gradle" time="3.634257">
+      <testcase classname="fastlane.lanes" name="1: gradle" time="3.562834">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="2: increment_version_code" time="0.007701">
+      <testcase classname="fastlane.lanes" name="2: increment_version_code" time="0.007579">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="3: gradle" time="65.767426">
+      <testcase classname="fastlane.lanes" name="3: gradle" time="64.213657">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="4: crashlytics" time="11.749299">
+      <testcase classname="fastlane.lanes" name="4: crashlytics" time="15.497908">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="5: upload_to_play_store" time="18.268266">
+      <testcase classname="fastlane.lanes" name="5: upload_to_play_store" time="27.834536">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="6: Switch to android update_codepush_builds lane" time="0.004913">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="7: pwd" time="0.011418">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="8: cd .. &amp;&amp; appcenter codepush release-react -a whitehead.davis/Shayr-Android -d alpha" time="7.870236">
         
       </testcase>
     

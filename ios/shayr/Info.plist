@@ -9,7 +9,7 @@
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
-	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+	<string>com.daviswhitehead.shayr.ios.alpha</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
@@ -17,7 +17,7 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.0.3</string>
+	<string>2.1</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleURLTypes</key>
@@ -50,11 +50,13 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>48</string>
+	<string>49</string>
+	<key>CodePushDeploymentKey</key>
+	<string>__RN_CONFIG_IOS_CODEPUSH_DEPLOYMENT_KEY</string>
 	<key>Fabric</key>
 	<dict>
 		<key>APIKey</key>
-		<string>c12e5c4bb8cd8ca855a8ada44fa3fde413006659</string>
+		<string>__RN_CONFIG_FABRIC_API_KEY</string>
 		<key>Kits</key>
 		<array>
 			<dict>
@@ -66,9 +68,9 @@
 		</array>
 	</dict>
 	<key>FacebookAppID</key>
-	<string>152320078878051</string>
+	<string>__RN_CONFIG_FACEBOOK_APP_ID</string>
 	<key>FacebookDisplayName</key>
-	<string>shayr</string>
+	<string>__RN_CONFIG_BUNDLE_DISPLAY_NAME</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>LSApplicationQueriesSchemes</key>

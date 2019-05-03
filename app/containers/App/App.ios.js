@@ -3,6 +3,7 @@ import { Provider } from 'react-redux';
 import createStore from '../../redux/CreateStore';
 import AppWithListeners from '../AppWithListeners';
 import styles from './styles';
+import codePush from "react-native-code-push";
 
 const store = createStore();
 
@@ -18,4 +19,4 @@ class App extends Component {
   }
 }
 
-export default App;
+export default codePush(App);

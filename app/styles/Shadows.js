@@ -7,7 +7,7 @@ const createShadow = _elevation => ({
     height: 0.6 * _elevation,
   },
   elevation: _elevation,
-  shadowColor: colors.SHADOW,
+  shadowColor: colors.BLACK,
 });
 
 export default createShadow;

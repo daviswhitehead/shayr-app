@@ -7,6 +7,7 @@ import java.util.List;
 
 // React Native
 import com.facebook.react.ReactApplication;
+import com.microsoft.codepush.react.CodePush;
 import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
 import org.devio.rn.splashscreen.SplashScreenReactPackage;
 import com.facebook.react.ReactNativeHost;
@@ -68,6 +69,12 @@ public class MainApplication extends Application implements ReactApplication {
   }
 
   private final ReactNativeHost mReactNativeHost = new ReactNativeHost(this) {
+
+    @Override
+    protected String getJSBundleFile() {
+      return CodePush.getJSBundleFile();
+    }
+    
     @Override
     public boolean getUseDeveloperSupport() {
       return BuildConfig.DEBUG;
@@ -75,7 +82,9 @@ public class MainApplication extends Application implements ReactApplication {
 
     @Override
     protected List<ReactPackage> getPackages() {
-      return Arrays.<ReactPackage>asList(new MainReactPackage(), new RNFirebaseAnalyticsPackage(),
+      return Arrays.<ReactPackage>asList(new MainReactPackage(),
+          new CodePush(BuildConfig.ANDROID_CODEPUSH_DEPLOYMENT_KEY, getApplicationContext(), BuildConfig.DEBUG),
+          new RNFirebaseAnalyticsPackage(),
           new RNGestureHandlerPackage(), new SplashScreenReactPackage(), new ReactNativeConfigPackage(),
           new VectorIconsPackage(), new RNSKPackage(), new SharePackage(), new RNFirebasePackage(),
           new RNFirebaseAuthPackage(), new RNFirebaseFirestorePackage(), new RNFirebaseCrashlyticsPackage(),

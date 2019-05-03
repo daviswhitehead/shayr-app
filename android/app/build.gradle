@@ -79,6 +79,7 @@ project.ext.react = [
 ]
 
 apply from: "../../node_modules/react-native/react.gradle"
+apply from: "../../node_modules/react-native-code-push/android/codepush.gradle"
 
 /**
  * Set this to true to create two separate APKs instead of one:
@@ -109,8 +110,8 @@ android {
         applicationIdSuffix project.env.get("APP_ID_SUFFIX_ANDROID")
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 54
-        versionName "2.0.0"
+        versionCode 57
+        versionName "2.1.0"
         ndk {
             abiFilters "armeabi-v7a", "x86"
         }
@@ -180,6 +181,7 @@ dependencies {
     implementation project(':react-native-share-extension')
     implementation project(':react-native-splash-screen')
     implementation project(':react-native-gesture-handler')
+    implementation project(':react-native-code-push')
     
     // // FBSDK
     implementation project(':react-native-fbsdk')

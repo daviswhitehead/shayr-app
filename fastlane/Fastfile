@@ -6,7 +6,7 @@ fastlane_version '2.96.1'
 fastlane_require 'dotenv/load'
 
 
-# before_all do
+# before_all dodesc 'update codepush builds'
 #   ensure_git_branch
 #   ensure_git_status_clean
 #   git_pull
@@ -69,6 +69,12 @@ platform :ios do
     )
   end
 
+  desc 'update codepush builds'
+  lane :update_codepush_builds do
+    sh("pwd")
+    sh("cd .. && appcenter codepush release-react -a whitehead.davis/Shayr-iOS -d " + ENV['ENV_NAME'])
+  end
+
   desc 'ship a beta'
   lane :beta do
     development_certificates
@@ -78,6 +84,7 @@ platform :ios do
       api_token: ENV['FABRIC_API_KEY'],
       build_secret: ENV['FABRIC_BUILD_SECRET']
     )
+    update_codepush_builds
     # commit_version_bump(
     #   message: 'bump build',
     #   xcodeproj: './ios/shayr.xcodeproj'
@@ -97,6 +104,7 @@ platform :ios do
       build_secret: ENV['FABRIC_BUILD_SECRET']
     )
     upload_to_app_store
+    update_codepush_builds
     # commit_version_bump(
     #   message: 'bump build',
     #   xcodeproj: './ios/shayr.xcodeproj'
@@ -106,6 +114,12 @@ platform :ios do
 end
 
 platform :android do
+
+  desc 'update codepush builds'
+  lane :update_codepush_builds do
+    sh("pwd")
+    sh("cd .. && appcenter codepush release-react -a whitehead.davis/Shayr-Android -d " + ENV['ENV_NAME'])
+  end
 
   desc 'ship a beta'
   lane :beta do
@@ -136,5 +150,6 @@ platform :android do
       track: 'alpha',
       package_name: ENV['APP_ID_ANDROID'] + ENV['APP_ID_SUFFIX_ANDROID']
     )
+    update_codepush_builds
   end
 end

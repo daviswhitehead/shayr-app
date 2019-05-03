@@ -31,6 +31,11 @@ development certificates and provisioning profiles
 fastlane ios update_bundle_ids
 ```
 update bundle ids per environment
+### ios update_codepush_builds
+```
+fastlane ios update_codepush_builds
+```
+update codepush builds
 ### ios beta
 ```
 fastlane ios beta
@@ -45,6 +50,11 @@ ship a release
 ----
 
 ## Android
+### android update_codepush_builds
+```
+fastlane android update_codepush_builds
+```
+update codepush builds
 ### android beta
 ```
 fastlane android beta

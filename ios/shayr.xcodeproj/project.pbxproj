@@ -22,9 +22,7 @@
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		140ED2AC1D01E1AD002B40FF /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
-		146834051AC3E58100842450 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
 		2C2B77A161484920B65085F4 /* Feather.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7D5DCBF1E4C446F8904729CF /* Feather.ttf */; };
-		2DF0FFEE2056DD460020B375 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DAD3EA31DF850E9000B6D8A /* libReact.a */; };
 		3042DFBB8E7C4EB0A7AD2A91 /* Ionicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2633A0E7BE4145E59C93AD9B /* Ionicons.ttf */; };
 		3438A631ECEC4F0B9EB65FBB /* MaterialIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 69AB6B62A5614E80A8D734AB /* MaterialIcons.ttf */; };
 		45720E75DBA9422DAE3762C0 /* NunitoSans-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 917E7D2DF7744D548B7F0A15 /* NunitoSans-Regular.ttf */; };
@@ -54,8 +52,6 @@
 		58B59254201E8E96005CC7F4 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 58B5923B201E8CA1005CC7F4 /* Info.plist */; };
 		5E181381C6B0478B9CD50353 /* Octicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C2C0912B82C644C6AD24C98A /* Octicons.ttf */; };
 		611A54BF218DDA9A00AA41FB /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 611A54BE218DDA9A00AA41FB /* GoogleService-Info.plist */; };
-		612BCE6A22150A25003727C0 /* libRNGestureHandler.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 612BCE6822150A10003727C0 /* libRNGestureHandler.a */; };
-		612BCE6B22150A37003727C0 /* libRNGestureHandler.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 612BCE6822150A10003727C0 /* libRNGestureHandler.a */; };
 		614DBD442084CDEF007ADF34 /* libRNFirebase.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 58B5922E201E8B53005CC7F4 /* libRNFirebase.a */; };
 		614DBDB62084F857007ADF34 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 614DBD8D2084F857007ADF34 /* GoogleService-Info.plist */; };
 		614DBE3B20855A82007ADF34 /* libRNSKBucket.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 614DBDF1208501EE007ADF34 /* libRNSKBucket.a */; };
@@ -326,13 +322,6 @@
 			remoteGlobalIDString = ED296FEE214C9CF800B7C4FE;
 			remoteInfo = "jsiexecutor-tvOS";
 		};
-		5475B1532262576E002A7240 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 612BCE3922150A0E003727C0 /* RNGestureHandler.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = B5C32A36220C603B000FFB8D;
-			remoteInfo = "RNGestureHandler-tvOS";
-		};
 		58B59227201E8B53005CC7F4 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 7ABAAC345F3D4454AD96E50E /* RCTFBSDK.xcodeproj */;
@@ -539,11 +528,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				544EC3B4226288210081E80F /* JavaScriptCore.framework in Frameworks */,
-				612BCE6A22150A25003727C0 /* libRNGestureHandler.a in Frameworks */,
 				61CF5E7B219BA6DD00164E15 /* libRCTAnimation.a in Frameworks */,
 				6172C8AB218F98F000231FF0 /* libReactNativeConfig.a in Frameworks */,
 				ADBDB9381DFEBF1600ED6528 /* libRCTBlob.a in Frameworks */,
-				146834051AC3E58100842450 /* libReact.a in Frameworks */,
 				00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */,
 				00C302E71ABCBA2D00DB3ED1 /* libRCTGeolocation.a in Frameworks */,
 				00C302E81ABCBA2D00DB3ED1 /* libRCTImage.a in Frameworks */,
@@ -568,7 +555,6 @@
 			files = (
 				544EC2F5226278590081E80F /* JavaScriptCore.framework in Frameworks */,
 				5471CFE922626C7A0003EECE /* libReactNativeShareExtension.a in Frameworks */,
-				612BCE6B22150A37003727C0 /* libRNGestureHandler.a in Frameworks */,
 				6172C8AC218F992000231FF0 /* libReactNativeConfig.a in Frameworks */,
 				614DBE3B20855A82007ADF34 /* libRNSKBucket.a in Frameworks */,
 				614DBD442084CDEF007ADF34 /* libRNFirebase.a in Frameworks */,
@@ -583,7 +569,6 @@
 				58B5924E201E8E14005CC7F4 /* libRCTText.a in Frameworks */,
 				58B5924F201E8E14005CC7F4 /* libRCTVibration.a in Frameworks */,
 				58B59250201E8E14005CC7F4 /* libRCTWebSocket.a in Frameworks */,
-				2DF0FFEE2056DD460020B375 /* libReact.a in Frameworks */,
 				56C00D74811CADC0B159936E /* libPods-ShareExtension.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -794,7 +779,6 @@
 			isa = PBXGroup;
 			children = (
 				612BCE6822150A10003727C0 /* libRNGestureHandler.a */,
-				5475B1542262576E002A7240 /* libRNGestureHandler-tvOS.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1383,13 +1367,6 @@
 			remoteRef = 5475B14B2262576E002A7240 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		5475B1542262576E002A7240 /* libRNGestureHandler-tvOS.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = "libRNGestureHandler-tvOS.a";
-			remoteRef = 5475B1532262576E002A7240 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
 		58B59228201E8B53005CC7F4 /* libRCTFBSDK.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -1555,11 +1532,33 @@
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-shayr/Pods-shayr-resources.sh",
 				"${PODS_ROOT}/FBSDKCoreKit/FacebookSDKStrings.bundle",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Entypo.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/EvilIcons.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Feather.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/FontAwesome.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Foundation.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Ionicons.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/MaterialIcons.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Octicons.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/SimpleLineIcons.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Zocial.ttf",
 				"${PODS_CONFIGURATION_BUILD_DIR}/gRPC-C++/gRPCCertificates.bundle",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/FacebookSDKStrings.bundle",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Entypo.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/EvilIcons.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Feather.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/FontAwesome.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Foundation.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Ionicons.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/MaterialCommunityIcons.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/MaterialIcons.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Octicons.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/SimpleLineIcons.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Zocial.ttf",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/gRPCCertificates.bundle",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1574,10 +1573,32 @@
 			);
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-ShareExtension/Pods-ShareExtension-resources.sh",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Entypo.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/EvilIcons.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Feather.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/FontAwesome.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Foundation.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Ionicons.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/MaterialIcons.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Octicons.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/SimpleLineIcons.ttf",
+				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/Zocial.ttf",
 				"${PODS_CONFIGURATION_BUILD_DIR}/gRPC-C++/gRPCCertificates.bundle",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Entypo.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/EvilIcons.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Feather.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/FontAwesome.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Foundation.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Ionicons.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/MaterialCommunityIcons.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/MaterialIcons.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Octicons.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/SimpleLineIcons.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Zocial.ttf",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/gRPCCertificates.bundle",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1735,14 +1756,7 @@
 				INFOPLIST_FILE = shayrTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-lc++",
@@ -1773,14 +1787,7 @@
 				INFOPLIST_FILE = shayrTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-lc++",
@@ -1800,7 +1807,7 @@
 				CODE_SIGN_ENTITLEMENTS = shayr/shayr.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 48;
+				CURRENT_PROJECT_VERSION = 49;
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = D5PU696EY8;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1825,10 +1832,10 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.daviswhitehead.shayr.ios.prod;
+				PRODUCT_BUNDLE_IDENTIFIER = com.daviswhitehead.shayr.ios.alpha;
 				PRODUCT_NAME = shayr;
 				PROVISIONING_PROFILE = "79422a41-6d0f-4716-a7e8-63a814ca54ea";
-				PROVISIONING_PROFILE_SPECIFIER = "match Development com.daviswhitehead.shayr.ios.prod";
+				PROVISIONING_PROFILE_SPECIFIER = "match Development com.daviswhitehead.shayr.ios.alpha";
 				TARGETED_DEVICE_FAMILY = 1;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -1843,7 +1850,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 48;
+				CURRENT_PROJECT_VERSION = 49;
 				DEVELOPMENT_TEAM = D5PU696EY8;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1867,10 +1874,10 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.daviswhitehead.shayr.ios.prod;
+				PRODUCT_BUNDLE_IDENTIFIER = com.daviswhitehead.shayr.ios.alpha;
 				PRODUCT_NAME = shayr;
 				PROVISIONING_PROFILE = "56ed9696-3c0c-424a-8283-8e7224744bf2";
-				PROVISIONING_PROFILE_SPECIFIER = "match AppStore com.daviswhitehead.shayr.ios.prod";
+				PROVISIONING_PROFILE_SPECIFIER = "match AppStore com.daviswhitehead.shayr.ios.alpha";
 				TARGETED_DEVICE_FAMILY = 1;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -1913,7 +1920,7 @@
 					"$(SRCROOT)/../node_modules/react-native-share-extension/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-share-firebase/ios/RNFirebase/**",
 					"$(SRCROOT)/../node_modules/react-native-swiss-knife/ios/RNSKText/**",
-					"$(SRCROOT)/../node_modules/react-native-config/io/ReactNativeConfig",
+					"$(SRCROOT)/../node_modules/react-native-config/ios/ReactNativeConfig",
 					"${PODS_ROOT}/Fabric/**",
 					"${PODS_ROOT}/Crashlytics/**",
 				);
@@ -1921,20 +1928,17 @@
 				INFOPLIST_PREFIX_HEADER = "${BUILD_DIR}/GeneratedInfoPlistDotEnv.h";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.daviswhitehead.shayr.ios.prod.ShareExtension;
+				PRODUCT_BUNDLE_IDENTIFIER = com.daviswhitehead.shayr.ios.alpha.ShareExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "f4be2213-70d5-4fd6-a66f-babc46639bcd";
-				PROVISIONING_PROFILE_SPECIFIER = "match Development com.daviswhitehead.shayr.ios.prod.shareextension";
+				PROVISIONING_PROFILE_SPECIFIER = "match Development com.daviswhitehead.shayr.ios.alpha.ShareExtension";
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALID_ARCHS = "armv7 armv7s arm64";
@@ -1979,7 +1983,7 @@
 					"$(SRCROOT)/../node_modules/react-native-share-extension/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-share-firebase/ios/RNFirebase/**",
 					"$(SRCROOT)/../node_modules/react-native-swiss-knife/ios/RNSKText/**",
-					"$(SRCROOT)/../node_modules/react-native-config/io/ReactNativeConfig",
+					"$(SRCROOT)/../node_modules/react-native-config/ios/ReactNativeConfig",
 					"${PODS_ROOT}/Fabric/**",
 					"${PODS_ROOT}/Crashlytics/**",
 				);
@@ -1987,20 +1991,17 @@
 				INFOPLIST_PREFIX_HEADER = "${BUILD_DIR}/GeneratedInfoPlistDotEnv.h";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.daviswhitehead.shayr.ios.prod.ShareExtension;
+				PRODUCT_BUNDLE_IDENTIFIER = com.daviswhitehead.shayr.ios.alpha.ShareExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "9570e3fa-d09a-4775-a706-8137e021ed9a";
-				PROVISIONING_PROFILE_SPECIFIER = "match AppStore com.daviswhitehead.shayr.ios.prod.ShareExtension";
+				PROVISIONING_PROFILE_SPECIFIER = "match AppStore com.daviswhitehead.shayr.ios.alpha.ShareExtension";
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALID_ARCHS = "armv7 armv7s arm64";

@@ -1,5 +1,6 @@
 import { YellowBox } from 'react-native';
-// console.disableYellowBox = true;
+
+console.disableYellowBox = true;
 
 export const devSettings = () => {
   YellowBox.ignoreWarnings(['Warning: componentWillMount']);

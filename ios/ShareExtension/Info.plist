@@ -5,11 +5,11 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>shayr</string>
+	<string>__RN_CONFIG_BUNDLE_DISPLAY_NAME</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
-	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+	<string>com.daviswhitehead.shayr.ios.alpha.ShareExtension</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
@@ -17,13 +17,15 @@
 	<key>CFBundlePackageType</key>
 	<string>XPC!</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.0.3</string>
+	<string>2.1</string>
 	<key>CFBundleVersion</key>
-	<string>48</string>
+	<string>49</string>
+	<key>CodePushDeploymentKey</key>
+	<string>__RN_CONFIG_IOS_CODEPUSH_DEPLOYMENT_KEY</string>
 	<key>Fabric</key>
 	<dict>
 		<key>APIKey</key>
-		<string>c12e5c4bb8cd8ca855a8ada44fa3fde413006659</string>
+		<string>__RN_CONFIG_FABRIC_API_KEY</string>
 		<key>Kits</key>
 		<array>
 			<dict>
@@ -45,6 +47,12 @@
 		<dict>
 			<key>NSExtensionActivationRule</key>
 			<dict>
+				<key>NSExtensionActivationDictionaryVersion</key>
+				<integer>2</integer>
+				<key>NSExtensionActivationSupportsText</key>
+				<true/>
+				<key>NSExtensionActivationSupportsWebPageWithMaxCount</key>
+				<string>1</string>
 				<key>NSExtensionActivationSupportsWebURLWithMaxCount</key>
 				<integer>1</integer>
 			</dict>
