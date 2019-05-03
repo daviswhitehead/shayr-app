@@ -32,9 +32,7 @@ const matchShareToPost = (db, url) => {
           console.log('no post found, creating a new post');
           return db
             .collection('posts')
-            .add(
-              utility.addUpdatedAt(utility.addCreatedAt({ url: url }))
-            );
+            .add(utility.addUpdatedAt(utility.addCreatedAt({ url: url })));
         }
       })
   );
@@ -43,7 +41,7 @@ const matchShareToPost = (db, url) => {
 // v1. onCreateInboundShare({createdAt: null, updatedAt: null, url: 'https://hackernoon.com/5-tips-for-building-effective-product-management-teams-c320ce54a4bb'}, {params: {userId: '0', shareId: '0'}})
 // v2a. onCreateInboundShare({createdAt: null, updatedAt: null, payload: 'Trump administration makes case to strike down Affordable Care Act entirely - CNN Politics https://hackernoon.com/5-tips-for-building-effective-product-management-teams-c320ce54a4bb'}, {params: {userId: '0', shareId: '0'}})
 // v2b. onCreateInboundShare({createdAt: null, updatedAt: null, payload: 'A Dark Consensus About Screens and Kids Begins to Emerge in Silicon Valley https://nyti.ms/2JkjOdJ'}, {params: {userId: '0', shareId: '0'}})
-// v2c. onCreateInboundShare({createdAt: null, updatedAt: null, payload: 'http://go.si.com/J4VGCS1'}, {params: {userId: '0', shareId: '0'}})
+// v2c. onCreateInboundShare({createdAt: null, updatedAt: null, payload: 'https://www.youtube.com/watch?v=fdEinX2ngU4&feature=youtu.be'}, {params: {userId: '0', shareId: '0'}})
 exports._onCreateInboundShare = async (db, snap, context) => {
   // "users/{userId}/inboundShares/{shareId}"
   const userId = context.params.userId;
@@ -52,13 +50,13 @@ exports._onCreateInboundShare = async (db, snap, context) => {
 
   var batch = db.batch();
 
-  console.log('matching url from inboundShare data')
+  console.log('matching url from inboundShare data');
   const url = payload.match(urlRegex())[0];
   console.log('found url: ', url);
-  
-  console.log('scraping metadata from url')
+
+  console.log('scraping metadata from url');
   let scrapeData = await scraper.scrape(url);
-  console.log('found metadata: ', scrapeData)
+  console.log('found metadata: ', scrapeData);
 
   console.log('match to Post or create a new Post');
   let postRef = await matchShareToPost(db, scrapeData.url);
@@ -72,10 +70,13 @@ exports._onCreateInboundShare = async (db, snap, context) => {
 
   console.log('write Post with scraped data');
   let postPayload = {
-    description: _.get(postData, 'description', '') || _.get(scrapeData, 'description', ''),
+    description:
+      _.get(postData, 'description', '') ||
+      _.get(scrapeData, 'description', ''),
     image: _.get(postData, 'image', '') || _.get(scrapeData, 'image', ''),
     medium: _.get(postData, 'medium', '') || _.get(scrapeData, 'medium', ''),
-    publisher: _.get(postData, 'publisher', '') || _.get(scrapeData, 'publisher', ''),
+    publisher:
+      _.get(postData, 'publisher', '') || _.get(scrapeData, 'publisher', ''),
     title: _.get(postData, 'title', '') || _.get(scrapeData, 'title', ''),
     url: _.get(postData, 'url', '') || _.get(scrapeData, 'url', '')
   };
