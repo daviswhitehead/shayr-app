@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   Linking,
+  Platform,
 } from 'react-native';
 import firebase from 'react-native-firebase';
 import ShareExtension from 'react-native-share-extension';
@@ -19,22 +20,19 @@ import { createShare } from '../../lib/FirebaseHelpers';
 import { buildAppLink } from '../../lib/DeepLinks';
 import { userAnalytics } from '../../lib/FirebaseAnalytics';
 
-const tapShareExtension = () => {
-  const url = buildAppLink('shayr', 'shayr', 'Discover', {});
-  Linking.canOpenURL(url)
-    .then((supported) => {
-      if (!supported) {
-        console.log(`Can't handle url: ${url}`);
-        return false;
-      }
-      return Linking.openURL(url);
-    })
-    .catch(err => console.error('An error occurred', err));
+const tapShareExtension = async () => {
+  const url = buildAppLink('shayr', 'shayr', 'Feed', {});
+  try {
+    await Platform.OS === 'ios' ? ShareExtension.openURL(url) : Linking.openURL(url);  
+  } catch (error) {
+    console.error('An error occurred:', error);
+  }
 };
 
 class Share extends Component {
   constructor() {
     super();
+    const url = buildAppLink('shayr', 'shayr', 'Feed', {});
     this.state = {
       modalVisible: true,
       shareText: 'Shayring...',

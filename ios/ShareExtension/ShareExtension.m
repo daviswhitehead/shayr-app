@@ -35,7 +35,7 @@ RCT_EXPORT_MODULE();
   {
     jsCodeLocation = [CodePush bundleURL];
     // Uncomment for console output in Xcode console for release mode on device:
-    // RCTSetLogThreshold(RCTLogLevelInfo - 1);
+    RCTSetLogThreshold(RCTLogLevelInfo - 1);
   }
   else
   {
