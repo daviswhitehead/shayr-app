@@ -3,7 +3,6 @@ import { View, Text } from 'react-native';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import styles from './styles';
-import DynamicActionButton from '../../components/DynamicActionButton';
 import List from '../../components/List';
 import ContentCard from '../../components/ContentCard';
 import Header from '../../components/Header';
@@ -147,11 +146,6 @@ class MyList extends Component {
         />
         <View style={styles.container}>
           <this.loading />
-          <DynamicActionButton
-            logout={this.signOut}
-            Discover={() => this.props.navigation.navigate('Discover')}
-            MyList={false}
-          />
         </View>
       </View>
     );

@@ -60,8 +60,6 @@ import com.oblador.vectoricons.VectorIconsPackage;
 import com.alinz.parkerdan.shareextension.SharePackage;
 import com.github.alinz.rnsk.RNSKPackage;
 
-// React Native SVG 
-
 public class MainApplication extends Application implements ReactApplication {
 
   private static CallbackManager mCallbackManager = CallbackManager.Factory.create();

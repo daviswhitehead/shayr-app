@@ -21,6 +21,8 @@ class Header extends Component {
   static defaultProps = {
     shadow: false,
     back: null,
+    statusBarTranslucent: true,
+    statusBarHidden: false,
   };
 
   render() {
@@ -35,8 +37,8 @@ class Header extends Component {
         }}
       >
         <ShayrStatusBar
-          translucent={this.props.statusBarTranslucent || true}
-          hidden={this.props.statusBarHidden || false}
+          translucent={this.props.statusBarTranslucent}
+          hidden={this.props.statusBarHidden}
           barStyle={this.props.statusBarStyle}
           backgroundColor={this.props.backgroundColor}
         />

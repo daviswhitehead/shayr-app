@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { subscribe } from 'redux-subscriber';
 import styles from './styles';
-import DynamicActionButton from '../../components/DynamicActionButton';
 import List from '../../components/List';
 import ContentCard from '../../components/ContentCard';
 import {

@@ -43,6 +43,7 @@ class Share extends Component {
   }
 
   async componentDidMount() {
+    firebase.analytics().setCurrentScreen('Share');
     this.authSubscription = firebase.auth().onAuthStateChanged((user) => {
       this.setState(previousState => ({
         ...previousState,
