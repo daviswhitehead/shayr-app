@@ -19,7 +19,10 @@ exports.scrape = async targetUrl => {
   const { body: html, url } = await got(targetUrl);
   const metadata = await metascraper({ html, url });
   let medium;
-  if (metadata.video || metadata.publisher.toLowerCase() === 'youtube') {
+  if (
+    metadata.video ||
+    (metadata.publisher && metadata.publisher.toLowerCase() === 'youtube')
+  ) {
     medium = 'video';
   } else if (metadata.audio) {
     medium = 'audio';

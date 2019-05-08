@@ -23,7 +23,7 @@ import { userAnalytics } from '../../lib/FirebaseAnalytics';
 const tapShareExtension = async () => {
   const url = buildAppLink('shayr', 'shayr', 'Feed', {});
   try {
-    await Platform.OS === 'ios' ? ShareExtension.openURL(url) : Linking.openURL(url);  
+    (await Platform.OS) === 'ios' ? ShareExtension.openURL(url) : Linking.openURL(url);
   } catch (error) {
     console.error('An error occurred:', error);
   }
