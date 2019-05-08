@@ -10,6 +10,7 @@ import MyList from '../containers/MyList';
 import Login from '../containers/Login';
 import PostDetail from '../containers/PostDetail';
 import ComingSoon from '../containers/ComingSoon';
+import Friends from '../containers/Friends';
 import TabBar from '../components/TabBar';
 
 const DiscoverStack = createStackNavigator({
@@ -49,8 +50,8 @@ const MyListStack = createStackNavigator({
 });
 
 const FriendsStack = createStackNavigator({
-  ComingSoon: {
-    screen: ComingSoon,
+  Friends: {
+    screen: Friends,
     navigationOptions: () => ({
       header: null,
     }),

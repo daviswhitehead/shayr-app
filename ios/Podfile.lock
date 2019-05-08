@@ -211,7 +211,7 @@ PODS:
     - React
   - RNVectorIcons (4.6.0):
     - React
-  - SSZipArchive (2.1.5)
+  - SSZipArchive (2.2.1)
   - yoga (0.59.5.React)
 
 DEPENDENCIES:
@@ -336,7 +336,7 @@ SPEC CHECKSUMS:
   react-native-splash-screen: 353334c5ae82d8c74501ea7cbb916cb7cb20c8bf
   RNGestureHandler: 14c09a7361c272efea8f7f3799142c893a6a4485
   RNVectorIcons: a3c395829c56e2cb054a0730126298bf805a2dca
-  SSZipArchive: cefe1364104a0231268a5deb8495bdf2861f52f0
+  SSZipArchive: 8e859da2520142e09166bc9161967db296e9d02f
   yoga: 2e571f113e8cbeb0eb752aeebc86c1bfe7a8200c
 
 PODFILE CHECKSUM: bbcc950c29717b597c60e8e32769050d2815f3e6
