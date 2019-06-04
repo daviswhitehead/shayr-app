@@ -6,8 +6,6 @@ const initialState = {
   queuePosts: null,
   feedLastPost: null,
   queueLastPost: null,
-  feedRefreshing: false,
-  queueRefreshing: false,
   postDetailId: null,
   postDetail: null,
   error: null,

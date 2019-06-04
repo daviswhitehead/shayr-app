@@ -1,8 +1,8 @@
 // https://github.com/medialize/URI.js
-const URI = require('urijs');
-const _ = require('lodash');
-// import URI from 'urijs';
-// import _ from 'lodash';
+// import * as URI from 'urijs';
+import * as _ from 'lodash';
+
+import URI = require('urijs');
 
 // run the below to test deeplinking
 // // iOS: xcrun simctl openurl booted shayr://com.daviswhitehead.shayr.ios.dev/Feed?param=meow
@@ -13,22 +13,23 @@ const _ = require('lodash');
 // // https://facebook.github.io/react-native/docs/linking
 
 // valid deeplink protocols
-const protocols = ['shayr', 'https'];
+export const protocols = ['shayr', 'https'];
 
 // takes an object and turns it into a URL query
-const objectToURLQuery = params => Object.keys(params)
+export const objectToURLQuery = (params: any) => Object.keys(params)
   .map(key => `${key}=${encodeURIComponent(params[key])}`)
   .join('&');
 
 // takes an app link URL and parses into protocol, hostname, screen, params
-const parseAppLink = (url) => {
+export const parseAppLink = (url: string) => {
   // expects to find urls in the following format [protocol][hostname][path][query]
   // format should map to [protocol][bundle_id][screen][screen params]
   // // e.g. shayr://com.daviswhitehead.shayr.ios.dev/Feed?param=meow
   // // protocol: shayr, hostname: com.daviswhitehead.shayr.ios.dev,
   // // path: /Feed, query: param=meow
 
-  const uri = new URI(url);
+  const uri: any = new URI(url);
+
   const params = uri._parts.query
     ? _.fromPairs(Array.from(new URLSearchParams(uri._parts.query).entries()))
     : {};
@@ -42,9 +43,4 @@ const parseAppLink = (url) => {
 };
 
 // takes a desired screen and its paramaters and builds a link the app can handle
-const buildAppLink = (protocol, hostname, screen, params) => `${protocol}://${hostname}/${screen}?${objectToURLQuery(params)}`;
-
-exports.protocols = protocols;
-exports.objectToURLQuery = objectToURLQuery;
-exports.parseAppLink = parseAppLink;
-exports.buildAppLink = buildAppLink;
+export const buildAppLink = (protocol: any, hostname: string, screen: string, params: string) => `${protocol}://${hostname}/${screen}?${objectToURLQuery(params)}`;
