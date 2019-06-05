@@ -10,14 +10,14 @@
 {
   app: {},
   authentication: {},
+  friendships: {},
+  routing: {},
+  userLists: {},
+  userPosts: {},
+  userPostLists: {},
   users: {},
-  posts: {},
-  routing: {}
 }
 ```
-
-<!-- <details>
-<summary>Authentication</summary> -->
 
 ## app
 
@@ -95,16 +95,26 @@ The users state is a collection of user objects relevant to the currently logged
 - `firstName` _string_ -- The user's first name.
 - `lastName` _string_ -- The user's last name.
 
-## friends
+## userLists
 
 ### description
 
-The friends state is a list of the current user's friends's userIds.
+The userLists state is contains a variety of lists of userIds relevant to the current user's experience.
 
 ### initialState
 
 ```javascript
-['userIdA', 'userIdB', 'userIdC', ...]
+{
+  userIdA_Friends: ['userIdA', 'userIdB', 'userIdC', ...],
+  userIdA_GroupA: ['userIdA', 'userIdB', 'userIdC', ...],
+  userIdA_GroupB: ['userIdA', 'userIdB', 'userIdC', ...],
+
+  userIdB_Friends: ['userIdA', 'userIdB', 'userIdC', ...],
+  userIdB_GroupA: ['userIdA', 'userIdB', 'userIdC', ...],
+  userIdB_GroupB: ['userIdA', 'userIdB', 'userIdC', ...],
+
+  ...
+}
 ```
 
 ### fields
@@ -161,52 +171,111 @@ The routing state helps handle dynamic link routing.
 
 - `url` _string_ -- The original url of the route.
 
-## posts
+## userPosts
 
 ### description
 
-The posts state is a collection of post objects relevant to the currently logged in user's experience. It is a merged object of any posts fetched from various database queries.
+The userPosts state is a collection of userPosts objects relevant to the currently logged in user's experience. It is a merged object of any userPosts fetched from various database queries.
 
 ### initialState
 
 ```javascript
 {
   'userPostIdA': {
-    userPostId: '',
+    addCount: 0,
+    adds: [],
+    createdAt: null,
+    description: '',
+    doneCount: 0,
+    dones: [],
+    image: '',
+    likeCount: 0,
+    likes: [],
+    medium: '',
     postId: '',
+    publisher: {
+      logo: '',
+      name: ''
+    },
+    shareCount: 0,
+    shares: [],
+    title: '',
+    updatedAt: null,
+    url: '',
+    userId: ''
   },
   'userPostIdB': {
-    userPostId: '',
+    addCount: 0,
+    adds: [],
+    createdAt: null,
+    description: '',
+    doneCount: 0,
+    dones: [],
+    image: '',
+    likeCount: 0,
+    likes: [],
+    medium: '',
     postId: '',
+    publisher: {
+      logo: '',
+      name: ''
+    },
+    shareCount: 0,
+    shares: [],
+    title: '',
+    updatedAt: null,
+    url: '',
+    userId: ''
   }
 }
 ```
 
 ### fields
 
-- `url` _string_ -- The original url of the route.
+- `addCount` _number_ -- Total number of global adds on a post.
+- `adds` _Array\<string\>_ -- An array of userIds from friends that have added a post.
+- `createdAt` _timestamp_
+- `description` _string_ -- Scraped description about a post.
+- `doneCount` _number_ -- Total number of global dones on a post.
+- `dones` _Array\<string\>_ -- An array of userIds from friends that have marked a post as done.
+- `image` _string_ -- Scraped image for a post.
+- `likeCount` _number_ -- Total number of global likes on a post.
+- `likes` _Array\<string\>_ -- An array of userIds from friends that have liked a post.
+- `medium` _string_ -- The type of content.
+- `postId` _string_ -- Unique ID for the original post.
+- `publisher.logo` _string_ -- Scraped image for a publisher.
+- `publisher.name` _string_ -- Scraped name of the publisher.
+- `shareCount` _number_ -- Total number of global shares on a post.
+- `shares` _Array\<string\>_ -- An array of userIds from friends that have shared a post.
+- `title` _string_ -- Scraped title of the post.
+- `updatedAt` _timestamp_
+- `url` _string_ -- Original url of the post.
+- `userId` _string_ -- The unique ID of the user whose feed contained the post.
 
-## postLists
+## userPostLists
 
 ### description
 
-The posts state is a collection of post objects relevant to the currently logged in user's experience. It is a merged object of any posts fetched from various database queries.
+The userPostLists state is a collection of lists that represent various views populated by userPosts objects.
 
 ### initialState
 
 ```javascript
 {
-  'userPostIdA': {
-    userPostId: '',
-    postId: '',
-  },
-  'userPostIdB': {
-    userPostId: '',
-    postId: '',
-  }
+  userIdA_posts: ['userPostIdA', 'userPostIdB', 'userPostIdC', ...],
+  userIdA_posts_done: ['userPostIdA', 'userPostIdB', 'userPostIdC', ...],
+  userIdA_posts_shared: ['userPostIdA', 'userPostIdB', 'userPostIdC', ...],
+  userIdA_posts_shared_product: ['userPostIdA', 'userPostIdB', 'userPostIdC', ...],
+
+  userIdB_posts: ['userPostIdA', 'userPostIdB', 'userPostIdC', ...],
+  userIdB_posts_done: ['userPostIdA', 'userPostIdB', 'userPostIdC', ...],
+  userIdB_posts_shared: ['userPostIdA', 'userPostIdB', 'userPostIdC', ...],
+  userIdB_posts_shared_product: ['userPostIdA', 'userPostIdB', 'userPostIdC', ...],
+
+  ...
 }
 ```
 
 ### fields
 
-- `url` _string_ -- The original url of the route.
+- `userPostId` _string_ -- The userPost unique ID.
