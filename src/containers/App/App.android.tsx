@@ -4,7 +4,7 @@ import SplashScreen from 'react-native-splash-screen';
 import createStore from '../../redux/CreateStore';
 import AppWithListeners from '../AppWithListeners';
 import styles from './styles';
-import codePush from "react-native-code-push";
+import codePush from 'react-native-code-push';
 
 const store = createStore();
 
