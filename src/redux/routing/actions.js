@@ -1,9 +1,9 @@
-import { protocols, parseAppLink } from '../../lib/DeepLinks';
+import { protocols, parseAppLink } from '@daviswhitehead/shayr-resources';
 import { navigate } from '../../lib/ReactNavigationHelpers';
 
 export const types = {
   ROUTE_ADDED: 'ROUTE_ADDED',
-  ROUTE_REMOVED: 'ROUTE_REMOVED',
+  ROUTE_REMOVED: 'ROUTE_REMOVED'
 };
 
 export function navigateToRoute(payload) {
@@ -25,7 +25,7 @@ export function handleURLRoute(payload) {
         type: types.ROUTE_ADDED,
         url: appLink.url,
         screen: appLink.screen,
-        params: appLink.params,
+        params: appLink.params
       });
     }
   };

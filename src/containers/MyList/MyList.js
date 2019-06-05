@@ -11,26 +11,28 @@ import {
   loadPosts,
   paginatePosts,
   refreshPosts,
-  flattenPostsQueue,
+  flattenPostsQueue
 } from '../../redux/posts/actions';
 import { postAction } from '../../redux/postActions/actions';
 import { handleURLRoute } from '../../redux/routing/actions';
-import { buildAppLink } from '../../lib/DeepLinks';
+import { buildAppLink } from '@daviswhitehead/shayr-resources';
 import { startSignOut } from '../../redux/auth/actions';
 
 const mapStateToProps = state => ({
   auth: state.auth,
   users: state.users,
-  posts: state.posts,
+  posts: state.posts
 });
 
 const mapDispatchToProps = dispatch => ({
   loadPosts: (userId, query) => dispatch(loadPosts(userId, query)),
-  paginatePosts: (userId, query, lastPost) => dispatch(paginatePosts(userId, query, lastPost)),
+  paginatePosts: (userId, query, lastPost) =>
+    dispatch(paginatePosts(userId, query, lastPost)),
   refreshPosts: (userId, query) => dispatch(refreshPosts(userId, query)),
-  postAction: (actionType, userId, postId) => dispatch(postAction(actionType, userId, postId)),
+  postAction: (actionType, userId, postId) =>
+    dispatch(postAction(actionType, userId, postId)),
   startSignOut: () => dispatch(startSignOut()),
-  handleURLRoute: payload => dispatch(handleURLRoute(payload)),
+  handleURLRoute: payload => dispatch(handleURLRoute(payload))
 });
 
 class MyList extends Component {
@@ -44,7 +46,7 @@ class MyList extends Component {
     postAction: PropTypes.func.isRequired,
     paginatePosts: PropTypes.func.isRequired,
     refreshPosts: PropTypes.func.isRequired,
-    startSignOut: PropTypes.func.isRequired,
+    startSignOut: PropTypes.func.isRequired
   };
 
   constructor() {
@@ -53,45 +55,65 @@ class MyList extends Component {
   }
 
   componentDidMount() {
-    this.subscriptions.push(this.props.loadPosts(this.props.auth.user.uid, 'queue'));
+    this.subscriptions.push(
+      this.props.loadPosts(this.props.auth.user.uid, 'queue')
+    );
   }
 
   componentWillUnmount() {
-    Object.values(this.subscriptions).forEach((subscription) => {
+    Object.values(this.subscriptions).forEach(subscription => {
       subscription();
     });
   }
 
-  renderItem = (item) => {
-    const routeURL = buildAppLink('shayr', 'shayr', 'PostDetail', { id: item.postId });
+  renderItem = item => {
+    const routeURL = buildAppLink('shayr', 'shayr', 'PostDetail', {
+      id: item.postId
+    });
 
     return (
       <ContentCard
         payload={item}
         friends={{
           ...this.props.users.self,
-          ...this.props.users.friends,
+          ...this.props.users.friends
         }}
         onTap={() => this.props.handleURLRoute(routeURL)}
         shareAction={{
           actionCount: item.shareCount,
-          actionUser: item.shares ? item.shares.includes(this.props.auth.user.uid) : false,
-          onPress: () => this.props.postAction('share', this.props.auth.user.uid, item.postId),
+          actionUser: item.shares
+            ? item.shares.includes(this.props.auth.user.uid)
+            : false,
+          onPress: () =>
+            this.props.postAction(
+              'share',
+              this.props.auth.user.uid,
+              item.postId
+            )
         }}
         addAction={{
           actionCount: item.addCount,
-          actionUser: item.adds ? item.adds.includes(this.props.auth.user.uid) : false,
-          onPress: () => this.props.postAction('add', this.props.auth.user.uid, item.postId),
+          actionUser: item.adds
+            ? item.adds.includes(this.props.auth.user.uid)
+            : false,
+          onPress: () =>
+            this.props.postAction('add', this.props.auth.user.uid, item.postId)
         }}
         doneAction={{
           actionCount: item.doneCount,
-          actionUser: item.dones ? item.dones.includes(this.props.auth.user.uid) : false,
-          onPress: () => this.props.postAction('done', this.props.auth.user.uid, item.postId),
+          actionUser: item.dones
+            ? item.dones.includes(this.props.auth.user.uid)
+            : false,
+          onPress: () =>
+            this.props.postAction('done', this.props.auth.user.uid, item.postId)
         }}
         likeAction={{
           actionCount: item.likeCount,
-          actionUser: item.likes ? item.likes.includes(this.props.auth.user.uid) : false,
-          onPress: () => this.props.postAction('like', this.props.auth.user.uid, item.postId),
+          actionUser: item.likes
+            ? item.likes.includes(this.props.auth.user.uid)
+            : false,
+          onPress: () =>
+            this.props.postAction('like', this.props.auth.user.uid, item.postId)
         }}
       />
     );
@@ -101,7 +123,7 @@ class MyList extends Component {
     const unsubscribe = this.props.paginatePosts(
       this.props.auth.user.uid,
       'queue',
-      this.props.posts.queueLastPost,
+      this.props.posts.queueLastPost
     );
     if (unsubscribe) {
       this.subscriptions.push(unsubscribe);
@@ -109,19 +131,29 @@ class MyList extends Component {
   };
 
   refresh = () => {
-    const unsubscribe = this.props.refreshPosts(this.props.auth.user.uid, 'queue');
+    const unsubscribe = this.props.refreshPosts(
+      this.props.auth.user.uid,
+      'queue'
+    );
     if (unsubscribe) {
       this.subscriptions.push(unsubscribe);
     }
   };
 
   loading = () => {
-    if (!this.props.posts.queuePosts || !this.props.users.friends || !this.props.users.self) {
+    if (
+      !this.props.posts.queuePosts ||
+      !this.props.users.friends ||
+      !this.props.users.self
+    ) {
       return <Text>LOADING</Text>;
     }
     return (
       <List
-        data={flattenPostsQueue(this.props.auth.user.uid, this.props.posts.queuePosts)}
+        data={flattenPostsQueue(
+          this.props.auth.user.uid,
+          this.props.posts.queuePosts
+        )}
         renderItem={item => this.renderItem(item)}
         onEndReached={() => this.paginate()}
         onRefresh={() => this.refresh()}
@@ -154,5 +186,5 @@ class MyList extends Component {
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps,
+  mapDispatchToProps
 )(MyList);

@@ -740,6 +740,15 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
+"@daviswhitehead/shayr-resources@^1.0.12":
+  version "1.0.12"
+  resolved "https://registry.yarnpkg.com/@daviswhitehead/shayr-resources/-/shayr-resources-1.0.12.tgz#d94b8097b04381688d939729435ffe57003aa608"
+  integrity sha512-RoLb0RU3OvhG9+bAsQ1tZCgtiA2kDT9EAHTLrdZkyFaBm/qkzFwzoMMN/9xOInZVekmW2V+tRegEihTJnGjw7g==
+  dependencies:
+    "@types/lodash" "^4.14.133"
+    "@types/urijs" "^1.19.1"
+    urijs "^1.19.1"
+
 "@jest/console@^24.7.1":
   version "24.7.1"
   resolved "https://registry.yarnpkg.com/@jest/console/-/console-24.7.1.tgz#32a9e42535a97aedfe037e725bd67e954b459545"
@@ -1004,6 +1013,11 @@
   dependencies:
     "@types/jest-diff" "*"
 
+"@types/lodash@^4.14.133":
+  version "4.14.133"
+  resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.133.tgz#430721c96da22dd1694443e68e6cec7ba1c1003d"
+  integrity sha512-/3JqnvPnY58GLzG3Y7fpphOhATV1DDZ/Ak3DQufjlRK5E4u+s0CfClfNFtAGBabw+jDGtRFbOZe+Z02ZMWCBNQ==
+
 "@types/node@^8.0.7":
   version "8.10.48"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-8.10.48.tgz#e385073561643a9ba6199a1985ffc03530f90781"
@@ -1051,6 +1065,11 @@
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/@types/stack-utils/-/stack-utils-1.0.1.tgz#0a851d3bd96498fa25c33ab7278ed3bd65f06c3e"
   integrity sha512-l42BggppR6zLmpfU6fq9HEa2oGPEI8yrSPL3GITjfRInppYFahObbIQOQK3UGxEnyQpltZLaPe75046NOZQikw==
+
+"@types/urijs@^1.19.1":
+  version "1.19.1"
+  resolved "https://registry.yarnpkg.com/@types/urijs/-/urijs-1.19.1.tgz#da69e8479eec0bb4580c7cc218d218f107d2d526"
+  integrity sha512-5waMuQ9z8pH8+5yAyX05bsA7SOl50l5ZkeMripxoOgN2+nSQb4TOSuhWoRlPt7FPIIohk6iBrX/rEktUJa8KfQ==
 
 "@types/yargs@^12.0.2", "@types/yargs@^12.0.9":
   version "12.0.12"

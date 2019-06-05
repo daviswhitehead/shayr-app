@@ -35,7 +35,6 @@
 		544EC2F5226278590081E80F /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 544EC2F4226278580081E80F /* JavaScriptCore.framework */; };
 		544EC3B4226288210081E80F /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 544EC2F4226278580081E80F /* JavaScriptCore.framework */; };
 		5466CF6122A83F2900982BE1 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 58B59238201E8CA1005CC7F4 /* MainInterface.storyboard */; };
-		5466CF8F22A83F2E00982BE1 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 58B5923B201E8CA1005CC7F4 /* Info.plist */; };
 		5466CF9022A83F8900982BE1 /* Entypo.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5BE6B98523534F0397866D4D /* Entypo.ttf */; };
 		5466CF9122A83F8900982BE1 /* EvilIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B557653982A94201B72DAE23 /* EvilIcons.ttf */; };
 		5466CF9222A83F8900982BE1 /* Feather.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7D5DCBF1E4C446F8904729CF /* Feather.ttf */; };
@@ -1553,7 +1552,6 @@
 				5466CFA722A83F8900982BE1 /* NunitoSans-Regular.ttf in Resources */,
 				5466CFA822A83F8900982BE1 /* NunitoSans-SemiBold.ttf in Resources */,
 				5466CFA922A83F8900982BE1 /* NunitoSans-SemiBoldItalic.ttf in Resources */,
-				5466CF8F22A83F2E00982BE1 /* Info.plist in Resources */,
 				5466CF6122A83F2900982BE1 /* MainInterface.storyboard in Resources */,
 				5485AA6722A83D6E00C91B29 /* GoogleService-Info.plist in Resources */,
 			);

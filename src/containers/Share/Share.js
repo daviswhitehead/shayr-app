@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   Linking,
-  Platform,
+  Platform
 } from 'react-native';
 import firebase from 'react-native-firebase';
 import ShareExtension from 'react-native-share-extension';
@@ -17,13 +17,15 @@ import shareExtensionLogo from '../../assets/ShareExtensionLogo.png';
 import { retrieveToken } from '../../lib/AppGroupTokens';
 import { getFBAuthCredential, getCurrentUser } from '../../lib/FirebaseLogin';
 import { createShare } from '../../lib/FirebaseHelpers';
-import { buildAppLink } from '../../lib/DeepLinks';
+import { buildAppLink } from '@daviswhitehead/shayr-resources';
 import { userAnalytics } from '../../lib/FirebaseAnalytics';
 
 const tapShareExtension = async () => {
   const url = buildAppLink('shayr', 'shayr', 'Feed', {});
   try {
-    (await Platform.OS) === 'ios' ? ShareExtension.openURL(url) : Linking.openURL(url);
+    (await Platform.OS) === 'ios'
+      ? ShareExtension.openURL(url)
+      : Linking.openURL(url);
   } catch (error) {
     console.error('An error occurred:', error);
   }
@@ -35,17 +37,17 @@ class Share extends Component {
     const url = buildAppLink('shayr', 'shayr', 'Feed', {});
     this.state = {
       modalVisible: true,
-      shareText: 'Shayring...',
+      shareText: 'Shayring...'
     };
     firebase.analytics().logEvent('SHARE_EXTENSION_LAUNCH');
   }
 
   async componentDidMount() {
     firebase.analytics().setCurrentScreen('Share');
-    this.authSubscription = firebase.auth().onAuthStateChanged((user) => {
+    this.authSubscription = firebase.auth().onAuthStateChanged(user => {
       this.setState(previousState => ({
         ...previousState,
-        user,
+        user
       }));
     });
 
@@ -71,12 +73,12 @@ class Share extends Component {
 
       if (share) {
         firebase.analytics().logEvent('SHARE_EXTENSION_SUCCESS', {
-          share: value.substring(0, 99),
+          share: value.substring(0, 99)
         });
         setTimeout(() => {
           this.setState(previousState => ({
             ...previousState,
-            shareText: 'Success!',
+            shareText: 'Success!'
           }));
         }, 500);
       } else {
@@ -84,7 +86,7 @@ class Share extends Component {
         setTimeout(() => {
           this.setState(previousState => ({
             ...previousState,
-            shareText: 'Failed.',
+            shareText: 'Failed.'
           }));
         }, 1000);
       }
@@ -100,14 +102,14 @@ class Share extends Component {
   openModal() {
     this.setState(previousState => ({
       ...previousState,
-      modalVisible: true,
+      modalVisible: true
     }));
   }
 
   closeModal() {
     this.setState(previousState => ({
       ...previousState,
-      modalVisible: false,
+      modalVisible: false
     }));
     ShareExtension.close();
   }
@@ -127,7 +129,10 @@ class Share extends Component {
           }}
         >
           <View style={styles.container}>
-            <TouchableOpacity onPress={() => tapShareExtension()} style={styles.modal}>
+            <TouchableOpacity
+              onPress={() => tapShareExtension()}
+              style={styles.modal}
+            >
               <Image source={shareExtensionLogo} style={styles.logo} />
               <Text style={styles.text}>{this.state.shareText}</Text>
             </TouchableOpacity>
