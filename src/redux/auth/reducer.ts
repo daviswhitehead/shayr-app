@@ -2,7 +2,6 @@ import { types } from './actions';
 
 const initialState = {
   user: {},
-  isAuthenticated: false,
   hasAccessToken: false,
   isSigningOut: false
 };
@@ -14,7 +13,6 @@ function appListenerReducer(state = initialState, action) {
       return {
         ...state,
         user: action.user,
-        isAuthenticated: action.isAuthenticated,
         isSigningOut: action.isSigningOut
       };
     }

@@ -2,6 +2,7 @@ import firebase from 'react-native-firebase';
 import { Dispatch } from 'redux';
 import { retrieveToken, saveToken } from '../../lib/AppGroupTokens';
 import { getFBProfile, getFBToken, logoutFB } from '../../lib/FacebookRequests';
+import { userAnalytics } from '../../lib/FirebaseAnalytics';
 import { ts } from '../../lib/FirebaseHelpers';
 import {
   getCurrentUser,
@@ -41,7 +42,7 @@ export const types = {
 };
 
 // AUTHENTICATION LISTENERS
-export function authSubscription() {
+export const authSubscription = () => {
   return (dispatch: Dispatch) => {
     dispatch({ type: types.AUTH_LISTENER_START });
     return firebase.auth().onAuthStateChanged(user => {
@@ -49,20 +50,20 @@ export function authSubscription() {
         dispatch({
           type: types.AUTH_STATUS,
           user,
-          isAuthenticated: true,
           isSigningOut: false
         });
+
+        // identify user in analytics events
+        userAnalytics(user.uid);
       } else {
         dispatch({
           type: types.AUTH_STATUS,
-          user: null,
-          isAuthenticated: false,
-          isSigningOut: false
+          user: {}
         });
       }
     });
   };
-}
+};
 
 // TOKEN
 export function hasAccessToken() {

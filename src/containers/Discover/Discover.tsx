@@ -1,29 +1,26 @@
-import React, { Component } from 'react';
-import { View, Text } from 'react-native';
-import { connect } from 'react-redux';
+import { buildAppLink } from '@daviswhitehead/shayr-resources';
 import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+import { Text, View } from 'react-native';
+import { connect } from 'react-redux';
 import { subscribe } from 'redux-subscriber';
-import styles from './styles';
-import List from '../../components/List';
 import ContentCard from '../../components/ContentCard';
+import Header from '../../components/Header';
+import List from '../../components/List';
+import { startSignOut } from '../../redux/auth/actions';
+import { subscribeToFriendships } from '../../redux/friendships/actions';
+import { subscribeNotificationTokenRefresh } from '../../redux/notifications/actions';
+import { postAction } from '../../redux/postActions/actions';
 import {
+  flattenPosts,
   loadPosts,
   paginatePosts,
-  refreshPosts,
-  flattenPosts
+  refreshPosts
 } from '../../redux/posts/actions';
-import { postAction } from '../../redux/postActions/actions';
-import { startSignOut } from '../../redux/auth/actions';
-import Header from '../../components/Header';
-import colors from '../../styles/Colors';
-import {
-  subscribeToSelf,
-  subscribeToFriendships
-} from '../../redux/users/actions';
-import { subscribeNotificationTokenRefresh } from '../../redux/notifications/actions';
 import { handleURLRoute, navigateToRoute } from '../../redux/routing/actions';
-import { buildAppLink } from '@daviswhitehead/shayr-resources';
-import { userAnalytics } from '../../lib/FirebaseAnalytics';
+import { subscribeToUser } from '../../redux/users/actions';
+import colors from '../../styles/Colors';
+import styles from './styles';
 
 const mapStateToProps = state => ({
   auth: state.auth,
@@ -40,7 +37,7 @@ const mapDispatchToProps = dispatch => ({
   postAction: (actionType, userId, postId) =>
     dispatch(postAction(actionType, userId, postId)),
   startSignOut: () => dispatch(startSignOut()),
-  subscribeToSelf: userId => dispatch(subscribeToSelf(userId)),
+  subscribeToUser: userId => dispatch(subscribeToUser(userId)),
   subscribeToFriendships: userId => dispatch(subscribeToFriendships(userId)),
   subscribeNotificationTokenRefresh: userId =>
     dispatch(subscribeNotificationTokenRefresh(userId)),
@@ -55,7 +52,7 @@ class Discover extends Component {
     posts: PropTypes.instanceOf(Object).isRequired,
     routing: PropTypes.instanceOf(Object).isRequired,
     navigation: PropTypes.instanceOf(Object).isRequired,
-    subscribeToSelf: PropTypes.func.isRequired,
+    subscribeToUser: PropTypes.func.isRequired,
     subscribeToFriendships: PropTypes.func.isRequired,
     subscribeNotificationTokenRefresh: PropTypes.func.isRequired,
     navigateToRoute: PropTypes.func.isRequired,
@@ -73,13 +70,11 @@ class Discover extends Component {
   }
 
   async componentDidMount() {
-    // HOME - Track user
-    userAnalytics(this.props.auth.user.uid);
-
     // HOME - Listen to global datasets
     this.subscriptions.push(
-      await this.props.subscribeToSelf(this.props.auth.user.uid)
+      await this.props.subscribeToUser(this.props.auth.user.uid)
     );
+
     this.subscriptions.push(
       await this.props.subscribeToFriendships(this.props.auth.user.uid)
     );
@@ -95,6 +90,7 @@ class Discover extends Component {
     if (this.props.routing.screen) {
       this.props.navigateToRoute(this.props.routing);
     }
+
     // HOME - Listen to routing updates
     this.subscriptions.push(
       subscribe('routing', state => {
@@ -224,9 +220,9 @@ class Discover extends Component {
       <View style={styles.screen}>
         <Header
           backgroundColor={colors.YELLOW}
-          statusBarStyle="dark-content"
+          statusBarStyle='dark-content'
           shadow
-          title="Discover"
+          title='Discover'
         />
         <View style={styles.container}>
           <this.loading />

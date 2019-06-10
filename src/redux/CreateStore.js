@@ -7,11 +7,12 @@ import { makeRootReducer } from './Reducers';
 
 export default (initialState = {}) => {
   let composeEnhancers;
-  // if (Config.ENV_NAME === 'prod' || Config.ENV_NAME === 'alpha') {
   if (Config.ENV_NAME === 'prod') {
     composeEnhancers = compose();
   } else {
-    composeEnhancers = composeWithDevTools({});
+    composeEnhancers = composeWithDevTools({
+      maxAge: 100
+    });
   }
 
   const middleware = [thunk];
@@ -19,7 +20,7 @@ export default (initialState = {}) => {
   const store = createStore(
     makeRootReducer(),
     initialState,
-    composeEnhancers(applyMiddleware(...middleware)),
+    composeEnhancers(applyMiddleware(...middleware))
   );
 
   initSubscriber(store);

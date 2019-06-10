@@ -32,7 +32,7 @@
     "shayr-resources": "yarn add @daviswhitehead/shayr-resources@latest"
   },
   "dependencies": {
-    "@daviswhitehead/shayr-resources": "^1.0.12",
+    "@daviswhitehead/shayr-resources": "^1.1.2",
     "adm-zip": "^0.4.13",
     "bluebird": "^3.5.3",
     "fb": "^2.0.0",

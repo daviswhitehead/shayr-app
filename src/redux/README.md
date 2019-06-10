@@ -49,8 +49,7 @@ The auth state is responsible for managing updates to authentication.
 
 ```javascript
 {
-  userId: '',
-  isAuthenticated: false,
+  user: '',
   hasAccessToken: false,
   isSigningOut: false
 }
@@ -58,10 +57,13 @@ The auth state is responsible for managing updates to authentication.
 
 ### fields
 
-- `user` _string_ -- The current user's firebase-generated uuid.
-- `isAuthenticated` _boolean_ -- Whether the user is authenticated.
+- `user` _object_ -- The current user's firebase-generated object. `user.uid` returns the current user's `userId`.
 - `hasAccessToken` _boolean_ -- Whether the user's authentication token is saved in group-accessible storage. This is necessary for app and app extension to share login credentials.
 - `isSigningOut` _boolean_ -- Did the user initiate a logout.
+
+### notes
+
+A user is considered authenticated when there is a user object and hasAccessToken is true.
 
 ## users
 
@@ -131,17 +133,22 @@ The friendships state is a collection of the current user's friend requests and 
 
 ```javascript
 {
-  friendshipId: {
-    createdAt: null,
-    initiatingUserId: '',
-    receivingUserId: '',
-    status: '',
-    updatedAt: null,
-    userIds: [
-      'userIdA',
-      'userIdB',
-    ]
-  }
+    userId: {
+      friendships: {
+        friendshipId: {
+          createdAt: null,
+          initiatingUserId: '',
+          receivingUserId: '',
+          status: '',
+          updatedAt: null,
+          userIds: [
+            'userIdA',
+            'userIdB',
+          ]
+        }
+      },
+      isLoaded: true
+    }
 }
 ```
 
@@ -153,6 +160,7 @@ The friendships state is a collection of the current user's friend requests and 
 - `status` _string_ ["pending", "accepted", "rejected"] -- The current friendship status.
 - `updatedAt` _timestamp_
 - `userIds` _Array\<string\>_ -- The list of userIds involved in a friendship object.
+- `isLoaded` _boolean_ -- Let's the app know when the user's friends are finished loading.
 
 ## routing
 
