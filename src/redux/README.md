@@ -12,9 +12,9 @@
   authentication: {},
   friendships: {},
   routing: {},
-  userLists: {},
-  userPosts: {},
-  userPostLists: {},
+  usersLists: {},
+  usersPosts: {},
+  usersPostsLists: {},
   users: {},
 }
 ```
@@ -95,11 +95,11 @@ The users state is a collection of user objects relevant to the currently logged
 - `firstName` _string_ -- The user's first name.
 - `lastName` _string_ -- The user's last name.
 
-## userLists
+## usersLists
 
 ### description
 
-The userLists state is contains a variety of lists of userIds relevant to the current user's experience.
+The usersLists state is contains a variety of lists of userIds relevant to the current user's experience.
 
 ### initialState
 
@@ -125,29 +125,34 @@ The userLists state is contains a variety of lists of userIds relevant to the cu
 
 ### description
 
-The friends state is a list of the current user's friends's userIds.
+The friendships state is a collection of the current user's friend requests and their status.
 
 ### initialState
 
 ```javascript
 {
   friendshipId: {
+    createdAt: null,
     initiatingUserId: '',
     receivingUserId: '',
     status: '',
     updatedAt: null,
-    createdAt: null
+    userIds: [
+      'userIdA',
+      'userIdB',
+    ]
   }
 }
 ```
 
 ### fields
 
+- `createdAt` _timestamp_
 - `initiatingUserId` _string_ -- The initiating user's firebase-generated uuid.
 - `receivingUserId` _string_ -- The receiving user's firebase-generated uuid.
 - `status` _string_ ["pending", "accepted", "rejected"] -- The current friendship status.
 - `updatedAt` _timestamp_
-- `createdAt` _timestamp_
+- `userIds` _Array\<string\>_ -- The list of userIds involved in a friendship object.
 
 ## routing
 
@@ -171,11 +176,11 @@ The routing state helps handle dynamic link routing.
 
 - `url` _string_ -- The original url of the route.
 
-## userPosts
+## usersPosts
 
 ### description
 
-The userPosts state is a collection of userPosts objects relevant to the currently logged in user's experience. It is a merged object of any userPosts fetched from various database queries.
+The usersPosts state is a collection of usersPosts objects relevant to the currently logged in user's experience. It is a merged object of any usersPosts fetched from various database queries.
 
 ### initialState
 
@@ -252,11 +257,11 @@ The userPosts state is a collection of userPosts objects relevant to the current
 - `url` _string_ -- Original url of the post.
 - `userId` _string_ -- The unique ID of the user whose feed contained the post.
 
-## userPostLists
+## usersPostsLists
 
 ### description
 
-The userPostLists state is a collection of lists that represent various views populated by userPosts objects.
+The usersPostsLists state is a collection of lists that represent various views populated by usersPosts objects.
 
 ### initialState
 
