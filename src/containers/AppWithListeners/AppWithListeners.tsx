@@ -1,22 +1,22 @@
-import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import firebase from 'react-native-firebase';
+import React, { Component } from 'react';
 import { AppState, Linking } from 'react-native';
+import firebase from 'react-native-firebase';
+import { connect } from 'react-redux';
+import AppLoading from '../../components/AppLoading';
+import RootNavigator from '../../config/Routes';
+import { currentScreenAnalytics } from '../../lib/FirebaseAnalytics';
+import { dynamicLinkListener } from '../../lib/FirebaseDynamicLinks';
+import { notificationChannels } from '../../lib/NotificationChannels';
 import {
   notificationDisplayedListener,
   notificationListener,
   notificationOpenedListener
 } from '../../lib/NotificationListeners';
-import { notificationChannels } from '../../lib/NotificationChannels';
-import { authSubscription, hasAccessToken } from '../../redux/auth/actions';
-import { isAppReady } from '../../redux/app/actions';
-import { handleURLRoute } from '../../redux/routing/actions';
-import RootNavigator from '../../config/Routes';
-import AppLoading from '../../components/AppLoading';
-import { dynamicLinkListener } from '../../lib/FirebaseDynamicLinks';
-import { currentScreenAnalytics } from '../../lib/FirebaseAnalytics';
 import { setTopLevelNavigator } from '../../lib/ReactNavigationHelpers';
+import { isAppReady } from '../../redux/app/actions';
+import { authSubscription, hasAccessToken } from '../../redux/auth/actions';
+import { handleURLRoute } from '../../redux/routing/actions';
 
 const mapStateToProps = state => ({
   auth: state.auth,
@@ -121,7 +121,7 @@ class AppWithListeners extends Component {
           ref={navigatorRef => {
             setTopLevelNavigator(navigatorRef);
           }}
-          uriPrefix="shayrdev://"
+          uriPrefix='shayrdev://'
           onNavigationStateChange={(prevState, currentState) => {
             currentScreenAnalytics(prevState, currentState);
           }}
