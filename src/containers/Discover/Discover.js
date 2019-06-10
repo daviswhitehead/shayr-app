@@ -120,8 +120,6 @@ class Discover extends Component {
     const routeURL = buildAppLink('shayr', 'shayr', 'PostDetail', {
       id: item.postId
     });
-    console.log('routeURL');
-    console.log(routeURL);
 
     return (
       <ContentCard
@@ -217,6 +215,9 @@ class Discover extends Component {
   };
 
   render() {
+    console.log(this.state);
+    console.log(this.props);
+
     return (
       <View style={styles.screen}>
         <Header

@@ -3,7 +3,7 @@
     "tslint:recommended",
     "tslint-react",
     "tslint-config-airbnb",
-    "tslint-config=prerrier"
+    "tslint-config-prettier"
   ],
   "rules": {
     "array-type": false,

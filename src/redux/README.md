@@ -9,7 +9,7 @@
 ```javascript
 {
   app: {},
-  authentication: {},
+  auth: {},
   friendships: {},
   routing: {},
   usersLists: {},
@@ -29,21 +29,21 @@ The app state contains any global state changes.
 
 ```javascript
 {
-  listenersReady: false,
+  isAppReady: false,
   error: ''
 }
 ```
 
 ### fields
 
-- `listenersReady` _boolean_ -- Did the app fetch all required assets and initialize required subscriptions.
+- `isAppReady` _boolean_ -- Did the app fetch all required assets and initialize required subscriptions.
 - `error` _string_ -- String of the most recent error message.
 
-## authentication
+## auth
 
 ### description
 
-The authentication state is responsible for managing updates to authentication.
+The auth state is responsible for managing updates to authentication.
 
 ### initialState
 

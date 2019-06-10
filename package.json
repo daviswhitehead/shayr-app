@@ -32,7 +32,6 @@
     "shayr-resources": "yarn add @daviswhitehead/shayr-resources@latest"
   },
   "dependencies": {
-    "@babel/runtime": "^7.1.2",
     "@daviswhitehead/shayr-resources": "^1.0.12",
     "adm-zip": "^0.4.13",
     "bluebird": "^3.5.3",
@@ -65,11 +64,15 @@
     "xcode": "^2.0.0"
   },
   "devDependencies": {
+    "@babel/core": "^7.4.5",
+    "@babel/runtime": "^7.4.5",
     "@types/jest": "^24.0.13",
     "@types/react": "^16.8.19",
     "@types/react-native": "^0.57.60",
+    "@types/react-navigation": "^3.0.7",
     "@types/react-redux": "^7.0.9",
     "@types/react-test-renderer": "^16.8.1",
+    "@types/redux-thunk": "^2.1.0",
     "babel-jest": "^24.7.1",
     "babel-plugin-module-resolver": "^3.2.0",
     "babel-plugin-transform-remove-console": "^6.9.4",
@@ -81,6 +84,7 @@
     "ts-jest": "^24.0.2",
     "tslib": "^1.9.3",
     "tslint": "^5.17.0",
+    "tslint-config-airbnb": "^5.11.1",
     "tslint-config-prettier": "^1.18.0",
     "tslint-eslint-rules": "^5.4.0",
     "tslint-react": "^4.0.0",

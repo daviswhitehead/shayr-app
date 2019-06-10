@@ -1,6 +1,10 @@
 import firebase from 'react-native-firebase';
 import { getFBToken, logoutFB, getFBProfile } from '../../lib/FacebookRequests';
-import { getCurrentUser, signOut, getFBAuthCredential } from '../../lib/FirebaseLogin';
+import {
+  getCurrentUser,
+  signOut,
+  getFBAuthCredential
+} from '../../lib/FirebaseLogin';
 import { saveToken, retrieveToken } from '../../lib/AppGroupTokens';
 import { ts } from '../../lib/FirebaseHelpers';
 import { requestNotificationPermissionsRedux } from '../notifications/actions';
@@ -13,9 +17,6 @@ export const types = {
   // TOKEN
   ACCESS_TOKEN_STATUS: 'ACCESS_TOKEN_STATUS',
   ACCESS_TOKEN_SAVED: 'ACCESS_TOKEN_SAVED',
-
-  // LISTENERS READY
-  ARE_LISTENERS_READY: 'ARE_LISTENERS_READY',
 
   // FACEBOOK LOGIN
   FACEBOOK_AUTH_TAP: 'FACEBOOK_AUTH_TAP',
@@ -35,26 +36,26 @@ export const types = {
   APP_SIGN_OUT_START: 'APP_SIGN_OUT_START',
   APP_SIGN_OUT_SUCCESS: 'APP_SIGN_OUT_SUCCESS',
   SIGN_OUT_SUCCESS: 'SIGN_OUT_SUCCESS',
-  SIGN_OUT_FAIL: 'SIGN_OUT_FAIL',
+  SIGN_OUT_FAIL: 'SIGN_OUT_FAIL'
 };
 
 // AUTHENTICATION LISTENERS
 export function authSubscription() {
   return function _authSubscription(dispatch) {
     dispatch({ type: types.AUTH_LISTENER_START });
-    return firebase.auth().onAuthStateChanged((user) => {
+    return firebase.auth().onAuthStateChanged(user => {
       if (user) {
         dispatch({
           type: types.AUTH_STATUS,
           user,
           isAuthenticated: true,
-          isSigningOut: false,
+          isSigningOut: false
         });
       } else {
         dispatch({
           type: types.AUTH_STATUS,
           isAuthenticated: false,
-          user: null,
+          user: null
         });
       }
     });
@@ -67,16 +68,10 @@ export function hasAccessToken() {
     const token = await retrieveToken('accessToken');
     dispatch({
       type: types.ACCESS_TOKEN_STATUS,
-      hasAccessToken: !!token,
+      hasAccessToken: !!token
     });
   };
 }
-
-// LISTENERS READY
-export const areListenersReady = areReady => ({
-  type: types.ARE_LISTENERS_READY,
-  listenersReady: areReady,
-});
 
 // FACEBOOK LOGIN
 const saveUser = async (user, data, FBProfile) => {
@@ -86,7 +81,7 @@ const saveUser = async (user, data, FBProfile) => {
     .doc(user.uid);
   return ref
     .get()
-    .then((doc) => {
+    .then(doc => {
       if (!doc.exists) {
         ref.set({
           createdAt: ts,
@@ -94,7 +89,7 @@ const saveUser = async (user, data, FBProfile) => {
           firstName: data.first_name,
           lastName: data.last_name,
           email: data.email,
-          facebookProfilePhoto: FBProfile.picture.data.url,
+          facebookProfilePhoto: FBProfile.picture.data.url
         });
       } else {
         ref.set(
@@ -103,16 +98,16 @@ const saveUser = async (user, data, FBProfile) => {
             firstName: data.first_name,
             lastName: data.last_name,
             email: data.email,
-            facebookProfilePhoto: FBProfile.picture.data.url,
+            facebookProfilePhoto: FBProfile.picture.data.url
           },
           {
-            merge: true,
-          },
+            merge: true
+          }
         );
       }
       return true;
     })
-    .catch((error) => {
+    .catch(error => {
       console.error(error);
       return false;
     });
@@ -121,7 +116,7 @@ const saveUser = async (user, data, FBProfile) => {
 // FACEBOOK LOGIN
 export function facebookAuthTap() {
   return {
-    type: types.FACEBOOK_AUTH_TAP,
+    type: types.FACEBOOK_AUTH_TAP
   };
 }
 
@@ -147,7 +142,11 @@ export function facebookAuth(error, result) {
       dispatch({ type: types.CURRENT_USER_SUCCESS });
 
       dispatch({ type: types.SAVE_USER_START });
-      await saveUser(currentUser.user, currentUser.additionalUserInfo.profile, FBProfile);
+      await saveUser(
+        currentUser.user,
+        currentUser.additionalUserInfo.profile,
+        FBProfile
+      );
       dispatch({ type: types.SAVE_USER_SUCCESS });
 
       await requestNotificationPermissionsRedux(currentUser.user.uid, dispatch);
@@ -155,7 +154,7 @@ export function facebookAuth(error, result) {
       console.error(e);
       dispatch({
         type: types.AUTH_FAIL,
-        error: e,
+        error: e
       });
     }
   };
@@ -183,7 +182,7 @@ export function signOutUser() {
       console.error(error);
       dispatch({
         type: types.SIGN_OUT_FAIL,
-        error,
+        error
       });
     }
   };

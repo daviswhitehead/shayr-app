@@ -6,10 +6,11 @@ import { AppState, Linking } from 'react-native';
 import {
   notificationDisplayedListener,
   notificationListener,
-  notificationOpenedListener,
+  notificationOpenedListener
 } from '../../lib/NotificationListeners';
 import { notificationChannels } from '../../lib/NotificationChannels';
-import { authSubscription, hasAccessToken, areListenersReady } from '../../redux/auth/actions';
+import { authSubscription, hasAccessToken } from '../../redux/auth/actions';
+import { isAppReady } from '../../redux/app/actions';
 import { handleURLRoute } from '../../redux/routing/actions';
 import RootNavigator from '../../config/Routes';
 import AppLoading from '../../components/AppLoading';
@@ -19,13 +20,14 @@ import { setTopLevelNavigator } from '../../lib/ReactNavigationHelpers';
 
 const mapStateToProps = state => ({
   auth: state.auth,
+  app: state.app
 });
 
 const mapDispatchToProps = dispatch => ({
   authSubscription: () => dispatch(authSubscription()),
   hasAccessToken: () => dispatch(hasAccessToken()),
-  areListenersReady: areReady => dispatch(areListenersReady(areReady)),
-  handleURLRoute: url => dispatch(handleURLRoute(url)),
+  isAppReady: (isReady: boolean) => dispatch(isAppReady(isReady)),
+  handleURLRoute: url => dispatch(handleURLRoute(url))
 });
 
 class AppWithListeners extends Component {
@@ -33,8 +35,8 @@ class AppWithListeners extends Component {
     auth: PropTypes.instanceOf(Object).isRequired,
     authSubscription: PropTypes.func.isRequired,
     hasAccessToken: PropTypes.func.isRequired,
-    areListenersReady: PropTypes.func.isRequired,
-    handleURLRoute: PropTypes.func.isRequired,
+    isAppReady: PropTypes.func.isRequired,
+    handleURLRoute: PropTypes.func.isRequired
   };
 
   async componentDidMount() {
@@ -46,23 +48,29 @@ class AppWithListeners extends Component {
     this.props.hasAccessToken();
 
     // setup android notification channels
-    notificationChannels.forEach((channel) => {
+    notificationChannels.forEach(channel => {
       firebase.notifications().android.createChannel(channel);
     });
 
     // start notification listeners
     this.notificationDisplayedListener = notificationDisplayedListener();
     this.notificationListener = notificationListener();
-    this.notificationOpenedListener = notificationOpenedListener(this.props.handleURLRoute);
+    this.notificationOpenedListener = notificationOpenedListener(
+      this.props.handleURLRoute
+    );
 
     // app launched by notification tap
-    const notificationOpen = await firebase.notifications().getInitialNotification();
+    const notificationOpen = await firebase
+      .notifications()
+      .getInitialNotification();
     if (notificationOpen) {
       const { action, notification } = notificationOpen;
 
       this.props.handleURLRoute(notification.data.appLink);
 
-      firebase.notifications().removeDeliveredNotification(notification.notificationId);
+      firebase
+        .notifications()
+        .removeDeliveredNotification(notification.notificationId);
     }
 
     // start deep link listeners
@@ -79,7 +87,7 @@ class AppWithListeners extends Component {
       this.props.handleURLRoute(deepLink);
     }
 
-    this.props.areListenersReady(true);
+    this.props.isAppReady(true);
   }
 
   componentWillUnmount() {
@@ -89,10 +97,10 @@ class AppWithListeners extends Component {
     this.notificationDisplayedListener();
     this.notificationListener();
     this.notificationOpenedListener();
-    this.props.areListenersReady(false);
+    this.props.isAppReady(false);
   }
 
-  handleAppStateChange = (nextAppState) => {
+  handleAppStateChange = nextAppState => {
     // https://facebook.github.io/react-native/docs/appstate
     if (nextAppState === 'active') {
       firebase.analytics().logEvent('APP_STATE_ACTIVE');
@@ -107,10 +115,10 @@ class AppWithListeners extends Component {
   };
 
   render() {
-    if (this.props.auth.listenersReady) {
+    if (this.props.app.isAppReady) {
       return (
         <RootNavigator
-          ref={(navigatorRef) => {
+          ref={navigatorRef => {
             setTopLevelNavigator(navigatorRef);
           }}
           uriPrefix="shayrdev://"
@@ -126,5 +134,5 @@ class AppWithListeners extends Component {
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps,
+  mapDispatchToProps
 )(AppWithListeners);
