@@ -1,6 +1,6 @@
 import firebase from 'react-native-firebase';
 
-// // to test (scheduled) notifications, add below to AppWithListeners componentDidMount
+// // to test (scheduled) notifications, add below to AppLoading componentDidMount
 // import { testScheduledNotification } from '../../lib/Notifications';
 // const date = new Date();
 // date.setSeconds(date.getSeconds() + 5);
@@ -14,7 +14,7 @@ export const testScheduledNotification = new firebase.notifications.Notification
   .setBody('This is a test scheduled notification')
   .setData({
     channelId: 'General',
-    scheduled: 'value2',
+    scheduled: 'value2'
   })
   .android.setChannelId('General');
 

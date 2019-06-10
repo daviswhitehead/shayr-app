@@ -1,12 +1,13 @@
 import firebase from 'react-native-firebase';
-import { getFBToken, logoutFB, getFBProfile } from '../../lib/FacebookRequests';
+import { Dispatch } from 'redux';
+import { retrieveToken, saveToken } from '../../lib/AppGroupTokens';
+import { getFBProfile, getFBToken, logoutFB } from '../../lib/FacebookRequests';
+import { ts } from '../../lib/FirebaseHelpers';
 import {
   getCurrentUser,
-  signOut,
-  getFBAuthCredential
+  getFBAuthCredential,
+  signOut
 } from '../../lib/FirebaseLogin';
-import { saveToken, retrieveToken } from '../../lib/AppGroupTokens';
-import { ts } from '../../lib/FirebaseHelpers';
 import { requestNotificationPermissionsRedux } from '../notifications/actions';
 
 export const types = {
@@ -41,7 +42,7 @@ export const types = {
 
 // AUTHENTICATION LISTENERS
 export function authSubscription() {
-  return function _authSubscription(dispatch) {
+  return (dispatch: Dispatch) => {
     dispatch({ type: types.AUTH_LISTENER_START });
     return firebase.auth().onAuthStateChanged(user => {
       if (user) {
@@ -54,8 +55,9 @@ export function authSubscription() {
       } else {
         dispatch({
           type: types.AUTH_STATUS,
+          user: null,
           isAuthenticated: false,
-          user: null
+          isSigningOut: false
         });
       }
     });
@@ -122,7 +124,7 @@ export function facebookAuthTap() {
 
 // FACEBOOK LOGIN
 export function facebookAuth(error, result) {
-  return async function _facebookAuth(dispatch) {
+  return async (dispatch: Dispatch) => {
     try {
       dispatch({ type: types.FACEBOOK_AUTH_START });
       const currentAccessToken = await getFBToken(error, result);

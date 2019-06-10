@@ -1,9 +1,8 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { AppState, Linking } from 'react-native';
+import { ActivityIndicator, AppState, Linking, View } from 'react-native';
 import firebase from 'react-native-firebase';
 import { connect } from 'react-redux';
-import AppLoading from '../../components/AppLoading';
 import RootNavigator from '../../config/Routes';
 import { currentScreenAnalytics } from '../../lib/FirebaseAnalytics';
 import { dynamicLinkListener } from '../../lib/FirebaseDynamicLinks';
@@ -17,6 +16,7 @@ import { setTopLevelNavigator } from '../../lib/ReactNavigationHelpers';
 import { isAppReady } from '../../redux/app/actions';
 import { authSubscription, hasAccessToken } from '../../redux/auth/actions';
 import { handleURLRoute } from '../../redux/routing/actions';
+import styles from './styles';
 
 const mapStateToProps = state => ({
   auth: state.auth,
@@ -30,7 +30,7 @@ const mapDispatchToProps = dispatch => ({
   handleURLRoute: url => dispatch(handleURLRoute(url))
 });
 
-class AppWithListeners extends Component {
+class AppLoading extends Component {
   static propTypes = {
     auth: PropTypes.instanceOf(Object).isRequired,
     authSubscription: PropTypes.func.isRequired,
@@ -91,6 +91,8 @@ class AppWithListeners extends Component {
   }
 
   componentWillUnmount() {
+    console.log('AppLoading -- componentWillUnmount');
+
     AppState.removeEventListener('change', this.handleAppStateChange);
     Linking.removeEventListener('url', this.props.handleURLRoute);
     this.unsubscribeAuthListener();
@@ -128,11 +130,15 @@ class AppWithListeners extends Component {
         />
       );
     }
-    return <AppLoading />;
+    return (
+      <View style={styles.container}>
+        <ActivityIndicator size='large' color='black' />
+      </View>
+    );
   }
 }
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(AppWithListeners);
+)(AppLoading);

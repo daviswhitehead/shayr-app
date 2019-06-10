@@ -111,6 +111,8 @@ class Discover extends Component {
   }
 
   componentWillUnmount() {
+    console.log('componentWillUnmount()');
+
     Object.values(this.subscriptions).forEach(subscription => {
       subscription();
     });
@@ -215,8 +217,8 @@ class Discover extends Component {
   };
 
   render() {
-    console.log(this.state);
-    console.log(this.props);
+    // console.log(this.state);
+    // console.log(this.props);
 
     return (
       <View style={styles.screen}>

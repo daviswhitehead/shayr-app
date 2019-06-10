@@ -2,9 +2,8 @@ import {
   createSwitchNavigator,
   createStackNavigator,
   createAppContainer,
-  createBottomTabNavigator,
+  createBottomTabNavigator
 } from 'react-navigation';
-import ListenersLoaded from '../containers/ListenersLoaded';
 import Discover from '../containers/Discover';
 import MyList from '../containers/MyList';
 import Login from '../containers/Login';
@@ -17,76 +16,75 @@ const DiscoverStack = createStackNavigator({
   Discover: {
     screen: Discover,
     navigationOptions: () => ({
-      header: null,
-    }),
+      header: null
+    })
   },
   PostDetail: {
     screen: PostDetail,
     navigationOptions: () => ({
-      header: null,
-    }),
-  },
+      header: null
+    })
+  }
 });
 
 const MyListStack = createStackNavigator({
   MyList: {
     screen: MyList,
     navigationOptions: () => ({
-      header: null,
-    }),
+      header: null
+    })
   },
   PostDetail: {
     screen: PostDetail,
     navigationOptions: () => ({
-      header: null,
-    }),
+      header: null
+    })
   },
   Settings: {
     screen: ComingSoon,
     navigationOptions: () => ({
-      header: null,
-    }),
-  },
+      header: null
+    })
+  }
 });
 
 const FriendsStack = createStackNavigator({
   Friends: {
     screen: Friends,
     navigationOptions: () => ({
-      header: null,
-    }),
-  },
+      header: null
+    })
+  }
 });
 
 const AuthStack = createStackNavigator({
   Login: {
     screen: Login,
     navigationOptions: () => ({
-      header: null,
-    }),
-  },
+      header: null
+    })
+  }
 });
 const TabStack = createBottomTabNavigator(
   {
     Discover: DiscoverStack,
     MyList: MyListStack,
-    Friends: FriendsStack,
+    Friends: FriendsStack
   },
   {
     initialRouteName: 'Discover',
-    tabBarComponent: TabBar,
-  },
+    tabBarComponent: TabBar
+  }
 );
 
 export default createAppContainer(
   createSwitchNavigator(
     {
-      ListenersLoaded,
       App: TabStack,
-      Auth: AuthStack,
+      Auth: AuthStack
     },
     {
-      initialRouteName: 'ListenersLoaded',
-    },
-  ),
+      initialRouteName: 'Auth'
+    }
+  )
 );

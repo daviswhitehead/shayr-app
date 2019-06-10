@@ -10,19 +10,23 @@ import { startSignOut } from '../../redux/auth/actions';
 const mapStateToProps = state => ({});
 
 const mapDispatchToProps = dispatch => ({
-  startSignOut: () => dispatch(startSignOut()),
+  startSignOut: () => dispatch(startSignOut())
 });
 
 class Friends extends Component {
   static propTypes = {
     startSignOut: PropTypes.func.isRequired,
-    navigation: PropTypes.instanceOf(Object).isRequired,
+    navigation: PropTypes.instanceOf(Object).isRequired
   };
 
   static navigationOptions = () => ({
     header: (
-      <Header backgroundColor={colors.WHITE} statusBarStyle="dark-content" title="Hello World" />
-    ),
+      <Header
+        backgroundColor={colors.WHITE}
+        statusBarStyle="dark-content"
+        title="Hello World"
+      />
+    )
   });
 
   signOut = () => {
@@ -42,5 +46,5 @@ class Friends extends Component {
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps,
+  mapDispatchToProps
 )(Friends);

@@ -1,22 +1,24 @@
-import React, { Component } from 'react';
-import {
-  View, Image, Text, TouchableWithoutFeedback,
-} from 'react-native';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
+import React, { Component } from 'react';
+import { Image, Text, TouchableWithoutFeedback, View } from 'react-native';
 import { LoginButton } from 'react-native-fbsdk';
-import { facebookAuthTap, facebookAuth, signOutUser } from '../../redux/auth/actions';
-import styles from './styles';
+import { connect } from 'react-redux';
 import vectorLogo from '../../assets/VectorLogo.png';
+import {
+  facebookAuth,
+  facebookAuthTap,
+  signOutUser
+} from '../../redux/auth/actions';
+import styles from './styles';
 
 const mapStateToProps = state => ({
-  auth: state.auth,
+  auth: state.auth
 });
 
 const mapDispatchToProps = dispatch => ({
   facebookAuthTap: () => dispatch(facebookAuthTap()),
   facebookAuth: (error, result) => dispatch(facebookAuth(error, result)),
-  signOutUser: () => dispatch(signOutUser()),
+  signOutUser: () => dispatch(signOutUser())
 });
 
 class Login extends Component {
@@ -25,17 +27,23 @@ class Login extends Component {
     navigation: PropTypes.instanceOf(Object).isRequired,
     facebookAuthTap: PropTypes.func.isRequired,
     facebookAuth: PropTypes.func.isRequired,
-    signOutUser: PropTypes.func.isRequired,
+    signOutUser: PropTypes.func.isRequired
   };
 
-  componentDidMount() {
-    if (this.props.auth.user) {
+  constructor(props) {
+    super(props);
+    if (this.props.auth.isSigningOut) {
+      // when a user navigates to the login screen with isSigningOut === true, sign out the user
       this.props.signOutUser();
+    } else if (this.props.auth.user && this.props.auth.hasAccessToken) {
+      // when a user navigates to the login screen already authenticated (app launch), navigate to the app
+      this.props.navigation.navigate('App');
     }
   }
 
   componentDidUpdate() {
-    if (this.props.auth.user && this.props.auth.hasAccessToken && !this.props.auth.isSigningOut) {
+    if (this.props.auth.user && this.props.auth.hasAccessToken) {
+      // navigate to the app after successful authentication
       this.props.navigation.navigate('App');
     }
   }
@@ -52,7 +60,9 @@ class Login extends Component {
           <TouchableWithoutFeedback onPress={this.props.facebookAuthTap}>
             <LoginButton
               readPermissions={['public_profile', 'email']}
-              onLoginFinished={(error, result) => this.props.facebookAuth(error, result)}
+              onLoginFinished={(error, result) =>
+                this.props.facebookAuth(error, result)
+              }
               onLogoutFinished={() => this.props.signOutUser()}
             />
           </TouchableWithoutFeedback>
@@ -64,5 +74,5 @@ class Login extends Component {
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps,
+  mapDispatchToProps
 )(Login);

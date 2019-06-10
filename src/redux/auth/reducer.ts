@@ -1,7 +1,7 @@
 import { types } from './actions';
 
 const initialState = {
-  userId: null,
+  user: {},
   isAuthenticated: false,
   hasAccessToken: false,
   isSigningOut: false
