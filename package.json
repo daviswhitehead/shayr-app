@@ -40,6 +40,7 @@
     "fsevents": "^1.2.9",
     "lodash": "^4.17.5",
     "plist": "^3.0.1",
+    "re-reselect": "^3.2.0",
     "react": "^16.6.3",
     "react-native": "^0.59.4",
     "react-native-action-button": "^2.8.4",

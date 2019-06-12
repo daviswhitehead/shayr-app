@@ -8,27 +8,40 @@ import ContentCard from '../../components/ContentCard';
 import Header from '../../components/Header';
 import List from '../../components/List';
 import { startSignOut } from '../../redux/auth/actions';
+import { selectAuthUserId } from '../../redux/auth/selectors';
 import { subscribeToFriendships } from '../../redux/friendships/actions';
 import { subscribeNotificationTokenRefresh } from '../../redux/notifications/actions';
 import { postAction } from '../../redux/postActions/actions';
 import {
-  flattenPosts,
   loadPosts,
   paginatePosts,
   refreshPosts
 } from '../../redux/posts/actions';
 import { handleURLRoute, navigateToRoute } from '../../redux/routing/actions';
 import { subscribeToUser } from '../../redux/users/actions';
+import {
+  selectUserFromId,
+  selectUsersFromList
+} from '../../redux/users/selectors';
 import { loadUsersPosts } from '../../redux/usersPosts/actions';
+import { selectFlatListReadyUsersPostsFromList } from '../../redux/usersPosts/selectors';
 import colors from '../../styles/Colors';
 import styles from './styles';
 
-const mapStateToProps = state => ({
-  auth: state.auth,
-  users: state.users,
-  posts: state.posts,
-  routing: state.routing
-});
+const mapStateToProps = state => {
+  const authUserId = selectAuthUserId(state);
+
+  return {
+    authUserId,
+    authUser: selectUserFromId(state, authUserId),
+    friends: selectUsersFromList(state, `${authUserId}_Friends`),
+    usersPosts: selectFlatListReadyUsersPostsFromList(
+      state,
+      `${authUserId}_all`
+    ),
+    routing: state.routing
+  };
+};
 
 const mapDispatchToProps = dispatch => ({
   loadPosts: (userId, query) => dispatch(loadPosts(userId, query)),
@@ -49,9 +62,6 @@ const mapDispatchToProps = dispatch => ({
 
 class Discover extends Component {
   static propTypes = {
-    auth: PropTypes.instanceOf(Object).isRequired,
-    users: PropTypes.instanceOf(Object).isRequired,
-    posts: PropTypes.instanceOf(Object).isRequired,
     routing: PropTypes.instanceOf(Object).isRequired,
     navigation: PropTypes.instanceOf(Object).isRequired,
     subscribeToUser: PropTypes.func.isRequired,
@@ -73,20 +83,11 @@ class Discover extends Component {
   }
 
   async componentDidMount() {
-    // HOME - Listen to global datasets
     this.subscriptions.push(
-      await this.props.subscribeToUser(this.props.auth.user.uid)
-    );
-
-    this.subscriptions.push(
-      await this.props.subscribeToFriendships(this.props.auth.user.uid)
-    );
-
-    // HOME - Listen to notification token changes
-    this.subscriptions.push(
-      await this.props.subscribeNotificationTokenRefresh(
-        this.props.auth.user.uid
-      )
+      await this.props.subscribeToUser(this.props.authUserId),
+      await this.props.subscribeToFriendships(this.props.authUserId),
+      await this.props.subscribeNotificationTokenRefresh(this.props.authUserId),
+      await this.props.loadUsersPosts(this.props.authUserId, 'all')
     );
 
     // HOME - Respond to initial route and listen to routing updates
@@ -102,13 +103,6 @@ class Discover extends Component {
         }
       })
     );
-
-    // FEED - Listen to feed specific posts
-    // this.subscriptions.push(
-    //   await this.props.loadPosts(this.props.auth.user.uid, 'feed')
-    // );
-    await this.props.loadUsersPosts(this.props.auth.user.uid, 'all');
-    await this.props.loadUsersPosts(this.props.auth.user.uid, 'adds');
   }
 
   componentWillUnmount() {
@@ -126,45 +120,41 @@ class Discover extends Component {
       <ContentCard
         payload={item}
         friends={{
-          ...this.props.users.self,
-          ...this.props.users.friends
+          ...this.props.authUser,
+          ...this.props.friends
         }}
         onTap={() => this.props.handleURLRoute(routeURL)}
         shareAction={{
           actionCount: item.shareCount,
           actionUser: item.shares
-            ? item.shares.includes(this.props.auth.user.uid)
+            ? item.shares.includes(this.props.authUserId)
             : false,
           onPress: () =>
-            this.props.postAction(
-              'share',
-              this.props.auth.user.uid,
-              item.postId
-            )
+            this.props.postAction('share', this.props.authUserId, item.postId)
         }}
         addAction={{
           actionCount: item.addCount,
           actionUser: item.adds
-            ? item.adds.includes(this.props.auth.user.uid)
+            ? item.adds.includes(this.props.authUserId)
             : false,
           onPress: () =>
-            this.props.postAction('add', this.props.auth.user.uid, item.postId)
+            this.props.postAction('add', this.props.authUserId, item.postId)
         }}
         doneAction={{
           actionCount: item.doneCount,
           actionUser: item.dones
-            ? item.dones.includes(this.props.auth.user.uid)
+            ? item.dones.includes(this.props.authUserId)
             : false,
           onPress: () =>
-            this.props.postAction('done', this.props.auth.user.uid, item.postId)
+            this.props.postAction('done', this.props.authUserId, item.postId)
         }}
         likeAction={{
           actionCount: item.likeCount,
           actionUser: item.likes
-            ? item.likes.includes(this.props.auth.user.uid)
+            ? item.likes.includes(this.props.authUserId)
             : false,
           onPress: () =>
-            this.props.postAction('like', this.props.auth.user.uid, item.postId)
+            this.props.postAction('like', this.props.authUserId, item.postId)
         }}
       />
     );
@@ -172,7 +162,7 @@ class Discover extends Component {
 
   paginate = () => {
     // const unsubscribe = this.props.paginatePosts(
-    //   this.props.auth.user.uid,
+    //   this.props.authUserId,
     //   'feed',
     //   this.props.posts.feedLastPost
     // );
@@ -183,7 +173,7 @@ class Discover extends Component {
 
   refresh = () => {
     // const unsubscribe = this.props.refreshPosts(
-    //   this.props.auth.user.uid,
+    //   this.props.authUserId,
     //   'feed'
     // );
     // if (unsubscribe) {
@@ -192,20 +182,21 @@ class Discover extends Component {
   };
 
   loading = () => {
-    if (
-      !this.props.posts.feedPosts ||
-      !this.props.users.friends ||
-      !this.props.users.self
-    ) {
+    // if (this.props.posts.feedPosts) {
+    //   flattenPosts(this.props.posts.feedPosts);
+    // }
+
+    if (!this.props.usersPosts || !this.props.friends || !this.props.authUser) {
       return <Text>LOADING</Text>;
     }
+
     return (
       <List
-        data={flattenPosts(this.props.posts.feedPosts)}
+        data={this.props.usersPosts}
         renderItem={item => this.renderItem(item)}
         onEndReached={() => this.paginate()}
         onRefresh={() => this.refresh()}
-        refreshing={this.props.posts.refreshing}
+        refreshing={false}
       />
     );
   };
@@ -216,8 +207,8 @@ class Discover extends Component {
   };
 
   render() {
-    // console.log(this.state);
-    // console.log(this.props);
+    console.log(this.state);
+    console.log(this.props);
 
     return (
       <View style={styles.screen}>

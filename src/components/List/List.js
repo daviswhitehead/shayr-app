@@ -1,14 +1,7 @@
-import React, { Component } from "react";
-import {
-  FlatList,
-  Text,
-  StyleSheet,
-  View,
-  TouchableOpacity,
-  TouchableHighlight
-} from "react-native";
-import PropTypes from "prop-types";
-import styles from "./styles";
+import React, { Component } from 'react';
+import { FlatList, View } from 'react-native';
+import PropTypes from 'prop-types';
+import styles from './styles';
 
 export default class List extends Component {
   constructor() {

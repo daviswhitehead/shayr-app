@@ -5735,6 +5735,11 @@ rc@^1.2.7:
     minimist "^1.2.0"
     strip-json-comments "~2.0.1"
 
+re-reselect@^3.2.0:
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/re-reselect/-/re-reselect-3.2.0.tgz#438ac359fbe0c981014fd3e68d2df9014cb00316"
+  integrity sha512-vumSb+b0l0FxDrN7iomn8gDJoVyKkN/OA5ZH1L0uHovuy6F5PUvn9ImpSabuDMsNf3EFKhS8CG5h/BLTAAAcNA==
+
 react-clone-referenced-element@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/react-clone-referenced-element/-/react-clone-referenced-element-1.0.1.tgz#2bba8c69404c5e4a944398600bcc4c941f860682"

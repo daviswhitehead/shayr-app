@@ -10,33 +10,35 @@ export const types = {
   PAGINATE_POSTS_FAIL: 'PAGINATE_POSTS_FAIL',
   REFRESH: 'REFRESH',
   LAST_POST: 'LAST_POST',
-  RESET_POST_DETAIL: 'RESET_POST_DETAIL',
+  RESET_POST_DETAIL: 'RESET_POST_DETAIL'
 };
 
 // Helper Functions
 const pageLimter = 10;
-const feedQuery = userId => firebase
-  .firestore()
-  .collection('users_posts')
-  .where('userId', '==', userId)
-  .orderBy('createdAt', 'desc');
-const queueQuery = userId => firebase
-  .firestore()
-  .collection('users_posts')
-  .where('userId', '==', userId)
-  .where('adds', 'array-contains', userId)
-  .orderBy('updatedAt', 'desc');
+const feedQuery = userId =>
+  firebase
+    .firestore()
+    .collection('users_posts')
+    .where('userId', '==', userId)
+    .orderBy('createdAt', 'desc');
+const queueQuery = userId =>
+  firebase
+    .firestore()
+    .collection('users_posts')
+    .where('userId', '==', userId)
+    .where('adds', 'array-contains', userId)
+    .orderBy('updatedAt', 'desc');
 
 const firstPosts = (dispatch, userId, query) => {
   dispatch({ type: types.LOAD_POSTS_START });
   const queries = {
     feed: feedQuery(userId),
-    queue: queueQuery(userId),
+    queue: queueQuery(userId)
   };
   return queries[query].limit(pageLimter).onSnapshot(
-    (querySnapshot) => {
+    querySnapshot => {
       const posts = {};
-      querySnapshot.forEach((doc) => {
+      querySnapshot.forEach(doc => {
         posts[doc.id] = doc.data();
       });
       let newLastPost = 'done';
@@ -46,21 +48,21 @@ const firstPosts = (dispatch, userId, query) => {
       dispatch({
         type: types.LAST_POST,
         payload: newLastPost,
-        query,
+        query
       });
       dispatch({
         type: types.LOAD_POSTS_SUCCESS,
         payload: posts,
-        query,
+        query
       });
     },
-    (e) => {
+    e => {
       console.error(e);
       dispatch({
         type: types.LOAD_POSTS_FAIL,
-        error: e,
+        error: e
       });
-    },
+    }
   );
 };
 
@@ -71,15 +73,15 @@ const nextPosts = (dispatch, userId, query, lastPost) => {
   dispatch({ type: types.PAGINATE_POSTS_START });
   const queries = {
     feed: feedQuery(userId),
-    queue: queueQuery(userId),
+    queue: queueQuery(userId)
   };
   return queries[query]
     .startAfter(lastPost)
     .limit(pageLimter)
     .onSnapshot(
-      (querySnapshot) => {
+      querySnapshot => {
         const posts = {};
-        querySnapshot.forEach((doc) => {
+        querySnapshot.forEach(doc => {
           posts[doc.id] = doc.data();
         });
         let newLastPost = 'done';
@@ -89,73 +91,77 @@ const nextPosts = (dispatch, userId, query, lastPost) => {
         dispatch({
           type: types.LAST_POST,
           payload: newLastPost,
-          query,
+          query
         });
         dispatch({
           type: types.PAGINATE_POSTS_SUCCESS,
           payload: posts,
-          query,
+          query
         });
       },
-      (e) => {
+      e => {
         console.error(e);
         dispatch({
           type: types.PAGINATE_POSTS_FAIL,
-          error: e,
+          error: e
         });
-      },
+      }
     );
 };
 
-export const loadPosts = (userId, query) => function _loadPosts(dispatch) {
-  return firstPosts(dispatch, userId, query);
-};
+export const loadPosts = (userId, query) =>
+  function _loadPosts(dispatch) {
+    return firstPosts(dispatch, userId, query);
+  };
 
-export const loadPostDetails = (userId, postId) => function _loadPostDetails(dispatch) {
-  dispatch({ type: types.LOAD_POSTS_START });
+export const loadPostDetails = (userId, postId) =>
+  function _loadPostDetails(dispatch) {
+    dispatch({ type: types.LOAD_POSTS_START });
 
-  return firebase
-    .firestore()
-    .collection('users_posts')
-    .where('userId', '==', userId)
-    .where('postId', '==', postId)
-    .onSnapshot(
-      (querySnapshot) => {
-        const post = {};
-        querySnapshot.forEach((doc) => {
-          post[doc.id] = doc.data();
-        });
-        dispatch({
-          type: types.LOAD_POSTS_SUCCESS,
-          payload: post,
-          query: 'postDetail',
-        });
-      },
-      (e) => {
-        console.error(e);
-        dispatch({
-          type: types.LOAD_POSTS_FAIL,
-          error: e,
-        });
-      },
-    );
-};
+    return firebase
+      .firestore()
+      .collection('users_posts')
+      .where('userId', '==', userId)
+      .where('postId', '==', postId)
+      .onSnapshot(
+        querySnapshot => {
+          const post = {};
+          querySnapshot.forEach(doc => {
+            post[doc.id] = doc.data();
+          });
+          dispatch({
+            type: types.LOAD_POSTS_SUCCESS,
+            payload: post,
+            query: 'postDetail'
+          });
+        },
+        e => {
+          console.error(e);
+          dispatch({
+            type: types.LOAD_POSTS_FAIL,
+            error: e
+          });
+        }
+      );
+  };
 
-export const paginatePosts = (userId, query, lastPost) => function _paginatePosts(dispatch) {
-  return nextPosts(dispatch, userId, query, lastPost);
-};
+export const paginatePosts = (userId, query, lastPost) =>
+  function _paginatePosts(dispatch) {
+    return nextPosts(dispatch, userId, query, lastPost);
+  };
 
-export const refreshPosts = (userId, query) => function _refreshPosts(dispatch) {
-  dispatch({ type: types.REFRESH });
-  return firstPosts(dispatch, userId, query);
-};
+export const refreshPosts = (userId, query) =>
+  function _refreshPosts(dispatch) {
+    dispatch({ type: types.REFRESH });
+    return firstPosts(dispatch, userId, query);
+  };
 
-export const flattenPosts = (posts) => {
+export const flattenPosts = posts => {
   const data = [];
-  Object.keys(posts).forEach((postId) => {
+  Object.keys(posts).forEach(postId => {
     data.push({
       key: postId,
-      ...posts[postId],
+      ...posts[postId]
     });
   });
 
@@ -163,16 +169,16 @@ export const flattenPosts = (posts) => {
 };
 
 export const resetPostDetail = () => ({
-  type: types.RESET_POST_DETAIL,
+  type: types.RESET_POST_DETAIL
 });
 
 export const flattenPostsQueue = (userId, posts) => {
   const data = [];
-  Object.keys(posts).forEach((postId) => {
+  Object.keys(posts).forEach(postId => {
     if (!posts[postId].dones || !posts[postId].dones.includes(userId)) {
       data.push({
         key: postId,
-        ...posts[postId],
+        ...posts[postId]
       });
     }
   });

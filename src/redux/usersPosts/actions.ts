@@ -62,7 +62,7 @@ export const loadUsersPosts = (
   if (usersPosts) {
     dispatch({ type: types.GET_USERS_POSTS_SUCCESS, usersPosts });
 
-    _.forOwn(usersPosts, key => {
+    _.forOwn(usersPosts, (value, key) => {
       dispatch(addToUsersPostsList(userId, query, key));
     });
 
