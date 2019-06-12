@@ -9,6 +9,7 @@ import {
   getFBAuthCredential,
   signOut
 } from '../../lib/FirebaseLogin';
+import { navigate } from '../../lib/ReactNavigationHelpers';
 import { requestNotificationPermissionsRedux } from '../notifications/actions';
 
 export const types = {
@@ -164,9 +165,15 @@ export function facebookAuth(error, result) {
 }
 
 // SIGN OUT
-export function startSignOut() {
-  return { type: types.SIGN_OUT_START, isSigningOut: true };
-}
+// export function startSignOut() {
+//   console.log('startSignOut()');
+
+//   return { type: types.SIGN_OUT_START, isSigningOut: true };
+// }
+export const startSignOut = () => (dispatch: Dispatch) => {
+  dispatch({ type: types.SIGN_OUT_START, isSigningOut: true });
+  navigate('Login');
+};
 
 // SIGN OUT
 export function signOutUser() {

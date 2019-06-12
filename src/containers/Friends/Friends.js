@@ -29,16 +29,11 @@ class Friends extends Component {
     )
   });
 
-  signOut = () => {
-    this.props.startSignOut();
-    this.props.navigation.navigate('Login');
-  };
-
   render() {
     return (
       <View style={styles.container}>
         <Text>COMING SOON</Text>
-        <Button onPress={() => this.signOut()} title="Log Out" />
+        <Button onPress={this.props.startSignOut} title="Log Out" />
       </View>
     );
   }

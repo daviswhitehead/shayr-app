@@ -24,34 +24,46 @@ import {
   selectUsersFromList
 } from '../../redux/users/selectors';
 import { loadUsersPosts } from '../../redux/usersPosts/actions';
-import { selectFlatListReadyUsersPostsFromList } from '../../redux/usersPosts/selectors';
+import {
+  selectFlatListReadyUsersPostsFromList,
+  selectUsersPostsMetadataFromList
+} from '../../redux/usersPosts/selectors';
 import colors from '../../styles/Colors';
 import styles from './styles';
 
 const mapStateToProps = state => {
   const authUserId = selectAuthUserId(state);
+  const usersPostsViews = {
+    all: `${authUserId}_all`
+  };
+  const usersPostsFeeds = {
+    [usersPostsViews.all]: {
+      data: selectFlatListReadyUsersPostsFromList(state, usersPostsViews.all),
+      ...selectUsersPostsMetadataFromList(state, usersPostsViews.all)
+    }
+  };
 
   return {
+    auth: state.auth,
     authUserId,
     authUser: selectUserFromId(state, authUserId),
     friends: selectUsersFromList(state, `${authUserId}_Friends`),
-    usersPosts: selectFlatListReadyUsersPostsFromList(
-      state,
-      `${authUserId}_all`
-    ),
-    routing: state.routing
+    usersPostsViews,
+    usersPostsFeeds,
+    routing: state.routing,
+    posts: state.posts
   };
 };
 
 const mapDispatchToProps = dispatch => ({
   loadPosts: (userId, query) => dispatch(loadPosts(userId, query)),
-  loadUsersPosts: (userId, query) => dispatch(loadUsersPosts(userId, query)),
+  loadUsersPosts: (userId, query, shouldRefresh, lastItem) =>
+    dispatch(loadUsersPosts(userId, query, shouldRefresh, lastItem)),
   paginatePosts: (userId, query, lastPost) =>
     dispatch(paginatePosts(userId, query, lastPost)),
   refreshPosts: (userId, query) => dispatch(refreshPosts(userId, query)),
   postAction: (actionType, userId, postId) =>
     dispatch(postAction(actionType, userId, postId)),
-  startSignOut: () => dispatch(startSignOut()),
   subscribeToUser: userId => dispatch(subscribeToUser(userId)),
   subscribeToFriendships: userId => dispatch(subscribeToFriendships(userId)),
   subscribeNotificationTokenRefresh: userId =>
@@ -83,11 +95,19 @@ class Discover extends Component {
   }
 
   async componentDidMount() {
+    console.log(this.props);
+    console.log(this.state);
+
+    // setup subscriptions
     this.subscriptions.push(
       await this.props.subscribeToUser(this.props.authUserId),
       await this.props.subscribeToFriendships(this.props.authUserId),
       await this.props.subscribeNotificationTokenRefresh(this.props.authUserId),
-      await this.props.loadUsersPosts(this.props.authUserId, 'all')
+      subscribe('routing', state => {
+        if (state.routing.screen) {
+          this.props.navigateToRoute(state.routing);
+        }
+      })
     );
 
     // HOME - Respond to initial route and listen to routing updates
@@ -95,14 +115,12 @@ class Discover extends Component {
       this.props.navigateToRoute(this.props.routing);
     }
 
-    // HOME - Listen to routing updates
-    this.subscriptions.push(
-      subscribe('routing', state => {
-        if (state.routing.screen) {
-          this.props.navigateToRoute(state.routing);
-        }
-      })
-    );
+    // load initial data
+    await this.props.loadUsersPosts(this.props.authUserId, 'all', true);
+
+    // this.subscriptions.push(
+    //   await this.props.loadPosts(this.props.auth.user.uid, 'feed')
+    // );
   }
 
   componentWillUnmount() {
@@ -161,6 +179,12 @@ class Discover extends Component {
   };
 
   paginate = () => {
+    console.log('paginate');
+    const lastItem = this.props.usersPostsFeeds[this.props.usersPostsViews.all]
+      .lastItem;
+    console.log('lastItem', lastItem);
+    this.props.loadUsersPosts(this.props.authUserId, 'all', false, lastItem);
+
     // const unsubscribe = this.props.paginatePosts(
     //   this.props.authUserId,
     //   'feed',
@@ -172,6 +196,8 @@ class Discover extends Component {
   };
 
   refresh = () => {
+    console.log('refresh');
+    this.props.loadUsersPosts(this.props.authUserId, 'all', true);
     // const unsubscribe = this.props.refreshPosts(
     //   this.props.authUserId,
     //   'feed'
@@ -182,33 +208,31 @@ class Discover extends Component {
   };
 
   loading = () => {
-    // if (this.props.posts.feedPosts) {
-    //   flattenPosts(this.props.posts.feedPosts);
-    // }
-
-    if (!this.props.usersPosts || !this.props.friends || !this.props.authUser) {
+    if (
+      !this.props.usersPostsFeeds[this.props.usersPostsViews.all].isLoaded ||
+      !this.props.friends ||
+      !this.props.authUser
+    ) {
       return <Text>LOADING</Text>;
     }
 
     return (
       <List
-        data={this.props.usersPosts}
+        data={this.props.usersPostsFeeds[this.props.usersPostsViews.all].data}
         renderItem={item => this.renderItem(item)}
         onEndReached={() => this.paginate()}
         onRefresh={() => this.refresh()}
-        refreshing={false}
+        refreshing={
+          this.props.usersPostsFeeds[this.props.usersPostsViews.all]
+            .isRefreshing
+        }
       />
     );
   };
 
-  signOut = () => {
-    this.props.startSignOut();
-    this.props.navigation.navigate('Login');
-  };
-
   render() {
-    console.log(this.state);
-    console.log(this.props);
+    // console.log(this.state);
+    // console.log(this.props);
 
     return (
       <View style={styles.screen}>

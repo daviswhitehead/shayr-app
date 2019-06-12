@@ -32,17 +32,18 @@ class Login extends Component {
 
   constructor(props) {
     super(props);
+
     if (this.props.auth.isSigningOut) {
       // when a user navigates to the login screen with isSigningOut === true, sign out the user
       this.props.signOutUser();
-    } else if (this.props.auth.user && this.props.auth.hasAccessToken) {
+    } else if (this.props.auth.user.uid && this.props.auth.hasAccessToken) {
       // when a user navigates to the login screen already authenticated (app launch), navigate to the app
       this.props.navigation.navigate('App');
     }
   }
 
   componentDidUpdate() {
-    if (this.props.auth.user && this.props.auth.hasAccessToken) {
+    if (this.props.auth.user.uid && this.props.auth.hasAccessToken) {
       // navigate to the app after successful authentication
       this.props.navigation.navigate('App');
     }

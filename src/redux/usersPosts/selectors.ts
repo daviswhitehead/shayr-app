@@ -49,3 +49,14 @@ export const selectFlatListReadyUsersPostsFromList = createCachedSelector(
     }, []);
   }
 )((state, listKey) => listKey);
+
+export const selectUsersPostsMetadataFromList = createCachedSelector(
+  selectUsersPosts,
+  selectUsersPostsLists,
+  (usersPosts, usersPostsList) => {
+    if (!usersPosts || !_.get(usersPostsList, 'isLoaded', false)) {
+      return;
+    }
+    return { ..._.omit(usersPostsList, 'items') };
+  }
+)((state, listKey) => listKey);

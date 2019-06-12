@@ -87,6 +87,7 @@ const nextPosts = (dispatch, userId, query, lastPost) => {
         let newLastPost = 'done';
         if (querySnapshot.docs.length - 1 === pageLimter - 1) {
           newLastPost = querySnapshot.docs[querySnapshot.docs.length - 1];
+          console.log('doc', newLastPost);
         }
         dispatch({
           type: types.LAST_POST,

@@ -4,6 +4,7 @@ import firebase from 'react-native-firebase';
 import { Dispatch } from 'redux';
 import {
   addToUsersPostsList,
+  refreshUsersPostsList,
   usersPostsListLoaded
 } from '../usersPostsLists/actions';
 
@@ -33,21 +34,28 @@ const composeRequest = (userId: string, query: UsersPostsQueries) => {
   return request;
 };
 
-const getLastItem = (items, requestLimiter) => {
+const getLastItem = async (items, requestLimiter) => {
   const itemKeys = Object.keys(items);
   return itemKeys.length === requestLimiter
-    ? items[itemKeys[requestLimiter - 1]]._id
+    ? firebase
+        .firestore()
+        .doc(items[itemKeys[requestLimiter - 1]]._reference)
+        .get()
     : 'done';
 };
 
 export const loadUsersPosts = (
   userId: string,
   query: UsersPostsQueries,
+  shouldRefresh: boolean,
   lastItem?: string
 ) => async (dispatch: Dispatch) => {
   // prevent loading more items when the end is reached
   if (lastItem === 'done') {
     return;
+  }
+  if (shouldRefresh) {
+    dispatch(refreshUsersPostsList(userId, query));
   }
 
   dispatch({ type: types.GET_USERS_POSTS_START });
@@ -62,15 +70,13 @@ export const loadUsersPosts = (
   if (usersPosts) {
     dispatch({ type: types.GET_USERS_POSTS_SUCCESS, usersPosts });
 
-    _.forOwn(usersPosts, (value, key) => {
-      dispatch(addToUsersPostsList(userId, query, key));
-    });
+    dispatch(addToUsersPostsList(userId, query, _.keys(usersPosts)));
 
     dispatch(
       usersPostsListLoaded(
         userId,
         query,
-        getLastItem(usersPosts, requestLimiter)
+        await getLastItem(usersPosts, requestLimiter)
       )
     );
   } else {

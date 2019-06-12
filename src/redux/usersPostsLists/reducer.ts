@@ -6,14 +6,27 @@ const initialState = {};
 function usersListsReducer(state = initialState, action) {
   switch (action.type) {
     case types.ADD_TO_USERS_POSTS_LIST: {
+      const items = _.get(state, [action.listKey, 'isRefreshing'], false)
+        ? [...action.usersPostsIds]
+        : _.uniq([
+            ..._.get(state, [action.listKey, 'items'], []),
+            ...action.usersPostsIds
+          ]);
+
       return {
         ...state,
         [action.listKey]: {
           ..._.get(state, action.listKey, {}),
-          items: [
-            ..._.get(state, [action.listKey, 'items'], []),
-            action.usersPostsId
-          ]
+          items
+        }
+      };
+    }
+    case types.REFRESH_USERS_POSTS_LIST: {
+      return {
+        ...state,
+        [action.listKey]: {
+          ..._.get(state, action.listKey, {}),
+          isRefreshing: true
         }
       };
     }
@@ -23,6 +36,7 @@ function usersListsReducer(state = initialState, action) {
         [action.listKey]: {
           ..._.get(state, action.listKey, {}),
           isLoaded: true,
+          isRefreshing: false,
           lastItem: action.lastItem
         }
       };

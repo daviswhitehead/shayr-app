@@ -42,7 +42,7 @@ export default class List extends Component {
         ItemSeparatorComponent={this.renderSeparator}
         onScroll={this.props.onScroll}
         onEndReached={this.props.onEndReached}
-        onEndReachedThreshold={0.1}
+        onEndReachedThreshold={0.5}
         onRefresh={this.props.onRefresh}
         refreshing={this.props.refreshing}
       />
