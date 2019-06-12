@@ -15,7 +15,7 @@ export const types = {
 };
 
 type UsersPostsQueries = 'all' | 'shares' | 'adds' | 'dones' | 'likes';
-const requestLimiter = 10;
+const requestLimiter = 20;
 const composeRequest = (userId: string, query: UsersPostsQueries) => {
   let request = firebase
     .firestore()
@@ -32,16 +32,6 @@ const composeRequest = (userId: string, query: UsersPostsQueries) => {
   }
 
   return request;
-};
-
-const getLastItem = async (items, requestLimiter) => {
-  const itemKeys = Object.keys(items);
-  return itemKeys.length === requestLimiter
-    ? firebase
-        .firestore()
-        .doc(items[itemKeys[requestLimiter - 1]]._reference)
-        .get()
-    : 'done';
 };
 
 export const loadUsersPosts = (
@@ -66,19 +56,18 @@ export const loadUsersPosts = (
     request = request.startAfter(lastItem);
   }
 
-  const usersPosts = await getDocumentsInCollection(request, `users_posts`);
-  if (usersPosts) {
-    dispatch({ type: types.GET_USERS_POSTS_SUCCESS, usersPosts });
-
-    dispatch(addToUsersPostsList(userId, query, _.keys(usersPosts)));
-
-    dispatch(
-      usersPostsListLoaded(
-        userId,
-        query,
-        await getLastItem(usersPosts, requestLimiter)
-      )
-    );
+  const usersPosts = await getDocumentsInCollection(
+    request,
+    `users_posts`,
+    requestLimiter
+  );
+  if (usersPosts.documents) {
+    dispatch({
+      type: types.GET_USERS_POSTS_SUCCESS,
+      usersPosts: usersPosts.documents
+    });
+    dispatch(addToUsersPostsList(userId, query, _.keys(usersPosts.documents)));
+    dispatch(usersPostsListLoaded(userId, query, usersPosts.lastDocument));
   } else {
     dispatch({ type: types.GET_USERS_POSTS_FAIL });
   }

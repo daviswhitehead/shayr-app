@@ -178,35 +178,6 @@ class Discover extends Component {
     );
   };
 
-  paginate = () => {
-    console.log('paginate');
-    const lastItem = this.props.usersPostsFeeds[this.props.usersPostsViews.all]
-      .lastItem;
-    console.log('lastItem', lastItem);
-    this.props.loadUsersPosts(this.props.authUserId, 'all', false, lastItem);
-
-    // const unsubscribe = this.props.paginatePosts(
-    //   this.props.authUserId,
-    //   'feed',
-    //   this.props.posts.feedLastPost
-    // );
-    // if (unsubscribe) {
-    //   this.subscriptions.push(unsubscribe);
-    // }
-  };
-
-  refresh = () => {
-    console.log('refresh');
-    this.props.loadUsersPosts(this.props.authUserId, 'all', true);
-    // const unsubscribe = this.props.refreshPosts(
-    //   this.props.authUserId,
-    //   'feed'
-    // );
-    // if (unsubscribe) {
-    //   this.subscriptions.push(unsubscribe);
-    // }
-  };
-
   loading = () => {
     if (
       !this.props.usersPostsFeeds[this.props.usersPostsViews.all].isLoaded ||
@@ -220,8 +191,17 @@ class Discover extends Component {
       <List
         data={this.props.usersPostsFeeds[this.props.usersPostsViews.all].data}
         renderItem={item => this.renderItem(item)}
-        onEndReached={() => this.paginate()}
-        onRefresh={() => this.refresh()}
+        onEndReached={() =>
+          this.props.loadUsersPosts(
+            this.props.authUserId,
+            'all',
+            false,
+            this.props.usersPostsFeeds[this.props.usersPostsViews.all].lastItem
+          )
+        }
+        onRefresh={() =>
+          this.props.loadUsersPosts(this.props.authUserId, 'all', true)
+        }
         refreshing={
           this.props.usersPostsFeeds[this.props.usersPostsViews.all]
             .isRefreshing
