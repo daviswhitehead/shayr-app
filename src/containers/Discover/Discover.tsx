@@ -19,6 +19,7 @@ import {
 } from '../../redux/posts/actions';
 import { handleURLRoute, navigateToRoute } from '../../redux/routing/actions';
 import { subscribeToUser } from '../../redux/users/actions';
+import { loadUsersPosts } from '../../redux/usersPosts/actions';
 import colors from '../../styles/Colors';
 import styles from './styles';
 
@@ -31,6 +32,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   loadPosts: (userId, query) => dispatch(loadPosts(userId, query)),
+  loadUsersPosts: (userId, query) => dispatch(loadUsersPosts(userId, query)),
   paginatePosts: (userId, query, lastPost) =>
     dispatch(paginatePosts(userId, query, lastPost)),
   refreshPosts: (userId, query) => dispatch(refreshPosts(userId, query)),
@@ -57,6 +59,7 @@ class Discover extends Component {
     subscribeNotificationTokenRefresh: PropTypes.func.isRequired,
     navigateToRoute: PropTypes.func.isRequired,
     loadPosts: PropTypes.func.isRequired,
+    loadUsersPosts: PropTypes.func.isRequired,
     handleURLRoute: PropTypes.func.isRequired,
     postAction: PropTypes.func.isRequired,
     paginatePosts: PropTypes.func.isRequired,
@@ -64,8 +67,8 @@ class Discover extends Component {
     startSignOut: PropTypes.func.isRequired
   };
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.subscriptions = [];
   }
 
@@ -101,16 +104,16 @@ class Discover extends Component {
     );
 
     // FEED - Listen to feed specific posts
-    this.subscriptions.push(
-      await this.props.loadPosts(this.props.auth.user.uid, 'feed')
-    );
+    // this.subscriptions.push(
+    //   await this.props.loadPosts(this.props.auth.user.uid, 'feed')
+    // );
+    await this.props.loadUsersPosts(this.props.auth.user.uid, 'all');
+    await this.props.loadUsersPosts(this.props.auth.user.uid, 'adds');
   }
 
   componentWillUnmount() {
-    console.log('componentWillUnmount()');
-
-    Object.values(this.subscriptions).forEach(subscription => {
-      subscription();
+    Object.values(this.subscriptions).forEach(unsubscribe => {
+      unsubscribe();
     });
   }
 
@@ -168,24 +171,24 @@ class Discover extends Component {
   };
 
   paginate = () => {
-    const unsubscribe = this.props.paginatePosts(
-      this.props.auth.user.uid,
-      'feed',
-      this.props.posts.feedLastPost
-    );
-    if (unsubscribe) {
-      this.subscriptions.push(unsubscribe);
-    }
+    // const unsubscribe = this.props.paginatePosts(
+    //   this.props.auth.user.uid,
+    //   'feed',
+    //   this.props.posts.feedLastPost
+    // );
+    // if (unsubscribe) {
+    //   this.subscriptions.push(unsubscribe);
+    // }
   };
 
   refresh = () => {
-    const unsubscribe = this.props.refreshPosts(
-      this.props.auth.user.uid,
-      'feed'
-    );
-    if (unsubscribe) {
-      this.subscriptions.push(unsubscribe);
-    }
+    // const unsubscribe = this.props.refreshPosts(
+    //   this.props.auth.user.uid,
+    //   'feed'
+    // );
+    // if (unsubscribe) {
+    //   this.subscriptions.push(unsubscribe);
+    // }
   };
 
   loading = () => {

@@ -1,12 +1,14 @@
 import { combineReducers } from 'redux';
 import appReducer from './app/reducer';
 import authReducer from './auth/reducer';
-// // import friendsReducer from './friends/reducer';
 import friendshipsReducer from './friendships/reducer';
+import friendshipsListsReducer from './friendshipsLists/reducer';
 import postsReducer from './posts/reducer';
 import routingReducer from './routing/reducer';
 import usersReducer from './users/reducer';
 import usersListsReducer from './usersLists/reducer';
+import usersPostsReducer from './usersPosts/reducer';
+import usersPostsListsReducer from './usersPostsLists/reducer';
 
 export const makeRootReducer = () =>
   combineReducers({
@@ -14,8 +16,10 @@ export const makeRootReducer = () =>
     auth: authReducer,
     users: usersReducer,
     usersLists: usersListsReducer,
-    // friends: friendsReducer,
+    usersPosts: usersPostsReducer,
+    usersPostsLists: usersPostsListsReducer,
     friendships: friendshipsReducer,
+    friendshipsLists: friendshipsListsReducer,
     posts: postsReducer,
     routing: routingReducer
   });

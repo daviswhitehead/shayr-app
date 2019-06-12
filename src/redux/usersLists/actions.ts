@@ -1,25 +1,27 @@
 import { Dispatch } from 'redux';
 
 export const types = {
-  ADD_TO_FRIENDS_LIST_START: 'ADD_TO_FRIENDS_LIST_START',
-  ADD_TO_FRIENDS_LIST_SUCCESS: 'ADD_TO_FRIENDS_LIST_SUCCESS',
-  ADD_TO_FRIENDS_LIST_FAIL: 'ADD_TO_FRIENDS_LIST_FAIL'
+  ADD_TO_USERS_LIST: 'ADD_TO_USERS_LIST',
+  USERS_LIST_LOADED: 'USERS_LIST_LOADED'
 };
 
-export const addToFriendsList = (userId: string, friendUserId: string) => 
-(dispatch: Dispatch) => {
-  dispatch({ type: types.ADD_TO_FRIENDS_LIST_START });
-  try {
-    dispatch({
-      type: types.ADD_TO_FRIENDS_LIST_SUCCESS,
-      userId,
-      friendUserId
-    });
-  } catch (error) {
-    console.error(error);
-    dispatch({
-      type: types.ADD_TO_FRIENDS_LIST_FAIL,
-      error
-    });
-  }
+export const addToUsersList = (
+  owningUserId: string,
+  userId: string,
+  list: string
+) => (dispatch: Dispatch) => {
+  dispatch({
+    type: types.ADD_TO_USERS_LIST,
+    listKey: `${owningUserId}_${list}`,
+    userId
+  });
+};
+
+export const usersListLoaded = (owningUserId: string, list: string) => (
+  dispatch: Dispatch
+) => {
+  dispatch({
+    type: types.USERS_LIST_LOADED,
+    listKey: `${owningUserId}_${list}`
+  });
 };

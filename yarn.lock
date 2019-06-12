@@ -787,10 +787,10 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
-"@daviswhitehead/shayr-resources@^1.1.2":
-  version "1.1.2"
-  resolved "https://registry.yarnpkg.com/@daviswhitehead/shayr-resources/-/shayr-resources-1.1.2.tgz#210f6c080ad19c3fb442a2f84cdc0d6ed5f85bd9"
-  integrity sha512-7fjbHhzpyLrG2nAzLfB4MQUVfZRFkrTBA7a+aJtFF8VXoO4A7OZfCaakRSst9l8FJzGLizwnOvnueR7mvs+dDQ==
+"@daviswhitehead/shayr-resources@^1.1.3":
+  version "1.1.3"
+  resolved "https://registry.yarnpkg.com/@daviswhitehead/shayr-resources/-/shayr-resources-1.1.3.tgz#36685c78495e71426d3c54efdd8c2e090f080c08"
+  integrity sha512-suFcv4ONnPFbV6AlXCToqtaxk5r4OJDy4rvYhVsoaMvbmpdGBX03voolZ9AEPaJwBq2Egn/8lzWgv/kQxz2ypA==
   dependencies:
     "@types/lodash" "^4.14.133"
     "@types/urijs" "^1.19.1"
@@ -6302,6 +6302,11 @@ reselect@^3.0.1:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/reselect/-/reselect-3.0.1.tgz#efdaa98ea7451324d092b2b2163a6a1d7a9a2147"
   integrity sha1-79qpjqdFEyTQkrKyFjpqHXqaIUc=
+
+reselect@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/reselect/-/reselect-4.0.0.tgz#f2529830e5d3d0e021408b246a206ef4ea4437f7"
+  integrity sha512-qUgANli03jjAyGlnbYVAV5vvnOmJnODyABz51RdBN7M4WaVu8mecZWgyQNkG8Yqe3KRGRt0l4K4B3XVEULC4CA==
 
 resolve-cwd@^2.0.0:
   version "2.0.0"

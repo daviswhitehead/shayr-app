@@ -1,17 +1,18 @@
 import firebase from 'react-native-firebase';
 import { Dispatch } from 'redux';
+import {
+  addToFriendshipsList,
+  friendshipsListLoaded
+} from '../friendshipsLists/actions';
 import { getUser } from '../users/actions';
-import { addToFriendsList } from '../usersLists/actions';
+import { addToUsersList, usersListLoaded } from '../usersLists/actions';
 
 export const types = {
-  // FRIENDSHIPS
   SUBSCRIBE_FRIENDSHIPS_START: 'SUBSCRIBE_FRIENDSHIPS_START',
   SUBSCRIBE_FRIENDSHIPS_SUCCESS: 'SUBSCRIBE_FRIENDSHIPS_SUCCESS',
-  SUBSCRIBE_FRIENDSHIP_DONE: 'SUBSCRIBE_FRIENDSHIP_DONE',
   SUBSCRIBE_FRIENDSHIPS_FAIL: 'SUBSCRIBE_FRIENDSHIPS_FAIL'
 };
 
-// FRIENDSHIPS
 export const subscribeToFriendships = (userId: string) => {
   return (dispatch: Dispatch) => {
     dispatch({ type: types.SUBSCRIBE_FRIENDSHIPS_START });
@@ -31,12 +32,14 @@ export const subscribeToFriendships = (userId: string) => {
 
             if (friendship.status === 'accepted') {
               await dispatch(getUser(friendUserId));
-              await dispatch(addToFriendsList(userId, friendUserId));
+              await dispatch(addToUsersList(userId, friendUserId, 'Friends'));
             }
+            dispatch(addToFriendshipsList(userId, friendUserId));
+
             return new Promise((resolve, reject) =>
               resolve(
                 dispatch({
-                  type: types.SUBSCRIBE_FRIENDSHIP_DONE,
+                  type: types.SUBSCRIBE_FRIENDSHIPS_SUCCESS,
                   userId,
                   friendshipId,
                   friendship
@@ -45,11 +48,8 @@ export const subscribeToFriendships = (userId: string) => {
             );
           });
           await Promise.all(promises);
-          dispatch({
-            type: types.SUBSCRIBE_FRIENDSHIPS_SUCCESS,
-            userId,
-            isLoaded: true
-          });
+          dispatch(usersListLoaded(userId, 'Friends'));
+          dispatch(friendshipsListLoaded(userId));
         },
         error => {
           console.error(error);

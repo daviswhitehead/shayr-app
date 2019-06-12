@@ -11,6 +11,7 @@
   app: {},
   auth: {},
   friendships: {},
+  friendshipsLists: {},
   routing: {},
   usersLists: {},
   usersPosts: {},
@@ -107,13 +108,31 @@ The usersLists state is contains a variety of lists of userIds relevant to the c
 
 ```javascript
 {
-  userIdA_Friends: ['userIdA', 'userIdB', 'userIdC', ...],
-  userIdA_GroupA: ['userIdA', 'userIdB', 'userIdC', ...],
-  userIdA_GroupB: ['userIdA', 'userIdB', 'userIdC', ...],
+  userIdA_Friends: {
+    isLoaded: true,
+    items: ['userIdA', 'userIdB', 'userIdC', ...]
+  },
+  userIdA_GroupA:  {
+    isLoaded: true,
+    items: ['userIdA', 'userIdB', 'userIdC', ...],
+  },
+  userIdA_GroupB:  {
+    isLoaded: true,
+    items: ['userIdA', 'userIdB', 'userIdC', ...],
+  },
 
-  userIdB_Friends: ['userIdA', 'userIdB', 'userIdC', ...],
-  userIdB_GroupA: ['userIdA', 'userIdB', 'userIdC', ...],
-  userIdB_GroupB: ['userIdA', 'userIdB', 'userIdC', ...],
+  userIdB_Friends:  {
+    isLoaded: true,
+    items: ['userIdA', 'userIdB', 'userIdC', ...],
+  },
+  userIdB_GroupA:  {
+    isLoaded: true,
+    items: ['userIdA', 'userIdB', 'userIdC', ...],
+  },
+  userIdB_GroupB:  {
+    isLoaded: true,
+    items: ['userIdA', 'userIdB', 'userIdC', ...],
+  },
 
   ...
 }
@@ -121,7 +140,40 @@ The usersLists state is contains a variety of lists of userIds relevant to the c
 
 ### fields
 
+- `isLoaded` _object_ -- Keys map to each list of `userId`'s and the value is `true` when loaded. This is helpful to avoid extra frontend rendering.
 - `userId` _string_ -- The user's firebase-generated uuid.
+
+## friendshipsLists
+
+### description
+
+The friendshipsLists state is contains a set of lists of friendshipIds relevant to the current user's experience.
+
+### initialState
+
+```javascript
+{
+  userIdA: {
+    isLoaded: true,
+    items: ['friendshipsIdA', 'friendshipsIdB', 'friendshipsIdC', ...]
+  },
+  userIdB: {
+    isLoaded: true,
+    items: ['friendshipsIdA', 'friendshipsIdB', 'friendshipsIdC', ...]
+  },
+  userIdC: {
+    isLoaded: true,
+    items: ['friendshipsIdA', 'friendshipsIdB', 'friendshipsIdC', ...]
+  },
+
+  ...
+}
+```
+
+### fields
+
+- `isLoaded` _object_ -- Keys map to each list of `userId`'s and the value is `true` when loaded. This is helpful to avoid extra frontend rendering.
+- `friendshipsId` _string_ -- The friendship's firebase-generated uuid.
 
 ## friendships
 
@@ -133,22 +185,17 @@ The friendships state is a collection of the current user's friend requests and 
 
 ```javascript
 {
-    userId: {
-      friendships: {
-        friendshipId: {
-          createdAt: null,
-          initiatingUserId: '',
-          receivingUserId: '',
-          status: '',
-          updatedAt: null,
-          userIds: [
-            'userIdA',
-            'userIdB',
-          ]
-        }
-      },
-      isLoaded: true
-    }
+  friendshipId: {
+    createdAt: null,
+    initiatingUserId: '',
+    receivingUserId: '',
+    status: '',
+    updatedAt: null,
+    userIds: [
+      'userIdA',
+      'userIdB',
+    ]
+  }
 }
 ```
 
@@ -160,7 +207,7 @@ The friendships state is a collection of the current user's friend requests and 
 - `status` _string_ ["pending", "accepted", "rejected"] -- The current friendship status.
 - `updatedAt` _timestamp_
 - `userIds` _Array\<string\>_ -- The list of userIds involved in a friendship object.
-- `isLoaded` _boolean_ -- Let's the app know when the user's friends are finished loading.
+- `isLoaded` _object_ -- Keys map to each `userId` who the app has pulled friendships for and the value is `true` when loaded. This is helpful to avoid extra frontend rendering.
 
 ## routing
 
@@ -275,15 +322,69 @@ The usersPostsLists state is a collection of lists that represent various views 
 
 ```javascript
 {
-  userIdA_posts: ['userPostIdA', 'userPostIdB', 'userPostIdC', ...],
-  userIdA_posts_done: ['userPostIdA', 'userPostIdB', 'userPostIdC', ...],
-  userIdA_posts_shared: ['userPostIdA', 'userPostIdB', 'userPostIdC', ...],
-  userIdA_posts_shared_product: ['userPostIdA', 'userPostIdB', 'userPostIdC', ...],
+  userIdA_posts: {
+    isLoaded: true,
+    isRefreshing: false,
+    isPaginating: false,
+    lastPost: 'userPostIdX',
+    usersPosts: ['userPostIdA', 'userPostIdB', 'userPostIdC', ...],
+  },
 
-  userIdB_posts: ['userPostIdA', 'userPostIdB', 'userPostIdC', ...],
-  userIdB_posts_done: ['userPostIdA', 'userPostIdB', 'userPostIdC', ...],
-  userIdB_posts_shared: ['userPostIdA', 'userPostIdB', 'userPostIdC', ...],
-  userIdB_posts_shared_product: ['userPostIdA', 'userPostIdB', 'userPostIdC', ...],
+  userIdA_posts_done: {
+    isLoaded: true,
+    isRefreshing: false,
+    isPaginating: false,
+    lastPost: 'userPostIdX',
+    usersPosts: ['userPostIdA', 'userPostIdB', 'userPostIdC', ...],
+  },
+
+  userIdA_posts_shared: {
+    isLoaded: true,
+    isRefreshing: false,
+    isPaginating: false,
+    lastPost: 'userPostIdX',
+    usersPosts: ['userPostIdA', 'userPostIdB', 'userPostIdC', ...],
+  },
+
+  userIdA_posts_shared_product: {
+    isLoaded: true,
+    isRefreshing: false,
+    isPaginating: false,
+    lastPost: 'userPostIdX',
+    usersPosts: ['userPostIdA', 'userPostIdB', 'userPostIdC', ...],
+  },
+
+  userIdB_posts: {
+    isLoaded: true,
+    isRefreshing: false,
+    isPaginating: false,
+    lastPost: 'userPostIdX',
+    usersPosts: ['userPostIdA', 'userPostIdB', 'userPostIdC', ...],
+  },
+
+  userIdB_posts_done: {
+    isLoaded: true,
+    isRefreshing: false,
+    isPaginating: false,
+    lastPost: 'userPostIdX',
+    usersPosts: ['userPostIdA', 'userPostIdB', 'userPostIdC', ...],
+  },
+
+  userIdB_posts_shared: {
+    isLoaded: true,
+    isRefreshing: false,
+    isPaginating: false,
+    lastPost: 'userPostIdX',
+    usersPosts: ['userPostIdA', 'userPostIdB', 'userPostIdC', ...],
+  },
+
+  userIdB_posts_shared_product: {
+    isLoaded: true,
+    isRefreshing: false,
+    isPaginating: false,
+    lastPost: 'userPostIdX',
+    usersPosts: ['userPostIdA', 'userPostIdB', 'userPostIdC', ...],
+  },
 
   ...
 }
