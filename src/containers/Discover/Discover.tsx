@@ -1,23 +1,16 @@
-import { buildAppLink } from '@daviswhitehead/shayr-resources';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { Text, View } from 'react-native';
 import { connect } from 'react-redux';
 import { subscribe } from 'redux-subscriber';
-import ContentCard from '../../components/ContentCard';
 import Header from '../../components/Header';
 import List from '../../components/List';
-import { startSignOut } from '../../redux/auth/actions';
+import PostCard from '../../components/PostCard';
 import { selectAuthUserId } from '../../redux/auth/selectors';
 import { subscribeToFriendships } from '../../redux/friendships/actions';
 import { subscribeNotificationTokenRefresh } from '../../redux/notifications/actions';
 import { postAction } from '../../redux/postActions/actions';
-import {
-  loadPosts,
-  paginatePosts,
-  refreshPosts
-} from '../../redux/posts/actions';
-import { handleURLRoute, navigateToRoute } from '../../redux/routing/actions';
+import { navigateToRoute } from '../../redux/routing/actions';
 import { subscribeToUser } from '../../redux/users/actions';
 import {
   selectUserFromId,
@@ -68,8 +61,7 @@ const mapDispatchToProps = dispatch => ({
   subscribeToFriendships: userId => dispatch(subscribeToFriendships(userId)),
   subscribeNotificationTokenRefresh: userId =>
     dispatch(subscribeNotificationTokenRefresh(userId)),
-  navigateToRoute: payload => dispatch(navigateToRoute(payload)),
-  handleURLRoute: payload => dispatch(handleURLRoute(payload))
+  navigateToRoute: payload => dispatch(navigateToRoute(payload))
 });
 
 class Discover extends Component {
@@ -82,7 +74,6 @@ class Discover extends Component {
     navigateToRoute: PropTypes.func.isRequired,
     loadPosts: PropTypes.func.isRequired,
     loadUsersPosts: PropTypes.func.isRequired,
-    handleURLRoute: PropTypes.func.isRequired,
     postAction: PropTypes.func.isRequired,
     paginatePosts: PropTypes.func.isRequired,
     refreshPosts: PropTypes.func.isRequired,
@@ -95,9 +86,6 @@ class Discover extends Component {
   }
 
   async componentDidMount() {
-    console.log(this.props);
-    console.log(this.state);
-
     // setup subscriptions
     this.subscriptions.push(
       await this.props.subscribeToUser(this.props.authUserId),
@@ -117,10 +105,6 @@ class Discover extends Component {
 
     // load initial data
     await this.props.loadUsersPosts(this.props.authUserId, 'all', true);
-
-    // this.subscriptions.push(
-    //   await this.props.loadPosts(this.props.auth.user.uid, 'feed')
-    // );
   }
 
   componentWillUnmount() {
@@ -129,68 +113,23 @@ class Discover extends Component {
     });
   }
 
-  renderItem = item => {
-    const routeURL = buildAppLink('shayr', 'shayr', 'PostDetail', {
-      id: item.postId
-    });
-
-    return (
-      <ContentCard
-        payload={item}
-        friends={{
-          ...this.props.authUser,
-          ...this.props.friends
-        }}
-        onTap={() => this.props.handleURLRoute(routeURL)}
-        shareAction={{
-          actionCount: item.shareCount,
-          actionUser: item.shares
-            ? item.shares.includes(this.props.authUserId)
-            : false,
-          onPress: () =>
-            this.props.postAction('share', this.props.authUserId, item.postId)
-        }}
-        addAction={{
-          actionCount: item.addCount,
-          actionUser: item.adds
-            ? item.adds.includes(this.props.authUserId)
-            : false,
-          onPress: () =>
-            this.props.postAction('add', this.props.authUserId, item.postId)
-        }}
-        doneAction={{
-          actionCount: item.doneCount,
-          actionUser: item.dones
-            ? item.dones.includes(this.props.authUserId)
-            : false,
-          onPress: () =>
-            this.props.postAction('done', this.props.authUserId, item.postId)
-        }}
-        likeAction={{
-          actionCount: item.likeCount,
-          actionUser: item.likes
-            ? item.likes.includes(this.props.authUserId)
-            : false,
-          onPress: () =>
-            this.props.postAction('like', this.props.authUserId, item.postId)
-        }}
-      />
-    );
-  };
-
   loading = () => {
     if (
       !this.props.usersPostsFeeds[this.props.usersPostsViews.all].isLoaded ||
       !this.props.friends ||
       !this.props.authUser
     ) {
-      return <Text>LOADING</Text>;
+      return (
+        <View style={styles.container}>
+          <Text>LOADING</Text>
+        </View>
+      );
     }
 
     return (
       <List
         data={this.props.usersPostsFeeds[this.props.usersPostsViews.all].data}
-        renderItem={item => this.renderItem(item)}
+        renderItem={item => <PostCard post={item} />}
         onEndReached={() =>
           this.props.loadUsersPosts(
             this.props.authUserId,
@@ -222,9 +161,7 @@ class Discover extends Component {
           shadow
           title='Discover'
         />
-        <View style={styles.container}>
-          <this.loading />
-        </View>
+        {this.loading()}
       </View>
     );
   }

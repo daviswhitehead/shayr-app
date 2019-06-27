@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
-import {
-  Text, View, Image, TouchableWithoutFeedback,
-} from 'react-native';
+import { Text, View, Image, TouchableWithoutFeedback } from 'react-native';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 import styles from './styles';
@@ -17,7 +15,7 @@ export default class ContentCard extends Component {
       title: PropTypes.string.isRequired,
       publisher: PropTypes.shape({
         name: PropTypes.string,
-        logo: PropTypes.string,
+        logo: PropTypes.string
       }),
       shares: PropTypes.arrayOf(PropTypes.string),
       adds: PropTypes.arrayOf(PropTypes.string),
@@ -28,24 +26,24 @@ export default class ContentCard extends Component {
       addCount: PropTypes.number,
       doneCount: PropTypes.number,
       likeCount: PropTypes.number,
-      url: PropTypes.string.isRequired,
+      url: PropTypes.string.isRequired
     }),
     friends: PropTypes.shape({
       friendId: PropTypes.shape({
         firstName: PropTypes.string,
         lastName: PropTypes.string,
-        facebookProfilePhoto: PropTypes.string,
-      }),
-    }).isRequired,
+        facebookProfilePhoto: PropTypes.string
+      })
+    }).isRequired
   };
 
   static defaultProps = {
     payload: {
       publisher: {
         name: '',
-        logo: '',
-      },
-    },
+        logo: ''
+      }
+    }
   };
 
   combine = () => {
@@ -53,12 +51,12 @@ export default class ContentCard extends Component {
       image: this.props.payload.image,
       title: this.props.payload.title,
       publisher: this.props.payload.publisher,
-      url: this.props.payload.url,
+      url: this.props.payload.url
     };
     if (!data.publisher.name) {
       data.publisher = {
         name: '',
-        logo: '',
+        logo: ''
       };
     }
     let featuredUserId = '';
@@ -81,10 +79,18 @@ export default class ContentCard extends Component {
       data.facebookProfilePhoto = _.get(
         this.props.friends,
         [featuredUserId, 'facebookProfilePhoto'],
-        'missing',
+        'missing'
       );
-      data.firstName = _.get(this.props.friends, [featuredUserId, 'firstName'], 'missing');
-      data.lastName = _.get(this.props.friends, [featuredUserId, 'lastName'], 'missing');
+      data.firstName = _.get(
+        this.props.friends,
+        [featuredUserId, 'firstName'],
+        'missing'
+      );
+      data.lastName = _.get(
+        this.props.friends,
+        [featuredUserId, 'lastName'],
+        'missing'
+      );
       data.featureType = featuredType;
     }
 
@@ -95,23 +101,24 @@ export default class ContentCard extends Component {
     const data = this.combine();
 
     return (
-      <TouchableWithoutFeedback onPress={() => this.props.onTap(this.props.payload.url)}>
+      <TouchableWithoutFeedback
+        onPress={() => this.props.onTap(this.props.payload.url)}
+      >
         <View style={styles.cardBox}>
           <View style={styles.headerBox}>
             <View style={styles.profileImageBox}>
               {data.facebookProfilePhoto ? (
-                <Image style={styles.profileImage} source={{ uri: data.facebookProfilePhoto }} />
+                <Image
+                  style={styles.profileImage}
+                  source={{ uri: data.facebookProfilePhoto }}
+                />
               ) : (
                 <Image style={styles.profileImage} source={article} />
               )}
             </View>
             <View style={styles.profileNameBox}>
               <Text style={styles.profileName}>
-                {data.firstName}
-                {' '}
-                {data.lastName}
-                {' '}
-                {data.featureType}
+                {data.firstName} {data.lastName} {data.featureType}
               </Text>
             </View>
           </View>

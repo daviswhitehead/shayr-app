@@ -10,6 +10,8 @@ import Login from '../containers/Login';
 import PostDetail from '../containers/PostDetail';
 import ComingSoon from '../containers/ComingSoon';
 import Friends from '../containers/Friends';
+import RealtimeDataTester from '../containers/RealtimeDataTester';
+import HelloWorld from '../containers/HelloWorld';
 import TabBar from '../components/TabBar';
 
 const DiscoverStack = createStackNavigator({
@@ -57,6 +59,15 @@ const FriendsStack = createStackNavigator({
   }
 });
 
+const HelloWorldStack = createStackNavigator({
+  HelloWorld: {
+    screen: HelloWorld,
+    navigationOptions: () => ({
+      header: null
+    })
+  }
+});
+
 const AuthStack = createStackNavigator({
   Login: {
     screen: Login,
@@ -70,6 +81,7 @@ const TabStack = createBottomTabNavigator(
     Discover: DiscoverStack,
     MyList: MyListStack,
     Friends: FriendsStack
+    // HelloWorld: HelloWorldStack
   },
   {
     initialRouteName: 'Discover',

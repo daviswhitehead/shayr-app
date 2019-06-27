@@ -13,7 +13,7 @@ import styles from './styles';
 import PostImage from '../../components/PostImage';
 import PostContext from '../../components/PostContext';
 import PostAction from '../../components/PostAction';
-import ProfileIcon from '../../components/ProfileIcon';
+// import ProfileIcon from '../../components/ProfileIcon';
 import FontBody from '../../components/Text/FontBody';
 import { openURL } from '../../lib/Utils';
 import { getProfile } from '../../lib/SocialConnectors';

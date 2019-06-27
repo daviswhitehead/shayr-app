@@ -1,5 +1,0 @@
-1a) get all of a user's friends
-1b) get all of a user's (shayrs, adds, dones, likes)
-2) get most recent shayrs from friends
-3) get posts from shayrs
-4) get post metadata

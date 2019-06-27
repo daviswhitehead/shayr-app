@@ -1,46 +1,43 @@
 # queries
 
-- get all of a user's friends
-  - `db.collection('friends').where('users', 'array-contains', '${userId}').where('status', '==', 'accepted')`
-- get all of a user's (shared, added, doned, liked) posts
+## user
+
+- get a user's notifications
+  - `db.collection('notifications').where('userId', '==', '${userId}')`
+
+## social
+
+- get a user's friendships
+  - `db.collection('friendships').where('users', 'array-contains', '${userId}')`
+- get a user's friends
+  - `db.collection('users/{userId}/friends').get()`
+- search through users
+  - `TBD`
+
+## posts
+
+- get a user's (shared, doned, liked) posts
   - `db.collection('users_posts').where('userId', '==', '${userId}').where('shares', 'array-contains', ${userId})`
-  - `db.collection('users_posts').where('userId', '==', '${userId}').where('adds', 'array-contains', ${userId})`
-- get all of a user's friends' (shared, added, doned, liked) posts
-  - if `friend's userId`: `db.collection('users_posts').where('userId', '==', '${userId}').where('shares', 'array-contains', ${userId})`
+  - `db.collection('users_posts').where('userId', '==', '${userId}').where('dones', 'array-contains', ${userId})`
+  - `db.collection('users_posts').where('userId', '==', '${userId}').where('likes', 'array-contains', ${userId})`
+- get a user's queue posts
+  - `db.collection('users_posts').where('userId', '==', '${userId}').where('inQueue', '==', true)`
 - get all total (shares, adds, dones, likes) of a post
   - `[action]Count` field in `Post` documents
 - get total (shares, adds, dones, likes) of a post within a user's friends
-  - frontend: count friends in array for `Post` in `users_posts`
+  - frontend: length of [action] array for `Post` document
 - get the names of all the friends who (shared, added, doned, liked) a post
   - frontend: merge friends object with `Post` [action] arrays in `users_posts`
-- get all / filter posts from the same publisher
+- get posts from the same publisher
   - `db.collection('posts').where('publisherName', '==', 'nytimes')`
-- get all / filter posts from the same tag
+- get posts from the same tag
   - `db.collection('users_posts').where('tags', 'array-contains', 'business')`
-- get all / filter posts from the same medium
-  - `db.collection('users_posts').where('medium', '==', 'poscast')`
+- get posts from the same medium
+  - `db.collection('users_posts').where('medium', '==', 'podcast')`
 
 # sets
 
-- perform an action on a post
-  - `db.collection('friends').where('users', 'array-contains', '${userId}').where('status', '==', 'accepted')`
-- get all of a user's (shared, added, doned, liked) posts
-  - `db.collection('users_posts').where('userId', '==', '${userId}').where('shares', 'array-contains', ${userId})`
-  - `db.collection('users_posts').where('userId', '==', '${userId}').where('adds', 'array-contains', ${userId})`
-- get all of a user's friends' (shared, added, doned, liked) posts
-  - if `friend's userId`: `db.collection('users_posts').where('userId', '==', '${userId}').where('shares', 'array-contains', ${userId})`
-- get all total (shares, adds, dones, likes) of a post
-  - `[action]Count` field in `Post` documents
-- get total (shares, adds, dones, likes) of a post within a user's friends
-  - frontend: count friends in array for `Post` in `users_posts`
-- get the names of all the friends who (shared, added, doned, liked) a post
-  - frontend: merge friends object with `Post` [action] arrays in `users_posts`
-- get all / filter posts from the same publisher
-  - `db.collection('posts').where('publisherName', '==', 'nytimes')`
-- get all / filter posts from the same tag
-  - `db.collection('users_posts').where('tags', 'array-contains', 'business')`
-- get all / filter posts from the same medium
-  - `db.collection('users_posts').where('medium', '==', 'poscast')`
+TBD
 
 # functions
 
@@ -87,12 +84,13 @@ actions: [share, add, done, like]
 
 - [adds](#adds)
 - [dones](#dones)
-- [friends](#friends)
+- [friendships](#friendships)
 - [likes](#likes)
 - [posts](#posts)
 - [shares](#shares)
 - [users](#users)
   - [inboundShares](#inboundshares)
+  - [friends](#friends)
 - [users_posts](#users_posts)
 
 ## adds
@@ -143,9 +141,9 @@ actions: [share, add, done, like]
 1. at any point, a user can un-done a post  
    fields: `active, updatedAt`
 
-## friends
+## friendships
 
-`friends/{initiatingUserId}_{receivingUserId}`
+`friendships/{initiatingUserId}_{receivingUserId}`
 
 ### fields
 
@@ -340,6 +338,25 @@ actions: [share, add, done, like]
 1. gets update by cloud function after matching  
    fields: `postId`
 
+## friends
+
+`users/{userId}/friends/{friendId}`
+
+### fields
+
+```
+{
+  createdAt (timestamp),
+  updatedAt (timestamp),
+  ...user (atom),
+}
+```
+
+### lifecycle
+
+1. whenever a friendship object is updated where `status == 'accepted'` a new document is added
+1. whenever a friendship object is updated where `status != 'accepted'` a document is removed
+
 ## users_posts
 
 `users_posts/{userId}_{postId}`
@@ -351,10 +368,11 @@ actions: [share, add, done, like]
   adds (array) [userIdA, userIdB],
   createdAt (timestamp),
   dones (array) [userIdA, userIdB],
+  inQueue (bool),
   likes (array) [userIdA, userIdB],
-  ...posts (atom),
+  ...post (atom),
   shares (array) [userIdA, userIdB],
-  updatedAt (timestamp)
+  updatedAt (timestamp),
   userId (string),
 }
 ```

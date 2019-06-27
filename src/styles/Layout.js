@@ -5,6 +5,9 @@ const layout = {
   PADDING_LONG: 16,
   PADDING_MEDIUM: 8,
   PADDING_SHORT: 4,
+  BORDER_RADIUS_SMALL: 2,
+  BORDER_RADIUS_MEDIUM: 4,
+  BORDER_RADIUS_LARGE: 8
 };
 
 export default layout;

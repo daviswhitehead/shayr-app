@@ -7,6 +7,7 @@ const colors = {
   DARK_GRAY: '#7E7E7E',
   LIGHT_GRAY: '#DADADA',
   WHITE: '#FFFFFF',
+  DIVIDER: '#E8E8E8'
 };
 
 export default colors;

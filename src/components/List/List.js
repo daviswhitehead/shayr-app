@@ -16,35 +16,20 @@ export default class List extends Component {
     onRefresh: PropTypes.func
   };
 
-  extractKey = ({ key }) => {
-    return key;
-  };
-
-  renderSeparator = () => {
-    return <View style={styles.separator} />;
-  };
-
-  renderItem = ({ item }) => {
-    return (
-      <View style={styles.box}>
-        <View style={styles.row}>{this.props.renderItem(item)}</View>
-      </View>
-    );
-  };
-
   render() {
     return (
       <FlatList
         style={styles.container}
         data={this.props.data}
-        renderItem={this.renderItem}
-        keyExtractor={this.extractKey}
-        ItemSeparatorComponent={this.renderSeparator}
+        renderItem={({ item }) => this.props.renderItem(item)}
+        keyExtractor={({ key }) => key}
+        ItemSeparatorComponent={() => <View style={styles.separator} />}
         onScroll={this.props.onScroll}
         onEndReached={this.props.onEndReached}
         onEndReachedThreshold={0.5}
         onRefresh={this.props.onRefresh}
         refreshing={this.props.refreshing}
+        ListEmptyComponent={undefined} // to do: let the user know there are no posts
       />
     );
   }
