@@ -5,20 +5,10 @@ const initialState = {
   protocol: null,
   hostname: null,
   screen: null,
-  params: {},
-  error: null,
+  params: {}
 };
 
 function routingReducer(state = initialState, action) {
-  // Failure Handling
-  if (action.type.substr(action.type.length - 4) === 'FAIL') {
-    return {
-      ...state,
-      error: action.error,
-    };
-  }
-
-  // Case Handling
   switch (action.type) {
     case types.ROUTE_ADDED: {
       return {
@@ -27,7 +17,7 @@ function routingReducer(state = initialState, action) {
         protocol: action.protocol,
         hostname: action.hostname,
         screen: action.screen,
-        params: action.params,
+        params: action.params
       };
     }
     case types.ROUTE_REMOVED: {
@@ -37,7 +27,7 @@ function routingReducer(state = initialState, action) {
         protocol: null,
         hostname: null,
         screen: null,
-        params: {},
+        params: {}
       };
     }
     default: {

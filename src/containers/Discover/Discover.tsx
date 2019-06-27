@@ -129,22 +129,31 @@ class Discover extends Component {
     return (
       <List
         data={this.props.usersPostsFeeds[this.props.usersPostsViews.all].data}
-        renderItem={item => <PostCard post={item} />}
-        onEndReached={() =>
-          this.props.loadUsersPosts(
-            this.props.authUserId,
-            'all',
-            false,
-            this.props.usersPostsFeeds[this.props.usersPostsViews.all].lastItem
-          )
-        }
-        onRefresh={() =>
-          this.props.loadUsersPosts(this.props.authUserId, 'all', true)
-        }
-        refreshing={
-          this.props.usersPostsFeeds[this.props.usersPostsViews.all]
-            .isRefreshing
-        }
+        renderItem={item => (
+          <PostCard
+            post={item}
+            ownerUserId={this.props.authUserId}
+            users={{
+              [this.props.authUserId]: this.props.authUser,
+              ...this.props.friends
+            }}
+          />
+        )}
+        // onEndReached={() =>
+        //   this.props.loadUsersPosts(
+        //     this.props.authUserId,
+        //     'all',
+        //     false,
+        //     this.props.usersPostsFeeds[this.props.usersPostsViews.all].lastItem
+        //   )
+        // }
+        // onRefresh={() =>
+        //   this.props.loadUsersPosts(this.props.authUserId, 'all', true)
+        // }
+        // refreshing={
+        //   this.props.usersPostsFeeds[this.props.usersPostsViews.all]
+        //     .isRefreshing
+        // }
       />
     );
   };

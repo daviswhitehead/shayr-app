@@ -15,7 +15,7 @@ export const types = {
 };
 
 type UsersPostsQueries = 'all' | 'shares' | 'adds' | 'dones' | 'likes';
-const requestLimiter = 20;
+const requestLimiter = 2;
 const composeRequest = (userId: string, query: UsersPostsQueries) => {
   let request = firebase
     .firestore()

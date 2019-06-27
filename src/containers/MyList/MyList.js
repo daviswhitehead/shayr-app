@@ -4,15 +4,15 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import styles from './styles';
 import List from '../../components/List';
-import ContentCard from '../../components/ContentCard';
+// import ContentCard from '../../components/ContentCard';
 import Header from '../../components/Header';
 import colors from '../../styles/Colors';
-import {
-  loadPosts,
-  paginatePosts,
-  refreshPosts,
-  flattenPostsQueue
-} from '../../redux/posts/actions';
+// import {
+//   loadPosts,
+//   paginatePosts,
+//   refreshPosts,
+//   flattenPostsQueue
+// } from '../../redux/posts/actions';
 import { postAction } from '../../redux/postActions/actions';
 import { handleURLRoute } from '../../redux/routing/actions';
 import { buildAppLink } from '@daviswhitehead/shayr-resources';

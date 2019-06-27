@@ -1,64 +1,64 @@
-import React, { Component } from 'react';
-import {
-  View, Text, ScrollView, TouchableOpacity,
-} from 'react-native';
-import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { withNavigationFocus } from 'react-navigation';
-import { postAction } from '../../redux/postActions/actions';
-import { loadPostDetails, resetPostDetail } from '../../redux/posts/actions';
+import { connect } from 'react-redux';
 import Header from '../../components/Header';
-import colors from '../../styles/Colors';
-import styles from './styles';
-import PostImage from '../../components/PostImage';
-import PostContext from '../../components/PostContext';
 import PostAction from '../../components/PostAction';
+import PostContext from '../../components/PostContext';
+import PostImage from '../../components/PostImage';
 // import ProfileIcon from '../../components/ProfileIcon';
 import FontBody from '../../components/Text/FontBody';
-import { openURL } from '../../lib/Utils';
 import { getProfile } from '../../lib/SocialConnectors';
+import { openURL } from '../../lib/Utils';
+import { postAction } from '../../redux/postActions/actions';
+import { loadPostDetails, resetPostDetail } from '../../redux/posts/actions';
+import colors from '../../styles/Colors';
+import styles from './styles';
 
 const mapStateToProps = state => ({
   auth: state.auth,
   posts: state.posts,
-  users: state.users,
+  users: state.users
 });
 
 const mapDispatchToProps = dispatch => ({
-  loadPostDetails: (userId, postId) => dispatch(loadPostDetails(userId, postId)),
-  postAction: (actionType, userId, postId) => dispatch(postAction(actionType, userId, postId)),
-  resetPostDetail: () => dispatch(resetPostDetail()),
+  loadPostDetails: (userId, postId) =>
+    dispatch(loadPostDetails(userId, postId)),
+  postAction: (actionType, userId, postId) =>
+    dispatch(postAction(actionType, userId, postId)),
+  resetPostDetail: () => dispatch(resetPostDetail())
 });
 
 class PostDetail extends Component {
   static propTypes = {
     auth: PropTypes.shape({
       user: PropTypes.shape({
-        uid: PropTypes.string.isRequired,
-      }).isRequired,
+        uid: PropTypes.string.isRequired
+      }).isRequired
     }).isRequired,
     posts: PropTypes.shape({
       postDetailId: PropTypes.string.isRequired,
-      postDetail: PropTypes.shape({}),
+      postDetail: PropTypes.shape({})
     }).isRequired,
     users: PropTypes.shape({
       friends: PropTypes.shape({
         friendId: PropTypes.shape({
           firstName: PropTypes.string,
           lastName: PropTypes.string,
-          facebookProfilePhoto: PropTypes.string,
-        }),
+          facebookProfilePhoto: PropTypes.string
+        })
       }).isRequired,
       self: PropTypes.shape({
         selfId: PropTypes.shape({
           firstName: PropTypes.string,
           lastName: PropTypes.string,
-          facebookProfilePhoto: PropTypes.string,
-        }),
-      }).isRequired,
+          facebookProfilePhoto: PropTypes.string
+        })
+      }).isRequired
     }).isRequired,
     loadPostDetails: PropTypes.func.isRequired,
-    postAction: PropTypes.func.isRequired,
+    postAction: PropTypes.func.isRequired
   };
 
   constructor() {
@@ -67,13 +67,17 @@ class PostDetail extends Component {
   }
 
   async componentDidMount() {
+    console.log(this.props);
     this.subscriptions.push(
-      this.props.loadPostDetails(this.props.auth.user.uid, this.props.posts.postDetailId),
+      this.props.loadPostDetails(
+        this.props.auth.user.uid,
+        this.props.posts.postDetailId
+      )
     );
   }
 
   componentWillUnmount() {
-    Object.values(this.subscriptions).forEach((subscription) => {
+    Object.values(this.subscriptions).forEach(subscription => {
       subscription();
     });
     this.props.resetPostDetail();
@@ -81,17 +85,17 @@ class PostDetail extends Component {
 
   collectFeaturedProfiles = (users, userIds) => {
     const profiles = [];
-    Object.values(userIds).forEach((userId) => {
+    Object.values(userIds).forEach(userId => {
       const profile = getProfile(users, userId);
       if (profile) {
         profiles.push(
           <ProfileIcon
-            view="large"
+            view='large'
             key={`${userId}`}
             uri={profile.facebookProfilePhoto}
             firstName={profile.firstName}
             lastName={profile.lastName}
-          />,
+          />
         );
       }
     });
@@ -105,26 +109,26 @@ class PostDetail extends Component {
     }
 
     let post;
-    Object.values(this.props.posts.postDetail).forEach((postData) => {
+    Object.values(this.props.posts.postDetail).forEach(postData => {
       // there should only be one post here
       post = postData;
     });
 
     const sharedBy = this.collectFeaturedProfiles(
       { ...this.props.users.friends, ...this.props.users.self },
-      post.shares || [],
+      post.shares || []
     );
     const addedBy = this.collectFeaturedProfiles(
       { ...this.props.users.friends, ...this.props.users.self },
-      post.adds || [],
+      post.adds || []
     );
     const donedBy = this.collectFeaturedProfiles(
       { ...this.props.users.friends, ...this.props.users.self },
-      post.dones || [],
+      post.dones || []
     );
     const likedBy = this.collectFeaturedProfiles(
       { ...this.props.users.friends, ...this.props.users.self },
-      post.likes || [],
+      post.likes || []
     );
 
     return (
@@ -132,53 +136,96 @@ class PostDetail extends Component {
         {this.props.isFocused ? (
           <Header
             backgroundColor={colors.WHITE}
-            statusBarStyle="dark-content"
-            title=""
+            statusBarStyle='dark-content'
+            title=''
             back={() => this.props.navigation.goBack()}
           />
         ) : null}
         <View style={styles.container}>
           <ScrollView showsVerticalScrollIndicator={false}>
-            <TouchableOpacity style={styles.contentBox} onPress={() => openURL(post.url)}>
-              <PostImage view="detail" uri={post.image} />
-              <PostContext title={post.title} publisher={post.publisher.name} actions={false} />
+            <TouchableOpacity
+              style={styles.contentBox}
+              onPress={() => openURL(post.url)}
+            >
+              <PostImage view='detail' uri={post.image} />
+              <PostContext
+                title={post.title}
+                publisher={post.publisher.name}
+                actions={false}
+              />
             </TouchableOpacity>
             <View style={styles.dividerBox}>
               <View style={styles.divider} />
               <View style={styles.actionBox}>
                 <PostAction
-                  actionType="share"
+                  actionType='share'
                   actionCount={post.shareCount}
-                  actionUser={post.shares ? post.shares.includes(this.props.auth.user.uid) : false}
-                  onPress={() => this.props.postAction('share', this.props.auth.user.uid, post.postId)
+                  actionUser={
+                    post.shares
+                      ? post.shares.includes(this.props.auth.user.uid)
+                      : false
+                  }
+                  onPress={() =>
+                    this.props.postAction(
+                      'share',
+                      this.props.auth.user.uid,
+                      post.postId
+                    )
                   }
                 />
                 <PostAction
-                  actionType="add"
+                  actionType='add'
                   actionCount={post.addCount}
-                  actionUser={post.adds ? post.adds.includes(this.props.auth.user.uid) : false}
-                  onPress={() => this.props.postAction('add', this.props.auth.user.uid, post.postId)
+                  actionUser={
+                    post.adds
+                      ? post.adds.includes(this.props.auth.user.uid)
+                      : false
+                  }
+                  onPress={() =>
+                    this.props.postAction(
+                      'add',
+                      this.props.auth.user.uid,
+                      post.postId
+                    )
                   }
                 />
                 <PostAction
-                  actionType="done"
+                  actionType='done'
                   actionCount={post.doneCount}
-                  actionUser={post.dones ? post.dones.includes(this.props.auth.user.uid) : false}
-                  onPress={() => this.props.postAction('done', this.props.auth.user.uid, post.postId)
+                  actionUser={
+                    post.dones
+                      ? post.dones.includes(this.props.auth.user.uid)
+                      : false
+                  }
+                  onPress={() =>
+                    this.props.postAction(
+                      'done',
+                      this.props.auth.user.uid,
+                      post.postId
+                    )
                   }
                 />
                 <PostAction
-                  actionType="like"
+                  actionType='like'
                   actionCount={post.likeCount}
-                  actionUser={post.likes ? post.likes.includes(this.props.auth.user.uid) : false}
-                  onPress={() => this.props.postAction('like', this.props.auth.user.uid, post.postId)
+                  actionUser={
+                    post.likes
+                      ? post.likes.includes(this.props.auth.user.uid)
+                      : false
+                  }
+                  onPress={() =>
+                    this.props.postAction(
+                      'like',
+                      this.props.auth.user.uid,
+                      post.postId
+                    )
                   }
                 />
               </View>
               <View style={styles.divider} />
             </View>
             <View style={styles.descriptionBox}>
-              <Text style={styles.header}>description</Text>
+              <Text style={styles.header}>Summary</Text>
               <FontBody text={post.description} />
             </View>
             {sharedBy.length > 0 ? (
@@ -231,6 +278,6 @@ class PostDetail extends Component {
 export default withNavigationFocus(
   connect(
     mapStateToProps,
-    mapDispatchToProps,
-  )(PostDetail),
+    mapDispatchToProps
+  )(PostDetail)
 );

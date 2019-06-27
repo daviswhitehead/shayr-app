@@ -4,12 +4,12 @@ import createCachedSelector from 're-reselect';
 // https://github.com/reduxjs/reselect#sharing-selectors-with-props-across-multiple-component-instances
 
 const selectUsersPosts = state => state.usersPosts;
-const selectUsersPost = (state, userPostId) => state.usersPosts[userPostId];
+const selectusersPost = (state, userPostId) => state.usersPosts[userPostId];
 const selectUsersPostsLists = (state, listKey) =>
   state.usersPostsLists[listKey];
 
 export const selectUsersPostFromId = createCachedSelector(
-  selectUsersPost,
+  selectusersPost,
   usersPost => usersPost
 )((state, userPostId) => userPostId);
 

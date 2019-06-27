@@ -4,7 +4,7 @@ export default StyleSheet.create({
   screen: {
     flex: 1,
     flexDirection: 'column',
-    justifyContent: 'flex-start',
+    justifyContent: 'center',
     alignItems: 'stretch'
   },
   container: {

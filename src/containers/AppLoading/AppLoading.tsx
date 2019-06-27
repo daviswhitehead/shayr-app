@@ -91,8 +91,6 @@ class AppLoading extends Component {
   }
 
   componentWillUnmount() {
-    console.log('AppLoading -- componentWillUnmount');
-
     AppState.removeEventListener('change', this.handleAppStateChange);
     Linking.removeEventListener('url', this.props.handleURLRoute);
     this.unsubscribeAuthListener();

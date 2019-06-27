@@ -51,6 +51,11 @@ export const fontSystem = {
     color: colors.BLACK,
     fontSize: 14
   },
+  BOLD_BODY: {
+    ...fonts.BOLD,
+    color: colors.BLACK,
+    fontSize: 14
+  },
   NAME: {
     ...fonts.EXTRA_LIGHT_ITALIC,
     color: colors.BLACK,

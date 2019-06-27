@@ -3,8 +3,8 @@ import appReducer from './app/reducer';
 import authReducer from './auth/reducer';
 import friendshipsReducer from './friendships/reducer';
 import friendshipsListsReducer from './friendshipsLists/reducer';
-import postsReducer from './posts/reducer';
 import routingReducer from './routing/reducer';
+import uiReducer from './ui/reducer';
 import usersReducer from './users/reducer';
 import usersListsReducer from './usersLists/reducer';
 import usersPostsReducer from './usersPosts/reducer';
@@ -14,14 +14,14 @@ export const makeRootReducer = () =>
   combineReducers({
     app: appReducer,
     auth: authReducer,
+    friendships: friendshipsReducer,
+    friendshipsLists: friendshipsListsReducer,
+    routing: routingReducer,
+    ui: uiReducer,
     users: usersReducer,
     usersLists: usersListsReducer,
     usersPosts: usersPostsReducer,
-    usersPostsLists: usersPostsListsReducer,
-    friendships: friendshipsReducer,
-    friendshipsLists: friendshipsListsReducer,
-    posts: postsReducer,
-    routing: routingReducer
+    usersPostsLists: usersPostsListsReducer
   });
 
 export default makeRootReducer;

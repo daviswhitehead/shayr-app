@@ -1,5 +1,4 @@
 import {
-  buildAppLink,
   userDefault,
   usersPostsDefault,
   UsersPostsType,
@@ -11,7 +10,7 @@ import { Image, Text, TouchableWithoutFeedback, View } from 'react-native';
 import { connect } from 'react-redux';
 import { selectAuthUserId } from '../../redux/auth/selectors';
 import { postAction } from '../../redux/postActions/actions';
-import { handleURLRoute } from '../../redux/routing/actions';
+import { handleURLRoute, postDetailsRoute } from '../../redux/routing/actions';
 import IconWithCount from '../IconWithCount';
 import UserAvatar from '../UserAvatar';
 import styles from './styles';
@@ -22,21 +21,21 @@ interface Users {
 
 export interface Props {
   authUserId: string;
+  ownerUserId: string;
   onActionPress: (actionType: string, userId: string, postId: string) => void;
   onCardPress: (url: string) => void;
   post: UsersPostsType;
-  users: Users;
-  withoutUser?: boolean;
+  users?: Users | undefined;
   noTouching?: boolean;
 }
 
 const defaultProps = {
   authUserId: '',
+  ownerUserId: '',
   onActionPress: () => null,
   onCardPress: () => null,
   post: usersPostsDefault,
   users: { a: userDefault },
-  withoutUser: false,
   noTouching: false
 };
 
@@ -44,8 +43,7 @@ const mapStateToProps = (state: any) => {
   const authUserId = selectAuthUserId(state);
 
   return {
-    authUserId,
-    users: state.users
+    authUserId
   };
 };
 
@@ -87,18 +85,16 @@ const PostCard: React.SFC<Props> = props => {
       onPress={() =>
         !props.noTouching &&
         props.onCardPress(
-          buildAppLink('shayr', 'shayr', 'PostDetail', {
-            id: props.post.postId
-          })
+          postDetailsRoute(props.ownerUserId, props.post.postId)
         )
       }
     >
       <View style={styles.container}>
-        {props.withoutUser || _.isEmpty(featuredUser) ? null : (
+        {!_.isEmpty(featuredUser) ? (
           <View style={styles.avatar}>
             <UserAvatar {...featuredUser} isVertical={false} />
           </View>
-        )}
+        ) : null}
         <View style={styles.contentBox}>
           {!!postImage ? (
             <Image style={styles.image} source={{ uri: postImage }} />
