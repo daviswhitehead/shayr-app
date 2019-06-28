@@ -69,8 +69,8 @@ const UserAvatarsScrollView: React.SFC<Props> = ({ users }: Props) => {
         users,
         (result: Array<JSX.Element>, value: any, key: string) => {
           result.push(
-            <View style={styles.avatarContainer}>
-              <UserAvatar {...value} key={key} />
+            <View style={styles.avatarContainer} key={key}>
+              <UserAvatar {...value} />
             </View>
           );
           return result;

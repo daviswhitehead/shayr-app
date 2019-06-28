@@ -1,14 +1,10 @@
-import {
-  userDefault,
-  usersPostsDefault,
-  UsersPostsType,
-  UserType
-} from '@daviswhitehead/shayr-resources';
+import { UsersPostsType, UserType } from '@daviswhitehead/shayr-resources';
 import _ from 'lodash';
 import React, { Component } from 'react';
-import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { ScrollView, Text, View } from 'react-native';
 import { withNavigationFocus } from 'react-navigation';
 import { connect } from 'react-redux';
+import ActionBar from '../../components/ActionBar';
 import Header from '../../components/Header';
 import Icon from '../../components/Icon';
 import PostCard from '../../components/PostCard';
@@ -16,6 +12,7 @@ import UserAvatarsScrollView from '../../components/UserAvatarsScrollView';
 import { openURL } from '../../lib/Utils';
 import { selectAuthUserId } from '../../redux/auth/selectors';
 import { postAction } from '../../redux/postActions/actions';
+import { handleURLRoute, postDetailsRoute } from '../../redux/routing/actions';
 import { resetPostDetail } from '../../redux/ui/actions';
 import {
   selectUserFromId,
@@ -30,9 +27,18 @@ interface Users {
   [userId: string]: UserType;
 }
 
+type ActionType = 'shares' | 'adds' | 'dones' | 'likes';
+
 export interface Props {
   authUserId: string;
   authUser: UserType;
+  isFocused: boolean;
+  navigation: any;
+  onActionPress: (
+    actionType: ActionType,
+    userId: string,
+    postId: string
+  ) => void;
   ownerUserId: string;
   post: UsersPostsType;
   users: Users;
@@ -248,6 +254,7 @@ const defaultProps = {
 
 const mapStateToProps = (state: any) => {
   const authUserId = selectAuthUserId(state);
+  const authUser = selectUserFromId(state, authUserId);
   const post = selectUsersPostFromId(
     state,
     `${state.ui.postDetails.ownerUserId}_${state.ui.postDetails.postId}`
@@ -255,30 +262,36 @@ const mapStateToProps = (state: any) => {
 
   return {
     authUserId,
-    authUser: selectUserFromId(state, authUserId),
-    friends: selectUsersFromList(state, `${authUserId}_Friends`),
+    authUser,
+    ownerUserId: state.ui.postDetails.ownerUserId,
     post,
-    routing: state.routing
-    // users: state.users
+    routing: state.routing,
+    users: {
+      [authUserId]: authUser,
+      ...selectUsersFromList(state, `${authUserId}_Friends`)
+    }
   };
 };
 
 const mapDispatchToProps = (dispatch: any) => ({
-  resetPostDetail: () => dispatch(resetPostDetail())
+  resetPostDetail: () => dispatch(resetPostDetail()),
+  onActionPress: (actionType: ActionType, userId: string, postId: string) =>
+    dispatch(postAction(actionType, userId, postId)),
+  onAvatarPress: (url: string) => dispatch(handleURLRoute(url))
 });
 
 class PostDetail extends Component<Props> {
   async componentDidMount() {}
 
-  componentWillUnmount() {
+  goBack() {
+    this.props.navigation.goBack();
     this.props.resetPostDetail();
   }
+  // componentWillUnmount() {
+  //   this.props.resetPostDetail();
+  // }
 
-  getFeaturedUsers = (
-    type: 'shares' | 'adds' | 'dones' | 'likes',
-    post: UsersPostsType,
-    users: Users
-  ) => {
+  getFeaturedUsers = (type: ActionType, post: UsersPostsType, users: Users) => {
     const featuredUserIds: Array<string> = _.get(post, [type], []);
     const featuredUsers = _.reduce(
       users,
@@ -300,7 +313,7 @@ class PostDetail extends Component<Props> {
     } else if (featuredUserIds.length === 2) {
       featuredString = `and 1 other ${actionTypeActivityFeature[type]}`;
     } else if (featuredUserIds.length > 2) {
-      featuredString = `and ${featuredUserIds.length} others${
+      featuredString = `and ${featuredUserIds.length} others ${
         actionTypeActivityFeature[type]
       }`;
     }
@@ -314,10 +327,16 @@ class PostDetail extends Component<Props> {
       : {};
   };
 
-  render() {
-    console.log(this.props);
-    console.log(defaultProps);
+  getActionActiveStatus = (
+    type: ActionType,
+    post: UsersPostsType,
+    userId: string
+  ) => {
+    const userIds: Array<string> = _.get(post, [type], []);
+    return _.includes(userIds, userId);
+  };
 
+  render() {
     const shareFeatured = this.getFeaturedUsers(
       'shares',
       this.props.post,
@@ -339,8 +358,6 @@ class PostDetail extends Component<Props> {
       this.props.users
     );
 
-    console.log(addFeatured);
-
     return (
       <View style={styles.screen}>
         {this.props.isFocused ? (
@@ -348,13 +365,17 @@ class PostDetail extends Component<Props> {
             backgroundColor={colors.WHITE}
             statusBarStyle='dark-content'
             title=''
-            back={() => this.props.navigation.goBack()}
+            back={() => this.goBack()}
+            // back={() => this.props.navigation.goBack()}
           />
         ) : null}
-        <View>
-          <PostCard post={this.props.post} />
-          <View style={styles.container}>
-            <ScrollView showsVerticalScrollIndicator={false} />
+        <PostCard
+          ownerUserId={this.props.ownerUserId}
+          post={this.props.post}
+          onCardPress={() => openURL(this.props.post.url)}
+        />
+        <View style={styles.container}>
+          <ScrollView showsVerticalScrollIndicator={false}>
             <View style={styles.sectionBox}>
               <Text style={styles.sectionHeader}>Summary</Text>
               <Text style={styles.body}> {this.props.post.description}</Text>
@@ -418,8 +439,62 @@ class PostDetail extends Component<Props> {
                 </View>
               ) : null}
             </View>
-          </View>
+          </ScrollView>
         </View>
+        <ActionBar
+          authUserId={this.props.authUserId}
+          authUser={this.props.authUser}
+          onAvatarPress={undefined}
+          // onAvatarPress={() => this.props.onAvatarPress(postDetailsRoute())}
+          onSharePress={() =>
+            this.props.onActionPress(
+              'shares',
+              this.props.authUserId,
+              this.props.post.postId
+            )
+          }
+          isShareActive={this.getActionActiveStatus(
+            'shares',
+            this.props.post,
+            this.props.authUserId
+          )}
+          onAddPress={() =>
+            this.props.onActionPress(
+              'adds',
+              this.props.authUserId,
+              this.props.post.postId
+            )
+          }
+          isAddActive={this.getActionActiveStatus(
+            'adds',
+            this.props.post,
+            this.props.authUserId
+          )}
+          onDonePress={() =>
+            this.props.onActionPress(
+              'dones',
+              this.props.authUserId,
+              this.props.post.postId
+            )
+          }
+          isDoneActive={this.getActionActiveStatus(
+            'dones',
+            this.props.post,
+            this.props.authUserId
+          )}
+          onLikePress={() =>
+            this.props.onActionPress(
+              'likes',
+              this.props.authUserId,
+              this.props.post.postId
+            )
+          }
+          isLikeActive={this.getActionActiveStatus(
+            'likes',
+            this.props.post,
+            this.props.authUserId
+          )}
+        />
       </View>
     );
   }

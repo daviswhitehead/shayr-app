@@ -5,7 +5,7 @@ import colors from '../../styles/Colors';
 import TouchableWrapper from '../TouchableWrapper';
 import styles from './styles';
 
-const PostActionIcons = createIconSetFromIcoMoon(icoMoonConfig);
+const Icons = createIconSetFromIcoMoon(icoMoonConfig);
 
 export type names = 'share' | 'add' | 'done' | 'like';
 
@@ -24,7 +24,7 @@ const Icon: React.SFC<Props> = ({
 }: Props) => {
   const color: string = isActive ? colors.YELLOW : colors.BLACK;
 
-  const icon = <PostActionIcons name={name} size={16} color={color} />;
+  const icon = <Icons name={name} size={16} color={color} />;
 
   return (
     <TouchableWrapper style={[styles.container, style]} onPress={onPress}>

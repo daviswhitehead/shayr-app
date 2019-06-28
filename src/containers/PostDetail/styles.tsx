@@ -12,6 +12,7 @@ export default StyleSheet.create({
     justifyContent: 'flex-start'
   },
   container: {
+    flex: 1,
     flexDirection: 'column',
     justifyContent: 'flex-start',
     alignItems: 'stretch',

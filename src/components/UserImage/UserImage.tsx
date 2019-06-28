@@ -10,15 +10,17 @@ export interface Props {
   uri: string;
   size?: string;
   onPress?: () => void | undefined;
+  style?: any;
 }
 
 const UserImage: React.SFC<Props> = ({
   uri,
   size = 'small',
-  onPress
+  onPress,
+  style = {}
 }: Props) => {
   return (
-    <TouchableWrapper onPress={onPress} style={styles.imageBox}>
+    <TouchableWrapper onPress={onPress} style={[styles.imageBox, style]}>
       {!!uri ? (
         <Image style={styles[size]} source={{ uri }} />
       ) : (

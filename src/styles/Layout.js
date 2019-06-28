@@ -1,4 +1,9 @@
+import { Dimensions } from 'react-native';
+
 const layout = {
+  WINDOW_WIDTH_MULTIPLIER: 0.8,
+  WINDOW_WIDTH: Dimensions.get('window').width,
+  WINDOW_HEIGHT: Dimensions.get('window').height,
   MARGIN_LONG: 16,
   MARGIN_MEDIUM: 8,
   MARGIN_SHORT: 4,

@@ -30,7 +30,7 @@ const DiscoverStack = createStackNavigator(
     }
   },
   {
-    initialRouteName: 'PostDetail'
+    initialRouteName: 'Discover'
   }
 );
 

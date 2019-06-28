@@ -10,7 +10,6 @@ import { Image, Text, TouchableWithoutFeedback, View } from 'react-native';
 import { connect } from 'react-redux';
 import { selectAuthUserId } from '../../redux/auth/selectors';
 import { postAction } from '../../redux/postActions/actions';
-import { handleURLRoute, postDetailsRoute } from '../../redux/routing/actions';
 import IconWithCount from '../IconWithCount';
 import UserAvatar from '../UserAvatar';
 import styles from './styles';
@@ -23,7 +22,7 @@ export interface Props {
   authUserId: string;
   ownerUserId: string;
   onActionPress: (actionType: string, userId: string, postId: string) => void;
-  onCardPress: (url: string) => void;
+  onCardPress: () => void | undefined;
   post: UsersPostsType;
   users?: Users | undefined;
   noTouching?: boolean;
@@ -49,8 +48,7 @@ const mapStateToProps = (state: any) => {
 
 const mapDispatchToProps = (dispatch: any) => ({
   onActionPress: (actionType: string, userId: string, postId: string) =>
-    dispatch(postAction(actionType, userId, postId)),
-  onCardPress: (url: string) => dispatch(handleURLRoute(url))
+    dispatch(postAction(actionType, userId, postId))
 });
 
 const getFeaturedUser = (props: Props) => {
@@ -82,12 +80,7 @@ const PostCard: React.SFC<Props> = props => {
 
   return (
     <TouchableWithoutFeedback
-      onPress={() =>
-        !props.noTouching &&
-        props.onCardPress(
-          postDetailsRoute(props.ownerUserId, props.post.postId)
-        )
-      }
+      onPress={props.noTouching ? undefined : props.onCardPress}
     >
       <View style={styles.container}>
         {!_.isEmpty(featuredUser) ? (
@@ -121,7 +114,7 @@ const PostCard: React.SFC<Props> = props => {
                     ? undefined
                     : () =>
                         props.onActionPress(
-                          'share',
+                          'shares',
                           props.authUserId,
                           props.post.postId
                         )
@@ -136,7 +129,7 @@ const PostCard: React.SFC<Props> = props => {
                     ? undefined
                     : () =>
                         props.onActionPress(
-                          'like',
+                          'likes',
                           props.authUserId,
                           props.post.postId
                         )
