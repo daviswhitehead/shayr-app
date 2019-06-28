@@ -2,7 +2,6 @@ import { UsersPostsType, UserType } from '@daviswhitehead/shayr-resources';
 import React, { Component } from 'react';
 import { Text, View } from 'react-native';
 import { connect } from 'react-redux';
-import { subscribe } from 'redux-subscriber';
 import Header from '../../components/Header';
 import List from '../../components/List';
 import PostCard from '../../components/PostCard';
@@ -10,7 +9,7 @@ import { selectAuthUserId } from '../../redux/auth/selectors';
 import { subscribeToFriendships } from '../../redux/friendships/actions';
 import { subscribeNotificationTokenRefresh } from '../../redux/notifications/actions';
 import { navigateToRoute } from '../../redux/routing/actions';
-import { handleURLRoute, postDetailsRoute } from '../../redux/routing/actions';
+import { handleURLRoute } from '../../redux/routing/actions';
 import { subscribeToUser } from '../../redux/users/actions';
 import {
   selectUserFromId,
@@ -105,12 +104,7 @@ class Discover extends Component<Props> {
     this.subscriptions.push(
       await this.props.subscribeToUser(this.props.authUserId),
       await this.props.subscribeToFriendships(this.props.authUserId),
-      await this.props.subscribeNotificationTokenRefresh(this.props.authUserId),
-      subscribe('routing', state => {
-        if (state.routing.screen) {
-          this.props.navigateToRoute(state.routing);
-        }
-      })
+      await this.props.subscribeNotificationTokenRefresh(this.props.authUserId)
     );
 
     // HOME - Respond to initial route and listen to routing updates
@@ -153,35 +147,33 @@ class Discover extends Component<Props> {
               ...this.props.friends
             }}
             onCardPress={() =>
-              this.props.onCardPress(
-                postDetailsRoute(this.props.authUserId, item.postId)
-              )
+              this.props.navigation.navigate('PostDetail', {
+                ownerUserId: item.userId,
+                postId: item.postId
+              })
             }
           />
         )}
-        // onEndReached={() =>
-        //   this.props.loadUsersPosts(
-        //     this.props.authUserId,
-        //     'all',
-        //     false,
-        //     this.props.usersPostsFeeds[this.props.usersPostsViews.all].lastItem
-        //   )
-        // }
-        // onRefresh={() =>
-        //   this.props.loadUsersPosts(this.props.authUserId, 'all', true)
-        // }
-        // refreshing={
-        //   this.props.usersPostsFeeds[this.props.usersPostsViews.all]
-        //     .isRefreshing
-        // }
+        onEndReached={() =>
+          this.props.loadUsersPosts(
+            this.props.authUserId,
+            'all',
+            false,
+            this.props.usersPostsFeeds[this.props.usersPostsViews.all].lastItem
+          )
+        }
+        onRefresh={() =>
+          this.props.loadUsersPosts(this.props.authUserId, 'all', true)
+        }
+        refreshing={
+          this.props.usersPostsFeeds[this.props.usersPostsViews.all]
+            .isRefreshing
+        }
       />
     );
   };
 
   render() {
-    // console.log(this.state);
-    // console.log(this.props);
-
     return (
       <View style={styles.screen}>
         <Header

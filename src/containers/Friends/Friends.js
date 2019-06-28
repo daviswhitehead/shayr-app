@@ -28,12 +28,24 @@ class Friends extends Component {
       />
     )
   });
+  componentDidMount() {}
 
   render() {
     return (
       <View style={styles.container}>
         <Text>COMING SOON</Text>
         <Button onPress={this.props.startSignOut} title="Log Out" />
+        <Button
+          onPress={() =>
+            this.props.navigation.navigate({
+              routeName: 'PostDetail',
+              params: {
+                test: 'test'
+              }
+            })
+          }
+          title="Test"
+        />
       </View>
     );
   }

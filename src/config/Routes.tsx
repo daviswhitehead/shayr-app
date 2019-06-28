@@ -1,38 +1,39 @@
 import {
-  createSwitchNavigator,
-  createStackNavigator,
   createAppContainer,
-  createBottomTabNavigator
+  createBottomTabNavigator,
+  createStackNavigator,
+  createSwitchNavigator
 } from 'react-navigation';
-import Discover from '../containers/Discover';
-import MyList from '../containers/MyList';
-import Login from '../containers/Login';
-import PostDetail from '../containers/PostDetail';
-import ComingSoon from '../containers/ComingSoon';
-import Friends from '../containers/Friends';
-import RealtimeDataTester from '../containers/RealtimeDataTester';
-import HelloWorld from '../containers/HelloWorld';
 import TabBar from '../components/TabBar';
+import ComingSoon from '../containers/ComingSoon';
+import Discover from '../containers/Discover';
+import Friends from '../containers/Friends';
+import HelloWorld from '../containers/HelloWorld';
+import Login from '../containers/Login';
+import MyList from '../containers/MyList';
+import PostDetail from '../containers/PostDetail';
+import RealtimeDataTester from '../containers/RealtimeDataTester';
 
-const DiscoverStack = createStackNavigator(
-  {
-    Discover: {
-      screen: Discover,
-      navigationOptions: () => ({
-        header: null
-      })
-    },
-    PostDetail: {
-      screen: PostDetail,
-      navigationOptions: () => ({
-        header: null
-      })
-    }
+const DiscoverStack = createStackNavigator({
+  Discover: {
+    screen: Discover,
+    navigationOptions: () => ({
+      header: null
+    })
   },
-  {
-    initialRouteName: 'Discover'
+  PostDetail: {
+    screen: PostDetail,
+    navigationOptions: () => ({
+      header: null
+    })
+  },
+  HelloWorld: {
+    screen: HelloWorld,
+    navigationOptions: () => ({
+      header: null
+    })
   }
-);
+});
 
 const MyListStack = createStackNavigator({
   MyList: {
@@ -61,12 +62,15 @@ const FriendsStack = createStackNavigator({
     navigationOptions: () => ({
       header: null
     })
-  }
-});
-
-const HelloWorldStack = createStackNavigator({
+  },
   HelloWorld: {
     screen: HelloWorld,
+    navigationOptions: () => ({
+      header: null
+    })
+  },
+  PostDetail: {
+    screen: PostDetail,
     navigationOptions: () => ({
       header: null
     })
@@ -81,12 +85,18 @@ const AuthStack = createStackNavigator({
     })
   }
 });
+
 const TabStack = createBottomTabNavigator(
   {
-    Discover: DiscoverStack,
-    MyList: MyListStack,
-    Friends: FriendsStack
-    // HelloWorld: HelloWorldStack
+    Discover: {
+      screen: DiscoverStack
+    },
+    MyList: {
+      screen: MyListStack
+    },
+    Friends: {
+      screen: FriendsStack
+    }
   },
   {
     initialRouteName: 'Discover',
@@ -94,14 +104,20 @@ const TabStack = createBottomTabNavigator(
   }
 );
 
-export default createAppContainer(
+const App = createAppContainer(
   createSwitchNavigator(
     {
-      App: TabStack,
-      Auth: AuthStack
+      App: {
+        screen: TabStack
+      },
+      Auth: {
+        screen: AuthStack
+      }
     },
     {
       initialRouteName: 'Auth'
     }
   )
 );
+
+export default App;

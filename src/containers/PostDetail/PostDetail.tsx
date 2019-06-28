@@ -12,7 +12,6 @@ import UserAvatarsScrollView from '../../components/UserAvatarsScrollView';
 import { openURL } from '../../lib/Utils';
 import { selectAuthUserId } from '../../redux/auth/selectors';
 import { postAction } from '../../redux/postActions/actions';
-import { handleURLRoute, postDetailsRoute } from '../../redux/routing/actions';
 import { resetPostDetail } from '../../redux/ui/actions';
 import {
   selectUserFromId,
@@ -27,13 +26,22 @@ interface Users {
   [userId: string]: UserType;
 }
 
+interface Navigation {
+  [state: string]: {
+    [params: string]: {
+      ownerUserId: string;
+      postId: string;
+    };
+  };
+}
+
 type ActionType = 'shares' | 'adds' | 'dones' | 'likes';
 
 export interface Props {
   authUserId: string;
   authUser: UserType;
   isFocused: boolean;
-  navigation: any;
+  navigation: Navigation;
   onActionPress: (
     actionType: ActionType,
     userId: string,
@@ -251,13 +259,16 @@ const defaultProps = {
     }
   }
 };
+// const defaultProps = {};
 
-const mapStateToProps = (state: any) => {
+const mapStateToProps = (state: any, props: any) => {
   const authUserId = selectAuthUserId(state);
   const authUser = selectUserFromId(state, authUserId);
   const post = selectUsersPostFromId(
     state,
-    `${state.ui.postDetails.ownerUserId}_${state.ui.postDetails.postId}`
+    `${props.navigation.state.params.ownerUserId}_${
+      props.navigation.state.params.postId
+    }`
   );
 
   return {
@@ -276,20 +287,11 @@ const mapStateToProps = (state: any) => {
 const mapDispatchToProps = (dispatch: any) => ({
   resetPostDetail: () => dispatch(resetPostDetail()),
   onActionPress: (actionType: ActionType, userId: string, postId: string) =>
-    dispatch(postAction(actionType, userId, postId)),
-  onAvatarPress: (url: string) => dispatch(handleURLRoute(url))
+    dispatch(postAction(actionType, userId, postId))
 });
 
 class PostDetail extends Component<Props> {
   async componentDidMount() {}
-
-  goBack() {
-    this.props.navigation.goBack();
-    this.props.resetPostDetail();
-  }
-  // componentWillUnmount() {
-  //   this.props.resetPostDetail();
-  // }
 
   getFeaturedUsers = (type: ActionType, post: UsersPostsType, users: Users) => {
     const featuredUserIds: Array<string> = _.get(post, [type], []);
@@ -337,6 +339,8 @@ class PostDetail extends Component<Props> {
   };
 
   render() {
+    console.log(this.props);
+
     const shareFeatured = this.getFeaturedUsers(
       'shares',
       this.props.post,
@@ -365,8 +369,7 @@ class PostDetail extends Component<Props> {
             backgroundColor={colors.WHITE}
             statusBarStyle='dark-content'
             title=''
-            back={() => this.goBack()}
-            // back={() => this.props.navigation.goBack()}
+            back={() => this.props.navigation.goBack()}
           />
         ) : null}
         <PostCard
@@ -439,6 +442,49 @@ class PostDetail extends Component<Props> {
                 </View>
               ) : null}
             </View>
+            <Text>hello world</Text>
+            <Text>hello world</Text>
+            <Text>hello world</Text>
+            <Text>hello world</Text>
+            <Text>hello world</Text>
+            <Text>hello world</Text>
+            <Text>hello world</Text>
+            <Text>hello world</Text>
+            <Text>hello world</Text>
+            <Text>hello world</Text>
+            <Text>hello world</Text>
+            <Text>hello world</Text>
+            <Text>hello world</Text>
+            <Text>hello world</Text>
+            <Text>hello world</Text>
+            <Text>hello world</Text>
+            <Text>hello world</Text>
+            <Text>hello world</Text>
+            <Text>hello world</Text>
+            <Text>hello world</Text>
+            <Text>hello world</Text>
+            <Text>hello world</Text>
+            <Text>hello world</Text>
+            <Text>hello world</Text>
+            <Text>hello world</Text>
+            <Text>hello world</Text>
+            <Text>hello world</Text>
+            <Text>hello world</Text>
+            <Text>hello world</Text>
+            <Text>hello world</Text>
+            <Text>hello world</Text>
+            <Text>hello world</Text>
+            <Text>hello world</Text>
+            <Text>hello world</Text>
+            <Text>hello world</Text>
+            <Text>hello world</Text>
+            <Text>hello world</Text>
+            <Text>hello world</Text>
+            <Text>hello world</Text>
+            <Text>hello world</Text>
+            <Text>hello world</Text>
+            <Text>hello world</Text>
+            <Text>hello world</Text>
           </ScrollView>
         </View>
         <ActionBar
