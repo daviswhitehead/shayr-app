@@ -2,7 +2,7 @@ import { types } from './actions';
 
 const initialState = {};
 
-function usersReducer(state = initialState, action) {
+function usersReducer(state = initialState, action: any) {
   switch (action.type) {
     case types.GET_USERS_POSTS_SUCCESS: {
       return {

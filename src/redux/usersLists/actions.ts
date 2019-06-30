@@ -6,22 +6,22 @@ export const types = {
 };
 
 export const addToUsersList = (
-  owningUserId: string,
+  ownerUserId: string,
   userId: string,
   list: string
 ) => (dispatch: Dispatch) => {
   dispatch({
     type: types.ADD_TO_USERS_LIST,
-    listKey: `${owningUserId}_${list}`,
+    listKey: `${ownerUserId}_${list}`,
     userId
   });
 };
 
-export const usersListLoaded = (owningUserId: string, list: string) => (
+export const usersListLoaded = (ownerUserId: string, list: string) => (
   dispatch: Dispatch
 ) => {
   dispatch({
     type: types.USERS_LIST_LOADED,
-    listKey: `${owningUserId}_${list}`
+    listKey: `${ownerUserId}_${list}`
   });
 };

@@ -6,21 +6,21 @@ export const types = {
 };
 
 export const addToFriendshipsList = (
-  owningUserId: string,
+  ownerUserId: string,
   friendshipId: string
 ) => (dispatch: Dispatch) => {
   dispatch({
     type: types.ADD_TO_FRIENDSHIPS_LIST,
-    listKey: `${owningUserId}`,
+    listKey: `${ownerUserId}`,
     friendshipId
   });
 };
 
-export const friendshipsListLoaded = (owningUserId: string) => (
+export const friendshipsListLoaded = (ownerUserId: string) => (
   dispatch: Dispatch
 ) => {
   dispatch({
     type: types.FRIENDSHIP_LIST_LOADED,
-    listKey: `${owningUserId}`
+    listKey: `${ownerUserId}`
   });
 };

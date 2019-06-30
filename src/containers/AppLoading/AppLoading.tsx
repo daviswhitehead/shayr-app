@@ -121,7 +121,7 @@ class AppLoading extends Component {
           ref={navigatorRef => {
             setTopLevelNavigator(navigatorRef);
           }}
-          uriPrefix='shayr://'
+          // uriPrefix='shayr://'
           onNavigationStateChange={(prevState, currentState) => {
             currentScreenAnalytics(prevState, currentState);
           }}

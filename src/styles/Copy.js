@@ -6,15 +6,15 @@ export const actionTypeActivityFeature = {
 };
 
 export const actionTypeActiveToasts = {
-  share: 'shayred',
-  add: 'added',
-  done: 'marked as done',
-  like: 'liked'
+  shares: 'shayred',
+  adds: 'added',
+  dones: 'marked as done',
+  likes: 'liked'
 };
 
 export const actionTypeInactiveToasts = {
-  share: 'shayr removed',
-  add: 'add removed',
-  done: 'done removed',
-  like: 'like removed'
+  shares: 'shayr removed',
+  adds: 'add removed',
+  dones: 'done removed',
+  likes: 'like removed'
 };

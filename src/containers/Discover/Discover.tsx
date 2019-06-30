@@ -1,21 +1,23 @@
 import { UsersPostsType, UserType } from '@daviswhitehead/shayr-resources';
 import React, { Component } from 'react';
 import { Text, View } from 'react-native';
+import { DocumentSnapshot } from 'react-native-firebase/firestore';
 import { connect } from 'react-redux';
 import Header from '../../components/Header';
 import List from '../../components/List';
 import PostCard from '../../components/PostCard';
+import { RequestType } from '../../lib/FirebaseRequests';
 import { selectAuthUserId } from '../../redux/auth/selectors';
 import { subscribeToFriendships } from '../../redux/friendships/actions';
 import { subscribeNotificationTokenRefresh } from '../../redux/notifications/actions';
-import { navigateToRoute } from '../../redux/routing/actions';
 import { handleURLRoute } from '../../redux/routing/actions';
+import { navigateToRoute } from '../../redux/routing/actions';
 import { subscribeToUser } from '../../redux/users/actions';
 import {
   selectUserFromId,
   selectUsersFromList
 } from '../../redux/users/selectors';
-import { loadUsersPosts } from '../../redux/usersPosts/actions';
+import { subscribeUsersPosts } from '../../redux/usersPosts/actions';
 import {
   selectFlatListReadyUsersPostsFromList,
   selectUsersPostsMetadataFromList
@@ -57,12 +59,18 @@ export interface Props {
 const mapStateToProps = (state: any) => {
   const authUserId = selectAuthUserId(state);
   const usersPostsViews = {
-    all: `${authUserId}_all`
+    USERS_POSTS_ALL: `${authUserId}_USERS_POSTS_ALL`
   };
-  const usersPostsFeeds = {
-    [usersPostsViews.all]: {
-      data: selectFlatListReadyUsersPostsFromList(state, usersPostsViews.all),
-      ...selectUsersPostsMetadataFromList(state, usersPostsViews.all)
+  const usersPostsData = {
+    [usersPostsViews.USERS_POSTS_ALL]: {
+      data: selectFlatListReadyUsersPostsFromList(
+        state,
+        usersPostsViews.USERS_POSTS_ALL
+      ),
+      ...selectUsersPostsMetadataFromList(
+        state,
+        usersPostsViews.USERS_POSTS_ALL
+      )
     }
   };
 
@@ -72,14 +80,20 @@ const mapStateToProps = (state: any) => {
     authUser: selectUserFromId(state, authUserId),
     friends: selectUsersFromList(state, `${authUserId}_Friends`),
     usersPostsViews,
-    usersPostsFeeds,
+    usersPostsData,
     routing: state.routing,
     posts: state.posts
   };
 };
 
 const mapDispatchToProps = (dispatch: any) => ({
-  loadPosts: (userId, query) => dispatch(loadPosts(userId, query)),
+  subscribeUsersPosts: (
+    userId: string,
+    requestType: RequestType,
+    shouldRefresh: boolean,
+    lastItem: DocumentSnapshot | 'DONE'
+  ) =>
+    dispatch(subscribeUsersPosts(userId, requestType, shouldRefresh, lastItem)),
   loadUsersPosts: (userId, query, shouldRefresh, lastItem) =>
     dispatch(loadUsersPosts(userId, query, shouldRefresh, lastItem)),
   paginatePosts: (userId, query, lastPost) =>
@@ -113,7 +127,11 @@ class Discover extends Component<Props> {
     }
 
     // load initial data
-    await this.props.loadUsersPosts(this.props.authUserId, 'all', true);
+    await this.props.subscribeUsersPosts(
+      this.props.authUserId,
+      'USERS_POSTS_ALL',
+      true
+    );
   }
 
   componentWillUnmount() {
@@ -124,7 +142,8 @@ class Discover extends Component<Props> {
 
   loading = () => {
     if (
-      !this.props.usersPostsFeeds[this.props.usersPostsViews.all].isLoaded ||
+      !this.props.usersPostsData[this.props.usersPostsViews.USERS_POSTS_ALL]
+        .isLoaded ||
       !this.props.friends ||
       !this.props.authUser
     ) {
@@ -137,9 +156,13 @@ class Discover extends Component<Props> {
 
     return (
       <List
-        data={this.props.usersPostsFeeds[this.props.usersPostsViews.all].data}
-        renderItem={item => (
+        data={
+          this.props.usersPostsData[this.props.usersPostsViews.USERS_POSTS_ALL]
+            .data
+        }
+        renderItem={(item: any) => (
           <PostCard
+            key={item._id}
             post={item}
             ownerUserId={this.props.authUserId}
             users={{
@@ -155,18 +178,28 @@ class Discover extends Component<Props> {
           />
         )}
         onEndReached={() =>
-          this.props.loadUsersPosts(
-            this.props.authUserId,
-            'all',
-            false,
-            this.props.usersPostsFeeds[this.props.usersPostsViews.all].lastItem
+          this.subscriptions.push(
+            this.props.subscribeUsersPosts(
+              this.props.authUserId,
+              'USERS_POSTS_ALL',
+              false,
+              this.props.usersPostsData[
+                this.props.usersPostsViews.USERS_POSTS_ALL
+              ].lastItem
+            )
           )
         }
         onRefresh={() =>
-          this.props.loadUsersPosts(this.props.authUserId, 'all', true)
+          this.subscriptions.push(
+            this.props.subscribeUsersPosts(
+              this.props.authUserId,
+              'USERS_POSTS_ALL',
+              true
+            )
+          )
         }
         refreshing={
-          this.props.usersPostsFeeds[this.props.usersPostsViews.all]
+          this.props.usersPostsData[this.props.usersPostsViews.USERS_POSTS_ALL]
             .isRefreshing
         }
       />

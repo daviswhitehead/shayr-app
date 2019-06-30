@@ -1,3 +1,4 @@
+import { DocumentSnapshot } from 'react-native-firebase/firestore';
 import { Dispatch } from 'redux';
 
 export const types = {
@@ -7,34 +8,34 @@ export const types = {
 };
 
 export const addToUsersPostsList = (
-  owningUserId: string,
+  ownerUserId: string,
   list: string,
   usersPostsIds: Array<string>
 ) => (dispatch: Dispatch) => {
   dispatch({
     type: types.ADD_TO_USERS_POSTS_LIST,
-    listKey: `${owningUserId}_${list}`,
+    listKey: `${ownerUserId}_${list}`,
     usersPostsIds
   });
 };
 
-export const refreshUsersPostsList = (owningUserId: string, list: string) => (
+export const refreshUsersPostsList = (ownerUserId: string, list: string) => (
   dispatch: Dispatch
 ) => {
   dispatch({
     type: types.REFRESH_USERS_POSTS_LIST,
-    listKey: `${owningUserId}_${list}`
+    listKey: `${ownerUserId}_${list}`
   });
 };
 
 export const usersPostsListLoaded = (
-  owningUserId: string,
+  ownerUserId: string,
   list: string,
-  lastItem: string
+  lastItem: DocumentSnapshot | string
 ) => (dispatch: Dispatch) => {
   dispatch({
     type: types.USERS_POSTS_LIST_LOADED,
-    listKey: `${owningUserId}_${list}`,
+    listKey: `${ownerUserId}_${list}`,
     lastItem
   });
 };
