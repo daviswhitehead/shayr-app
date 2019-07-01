@@ -1,14 +1,8 @@
 import _ from 'lodash';
 import firebase from 'react-native-firebase';
 import { Dispatch } from 'redux';
-import { user } from '../../../../shayr-backend/functions/src/model/users';
 import { Toaster } from '../../components/Toaster';
-import {
-  arrayRemove,
-  arrayUnion,
-  increment,
-  ts
-} from '../../lib/FirebaseHelpers';
+import { ts } from '../../lib/FirebaseHelpers';
 import {
   actionTypeActiveToasts,
   actionTypeInactiveToasts
@@ -18,16 +12,15 @@ type ActionType = 'shares' | 'adds' | 'dones' | 'likes';
 
 export const types = {
   POST_ACTION_START: 'POST_ACTION_START',
-  POST_ACTION_USERS_POSTS_UPDATE_SUCCESS:
-    'POST_ACTION_USERS_POSTS_UPDATE_SUCCESS',
-  POST_ACTION_ACTION_UPDATE_SUCCESS: 'POST_ACTION_ACTION_UPDATE_SUCCESS',
+  POST_ACTION_CLIENT_UPDATE: 'POST_ACTION_CLIENT_UPDATE',
+  POST_ACTION_SERVER_UPDATE: 'POST_ACTION_SERVER_UPDATE',
   POST_ACTION_SUCCESS: 'POST_ACTION_SUCCESS',
   POST_ACTION_FAIL: 'POST_ACTION_FAIL'
 };
 
 export const postAction = (
   userId: string,
-  post: any,
+  postId: string,
   actionType: ActionType,
   isNowActive: boolean
 ) => async (dispatch: Dispatch) => {
@@ -48,28 +41,20 @@ export const postAction = (
       ? Toaster(actionTypeActiveToasts[actionType])
       : Toaster(actionTypeInactiveToasts[actionType]);
 
-    await firebase
-      .firestore()
-      .doc(post._reference)
-      .set(
-        {
-          [actionType]: isNowActive ? arrayUnion(userId) : arrayRemove(userId),
-          [`${actionString}Count`]: increment(isNowActive ? +1 : -1),
-          updatedAt: ts
-        },
-        { merge: true }
-      );
-
+    // update client store
     dispatch({
-      type: types.POST_ACTION_USERS_POSTS_UPDATE_SUCCESS,
-      payload: actionType
+      type: types.POST_ACTION_CLIENT_UPDATE,
+      userId,
+      postId,
+      actionType,
+      isNowActive
     });
 
     // update [actionType] object
     const actionRef = firebase
       .firestore()
       .collection(actionType)
-      .doc(`${userId}_${post._id}`);
+      .doc(`${userId}_${postId}`);
 
     await firebase.firestore().runTransaction(t =>
       t.get(actionRef).then(documentSnapshot => {
@@ -77,7 +62,7 @@ export const postAction = (
           t.set(actionRef, {
             active: true,
             createdAt: ts,
-            postId: post._id,
+            postId,
             updatedAt: ts,
             userId
           });
@@ -96,7 +81,7 @@ export const postAction = (
       })
     );
     dispatch({
-      type: types.POST_ACTION_ACTION_UPDATE_SUCCESS,
+      type: types.POST_ACTION_SERVER_UPDATE,
       payload: actionType
     });
   } catch (error) {

@@ -26,7 +26,7 @@ const List: React.SFC<Props> = props => {
       ItemSeparatorComponent={() => <View style={styles.separator} />}
       onScroll={props.onScroll}
       onEndReached={props.isLoadedAll ? null : props.onEndReached}
-      onEndReachedThreshold={0.25}
+      onEndReachedThreshold={0.05}
       onRefresh={props.onRefresh}
       refreshing={props.refreshing}
       ListEmptyComponent={() => {

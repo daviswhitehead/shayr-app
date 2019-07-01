@@ -26,7 +26,7 @@ export interface Props {
   ownerUserId: string;
   onActionPress: (
     userId: string,
-    post: UsersPostsType,
+    postId: string,
     actionType: ActionType,
     isNowActive: boolean
   ) => void;
@@ -57,10 +57,10 @@ const mapStateToProps = (state: any) => {
 const mapDispatchToProps = (dispatch: any) => ({
   onActionPress: (
     userId: string,
-    post: UsersPostsType,
+    postId: string,
     actionType: ActionType,
     isNowActive: boolean
-  ) => dispatch(postAction(userId, post, actionType, isNowActive))
+  ) => dispatch(postAction(userId, postId, actionType, isNowActive))
 });
 
 const getFeaturedUser = (props: Props) => {
@@ -143,7 +143,7 @@ const PostCard: React.SFC<Props> = props => {
                     : () =>
                         props.onActionPress(
                           props.authUserId,
-                          props.post,
+                          props.post.postId,
                           'shares',
                           !isShareActive
                         )
@@ -160,7 +160,7 @@ const PostCard: React.SFC<Props> = props => {
                     : () =>
                         props.onActionPress(
                           props.authUserId,
-                          props.post,
+                          props.post.postId,
                           'likes',
                           !isLikeActive
                         )

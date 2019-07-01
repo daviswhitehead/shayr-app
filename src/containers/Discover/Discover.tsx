@@ -17,7 +17,7 @@ import {
   selectUserFromId,
   selectUsersFromList
 } from '../../redux/users/selectors';
-import { subscribeUsersPosts } from '../../redux/usersPosts/actions';
+import { loadUsersPosts } from '../../redux/usersPosts/actions';
 import {
   selectFlatListReadyUsersPostsFromList,
   selectUsersPostsMetadataFromList
@@ -87,7 +87,7 @@ const mapStateToProps = (state: any) => {
 };
 
 const mapDispatchToProps = (dispatch: any) => ({
-  subscribeUsersPosts: (
+  loadUsersPosts: (
     userId: string,
     requestType: RequestType,
     shouldRefresh: boolean,
@@ -95,16 +95,8 @@ const mapDispatchToProps = (dispatch: any) => ({
     isLoading: boolean
   ) =>
     dispatch(
-      subscribeUsersPosts(
-        userId,
-        requestType,
-        shouldRefresh,
-        lastItem,
-        isLoading
-      )
+      loadUsersPosts(userId, requestType, shouldRefresh, lastItem, isLoading)
     ),
-  loadUsersPosts: (userId, query, shouldRefresh, lastItem) =>
-    dispatch(loadUsersPosts(userId, query, shouldRefresh, lastItem)),
   paginatePosts: (userId, query, lastPost) =>
     dispatch(paginatePosts(userId, query, lastPost)),
   refreshPosts: (userId, query) => dispatch(refreshPosts(userId, query)),
@@ -136,7 +128,7 @@ class Discover extends Component<Props> {
     }
 
     // load initial data
-    await this.props.subscribeUsersPosts(
+    await this.props.loadUsersPosts(
       this.props.authUserId,
       'USERS_POSTS_ALL',
       true,
@@ -145,6 +137,20 @@ class Discover extends Component<Props> {
       this.props.usersPostsData[this.props.usersPostsViews.USERS_POSTS_ALL]
         .isLoading
     );
+    // this.props.navigation.navigate('PostDetail', {
+    //   ownerUserId: this.props.authUserId,
+    //   postId: 'EAwvpQaAizgV5GTZIgmc'
+    // });
+
+    // await this.props.subscribeUsersPosts(
+    //   this.props.authUserId,
+    //   'USERS_POSTS_ALL',
+    //   true,
+    //   this.props.usersPostsData[this.props.usersPostsViews.USERS_POSTS_ALL]
+    //     .lastItem,
+    //   this.props.usersPostsData[this.props.usersPostsViews.USERS_POSTS_ALL]
+    //     .isLoading
+    // );
   }
 
   componentWillUnmount() {
@@ -191,35 +197,61 @@ class Discover extends Component<Props> {
           />
         )}
         onEndReached={() =>
-          this.subscriptions.push(
-            this.props.subscribeUsersPosts(
-              this.props.authUserId,
-              'USERS_POSTS_ALL',
-              false,
-              this.props.usersPostsData[
-                this.props.usersPostsViews.USERS_POSTS_ALL
-              ].lastItem,
-              this.props.usersPostsData[
-                this.props.usersPostsViews.USERS_POSTS_ALL
-              ].isLoading
-            )
+          this.props.loadUsersPosts(
+            this.props.authUserId,
+            'USERS_POSTS_ALL',
+            false,
+            this.props.usersPostsData[
+              this.props.usersPostsViews.USERS_POSTS_ALL
+            ].lastItem,
+            this.props.usersPostsData[
+              this.props.usersPostsViews.USERS_POSTS_ALL
+            ].isLoading
           )
         }
+        // onEndReached={() =>
+        //   this.subscriptions.push(
+        //     this.props.subscribeUsersPosts(
+        //       this.props.authUserId,
+        //       'USERS_POSTS_ALL',
+        //       false,
+        //       this.props.usersPostsData[
+        //         this.props.usersPostsViews.USERS_POSTS_ALL
+        //       ].lastItem,
+        //       this.props.usersPostsData[
+        //         this.props.usersPostsViews.USERS_POSTS_ALL
+        //       ].isLoading
+        //     )
+        //   )
+        // }
         onRefresh={() =>
-          this.subscriptions.push(
-            this.props.subscribeUsersPosts(
-              this.props.authUserId,
-              'USERS_POSTS_ALL',
-              true,
-              this.props.usersPostsData[
-                this.props.usersPostsViews.USERS_POSTS_ALL
-              ].lastItem,
-              this.props.usersPostsData[
-                this.props.usersPostsViews.USERS_POSTS_ALL
-              ].isLoading
-            )
+          this.props.loadUsersPosts(
+            this.props.authUserId,
+            'USERS_POSTS_ALL',
+            true,
+            this.props.usersPostsData[
+              this.props.usersPostsViews.USERS_POSTS_ALL
+            ].lastItem,
+            this.props.usersPostsData[
+              this.props.usersPostsViews.USERS_POSTS_ALL
+            ].isLoading
           )
         }
+        // onRefresh={() =>
+        //   this.subscriptions.push(
+        //     this.props.subscribeUsersPosts(
+        //       this.props.authUserId,
+        //       'USERS_POSTS_ALL',
+        //       true,
+        //       this.props.usersPostsData[
+        //         this.props.usersPostsViews.USERS_POSTS_ALL
+        //       ].lastItem,
+        //       this.props.usersPostsData[
+        //         this.props.usersPostsViews.USERS_POSTS_ALL
+        //       ].isLoading
+        //     )
+        //   )
+        // }
         refreshing={
           this.props.usersPostsData[this.props.usersPostsViews.USERS_POSTS_ALL]
             .isRefreshing

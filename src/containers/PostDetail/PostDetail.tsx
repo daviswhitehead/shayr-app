@@ -19,7 +19,7 @@ import {
   selectUserFromId,
   selectUsersFromList
 } from '../../redux/users/selectors';
-import { subscribeSingleUsersPosts } from '../../redux/usersPosts/actions';
+import { loadSingleUsersPosts } from '../../redux/usersPosts/actions';
 import { selectUsersPostFromId } from '../../redux/usersPosts/selectors';
 import colors from '../../styles/Colors';
 import { actionTypeActivityFeature } from '../../styles/Copy';
@@ -45,7 +45,7 @@ export interface Props {
   navigation: Navigation;
   onActionPress: (
     userId: string,
-    post: UsersPostsType,
+    postId: string,
     actionType: ActionType,
     isNowActive: boolean
   ) => void;
@@ -85,36 +85,29 @@ const mapDispatchToProps = (dispatch: any) => ({
   resetPostDetail: () => dispatch(resetPostDetail()),
   onActionPress: (
     userId: string,
-    post: UsersPostsType,
+    postId: string,
     actionType: ActionType,
     isNowActive: boolean
-  ) => dispatch(postAction(userId, post, actionType, isNowActive)),
-  subscribeSingleUsersPosts: (userId: string, postId: string) =>
-    dispatch(subscribeSingleUsersPosts(userId, postId))
+  ) => dispatch(postAction(userId, postId, actionType, isNowActive)),
+  loadSingleUsersPosts: (userId: string, postId: string) =>
+    dispatch(loadSingleUsersPosts(userId, postId))
 });
 
 class PostDetail extends Component<Props> {
-  constructor(props) {
+  constructor(props: Props) {
     super(props);
-    this.subscriptions = [];
   }
 
   async componentDidMount() {
     if (!this.props.post) {
-      this.subscriptions.push(
-        await this.props.subscribeSingleUsersPosts(
-          this.props.ownerUserId,
-          this.props.postId
-        )
+      await this.props.loadSingleUsersPosts(
+        this.props.ownerUserId,
+        this.props.postId
       );
     }
   }
 
-  componentWillUnmount() {
-    Object.values(this.subscriptions).forEach(unsubscribe => {
-      unsubscribe();
-    });
-  }
+  componentWillUnmount() {}
 
   getFeaturedUsers = (type: ActionType, post: UsersPostsType, users: Users) => {
     const featuredUserIds: Array<string> = _.get(post, [type], []);
@@ -295,7 +288,7 @@ class PostDetail extends Component<Props> {
           onSharePress={() =>
             this.props.onActionPress(
               this.props.authUserId,
-              this.props.post,
+              this.props.post.postId,
               'shares',
               !isShareActive
             )
@@ -304,7 +297,7 @@ class PostDetail extends Component<Props> {
           onAddPress={() =>
             this.props.onActionPress(
               this.props.authUserId,
-              this.props.post,
+              this.props.post.postId,
               'adds',
               !isAddActive
             )
@@ -313,7 +306,7 @@ class PostDetail extends Component<Props> {
           onDonePress={() =>
             this.props.onActionPress(
               this.props.authUserId,
-              this.props.post,
+              this.props.post.postId,
               'dones',
               !isDoneActive
             )
@@ -322,7 +315,7 @@ class PostDetail extends Component<Props> {
           onLikePress={() =>
             this.props.onActionPress(
               this.props.authUserId,
-              this.props.post,
+              this.props.post.postId,
               'likes',
               !isLikeActive
             )

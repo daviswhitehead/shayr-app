@@ -25,67 +25,58 @@ export const types = {
 };
 
 const requestLimiter = 10;
-// type UsersPostsQueries = 'all' | 'shares' | 'adds' | 'dones' | 'likes';
-// const composeRequest = (userId: string, query: UsersPostsQueries) => {
-//   let request = firebase
-//     .firestore()
-//     .collection('users_posts')
-//     .where('userId', '==', userId)
-//     .limit(requestLimiter);
+export const loadUsersPosts = (
+  userId: string,
+  requestType: RequestType,
+  shouldRefresh: boolean,
+  lastItem?: DocumentSnapshot | 'DONE',
+  isLoading?: boolean
+) => async (dispatch: Dispatch) => {
+  // prevent loading more items when the end is reached
+  if (lastItem === 'DONE' || (isLoading && !shouldRefresh)) {
+    return;
+  }
+  if (shouldRefresh) {
+    dispatch(refreshUsersPostsList(userId, requestType));
+  } else {
+    dispatch(usersPostsListLoading(userId, requestType));
+  }
 
-//   if (query === 'all') {
-//     request = request.orderBy('createdAt', 'desc');
-//   } else {
-//     request = request
-//       .where(query, 'array-contains', userId)
-//       .orderBy('updatedAt', 'desc');
-//   }
+  dispatch({ type: types.GET_USERS_POSTS_START });
 
-//   return request;
-// };
+  const request = composeRequest(
+    requestTypes[requestType].request(userId),
+    requestLimiter,
+    lastItem
+  );
 
-// export const loadUsersPosts = (
-//   userId: string,
-//   query: UsersPostsQueries,
-//   shouldRefresh: boolean,
-//   lastItem?: string
-// ) => async (dispatch: Dispatch) => {
-//   // prevent loading more items when the end is reached
-//   if (lastItem === 'done') {
-//     return;
-//   }
-//   if (shouldRefresh) {
-//     dispatch(refreshUsersPostsList(userId, query));
-//   }
+  await request
+    .get()
+    .then((querySnapshot: any) => {
+      if (!querySnapshot.empty) {
+        const documents = {};
+        querySnapshot.forEach((document: DocumentSnapshot) => {
+          documents[document.id] = formatDocumentSnapshot(document);
+        });
 
-//   dispatch({ type: types.GET_USERS_POSTS_START });
+        dispatch({
+          type: types.GET_USERS_POSTS_SUCCESS,
+          usersPosts: documents
+        });
+        dispatch(addToUsersPostsList(userId, requestType, _.keys(documents)));
 
-//   // compose the database request
-//   let request = composeRequest(userId, query);
-//   if (lastItem) {
-//     request = request.startAfter(lastItem);
-//   }
-
-//   const usersPosts = await getDocumentsInCollection(
-//     request,
-//     `users_posts`,
-//     requestLimiter
-//   );
-//   if (usersPosts.documents) {
-//     console.log(usersPosts.documents);
-
-//     dispatch({
-//       type: types.GET_USERS_POSTS_SUCCESS,
-//       usersPosts: usersPosts.documents
-//     });
-//     dispatch(addToUsersPostsList(userId, query, _.keys(usersPosts.documents)));
-//     console.log(usersPosts.lastDocument);
-
-//     dispatch(usersPostsListLoaded(userId, query, usersPosts.lastDocument));
-//   } else {
-//     dispatch({ type: types.GET_USERS_POSTS_FAIL });
-//   }
-// };
+        dispatch(
+          usersPostsListLoaded(userId, requestType, querySnapshot.docs.pop())
+        );
+      } else {
+        dispatch(usersPostsListLoaded(userId, requestType, 'DONE'));
+      }
+    })
+    .catch((error: SnapshotError) => {
+      console.error(error);
+      dispatch({ type: types.GET_USERS_POSTS_FAIL });
+    });
+};
 
 export const subscribeUsersPosts = (
   userId: string,
@@ -138,6 +129,34 @@ export const subscribeUsersPosts = (
       dispatch({ type: types.GET_USERS_POSTS_FAIL });
     }
   );
+};
+
+export const loadSingleUsersPosts = (userId: string, postId: string) => async (
+  dispatch: Dispatch
+) => {
+  dispatch({ type: types.GET_USERS_POSTS_START });
+
+  const request = requestTypes.USERS_POSTS_SINGLE.request(userId, postId);
+
+  await request
+    .get()
+    .then((querySnapshot: QuerySnapshot) => {
+      if (!querySnapshot.empty) {
+        const documents = {};
+        querySnapshot.forEach((document: DocumentSnapshot) => {
+          documents[document.id] = formatDocumentSnapshot(document);
+        });
+
+        dispatch({
+          type: types.GET_USERS_POSTS_SUCCESS,
+          usersPosts: documents
+        });
+      }
+    })
+    .catch((error: SnapshotError) => {
+      console.error(error);
+      dispatch({ type: types.GET_USERS_POSTS_FAIL });
+    });
 };
 
 export const subscribeSingleUsersPosts = (
