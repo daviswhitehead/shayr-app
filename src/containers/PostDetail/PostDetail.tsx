@@ -10,7 +10,7 @@ import Header from '../../components/Header';
 import Icon from '../../components/Icon';
 import PostCard from '../../components/PostCard';
 import UserAvatarsScrollView from '../../components/UserAvatarsScrollView';
-import { postActionSet } from '../../lib/FirebaseSets';
+import { getActionActiveStatus } from '../../lib/StateHelpers';
 import { openURL } from '../../lib/Utils';
 import { selectAuthUserId } from '../../redux/auth/selectors';
 import { postAction } from '../../redux/postActions/actions';
@@ -44,9 +44,10 @@ export interface Props {
   isFocused: boolean;
   navigation: Navigation;
   onActionPress: (
-    actionType: ActionType,
     userId: string,
-    postId: string
+    post: UsersPostsType,
+    actionType: ActionType,
+    isNowActive: boolean
   ) => void;
   ownerUserId: string;
   post: UsersPostsType;
@@ -82,8 +83,12 @@ const mapStateToProps = (state: any, props: any) => {
 
 const mapDispatchToProps = (dispatch: any) => ({
   resetPostDetail: () => dispatch(resetPostDetail()),
-  onActionPress: (actionType: ActionType, userId: string, postId: string) =>
-    dispatch(postAction(actionType, userId, postId)),
+  onActionPress: (
+    userId: string,
+    post: UsersPostsType,
+    actionType: ActionType,
+    isNowActive: boolean
+  ) => dispatch(postAction(userId, post, actionType, isNowActive)),
   subscribeSingleUsersPosts: (userId: string, postId: string) =>
     dispatch(subscribeSingleUsersPosts(userId, postId))
 });
@@ -147,19 +152,7 @@ class PostDetail extends Component<Props> {
       : {};
   };
 
-  getActionActiveStatus = (
-    type: ActionType,
-    post: UsersPostsType,
-    userId: string
-  ) => {
-    const userIds: Array<string> = _.get(post, [type], []);
-    return _.includes(userIds, userId);
-  };
-
   render() {
-    console.log('this.props.post');
-    console.log(this.props.post);
-
     if (!this.props.post) {
       return (
         <View style={styles.container}>
@@ -167,8 +160,8 @@ class PostDetail extends Component<Props> {
         </View>
       );
     }
-    console.log(this.props);
 
+    // get featured users
     const shareFeatured = this.getFeaturedUsers(
       'shares',
       this.props.post,
@@ -188,6 +181,28 @@ class PostDetail extends Component<Props> {
       'likes',
       this.props.post,
       this.props.users
+    );
+
+    // get icon active status
+    const isShareActive = getActionActiveStatus(
+      this.props.authUserId,
+      this.props.post,
+      'shares'
+    );
+    const isAddActive = getActionActiveStatus(
+      this.props.authUserId,
+      this.props.post,
+      'adds'
+    );
+    const isDoneActive = getActionActiveStatus(
+      this.props.authUserId,
+      this.props.post,
+      'dones'
+    );
+    const isLikeActive = getActionActiveStatus(
+      this.props.authUserId,
+      this.props.post,
+      'likes'
     );
 
     return (
@@ -279,55 +294,40 @@ class PostDetail extends Component<Props> {
           // onAvatarPress={() => this.props.onAvatarPress(postDetailsRoute())}
           onSharePress={() =>
             this.props.onActionPress(
-              'shares',
               this.props.authUserId,
-              this.props.post.postId
+              this.props.post,
+              'shares',
+              !isShareActive
             )
           }
-          isShareActive={this.getActionActiveStatus(
-            'shares',
-            this.props.post,
-            this.props.authUserId
-          )}
+          isShareActive={isShareActive}
           onAddPress={() =>
             this.props.onActionPress(
-              'adds',
               this.props.authUserId,
-              this.props.post.postId
+              this.props.post,
+              'adds',
+              !isAddActive
             )
           }
-          isAddActive={this.getActionActiveStatus(
-            'adds',
-            this.props.post,
-            this.props.authUserId
-          )}
+          isAddActive={isAddActive}
           onDonePress={() =>
             this.props.onActionPress(
-              'dones',
               this.props.authUserId,
-              this.props.post.postId
+              this.props.post,
+              'dones',
+              !isDoneActive
             )
           }
-          isDoneActive={this.getActionActiveStatus(
-            'dones',
-            this.props.post,
-            this.props.authUserId
-          )}
+          isDoneActive={isDoneActive}
           onLikePress={() =>
-            postActionSet(this.props.authUserId, this.props.post, 'likes')
+            this.props.onActionPress(
+              this.props.authUserId,
+              this.props.post,
+              'likes',
+              !isLikeActive
+            )
           }
-          // onLikePress={() =>
-          //   this.props.onActionPress(
-          //     'likes',
-          //     this.props.authUserId,
-          //     this.props.post.postId
-          //   )
-          // }
-          isLikeActive={this.getActionActiveStatus(
-            'likes',
-            this.props.post,
-            this.props.authUserId
-          )}
+          isLikeActive={isLikeActive}
         />
       </View>
     );

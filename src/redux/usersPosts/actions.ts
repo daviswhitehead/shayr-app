@@ -14,7 +14,8 @@ import {
 import {
   addToUsersPostsList,
   refreshUsersPostsList,
-  usersPostsListLoaded
+  usersPostsListLoaded,
+  usersPostsListLoading
 } from '../usersPostsLists/actions';
 
 export const types = {
@@ -90,14 +91,17 @@ export const subscribeUsersPosts = (
   userId: string,
   requestType: RequestType,
   shouldRefresh: boolean,
-  lastItem?: DocumentSnapshot | 'DONE'
+  lastItem?: DocumentSnapshot | 'DONE',
+  isLoading?: boolean
 ) => async (dispatch: Dispatch) => {
   // prevent loading more items when the end is reached
-  if (lastItem === 'DONE') {
+  if (lastItem === 'DONE' || (isLoading && !shouldRefresh)) {
     return;
   }
   if (shouldRefresh) {
     dispatch(refreshUsersPostsList(userId, requestType));
+  } else {
+    dispatch(usersPostsListLoading(userId, requestType));
   }
 
   dispatch({ type: types.GET_USERS_POSTS_START });
@@ -123,12 +127,10 @@ export const subscribeUsersPosts = (
         dispatch(addToUsersPostsList(userId, requestType, _.keys(documents)));
 
         dispatch(
-          usersPostsListLoaded(
-            userId,
-            requestType,
-            querySnapshot.docs.pop() || 'DONE'
-          )
+          usersPostsListLoaded(userId, requestType, querySnapshot.docs.pop())
         );
+      } else {
+        dispatch(usersPostsListLoaded(userId, requestType, 'DONE'));
       }
     },
     (error: SnapshotError) => {

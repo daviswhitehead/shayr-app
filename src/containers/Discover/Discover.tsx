@@ -91,9 +91,18 @@ const mapDispatchToProps = (dispatch: any) => ({
     userId: string,
     requestType: RequestType,
     shouldRefresh: boolean,
-    lastItem: DocumentSnapshot | 'DONE'
+    lastItem: DocumentSnapshot | 'DONE',
+    isLoading: boolean
   ) =>
-    dispatch(subscribeUsersPosts(userId, requestType, shouldRefresh, lastItem)),
+    dispatch(
+      subscribeUsersPosts(
+        userId,
+        requestType,
+        shouldRefresh,
+        lastItem,
+        isLoading
+      )
+    ),
   loadUsersPosts: (userId, query, shouldRefresh, lastItem) =>
     dispatch(loadUsersPosts(userId, query, shouldRefresh, lastItem)),
   paginatePosts: (userId, query, lastPost) =>
@@ -130,7 +139,11 @@ class Discover extends Component<Props> {
     await this.props.subscribeUsersPosts(
       this.props.authUserId,
       'USERS_POSTS_ALL',
-      true
+      true,
+      this.props.usersPostsData[this.props.usersPostsViews.USERS_POSTS_ALL]
+        .lastItem,
+      this.props.usersPostsData[this.props.usersPostsViews.USERS_POSTS_ALL]
+        .isLoading
     );
   }
 
@@ -185,7 +198,10 @@ class Discover extends Component<Props> {
               false,
               this.props.usersPostsData[
                 this.props.usersPostsViews.USERS_POSTS_ALL
-              ].lastItem
+              ].lastItem,
+              this.props.usersPostsData[
+                this.props.usersPostsViews.USERS_POSTS_ALL
+              ].isLoading
             )
           )
         }
@@ -194,13 +210,27 @@ class Discover extends Component<Props> {
             this.props.subscribeUsersPosts(
               this.props.authUserId,
               'USERS_POSTS_ALL',
-              true
+              true,
+              this.props.usersPostsData[
+                this.props.usersPostsViews.USERS_POSTS_ALL
+              ].lastItem,
+              this.props.usersPostsData[
+                this.props.usersPostsViews.USERS_POSTS_ALL
+              ].isLoading
             )
           )
         }
         refreshing={
           this.props.usersPostsData[this.props.usersPostsViews.USERS_POSTS_ALL]
             .isRefreshing
+        }
+        isLoading={
+          this.props.usersPostsData[this.props.usersPostsViews.USERS_POSTS_ALL]
+            .isLoading
+        }
+        isLoadedAll={
+          this.props.usersPostsData[this.props.usersPostsViews.USERS_POSTS_ALL]
+            .isLoadedAll
         }
       />
     );

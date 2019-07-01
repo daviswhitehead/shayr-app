@@ -324,6 +324,9 @@ The usersPostsLists state is a collection of lists that represent various views 
 {
   userIdA_posts: {
     isLoaded: true,
+    isLoading: true,
+    isEmpty: true,
+    isLoadedAll: true,
     isRefreshing: false,
     isPaginating: false,
     lastPost: 'userPostIdX',
@@ -332,6 +335,9 @@ The usersPostsLists state is a collection of lists that represent various views 
 
   userIdA_posts_done: {
     isLoaded: true,
+    isLoading: true,
+    isEmpty: true,
+    isLoadedAll: true,
     isRefreshing: false,
     isPaginating: false,
     lastPost: 'userPostIdX',
@@ -340,6 +346,9 @@ The usersPostsLists state is a collection of lists that represent various views 
 
   userIdA_posts_shared: {
     isLoaded: true,
+    isLoading: true,
+    isEmpty: true,
+    isLoadedAll: true,
     isRefreshing: false,
     isPaginating: false,
     lastPost: 'userPostIdX',
@@ -348,6 +357,9 @@ The usersPostsLists state is a collection of lists that represent various views 
 
   userIdA_posts_shared_product: {
     isLoaded: true,
+    isLoading: true,
+    isEmpty: true,
+    isLoadedAll: true,
     isRefreshing: false,
     isPaginating: false,
     lastPost: 'userPostIdX',
@@ -356,6 +368,9 @@ The usersPostsLists state is a collection of lists that represent various views 
 
   userIdB_posts: {
     isLoaded: true,
+    isLoading: true,
+    isEmpty: true,
+    isLoadedAll: true,
     isRefreshing: false,
     isPaginating: false,
     lastPost: 'userPostIdX',
@@ -364,6 +379,9 @@ The usersPostsLists state is a collection of lists that represent various views 
 
   userIdB_posts_done: {
     isLoaded: true,
+    isLoading: true,
+    isEmpty: true,
+    isLoadedAll: true,
     isRefreshing: false,
     isPaginating: false,
     lastPost: 'userPostIdX',
@@ -372,6 +390,9 @@ The usersPostsLists state is a collection of lists that represent various views 
 
   userIdB_posts_shared: {
     isLoaded: true,
+    isLoading: true,
+    isEmpty: true,
+    isLoadedAll: true,
     isRefreshing: false,
     isPaginating: false,
     lastPost: 'userPostIdX',
@@ -380,6 +401,9 @@ The usersPostsLists state is a collection of lists that represent various views 
 
   userIdB_posts_shared_product: {
     isLoaded: true,
+    isLoading: true,
+    isEmpty: true,
+    isLoadedAll: true,
     isRefreshing: false,
     isPaginating: false,
     lastPost: 'userPostIdX',

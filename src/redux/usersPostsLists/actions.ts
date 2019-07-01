@@ -4,7 +4,8 @@ import { Dispatch } from 'redux';
 export const types = {
   ADD_TO_USERS_POSTS_LIST: 'ADD_TO_USERS_POSTS_LIST',
   REFRESH_USERS_POSTS_LIST: 'REFRESH_USERS_POSTS_LIST',
-  USERS_POSTS_LIST_LOADED: 'USERS_POSTS_LIST_LOADED'
+  USERS_POSTS_LIST_LOADED: 'USERS_POSTS_LIST_LOADED',
+  USERS_POSTS_LIST_LOADING: 'USERS_POSTS_LIST_LOADING'
 };
 
 export const addToUsersPostsList = (
@@ -24,6 +25,15 @@ export const refreshUsersPostsList = (ownerUserId: string, list: string) => (
 ) => {
   dispatch({
     type: types.REFRESH_USERS_POSTS_LIST,
+    listKey: `${ownerUserId}_${list}`
+  });
+};
+
+export const usersPostsListLoading = (ownerUserId: string, list: string) => (
+  dispatch: Dispatch
+) => {
+  dispatch({
+    type: types.USERS_POSTS_LIST_LOADING,
     listKey: `${ownerUserId}_${list}`
   });
 };

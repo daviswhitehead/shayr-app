@@ -30,13 +30,24 @@ function usersListsReducer(state = initialState, action) {
         }
       };
     }
+    case types.USERS_POSTS_LIST_LOADING: {
+      return {
+        ...state,
+        [action.listKey]: {
+          ..._.get(state, action.listKey, {}),
+          isLoading: true
+        }
+      };
+    }
     case types.USERS_POSTS_LIST_LOADED: {
       return {
         ...state,
         [action.listKey]: {
           ..._.get(state, action.listKey, {}),
           isLoaded: true,
+          isLoading: false,
           isRefreshing: false,
+          isLoadedAll: action.lastItem === 'DONE' ? true : false,
           lastItem: action.lastItem
         }
       };

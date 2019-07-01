@@ -8,11 +8,14 @@ import _ from 'lodash';
 import * as React from 'react';
 import { Image, Text, TouchableWithoutFeedback, View } from 'react-native';
 import { connect } from 'react-redux';
+import { getActionActiveStatus } from '../../lib/StateHelpers';
 import { selectAuthUserId } from '../../redux/auth/selectors';
 import { postAction } from '../../redux/postActions/actions';
 import IconWithCount from '../IconWithCount';
 import UserAvatar from '../UserAvatar';
 import styles from './styles';
+
+type ActionType = 'shares' | 'adds' | 'dones' | 'likes';
 
 interface Users {
   [userId: string]: UserType;
@@ -21,7 +24,12 @@ interface Users {
 export interface Props {
   authUserId: string;
   ownerUserId: string;
-  onActionPress: (actionType: string, userId: string, postId: string) => void;
+  onActionPress: (
+    userId: string,
+    post: UsersPostsType,
+    actionType: ActionType,
+    isNowActive: boolean
+  ) => void;
   onCardPress: () => void | undefined;
   post: UsersPostsType;
   users?: Users | undefined;
@@ -47,8 +55,12 @@ const mapStateToProps = (state: any) => {
 };
 
 const mapDispatchToProps = (dispatch: any) => ({
-  onActionPress: (actionType: string, userId: string, postId: string) =>
-    dispatch(postAction(actionType, userId, postId))
+  onActionPress: (
+    userId: string,
+    post: UsersPostsType,
+    actionType: ActionType,
+    isNowActive: boolean
+  ) => dispatch(postAction(userId, post, actionType, isNowActive))
 });
 
 const getFeaturedUser = (props: Props) => {
@@ -78,6 +90,17 @@ const PostCard: React.SFC<Props> = props => {
   // const timeEstimate = '23 min';
   const timeEstimate = _.get(props, ['post', 'timeEstimate'], '');
 
+  const isShareActive = getActionActiveStatus(
+    props.authUserId,
+    props.post,
+    'shares'
+  );
+  const isLikeActive = getActionActiveStatus(
+    props.authUserId,
+    props.post,
+    'likes'
+  );
+
   return (
     <TouchableWithoutFeedback
       onPress={props.noTouching ? undefined : props.onCardPress}
@@ -85,7 +108,11 @@ const PostCard: React.SFC<Props> = props => {
       <View style={styles.container}>
         {!_.isEmpty(featuredUser) ? (
           <View style={styles.avatar}>
-            <UserAvatar {...featuredUser} isVertical={false} />
+            <UserAvatar
+              {...featuredUser}
+              isVertical={false}
+              onPress={props.noTouching ? undefined : () => null}
+            />
           </View>
         ) : null}
         <View style={styles.contentBox}>
@@ -109,14 +136,16 @@ const PostCard: React.SFC<Props> = props => {
               <IconWithCount
                 count={props.post.shareCount || 0}
                 name={'share'}
+                isActive={isShareActive}
                 onPress={
                   props.noTouching
                     ? undefined
                     : () =>
                         props.onActionPress(
-                          'shares',
                           props.authUserId,
-                          props.post.postId
+                          props.post,
+                          'shares',
+                          !isShareActive
                         )
                 }
               />
@@ -124,14 +153,16 @@ const PostCard: React.SFC<Props> = props => {
               <IconWithCount
                 count={props.post.likeCount || 0}
                 name={'like'}
+                isActive={isLikeActive}
                 onPress={
                   props.noTouching
                     ? undefined
                     : () =>
                         props.onActionPress(
-                          'likes',
                           props.authUserId,
-                          props.post.postId
+                          props.post,
+                          'likes',
+                          !isLikeActive
                         )
                 }
               />
