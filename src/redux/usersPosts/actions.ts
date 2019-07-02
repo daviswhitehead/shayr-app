@@ -33,7 +33,7 @@ export const loadUsersPosts = (
   isLoading?: boolean
 ) => async (dispatch: Dispatch) => {
   // prevent loading more items when the end is reached
-  if (lastItem === 'DONE' || (isLoading && !shouldRefresh)) {
+  if (!shouldRefresh && (lastItem === 'DONE' || isLoading)) {
     return;
   }
   if (shouldRefresh) {
@@ -47,7 +47,7 @@ export const loadUsersPosts = (
   const request = composeRequest(
     requestTypes[requestType].request(userId),
     requestLimiter,
-    lastItem
+    shouldRefresh ? undefined : lastItem
   );
 
   await request

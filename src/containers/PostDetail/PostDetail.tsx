@@ -2,8 +2,11 @@ import { UsersPostsType, UserType } from '@daviswhitehead/shayr-resources';
 import _ from 'lodash';
 import React, { Component } from 'react';
 import { ScrollView, Text, View } from 'react-native';
-import { NavigationScreenProp, NavigationState } from 'react-navigation';
-import { withNavigationFocus } from 'react-navigation';
+import {
+  NavigationScreenProp,
+  NavigationState,
+  withNavigationFocus
+} from 'react-navigation';
 import { connect } from 'react-redux';
 import ActionBar from '../../components/ActionBar';
 import Header from '../../components/Header';

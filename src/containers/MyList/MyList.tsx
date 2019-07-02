@@ -1,170 +1,244 @@
+import { UsersPostsType, UserType } from '@daviswhitehead/shayr-resources';
+import _ from 'lodash';
 import React, { Component } from 'react';
-import { View, Text } from 'react-native';
+import { Text, View } from 'react-native';
+import { DocumentSnapshot } from 'react-native-firebase/firestore';
+import { NavigationScreenProp, NavigationState } from 'react-navigation';
 import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
-import styles from './styles';
-import List from '../../components/List';
-// import ContentCard from '../../components/ContentCard';
 import Header from '../../components/Header';
+import List from '../../components/List';
+import PostCard from '../../components/PostCard';
+import SegmentedControl from '../../components/SegmentedControl';
+import UserProfile from '../../components/UserProfile';
+import { RequestType } from '../../lib/FirebaseRequests';
+import { selectAuthUserId } from '../../redux/auth/selectors';
+// import { postAction } from '../../redux/postActions/actions';
+import {
+  selectUserFromId,
+  selectUsersFromList
+} from '../../redux/users/selectors';
+import { loadUsersPosts } from '../../redux/usersPosts/actions';
+import {
+  selectFlatListReadyUsersPostsFromList,
+  selectUsersPostsMetadataFromList
+} from '../../redux/usersPosts/selectors';
 import colors from '../../styles/Colors';
-// import {
-//   loadPosts,
-//   paginatePosts,
-//   refreshPosts,
-//   flattenPostsQueue
-// } from '../../redux/posts/actions';
-import { postAction } from '../../redux/postActions/actions';
-import { handleURLRoute } from '../../redux/routing/actions';
-import { buildAppLink } from '@daviswhitehead/shayr-resources';
-import { startSignOut } from '../../redux/auth/actions';
+import styles from './styles';
 
-const mapStateToProps = state => ({
-  auth: state.auth,
-  users: state.users,
-  posts: state.posts
-});
+interface NavigationParams {
+  ownerUserId: string;
+}
 
-const mapDispatchToProps = dispatch => ({
-  loadPosts: (userId, query) => dispatch(loadPosts(userId, query)),
-  paginatePosts: (userId, query, lastPost) =>
-    dispatch(paginatePosts(userId, query, lastPost)),
-  refreshPosts: (userId, query) => dispatch(refreshPosts(userId, query)),
-  postAction: (actionType, userId, postId) =>
-    dispatch(postAction(actionType, userId, postId)),
-  startSignOut: () => dispatch(startSignOut()),
-  handleURLRoute: payload => dispatch(handleURLRoute(payload))
-});
+type Navigation = NavigationScreenProp<NavigationState, NavigationParams>;
 
-class MyList extends Component {
-  static propTypes = {
-    auth: PropTypes.instanceOf(Object).isRequired,
-    users: PropTypes.instanceOf(Object).isRequired,
-    posts: PropTypes.instanceOf(Object).isRequired,
-    navigation: PropTypes.instanceOf(Object).isRequired,
-    loadPosts: PropTypes.func.isRequired,
-    handleURLRoute: PropTypes.func.isRequired,
-    postAction: PropTypes.func.isRequired,
-    paginatePosts: PropTypes.func.isRequired,
-    refreshPosts: PropTypes.func.isRequired,
-    startSignOut: PropTypes.func.isRequired
+export interface Props {
+  authUser: UserType;
+  authIsOwner: boolean;
+  authFriends: any;
+  authUserId: string;
+  navigation: Navigation;
+  ownerUser: UserType;
+  ownerFriends: any;
+  ownerUserId: string;
+  usersPostsViews: {
+    [view: string]: string;
+  };
+  usersPostsData: {
+    [view: string]: {
+      data: any;
+      [meta: string]: any;
+    };
+  };
+  loadUsersPosts: (
+    userId: string,
+    requestType: RequestType,
+    shouldRefresh: boolean,
+    lastItem?: DocumentSnapshot | 'DONE',
+    isLoading?: boolean
+  ) => void;
+}
+
+export interface State {
+  selectedIndex: number;
+  activeView: RequestType;
+}
+
+const mapStateToProps = (state: any, props: any) => {
+  const authUserId = selectAuthUserId(state);
+  const ownerUserId = props.navigation.state.params.ownerUserId;
+  const usersPostsViews = {
+    USERS_POSTS_SHARES: `${ownerUserId}_USERS_POSTS_SHARES`,
+    USERS_POSTS_ADDS: `${ownerUserId}_USERS_POSTS_ADDS`,
+    USERS_POSTS_DONES: `${ownerUserId}_USERS_POSTS_DONES`,
+    USERS_POSTS_LIKES: `${ownerUserId}_USERS_POSTS_LIKES`
+  };
+  const usersPostsData = {
+    [usersPostsViews.USERS_POSTS_SHARES]: {
+      data: selectFlatListReadyUsersPostsFromList(
+        state,
+        usersPostsViews.USERS_POSTS_SHARES
+      ),
+      ...selectUsersPostsMetadataFromList(
+        state,
+        usersPostsViews.USERS_POSTS_SHARES
+      )
+    },
+    [usersPostsViews.USERS_POSTS_ADDS]: {
+      data: selectFlatListReadyUsersPostsFromList(
+        state,
+        usersPostsViews.USERS_POSTS_ADDS
+      ),
+      ...selectUsersPostsMetadataFromList(
+        state,
+        usersPostsViews.USERS_POSTS_ADDS
+      )
+    },
+    [usersPostsViews.USERS_POSTS_DONES]: {
+      data: selectFlatListReadyUsersPostsFromList(
+        state,
+        usersPostsViews.USERS_POSTS_DONES
+      ),
+      ...selectUsersPostsMetadataFromList(
+        state,
+        usersPostsViews.USERS_POSTS_DONES
+      )
+    },
+    [usersPostsViews.USERS_POSTS_LIKES]: {
+      data: selectFlatListReadyUsersPostsFromList(
+        state,
+        usersPostsViews.USERS_POSTS_LIKES
+      ),
+      ...selectUsersPostsMetadataFromList(
+        state,
+        usersPostsViews.USERS_POSTS_LIKES
+      )
+    }
   };
 
-  constructor() {
-    super();
+  return {
+    auth: state.auth,
+    authIsOwner: authUserId === ownerUserId,
+    authUser: selectUserFromId(state, authUserId),
+    authUserId,
+    authFriends: selectUsersFromList(state, `${authUserId}_Friends`),
+    ownerUser: selectUserFromId(state, ownerUserId),
+    ownerUserId,
+    ownerFriends: selectUsersFromList(state, `${ownerUserId}_Friends`),
+    usersPostsViews,
+    usersPostsData,
+    routing: state.routing,
+    posts: state.posts
+  };
+};
+
+const mapDispatchToProps = (dispatch: any) => ({
+  loadUsersPosts: (
+    userId: string,
+    requestType: RequestType,
+    shouldRefresh: boolean,
+    lastItem: DocumentSnapshot | 'DONE',
+    isLoading: boolean
+  ) =>
+    dispatch(
+      loadUsersPosts(userId, requestType, shouldRefresh, lastItem, isLoading)
+    )
+});
+
+class MyList extends Component<Props, State> {
+  constructor(props: Props) {
+    super(props);
+    const startingIndex = this.props.authIsOwner ? 0 : 1;
+
+    this.state = {
+      selectedIndex: startingIndex,
+      activeView: this.mapIndexToView(startingIndex)
+    };
+
     this.subscriptions = [];
   }
 
-  componentDidMount() {
-    this.subscriptions.push(
-      this.props.loadPosts(this.props.auth.user.uid, 'queue')
-    );
+  async componentDidMount() {
+    // this.subscriptions.push();
+    // if (shares, adds, dones, likes) list doesnt exist yet, load initial posts
+    if (
+      !this.props.usersPostsData[this.props.usersPostsViews.USERS_POSTS_SHARES]
+        .isLoaded
+    ) {
+      await this.props.loadUsersPosts(
+        this.props.ownerUserId,
+        'USERS_POSTS_SHARES',
+        true,
+        this.props.usersPostsData[this.props.usersPostsViews.USERS_POSTS_SHARES]
+          .lastItem,
+        this.props.usersPostsData[this.props.usersPostsViews.USERS_POSTS_SHARES]
+          .isLoading
+      );
+    }
+
+    if (
+      !this.props.usersPostsData[this.props.usersPostsViews.USERS_POSTS_ADDS]
+        .isLoaded
+    ) {
+      await this.props.loadUsersPosts(
+        this.props.ownerUserId,
+        'USERS_POSTS_ADDS',
+        true,
+        this.props.usersPostsData[this.props.usersPostsViews.USERS_POSTS_ADDS]
+          .lastItem,
+        this.props.usersPostsData[this.props.usersPostsViews.USERS_POSTS_ADDS]
+          .isLoading
+      );
+    }
+    if (
+      !this.props.usersPostsData[this.props.usersPostsViews.USERS_POSTS_DONES]
+        .isLoaded
+    ) {
+      await this.props.loadUsersPosts(
+        this.props.ownerUserId,
+        'USERS_POSTS_DONES',
+        true,
+        this.props.usersPostsData[this.props.usersPostsViews.USERS_POSTS_DONES]
+          .lastItem,
+        this.props.usersPostsData[this.props.usersPostsViews.USERS_POSTS_DONES]
+          .isLoading
+      );
+    }
+    if (
+      !this.props.usersPostsData[this.props.usersPostsViews.USERS_POSTS_LIKES]
+        .isLoaded
+    ) {
+      await this.props.loadUsersPosts(
+        this.props.ownerUserId,
+        'USERS_POSTS_LIKES',
+        true,
+        this.props.usersPostsData[this.props.usersPostsViews.USERS_POSTS_LIKES]
+          .lastItem,
+        this.props.usersPostsData[this.props.usersPostsViews.USERS_POSTS_LIKES]
+          .isLoading
+      );
+    }
   }
 
   componentWillUnmount() {
-    Object.values(this.subscriptions).forEach(subscription => {
-      subscription();
-    });
+    // Object.values(this.subscriptions).forEach(subscription => {
+    //   subscription();
+    // });
   }
 
-  renderItem = item => {
-    const routeURL = buildAppLink('shayr', 'shayr', 'PostDetail', {
-      id: item.postId
-    });
-
-    return (
-      <ContentCard
-        payload={item}
-        friends={{
-          ...this.props.users.self,
-          ...this.props.users.friends
-        }}
-        onTap={() => this.props.handleURLRoute(routeURL)}
-        shareAction={{
-          actionCount: item.shareCount,
-          actionUser: item.shares
-            ? item.shares.includes(this.props.auth.user.uid)
-            : false,
-          onPress: () =>
-            this.props.postAction(
-              'share',
-              this.props.auth.user.uid,
-              item.postId
-            )
-        }}
-        addAction={{
-          actionCount: item.addCount,
-          actionUser: item.adds
-            ? item.adds.includes(this.props.auth.user.uid)
-            : false,
-          onPress: () =>
-            this.props.postAction('add', this.props.auth.user.uid, item.postId)
-        }}
-        doneAction={{
-          actionCount: item.doneCount,
-          actionUser: item.dones
-            ? item.dones.includes(this.props.auth.user.uid)
-            : false,
-          onPress: () =>
-            this.props.postAction('done', this.props.auth.user.uid, item.postId)
-        }}
-        likeAction={{
-          actionCount: item.likeCount,
-          actionUser: item.likes
-            ? item.likes.includes(this.props.auth.user.uid)
-            : false,
-          onPress: () =>
-            this.props.postAction('like', this.props.auth.user.uid, item.postId)
-        }}
-      />
-    );
+  mapIndexToView = (index: number) => {
+    const map: {
+      [number: string]: RequestType;
+    } = {
+      0: 'USERS_POSTS_SHARES',
+      1: 'USERS_POSTS_ADDS',
+      2: 'USERS_POSTS_DONES',
+      3: 'USERS_POSTS_LIKES'
+    };
+    return map[index];
   };
 
-  paginate = () => {
-    const unsubscribe = this.props.paginatePosts(
-      this.props.auth.user.uid,
-      'queue',
-      this.props.posts.queueLastPost
-    );
-    if (unsubscribe) {
-      this.subscriptions.push(unsubscribe);
-    }
-  };
-
-  refresh = () => {
-    const unsubscribe = this.props.refreshPosts(
-      this.props.auth.user.uid,
-      'queue'
-    );
-    if (unsubscribe) {
-      this.subscriptions.push(unsubscribe);
-    }
-  };
-
-  loading = () => {
-    if (
-      !this.props.posts.queuePosts ||
-      !this.props.users.friends ||
-      !this.props.users.self
-    ) {
-      return <Text>LOADING</Text>;
-    }
-    return (
-      <List
-        data={flattenPostsQueue(
-          this.props.auth.user.uid,
-          this.props.posts.queuePosts
-        )}
-        renderItem={item => this.renderItem(item)}
-        onEndReached={() => this.paginate()}
-        onRefresh={() => this.refresh()}
-        refreshing={this.props.posts.refreshing}
-      />
-    );
-  };
-
-  signOut = () => {
-    this.props.startSignOut();
-    this.props.navigation.navigate('Login');
+  addUserIdToView = (view: string) => {
+    return `${this.props.ownerUserId}_${view}`;
   };
 
   render() {
@@ -172,13 +246,97 @@ class MyList extends Component {
       <View style={styles.screen}>
         <Header
           backgroundColor={colors.YELLOW}
-          statusBarStyle="dark-content"
+          statusBarStyle='dark-content'
           shadow
-          title="My List"
+          title={this.props.authIsOwner ? 'My List' : 'Their List'}
         />
-        <View style={styles.container}>
-          <this.loading />
-        </View>
+        <UserProfile />
+        <SegmentedControl
+          startingIndex={this.state.selectedIndex}
+          onIndexChange={index =>
+            this.setState(previousState => ({
+              ...previousState,
+              selectedIndex: index,
+              activeView: this.mapIndexToView(index)
+            }))
+          }
+        />
+        {this.props.usersPostsData[this.addUserIdToView(this.state.activeView)]
+          .isLoaded &&
+        this.props.ownerFriends &&
+        this.props.authUser ? (
+          <List
+            data={
+              this.props.usersPostsData[
+                this.addUserIdToView(this.state.activeView)
+              ].data
+            }
+            renderItem={(item: any) => (
+              <PostCard
+                key={item._id}
+                post={item}
+                ownerUserId={this.props.ownerUserId}
+                users={{
+                  [this.props.authUserId]: this.props.authUser,
+                  [this.props.ownerUserId]: this.props.ownerUser,
+                  ...this.props.authFriends,
+                  ...this.props.ownerFriends
+                }}
+                onCardPress={() =>
+                  this.props.navigation.navigate('PostDetail', {
+                    ownerUserId: item.userId,
+                    postId: item.postId
+                  })
+                }
+              />
+            )}
+            onEndReached={() =>
+              this.props.loadUsersPosts(
+                this.props.ownerUserId,
+                this.state.activeView,
+                false,
+                this.props.usersPostsData[
+                  this.addUserIdToView(this.state.activeView)
+                ].lastItem,
+                this.props.usersPostsData[
+                  this.addUserIdToView(this.state.activeView)
+                ].isLoading
+              )
+            }
+            onRefresh={() =>
+              this.props.loadUsersPosts(
+                this.props.ownerUserId,
+                this.state.activeView,
+                true,
+                this.props.usersPostsData[
+                  this.addUserIdToView(this.state.activeView)
+                ].lastItem,
+                this.props.usersPostsData[
+                  this.addUserIdToView(this.state.activeView)
+                ].isLoading
+              )
+            }
+            refreshing={
+              this.props.usersPostsData[
+                this.addUserIdToView(this.state.activeView)
+              ].isRefreshing
+            }
+            isLoading={
+              this.props.usersPostsData[
+                this.addUserIdToView(this.state.activeView)
+              ].isLoading
+            }
+            isLoadedAll={
+              this.props.usersPostsData[
+                this.addUserIdToView(this.state.activeView)
+              ].isLoadedAll
+            }
+          />
+        ) : (
+          <View style={styles.container}>
+            <Text>LOADING</Text>
+          </View>
+        )}
       </View>
     );
   }

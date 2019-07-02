@@ -3,9 +3,9 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import PropTypes from 'prop-types';
 
 const iconMap = {
-  Discover: 'search',
-  MyList: 'format-list-bulleted',
-  Friends: 'people',
+  DiscoverTab: 'search',
+  MyListTab: 'format-list-bulleted',
+  FriendsTab: 'people'
 };
 
 const TabBarIcon = ({ name, color, active }) => {
@@ -18,7 +18,7 @@ const TabBarIcon = ({ name, color, active }) => {
 TabBarIcon.propTypes = {
   active: PropTypes.bool.isRequired,
   color: PropTypes.string.isRequired,
-  name: PropTypes.oneOf(['Discover', 'MyList', 'Friends']).isRequired,
+  name: PropTypes.oneOf(['DiscoverTab', 'MyListTab', 'FriendsTab']).isRequired
 };
 
 export default TabBarIcon;

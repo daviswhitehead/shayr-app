@@ -5,9 +5,8 @@ import styles from './styles';
 import colors from '../../styles/Colors';
 import { getActiveRouteName } from '../../lib/ReactNavigationHelpers';
 import TabBarIcon from './TabBarIcon';
-import TabBarLabel from './TabBarLabel';
 
-const TabBar = (props) => {
+const TabBar = props => {
   const { onTabPress, onTabLongPress, navigation } = props;
 
   // activity colors
@@ -26,7 +25,9 @@ const TabBar = (props) => {
         <View style={styles.tabBar}>
           {routes.map((route, routeIndex) => {
             const isRouteActive = routeIndex === activeRouteIndex;
-            const tintColor = isRouteActive ? activeTintColor : inactiveTintColor;
+            const tintColor = isRouteActive
+              ? activeTintColor
+              : inactiveTintColor;
             const name = route.routeName;
 
             return (
@@ -40,8 +41,13 @@ const TabBar = (props) => {
                   onTabLongPress({ route });
                 }}
               >
-                {<TabBarIcon name={name} color={tintColor} active={isRouteActive} />}
-                {<TabBarLabel name={name} color={tintColor} active={isRouteActive} />}
+                {
+                  <TabBarIcon
+                    name={name}
+                    color={tintColor}
+                    active={isRouteActive}
+                  />
+                }
               </TouchableOpacity>
             );
           })}
@@ -54,7 +60,7 @@ const TabBar = (props) => {
 TabBar.propTypes = {
   onTabPress: PropTypes.func.isRequired,
   onTabLongPress: PropTypes.func.isRequired,
-  navigation: PropTypes.object.isRequired,
+  navigation: PropTypes.object.isRequired
 };
 
 export default TabBar;

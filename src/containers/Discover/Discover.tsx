@@ -97,19 +97,15 @@ const mapDispatchToProps = (dispatch: any) => ({
     dispatch(
       loadUsersPosts(userId, requestType, shouldRefresh, lastItem, isLoading)
     ),
-  paginatePosts: (userId, query, lastPost) =>
-    dispatch(paginatePosts(userId, query, lastPost)),
-  refreshPosts: (userId, query) => dispatch(refreshPosts(userId, query)),
   subscribeToUser: userId => dispatch(subscribeToUser(userId)),
   subscribeToFriendships: userId => dispatch(subscribeToFriendships(userId)),
   subscribeNotificationTokenRefresh: userId =>
     dispatch(subscribeNotificationTokenRefresh(userId)),
-  navigateToRoute: payload => dispatch(navigateToRoute(payload)),
-  onCardPress: (url: string) => dispatch(handleURLRoute(url))
+  navigateToRoute: payload => dispatch(navigateToRoute(payload))
 });
 
 class Discover extends Component<Props> {
-  constructor(props) {
+  constructor(props: Props) {
     super(props);
     this.subscriptions = [];
   }
@@ -137,10 +133,10 @@ class Discover extends Component<Props> {
       this.props.usersPostsData[this.props.usersPostsViews.USERS_POSTS_ALL]
         .isLoading
     );
-    // this.props.navigation.navigate('PostDetail', {
-    //   ownerUserId: this.props.authUserId,
-    //   postId: 'EAwvpQaAizgV5GTZIgmc'
-    // });
+
+    this.props.navigation.navigate('MyList', {
+      ownerUserId: this.props.authUserId
+    });
 
     // await this.props.subscribeUsersPosts(
     //   this.props.authUserId,

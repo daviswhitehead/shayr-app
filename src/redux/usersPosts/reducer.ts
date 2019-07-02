@@ -13,13 +13,7 @@ function usersReducer(state = initialState, action: any) {
       };
     }
     case postActionTypes.POST_ACTION_CLIENT_UPDATE: {
-      console.log(action.userId);
-      console.log(action.postId);
-
       const newPost = _.get(state, [`${action.userId}_${action.postId}`], {});
-      console.log('newPost');
-      console.log(newPost);
-
       newPost[action.actionType] = action.isNowActive
         ? [...newPost[action.actionType], action.userId]
         : _.pull(newPost[action.actionType], action.userId);

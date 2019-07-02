@@ -88,18 +88,18 @@ const AuthStack = createStackNavigator({
 
 const TabStack = createBottomTabNavigator(
   {
-    Discover: {
+    DiscoverTab: {
       screen: DiscoverStack
     },
-    MyList: {
+    MyListTab: {
       screen: MyListStack
     },
-    Friends: {
+    FriendsTab: {
       screen: FriendsStack
     }
   },
   {
-    initialRouteName: 'Discover',
+    initialRouteName: 'DiscoverTab',
     tabBarComponent: TabBar
   }
 );
