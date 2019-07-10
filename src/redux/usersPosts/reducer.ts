@@ -1,16 +1,21 @@
 import _ from 'lodash';
 import { types as postActionTypes } from '../postActions/actions';
-import { types } from './actions';
 
-const initialState = {};
+import {
+  DataAction,
+  dataActionTypes,
+  DataInitialState,
+  generateActionType,
+  getSuccessReducer
+} from '../../lib/FirebaseRedux';
+import { STATE_KEY, types } from './actions';
 
-function usersReducer(state = initialState, action: any) {
+const initialState: DataInitialState = {};
+
+function usersReducer(state = initialState, action: DataAction) {
   switch (action.type) {
-    case types.GET_USERS_POSTS_SUCCESS: {
-      return {
-        ...state,
-        ...action.usersPosts
-      };
+    case types[generateActionType(STATE_KEY, dataActionTypes.GET_SUCCESS)]: {
+      return getSuccessReducer(state, action);
     }
     case postActionTypes.POST_ACTION_CLIENT_UPDATE: {
       const newPost = _.get(state, [`${action.userId}_${action.postId}`], {});

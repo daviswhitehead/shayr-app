@@ -1,56 +1,32 @@
-import _ from 'lodash';
-import { types } from './actions';
+import {
+  generateActionType,
+  ListAction,
+  listActionTypes,
+  listAddReducer,
+  ListInitialState,
+  listLoadedReducer,
+  listLoadingReducer,
+  listRefreshReducer
+} from '../../lib/FirebaseRedux';
+import { STATE_KEY, types } from './actions';
 
-const initialState = {};
+const initialState: ListInitialState = {};
 
-function usersListsReducer(state = initialState, action) {
+function usersListsReducer(state = initialState, action: ListAction) {
   switch (action.type) {
-    case types.ADD_TO_USERS_POSTS_LIST: {
-      const items = _.get(state, [action.listKey, 'isRefreshing'], false)
-        ? [...action.usersPostsIds]
-        : _.uniq([
-            ..._.get(state, [action.listKey, 'items'], []),
-            ...action.usersPostsIds
-          ]);
-
-      return {
-        ...state,
-        [action.listKey]: {
-          ..._.get(state, action.listKey, {}),
-          items
-        }
-      };
+    case types[generateActionType(STATE_KEY, listActionTypes.LIST_ADD)]: {
+      return listAddReducer(state, action);
     }
-    case types.REFRESH_USERS_POSTS_LIST: {
-      return {
-        ...state,
-        [action.listKey]: {
-          ..._.get(state, action.listKey, {}),
-          isRefreshing: true
-        }
-      };
+    case types[
+      generateActionType(STATE_KEY, listActionTypes.LIST_REFRESHING)
+    ]: {
+      return listRefreshReducer(state, action);
     }
-    case types.USERS_POSTS_LIST_LOADING: {
-      return {
-        ...state,
-        [action.listKey]: {
-          ..._.get(state, action.listKey, {}),
-          isLoading: true
-        }
-      };
+    case types[generateActionType(STATE_KEY, listActionTypes.LIST_LOADING)]: {
+      return listLoadingReducer(state, action);
     }
-    case types.USERS_POSTS_LIST_LOADED: {
-      return {
-        ...state,
-        [action.listKey]: {
-          ..._.get(state, action.listKey, {}),
-          isLoaded: true,
-          isLoading: false,
-          isRefreshing: false,
-          isLoadedAll: action.lastItem === 'DONE' ? true : false,
-          lastItem: action.lastItem
-        }
-      };
+    case types[generateActionType(STATE_KEY, listActionTypes.LIST_LOADED)]: {
+      return listLoadedReducer(state, action);
     }
     default: {
       return state;

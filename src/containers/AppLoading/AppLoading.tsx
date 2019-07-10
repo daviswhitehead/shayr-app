@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { ActivityIndicator, AppState, Linking, View } from 'react-native';
 import firebase from 'react-native-firebase';
 import { connect } from 'react-redux';
+import { applyFirestoreSettings } from '../../config/FirebaseConfig';
 import RootNavigator from '../../config/Routes';
 import { currentScreenAnalytics } from '../../lib/FirebaseAnalytics';
 import { dynamicLinkListener } from '../../lib/FirebaseDynamicLinks';
@@ -42,6 +43,9 @@ class AppLoading extends Component {
   async componentDidMount() {
     // listen to app state changes
     AppState.addEventListener('change', this.handleAppStateChange);
+
+    // apply firestore settings before any other firestore calls
+    applyFirestoreSettings();
 
     // check authentication and listen for updates
     this.unsubscribeAuthListener = this.props.authSubscription();

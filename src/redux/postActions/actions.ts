@@ -56,6 +56,7 @@ export const postAction = (
       .collection(actionType)
       .doc(`${userId}_${postId}`);
 
+    // transactions fail when the client is offline!
     await firebase.firestore().runTransaction(t =>
       t.get(actionRef).then(documentSnapshot => {
         if (!documentSnapshot.exists) {

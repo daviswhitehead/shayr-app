@@ -2,15 +2,15 @@ import { UsersPostsType, UserType } from '@daviswhitehead/shayr-resources';
 import React, { Component } from 'react';
 import { Text, View } from 'react-native';
 import { DocumentSnapshot } from 'react-native-firebase/firestore';
+import { NavigationScreenProp, NavigationState } from 'react-navigation';
 import { connect } from 'react-redux';
 import Header from '../../components/Header';
 import List from '../../components/List';
 import PostCard from '../../components/PostCard';
-import { RequestType } from '../../lib/FirebaseRequests';
+import { queries, queryArguments, queryType } from '../../lib/FirebaseQueries';
 import { selectAuthUserId } from '../../redux/auth/selectors';
 import { subscribeToFriendships } from '../../redux/friendships/actions';
 import { subscribeNotificationTokenRefresh } from '../../redux/notifications/actions';
-import { handleURLRoute } from '../../redux/routing/actions';
 import { navigateToRoute } from '../../redux/routing/actions';
 import { subscribeToUser } from '../../redux/users/actions';
 import {
@@ -43,33 +43,22 @@ export interface Props {
   onCardPress: (url: string) => void | undefined;
 }
 
-// routing: PropTypes.instanceOf(Object).isRequired,
-// navigation: PropTypes.instanceOf(Object).isRequired,
-// subscribeToUser: PropTypes.func.isRequired,
-// subscribeToFriendships: PropTypes.func.isRequired,
-// subscribeNotificationTokenRefresh: PropTypes.func.isRequired,
-// navigateToRoute: PropTypes.func.isRequired,
-// loadPosts: PropTypes.func.isRequired,
-// loadUsersPosts: PropTypes.func.isRequired,
-// postAction: PropTypes.func.isRequired,
-// paginatePosts: PropTypes.func.isRequired,
-// refreshPosts: PropTypes.func.isRequired,
-// startSignOut: PropTypes.func.isRequired
-
 const mapStateToProps = (state: any) => {
   const authUserId = selectAuthUserId(state);
   const usersPostsViews = {
-    USERS_POSTS_ALL: `${authUserId}_USERS_POSTS_ALL`
+    [queries.USERS_POSTS_ALL.type]: `${authUserId}_${
+      queries.USERS_POSTS_ALL.type
+    }`
   };
   const usersPostsData = {
-    [usersPostsViews.USERS_POSTS_ALL]: {
+    [usersPostsViews[queries.USERS_POSTS_ALL.type]]: {
       data: selectFlatListReadyUsersPostsFromList(
         state,
-        usersPostsViews.USERS_POSTS_ALL
+        usersPostsViews[queries.USERS_POSTS_ALL.type]
       ),
       ...selectUsersPostsMetadataFromList(
         state,
-        usersPostsViews.USERS_POSTS_ALL
+        usersPostsViews[queries.USERS_POSTS_ALL.type]
       )
     }
   };
@@ -86,23 +75,33 @@ const mapStateToProps = (state: any) => {
   };
 };
 
-const mapDispatchToProps = (dispatch: any) => ({
-  loadUsersPosts: (
-    userId: string,
-    requestType: RequestType,
-    shouldRefresh: boolean,
-    lastItem: DocumentSnapshot | 'DONE',
-    isLoading: boolean
-  ) =>
-    dispatch(
-      loadUsersPosts(userId, requestType, shouldRefresh, lastItem, isLoading)
-    ),
-  subscribeToUser: userId => dispatch(subscribeToUser(userId)),
-  subscribeToFriendships: userId => dispatch(subscribeToFriendships(userId)),
-  subscribeNotificationTokenRefresh: userId =>
-    dispatch(subscribeNotificationTokenRefresh(userId)),
-  navigateToRoute: payload => dispatch(navigateToRoute(payload))
-});
+const mapDispatchToProps = (dispatch: any, props: any) => {
+  return {
+    loadUsersPosts: (
+      ownerUserId: string,
+      queryType: queryType,
+      queryArguments: queryArguments,
+      shouldRefresh?: boolean,
+      isLoading?: boolean,
+      lastItem?: DocumentSnapshot | 'DONE'
+    ) =>
+      dispatch(
+        loadUsersPosts(
+          ownerUserId,
+          queryType,
+          queryArguments,
+          shouldRefresh,
+          isLoading,
+          lastItem
+        )
+      ),
+    subscribeToUser: userId => dispatch(subscribeToUser(userId)),
+    subscribeToFriendships: userId => dispatch(subscribeToFriendships(userId)),
+    subscribeNotificationTokenRefresh: userId =>
+      dispatch(subscribeNotificationTokenRefresh(userId)),
+    navigateToRoute: payload => dispatch(navigateToRoute(payload))
+  };
+};
 
 class Discover extends Component<Props> {
   constructor(props: Props) {
@@ -126,27 +125,24 @@ class Discover extends Component<Props> {
     // load initial data
     await this.props.loadUsersPosts(
       this.props.authUserId,
-      'USERS_POSTS_ALL',
+      queries.USERS_POSTS_ALL.type,
+      { userId: this.props.authUserId },
       true,
-      this.props.usersPostsData[this.props.usersPostsViews.USERS_POSTS_ALL]
-        .lastItem,
-      this.props.usersPostsData[this.props.usersPostsViews.USERS_POSTS_ALL]
-        .isLoading
+      this.props.usersPostsData[
+        this.props.usersPostsViews[queries.USERS_POSTS_ALL.type]
+      ].isLoading,
+      this.props.usersPostsData[
+        this.props.usersPostsViews[queries.USERS_POSTS_ALL.type]
+      ].lastItem
     );
 
+    // this.props.navigation.navigate('PostDetail', {
+    //   ownerUserId: this.props.authUserId,
+    //   postId: 'cd2qGlHClQvzHnO1m5xY'
+    // });
     this.props.navigation.navigate('MyList', {
       ownerUserId: this.props.authUserId
     });
-
-    // await this.props.subscribeUsersPosts(
-    //   this.props.authUserId,
-    //   'USERS_POSTS_ALL',
-    //   true,
-    //   this.props.usersPostsData[this.props.usersPostsViews.USERS_POSTS_ALL]
-    //     .lastItem,
-    //   this.props.usersPostsData[this.props.usersPostsViews.USERS_POSTS_ALL]
-    //     .isLoading
-    // );
   }
 
   componentWillUnmount() {
@@ -157,8 +153,9 @@ class Discover extends Component<Props> {
 
   loading = () => {
     if (
-      !this.props.usersPostsData[this.props.usersPostsViews.USERS_POSTS_ALL]
-        .isLoaded ||
+      !this.props.usersPostsData[
+        this.props.usersPostsViews[queries.USERS_POSTS_ALL.type]
+      ].isLoaded ||
       !this.props.friends ||
       !this.props.authUser
     ) {
@@ -172,8 +169,9 @@ class Discover extends Component<Props> {
     return (
       <List
         data={
-          this.props.usersPostsData[this.props.usersPostsViews.USERS_POSTS_ALL]
-            .data
+          this.props.usersPostsData[
+            this.props.usersPostsViews[queries.USERS_POSTS_ALL.type]
+          ].data
         }
         renderItem={(item: any) => (
           <PostCard
@@ -195,70 +193,45 @@ class Discover extends Component<Props> {
         onEndReached={() =>
           this.props.loadUsersPosts(
             this.props.authUserId,
-            'USERS_POSTS_ALL',
+            queries.USERS_POSTS_ALL.type,
+            { userId: this.props.authUserId },
             false,
             this.props.usersPostsData[
-              this.props.usersPostsViews.USERS_POSTS_ALL
-            ].lastItem,
+              this.props.usersPostsViews[queries.USERS_POSTS_ALL.type]
+            ].isLoading,
             this.props.usersPostsData[
-              this.props.usersPostsViews.USERS_POSTS_ALL
-            ].isLoading
+              this.props.usersPostsViews[queries.USERS_POSTS_ALL.type]
+            ].lastItem
           )
         }
-        // onEndReached={() =>
-        //   this.subscriptions.push(
-        //     this.props.subscribeUsersPosts(
-        //       this.props.authUserId,
-        //       'USERS_POSTS_ALL',
-        //       false,
-        //       this.props.usersPostsData[
-        //         this.props.usersPostsViews.USERS_POSTS_ALL
-        //       ].lastItem,
-        //       this.props.usersPostsData[
-        //         this.props.usersPostsViews.USERS_POSTS_ALL
-        //       ].isLoading
-        //     )
-        //   )
-        // }
         onRefresh={() =>
           this.props.loadUsersPosts(
             this.props.authUserId,
-            'USERS_POSTS_ALL',
+            queries.USERS_POSTS_ALL.type,
+            { userId: this.props.authUserId },
             true,
             this.props.usersPostsData[
-              this.props.usersPostsViews.USERS_POSTS_ALL
-            ].lastItem,
+              this.props.usersPostsViews[queries.USERS_POSTS_ALL.type]
+            ].isLoading,
             this.props.usersPostsData[
-              this.props.usersPostsViews.USERS_POSTS_ALL
-            ].isLoading
+              this.props.usersPostsViews[queries.USERS_POSTS_ALL.type]
+            ].lastItem
           )
         }
-        // onRefresh={() =>
-        //   this.subscriptions.push(
-        //     this.props.subscribeUsersPosts(
-        //       this.props.authUserId,
-        //       'USERS_POSTS_ALL',
-        //       true,
-        //       this.props.usersPostsData[
-        //         this.props.usersPostsViews.USERS_POSTS_ALL
-        //       ].lastItem,
-        //       this.props.usersPostsData[
-        //         this.props.usersPostsViews.USERS_POSTS_ALL
-        //       ].isLoading
-        //     )
-        //   )
-        // }
         refreshing={
-          this.props.usersPostsData[this.props.usersPostsViews.USERS_POSTS_ALL]
-            .isRefreshing
+          this.props.usersPostsData[
+            this.props.usersPostsViews[queries.USERS_POSTS_ALL.type]
+          ].isRefreshing
         }
         isLoading={
-          this.props.usersPostsData[this.props.usersPostsViews.USERS_POSTS_ALL]
-            .isLoading
+          this.props.usersPostsData[
+            this.props.usersPostsViews[queries.USERS_POSTS_ALL.type]
+          ].isLoading
         }
         isLoadedAll={
-          this.props.usersPostsData[this.props.usersPostsViews.USERS_POSTS_ALL]
-            .isLoadedAll
+          this.props.usersPostsData[
+            this.props.usersPostsViews[queries.USERS_POSTS_ALL.type]
+          ].isLoadedAll
         }
       />
     );

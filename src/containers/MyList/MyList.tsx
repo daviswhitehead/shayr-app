@@ -1,4 +1,4 @@
-import { UsersPostsType, UserType } from '@daviswhitehead/shayr-resources';
+import { UserType } from '@daviswhitehead/shayr-resources';
 import _ from 'lodash';
 import React, { Component } from 'react';
 import { Text, View } from 'react-native';
@@ -10,7 +10,7 @@ import List from '../../components/List';
 import PostCard from '../../components/PostCard';
 import SegmentedControl from '../../components/SegmentedControl';
 import UserProfile from '../../components/UserProfile';
-import { RequestType } from '../../lib/FirebaseRequests';
+import { queries, queryArguments, queryType } from '../../lib/FirebaseQueries';
 import { selectAuthUserId } from '../../redux/auth/selectors';
 // import { postAction } from '../../redux/postActions/actions';
 import {
@@ -67,50 +67,58 @@ const mapStateToProps = (state: any, props: any) => {
   const authUserId = selectAuthUserId(state);
   const ownerUserId = props.navigation.state.params.ownerUserId;
   const usersPostsViews = {
-    USERS_POSTS_SHARES: `${ownerUserId}_USERS_POSTS_SHARES`,
-    USERS_POSTS_ADDS: `${ownerUserId}_USERS_POSTS_ADDS`,
-    USERS_POSTS_DONES: `${ownerUserId}_USERS_POSTS_DONES`,
-    USERS_POSTS_LIKES: `${ownerUserId}_USERS_POSTS_LIKES`
+    [queries.USERS_POSTS_SHARES.type]: `${ownerUserId}_${
+      queries.USERS_POSTS_SHARES.type
+    }`,
+    [queries.USERS_POSTS_ADDS.type]: `${ownerUserId}_${
+      queries.USERS_POSTS_ADDS.type
+    }`,
+    [queries.USERS_POSTS_DONES.type]: `${ownerUserId}_${
+      queries.USERS_POSTS_DONES.type
+    }`,
+    [queries.USERS_POSTS_LIKES.type]: `${ownerUserId}_${
+      queries.USERS_POSTS_LIKES.type
+    }`
   };
   const usersPostsData = {
-    [usersPostsViews.USERS_POSTS_SHARES]: {
+    [usersPostsViews[queries.USERS_POSTS_SHARES.type]]: {
       data: selectFlatListReadyUsersPostsFromList(
         state,
-        usersPostsViews.USERS_POSTS_SHARES
+        usersPostsViews[queries.USERS_POSTS_SHARES.type]
       ),
       ...selectUsersPostsMetadataFromList(
         state,
-        usersPostsViews.USERS_POSTS_SHARES
+        usersPostsViews[queries.USERS_POSTS_SHARES.type]
       )
     },
-    [usersPostsViews.USERS_POSTS_ADDS]: {
+    [usersPostsViews[queries.USERS_POSTS_ADDS.type]]: {
       data: selectFlatListReadyUsersPostsFromList(
         state,
-        usersPostsViews.USERS_POSTS_ADDS
+        usersPostsViews[queries.USERS_POSTS_ADDS.type]
       ),
       ...selectUsersPostsMetadataFromList(
         state,
-        usersPostsViews.USERS_POSTS_ADDS
+        usersPostsViews[queries.USERS_POSTS_ADDS.type]
       )
     },
-    [usersPostsViews.USERS_POSTS_DONES]: {
+    [usersPostsViews[queries.USERS_POSTS_DONES.type]]: {
       data: selectFlatListReadyUsersPostsFromList(
         state,
-        usersPostsViews.USERS_POSTS_DONES
+        usersPostsViews[queries.USERS_POSTS_DONES.type]
       ),
       ...selectUsersPostsMetadataFromList(
         state,
-        usersPostsViews.USERS_POSTS_DONES
+        usersPostsViews[queries.USERS_POSTS_DONES.type]
       )
     },
-    [usersPostsViews.USERS_POSTS_LIKES]: {
+    [usersPostsViews[queries.USERS_POSTS_LIKES.type]]: {
       data: selectFlatListReadyUsersPostsFromList(
         state,
-        usersPostsViews.USERS_POSTS_LIKES
+        usersPostsViews[queries.USERS_POSTS_LIKES.type]
       ),
       ...selectUsersPostsMetadataFromList(
         state,
-        usersPostsViews.USERS_POSTS_LIKES
+        usersPostsViews[queries.USERS_POSTS_LIKES.type]
       )
     }
   };
@@ -133,14 +141,22 @@ const mapStateToProps = (state: any, props: any) => {
 
 const mapDispatchToProps = (dispatch: any) => ({
   loadUsersPosts: (
-    userId: string,
-    requestType: RequestType,
-    shouldRefresh: boolean,
-    lastItem: DocumentSnapshot | 'DONE',
-    isLoading: boolean
+    ownerUserId: string,
+    queryType: queryType,
+    queryArguments: queryArguments,
+    shouldRefresh?: boolean,
+    isLoading?: boolean,
+    lastItem?: DocumentSnapshot | 'DONE'
   ) =>
     dispatch(
-      loadUsersPosts(userId, requestType, shouldRefresh, lastItem, isLoading)
+      loadUsersPosts(
+        ownerUserId,
+        queryType,
+        queryArguments,
+        shouldRefresh,
+        isLoading,
+        lastItem
+      )
     )
 });
 
@@ -153,86 +169,95 @@ class MyList extends Component<Props, State> {
       selectedIndex: startingIndex,
       activeView: this.mapIndexToView(startingIndex)
     };
-
-    this.subscriptions = [];
   }
 
   async componentDidMount() {
-    // this.subscriptions.push();
     // if (shares, adds, dones, likes) list doesnt exist yet, load initial posts
     if (
-      !this.props.usersPostsData[this.props.usersPostsViews.USERS_POSTS_SHARES]
-        .isLoaded
+      !this.props.usersPostsData[
+        this.props.usersPostsViews[queries.USERS_POSTS_SHARES.type]
+      ].isLoaded
     ) {
       await this.props.loadUsersPosts(
         this.props.ownerUserId,
-        'USERS_POSTS_SHARES',
+        queries.USERS_POSTS_SHARES.type,
+        { userId: this.props.ownerUserId },
         true,
-        this.props.usersPostsData[this.props.usersPostsViews.USERS_POSTS_SHARES]
-          .lastItem,
-        this.props.usersPostsData[this.props.usersPostsViews.USERS_POSTS_SHARES]
-          .isLoading
+        this.props.usersPostsData[
+          this.props.usersPostsViews[queries.USERS_POSTS_SHARES.type]
+        ].isLoading,
+        this.props.usersPostsData[
+          this.props.usersPostsViews[queries.USERS_POSTS_SHARES.type]
+        ].lastItem
       );
     }
 
     if (
-      !this.props.usersPostsData[this.props.usersPostsViews.USERS_POSTS_ADDS]
-        .isLoaded
+      !this.props.usersPostsData[
+        this.props.usersPostsViews[queries.USERS_POSTS_ADDS.type]
+      ].isLoaded
     ) {
       await this.props.loadUsersPosts(
         this.props.ownerUserId,
-        'USERS_POSTS_ADDS',
+        queries.USERS_POSTS_ADDS.type,
+        { userId: this.props.ownerUserId },
         true,
-        this.props.usersPostsData[this.props.usersPostsViews.USERS_POSTS_ADDS]
-          .lastItem,
-        this.props.usersPostsData[this.props.usersPostsViews.USERS_POSTS_ADDS]
-          .isLoading
+        this.props.usersPostsData[
+          this.props.usersPostsViews[queries.USERS_POSTS_ADDS.type]
+        ].isLoading,
+        this.props.usersPostsData[
+          this.props.usersPostsViews[queries.USERS_POSTS_ADDS.type]
+        ].lastItem
       );
     }
     if (
-      !this.props.usersPostsData[this.props.usersPostsViews.USERS_POSTS_DONES]
-        .isLoaded
+      !this.props.usersPostsData[
+        this.props.usersPostsViews[queries.USERS_POSTS_DONES.type]
+      ].isLoaded
     ) {
       await this.props.loadUsersPosts(
         this.props.ownerUserId,
-        'USERS_POSTS_DONES',
+        queries.USERS_POSTS_DONES.type,
+        { userId: this.props.ownerUserId },
         true,
-        this.props.usersPostsData[this.props.usersPostsViews.USERS_POSTS_DONES]
-          .lastItem,
-        this.props.usersPostsData[this.props.usersPostsViews.USERS_POSTS_DONES]
-          .isLoading
+        this.props.usersPostsData[
+          this.props.usersPostsViews[queries.USERS_POSTS_DONES.type]
+        ].isLoading,
+        this.props.usersPostsData[
+          this.props.usersPostsViews[queries.USERS_POSTS_DONES.type]
+        ].lastItem
       );
     }
     if (
-      !this.props.usersPostsData[this.props.usersPostsViews.USERS_POSTS_LIKES]
-        .isLoaded
+      !this.props.usersPostsData[
+        this.props.usersPostsViews[queries.USERS_POSTS_LIKES.type]
+      ].isLoaded
     ) {
       await this.props.loadUsersPosts(
         this.props.ownerUserId,
-        'USERS_POSTS_LIKES',
+        queries.USERS_POSTS_LIKES.type,
+        { userId: this.props.ownerUserId },
         true,
-        this.props.usersPostsData[this.props.usersPostsViews.USERS_POSTS_LIKES]
-          .lastItem,
-        this.props.usersPostsData[this.props.usersPostsViews.USERS_POSTS_LIKES]
-          .isLoading
+        this.props.usersPostsData[
+          this.props.usersPostsViews[queries.USERS_POSTS_LIKES.type]
+        ].isLoading,
+        this.props.usersPostsData[
+          this.props.usersPostsViews[queries.USERS_POSTS_LIKES.type]
+        ].lastItem
       );
     }
   }
 
-  componentWillUnmount() {
-    // Object.values(this.subscriptions).forEach(subscription => {
-    //   subscription();
-    // });
-  }
+  componentWillUnmount() {}
 
   mapIndexToView = (index: number) => {
     const map: {
       [number: string]: RequestType;
     } = {
-      0: 'USERS_POSTS_SHARES',
-      1: 'USERS_POSTS_ADDS',
-      2: 'USERS_POSTS_DONES',
-      3: 'USERS_POSTS_LIKES'
+      0: queries.USERS_POSTS_SHARES.type,
+      1: queries.USERS_POSTS_ADDS.type,
+      2: queries.USERS_POSTS_DONES.type,
+      3: queries.USERS_POSTS_LIKES.type
     };
     return map[index];
   };
@@ -294,26 +319,28 @@ class MyList extends Component<Props, State> {
               this.props.loadUsersPosts(
                 this.props.ownerUserId,
                 this.state.activeView,
+                { userId: this.props.ownerUserId },
                 false,
                 this.props.usersPostsData[
                   this.addUserIdToView(this.state.activeView)
-                ].lastItem,
+                ].isLoading,
                 this.props.usersPostsData[
                   this.addUserIdToView(this.state.activeView)
-                ].isLoading
+                ].lastItem
               )
             }
             onRefresh={() =>
               this.props.loadUsersPosts(
                 this.props.ownerUserId,
                 this.state.activeView,
+                { userId: this.props.ownerUserId },
                 true,
                 this.props.usersPostsData[
                   this.addUserIdToView(this.state.activeView)
-                ].lastItem,
+                ].isLoading,
                 this.props.usersPostsData[
                   this.addUserIdToView(this.state.activeView)
-                ].isLoading
+                ].lastItem
               )
             }
             refreshing={

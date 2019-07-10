@@ -1,7 +1,7 @@
 import firebase from 'react-native-firebase';
-import { DocumentSnapshot } from 'react-native-firebase/firestore';
+import { DocumentSnapshot, Query } from 'react-native-firebase/firestore';
 
-export type RequestType =
+export type queryType =
   | 'USERS_POSTS_SINGLE'
   | 'USERS_POSTS_ALL'
   | 'USERS_POSTS_SHARES'
@@ -12,10 +12,15 @@ export type RequestType =
   | 'FRIENDS_ALL'
   | 'USERS_ALL';
 
-export const requestTypes = {
+export interface queryArguments {
+  userId: string;
+  postId: string;
+}
+
+export const queries = {
   USERS_POSTS_SINGLE: {
     type: 'USERS_POSTS_SINGLE',
-    request: (userId: string, postId: string) =>
+    query: ({ userId, postId }: { userId: string; postId: string }) =>
       firebase
         .firestore()
         .collection('users_posts')
@@ -24,7 +29,7 @@ export const requestTypes = {
   },
   USERS_POSTS_ALL: {
     type: 'USERS_POSTS_ALL',
-    request: (userId: string) =>
+    query: ({ userId }: { userId: string }) =>
       firebase
         .firestore()
         .collection('users_posts')
@@ -33,7 +38,7 @@ export const requestTypes = {
   },
   USERS_POSTS_SHARES: {
     type: 'USERS_POSTS_SHARES',
-    request: (userId: string) =>
+    query: ({ userId }: { userId: string }) =>
       firebase
         .firestore()
         .collection('users_posts')
@@ -43,7 +48,7 @@ export const requestTypes = {
   },
   USERS_POSTS_ADDS: {
     type: 'USERS_POSTS_ADDS',
-    request: (userId: string) =>
+    query: ({ userId }: { userId: string }) =>
       firebase
         .firestore()
         .collection('users_posts')
@@ -53,7 +58,7 @@ export const requestTypes = {
   },
   USERS_POSTS_DONES: {
     type: 'USERS_POSTS_DONES',
-    request: (userId: string) =>
+    query: ({ userId }: { userId: string }) =>
       firebase
         .firestore()
         .collection('users_posts')
@@ -63,7 +68,7 @@ export const requestTypes = {
   },
   USERS_POSTS_LIKES: {
     type: 'USERS_POSTS_LIKES',
-    request: (userId: string) =>
+    query: ({ userId }: { userId: string }) =>
       firebase
         .firestore()
         .collection('users_posts')
@@ -73,31 +78,38 @@ export const requestTypes = {
   },
   FRIENDSHIPS_ALL: {
     type: 'FRIENDSHIPS_ALL',
-    request: firebase.firestore().collection('')
+    query: firebase.firestore().collection('')
   },
   FRIENDS_ALL: {
     type: 'FRIENDS_ALL',
-    request: firebase.firestore().collection('')
+    query: firebase.firestore().collection('')
   },
   USERS_ALL: {
     type: 'USERS_ALL',
-    request: firebase.firestore().collection('')
+    query: firebase.firestore().collection('')
   }
 };
 
-export const composeRequest = (
-  request: any,
-  limit?: number,
-  lastItem?: DocumentSnapshot
+export const getQuery = (
+  queryType: queryType,
+  queryArguments: queryArguments
 ) => {
-  let newRequest = request;
+  return queries[queryType].query(queryArguments);
+};
+
+export const composeQuery = (
+  query: Query,
+  limit?: number,
+  lastItem?: DocumentSnapshot | 'DONE'
+) => {
+  let newQuery = query;
 
   if (limit) {
-    newRequest = newRequest.limit(limit);
+    newQuery = newQuery.limit(limit);
   }
-  if (lastItem) {
-    newRequest = newRequest.startAfter(lastItem);
+  if (lastItem && lastItem != 'DONE') {
+    newQuery = newQuery.startAfter(lastItem);
   }
 
-  return newRequest;
+  return newQuery;
 };

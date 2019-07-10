@@ -13,6 +13,8 @@ import Header from '../../components/Header';
 import Icon from '../../components/Icon';
 import PostCard from '../../components/PostCard';
 import UserAvatarsScrollView from '../../components/UserAvatarsScrollView';
+import { queries } from '../../lib/FirebaseQueries';
+import { getDocuments } from '../../lib/FirebaseRedux';
 import { getActionActiveStatus } from '../../lib/StateHelpers';
 import { openURL } from '../../lib/Utils';
 import { selectAuthUserId } from '../../redux/auth/selectors';
@@ -22,7 +24,7 @@ import {
   selectUserFromId,
   selectUsersFromList
 } from '../../redux/users/selectors';
-import { loadSingleUsersPosts } from '../../redux/usersPosts/actions';
+import { STATE_KEY } from '../../redux/usersPosts/actions';
 import { selectUsersPostFromId } from '../../redux/usersPosts/selectors';
 import colors from '../../styles/Colors';
 import { actionTypeActivityFeature } from '../../styles/Copy';
@@ -84,17 +86,23 @@ const mapStateToProps = (state: any, props: any) => {
   };
 };
 
-const mapDispatchToProps = (dispatch: any) => ({
-  resetPostDetail: () => dispatch(resetPostDetail()),
-  onActionPress: (
-    userId: string,
-    postId: string,
-    actionType: ActionType,
-    isNowActive: boolean
-  ) => dispatch(postAction(userId, postId, actionType, isNowActive)),
-  loadSingleUsersPosts: (userId: string, postId: string) =>
-    dispatch(loadSingleUsersPosts(userId, postId))
-});
+const mapDispatchToProps = (dispatch: any, props: any) => {
+  const query = queries.USERS_POSTS_SINGLE.query({
+    userId: props.ownerUserId,
+    postId: props.postId
+  });
+
+  return {
+    resetPostDetail: () => dispatch(resetPostDetail()),
+    onActionPress: (
+      userId: string,
+      postId: string,
+      actionType: ActionType,
+      isNowActive: boolean
+    ) => dispatch(postAction(userId, postId, actionType, isNowActive)),
+    getPostDetailDocument: () => dispatch(getDocuments(STATE_KEY, query))
+  };
+};
 
 class PostDetail extends Component<Props> {
   constructor(props: Props) {
@@ -103,10 +111,7 @@ class PostDetail extends Component<Props> {
 
   async componentDidMount() {
     if (!this.props.post) {
-      await this.props.loadSingleUsersPosts(
-        this.props.ownerUserId,
-        this.props.postId
-      );
+      await this.props.getPostDetailDocument();
     }
   }
 

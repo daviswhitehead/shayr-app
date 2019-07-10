@@ -14,26 +14,37 @@ import MyList from '../containers/MyList';
 import PostDetail from '../containers/PostDetail';
 import RealtimeDataTester from '../containers/RealtimeDataTester';
 
-const DiscoverStack = createStackNavigator({
-  Discover: {
-    screen: Discover,
-    navigationOptions: () => ({
-      header: null
-    })
+const DiscoverStack = createStackNavigator(
+  {
+    Discover: {
+      screen: Discover,
+      navigationOptions: () => ({
+        header: null
+      })
+    },
+    PostDetail: {
+      screen: PostDetail,
+      navigationOptions: () => ({
+        header: null
+      })
+    },
+    HelloWorld: {
+      screen: HelloWorld,
+      navigationOptions: () => ({
+        header: null
+      })
+    },
+    RealtimeDataTester: {
+      screen: RealtimeDataTester,
+      navigationOptions: () => ({
+        header: null
+      })
+    }
   },
-  PostDetail: {
-    screen: PostDetail,
-    navigationOptions: () => ({
-      header: null
-    })
-  },
-  HelloWorld: {
-    screen: HelloWorld,
-    navigationOptions: () => ({
-      header: null
-    })
+  {
+    initialRouteName: 'Discover'
   }
-});
+);
 
 const MyListStack = createStackNavigator({
   MyList: {
