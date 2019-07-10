@@ -1,4 +1,4 @@
-import { UserType } from '@daviswhitehead/shayr-resources';
+import { documentId, User } from '@daviswhitehead/shayr-resources';
 import _ from 'lodash';
 import React, { Component } from 'react';
 import { Text, View } from 'react-native';
@@ -12,7 +12,11 @@ import SegmentedControl from '../../components/SegmentedControl';
 import UserProfile from '../../components/UserProfile';
 import { queries, queryArguments, queryType } from '../../lib/FirebaseQueries';
 import { selectAuthUserId } from '../../redux/auth/selectors';
-// import { postAction } from '../../redux/postActions/actions';
+import {
+  toggleAddDonePost,
+  toggleLikePost,
+  toggleSharePost
+} from '../../redux/postActions/actions';
 import {
   selectUserFromId,
   selectUsersFromList
@@ -32,12 +36,12 @@ interface NavigationParams {
 type Navigation = NavigationScreenProp<NavigationState, NavigationParams>;
 
 export interface Props {
-  authUser: UserType;
+  authUser: User;
   authIsOwner: boolean;
   authFriends: any;
   authUserId: string;
   navigation: Navigation;
-  ownerUser: UserType;
+  ownerUser: User;
   ownerFriends: any;
   ownerUserId: string;
   usersPostsViews: {
@@ -55,6 +59,26 @@ export interface Props {
     shouldRefresh: boolean,
     lastItem?: DocumentSnapshot | 'DONE',
     isLoading?: boolean
+  ) => void;
+  toggleLikePost: (
+    isActive: boolean,
+    postId: documentId,
+    ownerUserId: documentId,
+    userId: documentId
+  ) => void;
+  toggleSharePost: (
+    isActive: boolean,
+    postId: documentId,
+    ownerUserId: documentId,
+    userId: documentId
+  ) => void;
+  toggleAddDonePost: (
+    type: 'adds' | 'dones',
+    isActive: boolean,
+    postId: documentId,
+    ownerUserId: documentId,
+    userId: documentId,
+    isOtherActive: boolean
   ) => void;
 }
 
@@ -156,6 +180,36 @@ const mapDispatchToProps = (dispatch: any) => ({
         shouldRefresh,
         isLoading,
         lastItem
+      )
+    ),
+  toggleLikePost: (
+    isActive: boolean,
+    postId: documentId,
+    ownerUserId: documentId,
+    userId: documentId
+  ) => dispatch(toggleLikePost(isActive, postId, ownerUserId, userId)),
+  toggleSharePost: (
+    isActive: boolean,
+    postId: documentId,
+    ownerUserId: documentId,
+    userId: documentId
+  ) => dispatch(toggleSharePost(isActive, postId, ownerUserId, userId)),
+  toggleAddDonePost: (
+    type: 'adds' | 'dones',
+    isActive: boolean,
+    postId: documentId,
+    ownerUserId: documentId,
+    userId: documentId,
+    isOtherActive: boolean
+  ) =>
+    dispatch(
+      toggleAddDonePost(
+        type,
+        isActive,
+        postId,
+        ownerUserId,
+        userId,
+        isOtherActive
       )
     )
 });

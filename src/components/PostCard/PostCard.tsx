@@ -1,8 +1,9 @@
 import {
+  documentId,
+  User,
   userDefault,
-  usersPostsDefault,
-  UsersPostsType,
-  UserType
+  UsersPosts,
+  usersPostsDefault
 } from '@daviswhitehead/shayr-resources';
 import _ from 'lodash';
 import * as React from 'react';
@@ -10,28 +11,35 @@ import { Image, Text, TouchableWithoutFeedback, View } from 'react-native';
 import { connect } from 'react-redux';
 import { getActionActiveStatus } from '../../lib/StateHelpers';
 import { selectAuthUserId } from '../../redux/auth/selectors';
-import { postAction } from '../../redux/postActions/actions';
+import {
+  toggleLikePost,
+  toggleSharePost
+} from '../../redux/postActions/actions';
 import IconWithCount from '../IconWithCount';
 import UserAvatar from '../UserAvatar';
 import styles from './styles';
 
-type ActionType = 'shares' | 'adds' | 'dones' | 'likes';
-
 interface Users {
-  [userId: string]: UserType;
+  [userId: string]: User;
 }
 
 export interface Props {
   authUserId: string;
   ownerUserId: string;
-  onActionPress: (
-    userId: string,
-    postId: string,
-    actionType: ActionType,
-    isNowActive: boolean
+  toggleLikePost: (
+    isActive: boolean,
+    postId: documentId,
+    ownerUserId: documentId,
+    userId: documentId
+  ) => void;
+  toggleSharePost: (
+    isActive: boolean,
+    postId: documentId,
+    ownerUserId: documentId,
+    userId: documentId
   ) => void;
   onCardPress: () => void | undefined;
-  post: UsersPostsType;
+  post: UsersPosts;
   users?: Users | undefined;
   noTouching?: boolean;
 }
@@ -39,7 +47,7 @@ export interface Props {
 const defaultProps = {
   authUserId: '',
   ownerUserId: '',
-  onActionPress: () => null,
+  toggleLikePost: () => null,
   onCardPress: () => null,
   post: usersPostsDefault,
   users: { a: userDefault },
@@ -55,12 +63,18 @@ const mapStateToProps = (state: any) => {
 };
 
 const mapDispatchToProps = (dispatch: any) => ({
-  onActionPress: (
-    userId: string,
-    postId: string,
-    actionType: ActionType,
-    isNowActive: boolean
-  ) => dispatch(postAction(userId, postId, actionType, isNowActive))
+  toggleLikePost: (
+    isActive: boolean,
+    postId: documentId,
+    ownerUserId: documentId,
+    userId: documentId
+  ) => dispatch(toggleLikePost(isActive, postId, ownerUserId, userId)),
+  toggleSharePost: (
+    isActive: boolean,
+    postId: documentId,
+    ownerUserId: documentId,
+    userId: documentId
+  ) => dispatch(toggleSharePost(isActive, postId, ownerUserId, userId))
 });
 
 const getFeaturedUser = (props: Props) => {
@@ -134,35 +148,35 @@ const PostCard: React.SFC<Props> = props => {
             </View>
             <View style={styles.actionsBox}>
               <IconWithCount
-                count={props.post.shareCount || 0}
+                count={props.post.sharesCount || 0}
                 name={'share'}
                 isActive={isShareActive}
                 onPress={
                   props.noTouching
                     ? undefined
                     : () =>
-                        props.onActionPress(
-                          props.authUserId,
+                        props.toggleSharePost(
+                          isShareActive,
                           props.post.postId,
-                          'shares',
-                          !isShareActive
+                          props.ownerUserId,
+                          props.authUserId
                         )
                 }
               />
               <View style={styles.actionsSpacer} />
               <IconWithCount
-                count={props.post.likeCount || 0}
+                count={props.post.likesCount || 0}
                 name={'like'}
                 isActive={isLikeActive}
                 onPress={
                   props.noTouching
                     ? undefined
                     : () =>
-                        props.onActionPress(
-                          props.authUserId,
+                        props.toggleLikePost(
+                          isLikeActive,
                           props.post.postId,
-                          'likes',
-                          !isLikeActive
+                          props.ownerUserId,
+                          props.authUserId
                         )
                 }
               />

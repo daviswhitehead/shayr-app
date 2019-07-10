@@ -1,6 +1,7 @@
 export const actionTypeActivityFeature = {
   shares: 'shayred this post',
-  adds: 'have this post in their list',
+  adds: 'have this post on their list',
+  add: 'has this post on their list',
   dones: 'finished this post',
   likes: 'liked this post'
 };

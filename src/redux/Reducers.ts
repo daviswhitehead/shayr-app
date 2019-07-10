@@ -4,7 +4,6 @@ import authReducer from './auth/reducer';
 import friendshipsReducer from './friendships/reducer';
 import friendshipsListsReducer from './friendshipsLists/reducer';
 import routingReducer from './routing/reducer';
-import uiReducer from './ui/reducer';
 import usersReducer from './users/reducer';
 import usersListsReducer from './usersLists/reducer';
 import usersPostsReducer from './usersPosts/reducer';
@@ -17,7 +16,6 @@ export const makeRootReducer = () =>
     friendships: friendshipsReducer,
     friendshipsLists: friendshipsListsReducer,
     routing: routingReducer,
-    ui: uiReducer,
     users: usersReducer,
     usersLists: usersListsReducer,
     usersPosts: usersPostsReducer,

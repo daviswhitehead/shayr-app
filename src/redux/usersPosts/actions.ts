@@ -1,14 +1,17 @@
 import { DocumentSnapshot, Query } from 'react-native-firebase/firestore';
 import { Dispatch } from 'redux';
+import { documentId } from '../../../../shayr-resources/src/DataModel/Fields';
 import {
   composeQuery,
   getQuery,
+  queries,
   queryArguments,
   queryType
 } from '../../lib/FirebaseQueries';
 import {
   dataActionTypes,
   generateActionTypes,
+  getDocuments,
   getFeedOfDocuments
 } from '../../lib/FirebaseRedux';
 import { STATE_KEY as STATE_KEY_LIST } from '../usersPostsLists/actions';
@@ -41,6 +44,20 @@ export const loadUsersPosts = (
       shouldRefresh,
       isLoading,
       lastItem
+    )
+  );
+};
+
+export const refreshUsersPostsDocument = (
+  ownerUserId: documentId,
+  postId: documentId,
+  source: 'default' | 'cache' | 'server'
+) => async (dispatch: Dispatch) => {
+  dispatch(
+    getDocuments(
+      STATE_KEY,
+      queries.USERS_POSTS_SINGLE.query({ userId: ownerUserId, postId }),
+      source
     )
   );
 };

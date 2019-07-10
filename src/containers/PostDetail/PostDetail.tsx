@@ -1,4 +1,4 @@
-import { UsersPostsType, UserType } from '@daviswhitehead/shayr-resources';
+import { documentId, User, UsersPosts } from '@daviswhitehead/shayr-resources';
 import _ from 'lodash';
 import React, { Component } from 'react';
 import { ScrollView, Text, View } from 'react-native';
@@ -18,8 +18,11 @@ import { getDocuments } from '../../lib/FirebaseRedux';
 import { getActionActiveStatus } from '../../lib/StateHelpers';
 import { openURL } from '../../lib/Utils';
 import { selectAuthUserId } from '../../redux/auth/selectors';
-import { postAction } from '../../redux/postActions/actions';
-import { resetPostDetail } from '../../redux/ui/actions';
+import {
+  toggleAddDonePost,
+  toggleLikePost,
+  toggleSharePost
+} from '../../redux/postActions/actions';
 import {
   selectUserFromId,
   selectUsersFromList
@@ -38,14 +41,14 @@ interface NavigationParams {
 type Navigation = NavigationScreenProp<NavigationState, NavigationParams>;
 
 interface Users {
-  [userId: string]: UserType;
+  [userId: string]: User;
 }
 
 type ActionType = 'shares' | 'adds' | 'dones' | 'likes';
 
 export interface Props {
   authUserId: string;
-  authUser: UserType;
+  authUser: User;
   isFocused: boolean;
   navigation: Navigation;
   onActionPress: (
@@ -55,9 +58,29 @@ export interface Props {
     isNowActive: boolean
   ) => void;
   ownerUserId: string;
-  post: UsersPostsType;
+  post: UsersPosts;
   postId: string;
   users: Users;
+  toggleLikePost: (
+    isActive: boolean,
+    postId: documentId,
+    ownerUserId: documentId,
+    userId: documentId
+  ) => void;
+  toggleSharePost: (
+    isActive: boolean,
+    postId: documentId,
+    ownerUserId: documentId,
+    userId: documentId
+  ) => void;
+  toggleAddDonePost: (
+    type: 'adds' | 'dones',
+    isActive: boolean,
+    postId: documentId,
+    ownerUserId: documentId,
+    userId: documentId,
+    isOtherActive: boolean
+  ) => void;
 }
 
 const defaultProps = {};
@@ -93,14 +116,37 @@ const mapDispatchToProps = (dispatch: any, props: any) => {
   });
 
   return {
-    resetPostDetail: () => dispatch(resetPostDetail()),
-    onActionPress: (
-      userId: string,
-      postId: string,
-      actionType: ActionType,
-      isNowActive: boolean
-    ) => dispatch(postAction(userId, postId, actionType, isNowActive)),
-    getPostDetailDocument: () => dispatch(getDocuments(STATE_KEY, query))
+    getPostDetailDocument: () => dispatch(getDocuments(STATE_KEY, query)),
+    toggleLikePost: (
+      isActive: boolean,
+      postId: documentId,
+      ownerUserId: documentId,
+      userId: documentId
+    ) => dispatch(toggleLikePost(isActive, postId, ownerUserId, userId)),
+    toggleSharePost: (
+      isActive: boolean,
+      postId: documentId,
+      ownerUserId: documentId,
+      userId: documentId
+    ) => dispatch(toggleSharePost(isActive, postId, ownerUserId, userId)),
+    toggleAddDonePost: (
+      type: 'adds' | 'dones',
+      isActive: boolean,
+      postId: documentId,
+      ownerUserId: documentId,
+      userId: documentId,
+      isOtherActive: boolean
+    ) =>
+      dispatch(
+        toggleAddDonePost(
+          type,
+          isActive,
+          postId,
+          ownerUserId,
+          userId,
+          isOtherActive
+        )
+      )
   };
 };
 
@@ -117,7 +163,7 @@ class PostDetail extends Component<Props> {
 
   componentWillUnmount() {}
 
-  getFeaturedUsers = (type: ActionType, post: UsersPostsType, users: Users) => {
+  getFeaturedUsers = (type: ActionType, post: UsersPosts, users: Users) => {
     const featuredUserIds: Array<string> = _.get(post, [type], []);
     const featuredUsers = _.reduce(
       users,
@@ -135,7 +181,11 @@ class PostDetail extends Component<Props> {
       : `${featuredUser.firstName} ${featuredUser.lastName.charAt(0)}`;
     let featuredString = '';
     if (featuredUserIds.length === 1) {
-      featuredString = `${actionTypeActivityFeature[type]}`;
+      if (type === 'adds') {
+        featuredString = `${actionTypeActivityFeature.add}`;
+      } else {
+        featuredString = `${actionTypeActivityFeature[type]}`;
+      }
     } else if (featuredUserIds.length === 2) {
       featuredString = `and 1 other ${actionTypeActivityFeature[type]}`;
     } else if (featuredUserIds.length > 2) {
@@ -293,42 +343,46 @@ class PostDetail extends Component<Props> {
           authUser={this.props.authUser}
           onAvatarPress={undefined}
           // onAvatarPress={() => this.props.onAvatarPress(postDetailsRoute())}
-          onSharePress={() =>
-            this.props.onActionPress(
-              this.props.authUserId,
-              this.props.post.postId,
-              'shares',
-              !isShareActive
-            )
-          }
           isShareActive={isShareActive}
-          onAddPress={() =>
-            this.props.onActionPress(
-              this.props.authUserId,
+          onSharePress={() =>
+            this.props.toggleSharePost(
+              isShareActive,
               this.props.post.postId,
-              'adds',
-              !isAddActive
+              this.props.ownerUserId,
+              this.props.authUserId
             )
           }
           isAddActive={isAddActive}
-          onDonePress={() =>
-            this.props.onActionPress(
-              this.props.authUserId,
+          onAddPress={() =>
+            this.props.toggleAddDonePost(
+              'adds',
+              isAddActive,
               this.props.post.postId,
-              'dones',
-              !isDoneActive
+              this.props.ownerUserId,
+              this.props.authUserId,
+              isDoneActive
             )
           }
           isDoneActive={isDoneActive}
-          onLikePress={() =>
-            this.props.onActionPress(
-              this.props.authUserId,
+          onDonePress={() =>
+            this.props.toggleAddDonePost(
+              'dones',
+              isDoneActive,
               this.props.post.postId,
-              'likes',
-              !isLikeActive
+              this.props.ownerUserId,
+              this.props.authUserId,
+              isAddActive
             )
           }
           isLikeActive={isLikeActive}
+          onLikePress={() =>
+            this.props.toggleLikePost(
+              isLikeActive,
+              this.props.post.postId,
+              this.props.ownerUserId,
+              this.props.authUserId
+            )
+          }
         />
       </View>
     );

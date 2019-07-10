@@ -1,95 +1,225 @@
+import { Batcher, documentId } from '@daviswhitehead/shayr-resources';
 import _ from 'lodash';
 import firebase from 'react-native-firebase';
 import { Dispatch } from 'redux';
 import { Toaster } from '../../components/Toaster';
 import { ts } from '../../lib/FirebaseHelpers';
+import { updateCounts } from '../../lib/FirebaseWrites';
 import {
   actionTypeActiveToasts,
   actionTypeInactiveToasts
 } from '../../styles/Copy';
-
-type ActionType = 'shares' | 'adds' | 'dones' | 'likes';
+import { refreshUsersPostsDocument } from '../usersPosts/actions';
 
 export const types = {
-  POST_ACTION_START: 'POST_ACTION_START',
-  POST_ACTION_CLIENT_UPDATE: 'POST_ACTION_CLIENT_UPDATE',
-  POST_ACTION_SERVER_UPDATE: 'POST_ACTION_SERVER_UPDATE',
-  POST_ACTION_SUCCESS: 'POST_ACTION_SUCCESS',
-  POST_ACTION_FAIL: 'POST_ACTION_FAIL'
+  TOGGLE_ADD_DONE_POST_START: 'TOGGLE_ADD_DONE_POST_START',
+  TOGGLE_ADD_DONE_POST_SUCCESS: 'TOGGLE_ADD_DONE_POST_SUCCESS',
+  TOGGLE_ADD_DONE_POST_FAIL: 'TOGGLE_ADD_DONE_POST_FAIL',
+  TOGGLE_SHARE_POST_START: 'TOGGLE_SHARE_POST_START',
+  TOGGLE_SHARE_POST_SUCCESS: 'TOGGLE_SHARE_POST_SUCCESS',
+  TOGGLE_SHARE_POST_FAIL: 'TOGGLE_SHARE_POST_FAIL',
+  TOGGLE_LIKE_POST_START: 'TOGGLE_LIKE_POST_START',
+  TOGGLE_LIKE_POST_SUCCESS: 'TOGGLE_LIKE_POST_SUCCESS',
+  TOGGLE_LIKE_POST_FAIL: 'TOGGLE_LIKE_POST_FAIL'
 };
 
-export const postAction = (
-  userId: string,
-  postId: string,
-  actionType: ActionType,
-  isNowActive: boolean
+export const toggleSharePost = (
+  isActive: boolean,
+  postId: documentId,
+  ownerUserId: documentId,
+  userId: documentId
 ) => async (dispatch: Dispatch) => {
-  const actionString = actionType.slice(0, -1);
-
   dispatch({
-    type: types.POST_ACTION_START,
-    payload: actionType
+    type: types.TOGGLE_SHARE_POST_START
   });
 
   firebase
     .analytics()
-    .logEvent(`${types.POST_ACTION_START}__${actionString}`.toUpperCase());
+    .logEvent(`${types.TOGGLE_SHARE_POST_START}`.toUpperCase());
 
   try {
     // toast
-    isNowActive
-      ? Toaster(actionTypeActiveToasts[actionType])
-      : Toaster(actionTypeInactiveToasts[actionType]);
+    !isActive
+      ? Toaster(actionTypeActiveToasts.shares)
+      : Toaster(actionTypeInactiveToasts.shares);
 
-    // update client store
-    dispatch({
-      type: types.POST_ACTION_CLIENT_UPDATE,
-      userId,
-      postId,
-      actionType,
-      isNowActive
-    });
+    const batcher = new Batcher(firebase.firestore());
 
-    // update [actionType] object
-    const actionRef = firebase
-      .firestore()
-      .collection(actionType)
-      .doc(`${userId}_${postId}`);
-
-    // transactions fail when the client is offline!
-    await firebase.firestore().runTransaction(t =>
-      t.get(actionRef).then(documentSnapshot => {
-        if (!documentSnapshot.exists) {
-          t.set(actionRef, {
-            active: true,
-            createdAt: ts,
-            postId,
-            updatedAt: ts,
-            userId
-          });
-        } else {
-          t.set(
-            actionRef,
-            {
-              active: isNowActive,
-              updatedAt: ts
-            },
-            {
-              merge: true
-            }
-          );
-        }
-      })
+    // shares/{userId}_{postId}
+    batcher.set(
+      firebase
+        .firestore()
+        .collection('shares')
+        .doc(`${userId}_${postId}`),
+      {
+        active: !isActive,
+        postId,
+        updatedAt: ts,
+        userId
+      },
+      {
+        merge: true
+      }
     );
+
+    updateCounts(batcher, !isActive, 'shares', postId, ownerUserId, userId);
+
+    batcher.write();
+
+    dispatch(refreshUsersPostsDocument(ownerUserId, postId, 'cache'));
+
     dispatch({
-      type: types.POST_ACTION_SERVER_UPDATE,
-      payload: actionType
+      type: types.TOGGLE_SHARE_POST_SUCCESS
     });
   } catch (error) {
     console.error(error);
     dispatch({
-      type: types.POST_ACTION_FAIL,
-      payload: actionType,
+      type: types.TOGGLE_SHARE_POST_FAIL,
+      error
+    });
+  }
+};
+
+export const toggleLikePost = (
+  isActive: boolean,
+  postId: documentId,
+  ownerUserId: documentId,
+  userId: documentId
+) => async (dispatch: Dispatch) => {
+  dispatch({
+    type: types.TOGGLE_LIKE_POST_START
+  });
+
+  firebase
+    .analytics()
+    .logEvent(`${types.TOGGLE_LIKE_POST_START}`.toUpperCase());
+
+  try {
+    // toast
+    !isActive
+      ? Toaster(actionTypeActiveToasts.likes)
+      : Toaster(actionTypeInactiveToasts.likes);
+
+    const batcher = new Batcher(firebase.firestore());
+
+    // likes/{userId}_{postId}
+    batcher.set(
+      firebase
+        .firestore()
+        .collection('likes')
+        .doc(`${userId}_${postId}`),
+      {
+        active: !isActive,
+        postId,
+        updatedAt: ts,
+        userId
+      },
+      {
+        merge: true
+      }
+    );
+
+    updateCounts(batcher, !isActive, 'likes', postId, ownerUserId, userId);
+
+    batcher.write();
+
+    dispatch(refreshUsersPostsDocument(ownerUserId, postId, 'cache'));
+
+    dispatch({
+      type: types.TOGGLE_LIKE_POST_SUCCESS
+    });
+  } catch (error) {
+    console.error(error);
+    dispatch({
+      type: types.TOGGLE_LIKE_POST_FAIL,
+      error
+    });
+  }
+};
+
+export const toggleAddDonePost = (
+  type: 'adds' | 'dones',
+  isActive: boolean,
+  postId: documentId,
+  ownerUserId: documentId,
+  userId: documentId,
+  isOtherActive: boolean
+) => async (dispatch: Dispatch) => {
+  dispatch({
+    type: types.TOGGLE_LIKE_POST_START
+  });
+
+  firebase
+    .analytics()
+    .logEvent(`${types.TOGGLE_LIKE_POST_START}`.toUpperCase());
+
+  try {
+    // toast
+    !isActive
+      ? Toaster(actionTypeActiveToasts[type])
+      : Toaster(actionTypeInactiveToasts[type]);
+
+    const batcher = new Batcher(firebase.firestore());
+    const collection = type === 'adds' ? 'adds' : 'dones';
+    const otherCollection = type === 'adds' ? 'dones' : 'adds';
+
+    // {collection}/{userId}_{postId}
+    batcher.set(
+      firebase
+        .firestore()
+        .collection(collection)
+        .doc(`${userId}_${postId}`),
+      {
+        active: !isActive,
+        postId,
+        updatedAt: ts,
+        userId
+      },
+      {
+        merge: true
+      }
+    );
+
+    updateCounts(batcher, !isActive, collection, postId, ownerUserId, userId);
+
+    if (!isActive && isOtherActive) {
+      // {otherCollection}/{userId}_{postId}
+      batcher.set(
+        firebase
+          .firestore()
+          .collection(otherCollection)
+          .doc(`${userId}_${postId}`),
+        {
+          active: !isOtherActive,
+          postId,
+          updatedAt: ts,
+          userId
+        },
+        {
+          merge: true
+        }
+      );
+      updateCounts(
+        batcher,
+        !isOtherActive,
+        otherCollection,
+        postId,
+        ownerUserId,
+        userId
+      );
+    }
+
+    batcher.write();
+
+    dispatch(refreshUsersPostsDocument(ownerUserId, postId, 'cache'));
+
+    dispatch({
+      type: types.TOGGLE_LIKE_POST_SUCCESS
+    });
+  } catch (error) {
+    console.error(error);
+    dispatch({
+      type: types.TOGGLE_LIKE_POST_FAIL,
       error
     });
   }
