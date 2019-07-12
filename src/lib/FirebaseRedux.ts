@@ -9,7 +9,13 @@ import { Dispatch } from 'redux';
 import { formatDocumentSnapshot } from './FirebaseHelpers';
 
 // Helpers
-export type stateKey = 'usersPostsLists' | 'usersPosts';
+export type stateKey =
+  | 'usersPostsLists'
+  | 'usersPosts'
+  | 'adds'
+  | 'dones'
+  | 'shares'
+  | 'likes';
 export type dataActionTypes = 'GET_START' | 'GET_SUCCESS' | 'GET_FAIL';
 export type listActionTypes =
   | 'LIST_REFRESHING'
@@ -139,6 +145,7 @@ export const getDocuments = (
   source?: 'default' | 'cache' | 'server'
 ) => async (dispatch: Dispatch) => {
   dispatch(getStart(STATE_KEY));
+
   await query
     .get({ source: source ? source : 'default' })
     .then((querySnapshot: QuerySnapshot) => {
@@ -156,16 +163,68 @@ export const getDocuments = (
     });
 };
 
+export const subscribeDocuments = (STATE_KEY: stateKey, query: Query) => async (
+  dispatch: Dispatch
+) => {
+  dispatch(getStart(STATE_KEY));
+
+  return query.onSnapshot(
+    (querySnapshot: QuerySnapshot) => {
+      if (!querySnapshot.empty) {
+        const documents = {};
+        querySnapshot.forEach((document: DocumentSnapshot) => {
+          documents[document.id] = formatDocumentSnapshot(document);
+        });
+        dispatch(getSuccess(STATE_KEY, documents));
+      }
+    },
+    (error: SnapshotError) => {
+      console.error(error);
+      dispatch(getFail(STATE_KEY, error));
+    }
+  );
+};
+
+export const subscribeDocumentsIds = (
+  STATE_KEY: stateKey,
+  query: Query,
+  documentIdField: string
+) => async (dispatch: Dispatch) => {
+  dispatch(getStart(STATE_KEY));
+
+  return query.onSnapshot(
+    (querySnapshot: QuerySnapshot) => {
+      if (!querySnapshot.empty) {
+        const documents: Array<string> = [];
+        querySnapshot.forEach((document: DocumentSnapshot) => {
+          const documentId = _.get(document.data(), [documentIdField], '');
+          if (documentId) {
+            documents.push(documentId);
+          }
+        });
+        dispatch(getSuccess(STATE_KEY, documents));
+      }
+    },
+    (error: SnapshotError) => {
+      console.error(error);
+      dispatch(getFail(STATE_KEY, error));
+    }
+  );
+};
+
 // // Reducers
 export interface DataInitialState {
   [documentId: string]: any;
 }
 
 export const getSuccessReducer = (state: any, action: DataAction) => {
-  return {
-    ...state,
-    ...action.documents
-  };
+  const documents = action.documents;
+  return _.isArray(documents)
+    ? documents
+    : {
+        ...state,
+        ...action.documents
+      };
 };
 
 // LISTS
@@ -313,6 +372,7 @@ export const listLoadedReducer = (
     ...state,
     [action.listKey]: {
       ..._.get(state, action.listKey, {}),
+      items: _.get(state, [action.listKey, 'items'], []),
       isLoaded: true,
       isLoading: false,
       isRefreshing: false,

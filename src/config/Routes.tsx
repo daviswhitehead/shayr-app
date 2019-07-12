@@ -12,7 +12,7 @@ import HelloWorld from '../containers/HelloWorld';
 import Login from '../containers/Login';
 import MyList from '../containers/MyList';
 import PostDetail from '../containers/PostDetail';
-import RealtimeDataTester from '../containers/RealtimeDataTester';
+// import RealtimeDataTester from '../containers/RealtimeDataTester';
 
 const DiscoverStack = createStackNavigator(
   {
@@ -28,14 +28,8 @@ const DiscoverStack = createStackNavigator(
         header: null
       })
     },
-    HelloWorld: {
-      screen: HelloWorld,
-      navigationOptions: () => ({
-        header: null
-      })
-    },
-    RealtimeDataTester: {
-      screen: RealtimeDataTester,
+    MyList: {
+      screen: MyList,
       navigationOptions: () => ({
         header: null
       })
@@ -46,42 +40,35 @@ const DiscoverStack = createStackNavigator(
   }
 );
 
-const MyListStack = createStackNavigator({
-  MyList: {
-    screen: MyList,
-    navigationOptions: () => ({
-      header: null
-    })
+const MyListStack = createStackNavigator(
+  {
+    MyList: {
+      screen: MyList,
+      navigationOptions: () => ({
+        header: null
+      })
+    },
+    PostDetail: {
+      screen: PostDetail,
+      navigationOptions: () => ({
+        header: null
+      })
+    },
+    Settings: {
+      screen: ComingSoon,
+      navigationOptions: () => ({
+        header: null
+      })
+    }
   },
-  PostDetail: {
-    screen: PostDetail,
-    navigationOptions: () => ({
-      header: null
-    })
-  },
-  Settings: {
-    screen: ComingSoon,
-    navigationOptions: () => ({
-      header: null
-    })
+  {
+    initialRouteName: 'MyList'
   }
-});
+);
 
 const FriendsStack = createStackNavigator({
   Friends: {
     screen: Friends,
-    navigationOptions: () => ({
-      header: null
-    })
-  },
-  HelloWorld: {
-    screen: HelloWorld,
-    navigationOptions: () => ({
-      header: null
-    })
-  },
-  PostDetail: {
-    screen: PostDetail,
     navigationOptions: () => ({
       header: null
     })

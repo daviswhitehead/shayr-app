@@ -339,50 +339,9 @@ class PostDetail extends Component<Props> {
           </ScrollView>
         </View>
         <ActionBar
-          authUserId={this.props.authUserId}
           authUser={this.props.authUser}
-          onAvatarPress={undefined}
-          // onAvatarPress={() => this.props.onAvatarPress(postDetailsRoute())}
-          isShareActive={isShareActive}
-          onSharePress={() =>
-            this.props.toggleSharePost(
-              isShareActive,
-              this.props.post.postId,
-              this.props.ownerUserId,
-              this.props.authUserId
-            )
-          }
-          isAddActive={isAddActive}
-          onAddPress={() =>
-            this.props.toggleAddDonePost(
-              'adds',
-              isAddActive,
-              this.props.post.postId,
-              this.props.ownerUserId,
-              this.props.authUserId,
-              isDoneActive
-            )
-          }
-          isDoneActive={isDoneActive}
-          onDonePress={() =>
-            this.props.toggleAddDonePost(
-              'dones',
-              isDoneActive,
-              this.props.post.postId,
-              this.props.ownerUserId,
-              this.props.authUserId,
-              isAddActive
-            )
-          }
-          isLikeActive={isLikeActive}
-          onLikePress={() =>
-            this.props.toggleLikePost(
-              isLikeActive,
-              this.props.post.postId,
-              this.props.ownerUserId,
-              this.props.authUserId
-            )
-          }
+          post={this.props.post}
+          ownerUserId={this.props.ownerUserId}
         />
       </View>
     );

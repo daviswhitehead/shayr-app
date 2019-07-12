@@ -8,10 +8,14 @@ import Header from '../../components/Header';
 import List from '../../components/List';
 import PostCard from '../../components/PostCard';
 import { queries, queryArguments, queryType } from '../../lib/FirebaseQueries';
+import { subscribeToAdds } from '../../redux/adds/actions';
 import { selectAuthUserId } from '../../redux/auth/selectors';
+import { subscribeToDones } from '../../redux/dones/actions';
 import { subscribeToFriendships } from '../../redux/friendships/actions';
+import { subscribeToLikes } from '../../redux/likes/actions';
 import { subscribeNotificationTokenRefresh } from '../../redux/notifications/actions';
 import { navigateToRoute } from '../../redux/routing/actions';
+import { subscribeToShares } from '../../redux/shares/actions';
 import { subscribeToUser } from '../../redux/users/actions';
 import {
   selectUserFromId,
@@ -96,6 +100,10 @@ const mapDispatchToProps = (dispatch: any, props: any) => {
         )
       ),
     subscribeToUser: userId => dispatch(subscribeToUser(userId)),
+    subscribeToAdds: userId => dispatch(subscribeToAdds(userId)),
+    subscribeToDones: userId => dispatch(subscribeToDones(userId)),
+    subscribeToLikes: userId => dispatch(subscribeToLikes(userId)),
+    subscribeToShares: userId => dispatch(subscribeToShares(userId)),
     subscribeToFriendships: userId => dispatch(subscribeToFriendships(userId)),
     subscribeNotificationTokenRefresh: userId =>
       dispatch(subscribeNotificationTokenRefresh(userId)),
@@ -114,7 +122,11 @@ class Discover extends Component<Props> {
     this.subscriptions.push(
       await this.props.subscribeToUser(this.props.authUserId),
       await this.props.subscribeToFriendships(this.props.authUserId),
-      await this.props.subscribeNotificationTokenRefresh(this.props.authUserId)
+      await this.props.subscribeNotificationTokenRefresh(this.props.authUserId),
+      await this.props.subscribeToAdds(this.props.authUserId),
+      await this.props.subscribeToDones(this.props.authUserId),
+      await this.props.subscribeToLikes(this.props.authUserId),
+      await this.props.subscribeToShares(this.props.authUserId)
     );
 
     // HOME - Respond to initial route and listen to routing updates
@@ -136,12 +148,16 @@ class Discover extends Component<Props> {
       ].lastItem
     );
 
-    this.props.navigation.navigate('PostDetail', {
-      ownerUserId: this.props.authUserId,
-      postId: 'cd2qGlHClQvzHnO1m5xY'
-    });
-    // this.props.navigation.navigate('MyList', {
-    //   ownerUserId: this.props.authUserId
+    // this.props.navigation.navigate('PostDetail', {
+    //   ownerUserId: this.props.authUserId,
+    //   postId: 'cd2qGlHClQvzHnO1m5xY'
+    // });
+    // this.props.navigation.navigate({
+    //   routeName: 'MyList',
+    //   params: {
+    //     ownerUserId: 'lOnI91XOvdRnQe5Hmdrkf2TY5lH2'
+    //     // ownerUserId: this.props.authUserId
+    //   }
     // });
   }
 

@@ -1,70 +1,41 @@
-import { UserType } from '@daviswhitehead/shayr-resources';
+import { documentId, User, UsersPosts } from '@daviswhitehead/shayr-resources';
 import _ from 'lodash';
 import * as React from 'react';
 import { SafeAreaView, View } from 'react-native';
+import withAdds from '../../higherOrderComponents/withAdds';
+import withDones from '../../higherOrderComponents/withDones';
+import withLikes from '../../higherOrderComponents/withLikes';
+import withShares from '../../higherOrderComponents/withShares';
 import Icon from '../Icon';
-import UserImage from '../UserImage';
+import UserAvatar from '../UserAvatar';
 import styles from './styles';
 
 export interface Props {
-  authUser: UserType;
-  onAvatarPress: () => void;
-  onSharePress: () => void;
-  onAddPress: () => void;
-  onDonePress: () => void;
-  onLikePress: () => void;
-  isShareActive: boolean;
-  isAddActive: boolean;
-  isDoneActive: boolean;
-  isLikeActive: boolean;
+  authUser: User;
+  post: UsersPosts;
+  ownerUserId: documentId;
 }
 
-const ActionBar: React.SFC<Props> = ({
-  authUser,
-  onAvatarPress,
-  onSharePress,
-  onAddPress,
-  onDonePress,
-  onLikePress,
-  isShareActive,
-  isAddActive,
-  isDoneActive,
-  isLikeActive
-}) => {
+const ActionBar: React.SFC<Props> = ({ authUser, post, ownerUserId }) => {
+  const IconWithShares = withShares(Icon.default, post, ownerUserId);
+  const IconWithDones = withDones(Icon.default, post, ownerUserId);
+  const IconWithAdds = withAdds(Icon.default, post, ownerUserId);
+  const IconWithLikes = withLikes(Icon.default, post, ownerUserId);
+
   return (
     <View style={styles.container}>
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.actionBar}>
-          <UserImage
-            uri={_.get(authUser, ['facebookProfilePhoto'], '')}
-            size='small'
-            onPress={onAvatarPress}
+          <UserAvatar
+            {...authUser}
+            firstName={undefined}
+            lastName={undefined}
             style={styles.action}
           />
-          <Icon.default
-            name='share'
-            isActive={isShareActive}
-            onPress={onSharePress}
-            style={styles.action}
-          />
-          <Icon.default
-            name='add'
-            isActive={isAddActive}
-            onPress={onAddPress}
-            style={styles.action}
-          />
-          <Icon.default
-            name='done'
-            isActive={isDoneActive}
-            onPress={onDonePress}
-            style={styles.action}
-          />
-          <Icon.default
-            name='like'
-            isActive={isLikeActive}
-            onPress={onLikePress}
-            style={styles.action}
-          />
+          <IconWithShares name='share' style={styles.action} />
+          <IconWithAdds name='add' style={styles.action} />
+          <IconWithDones name='done' style={styles.action} />
+          <IconWithLikes name='like' style={styles.action} />
         </View>
       </SafeAreaView>
     </View>

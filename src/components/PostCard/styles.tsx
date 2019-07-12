@@ -16,11 +16,13 @@ export default StyleSheet.create({
     marginHorizontal: layout.MARGIN_MEDIUM,
     marginBottom: layout.MARGIN_MEDIUM
   },
+  emptyAvatar: {
+    marginBottom: layout.MARGIN_MEDIUM
+  },
   contentBox: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'flex-start',
-    backgroundColor: 'white',
     marginHorizontal: layout.MARGIN_MEDIUM
   },
   image: {

@@ -48,15 +48,14 @@ export const loadUsersPosts = (
   );
 };
 
-export const refreshUsersPostsDocument = (
-  ownerUserId: documentId,
+export const refreshUsersPostsDocuments = (
   postId: documentId,
   source: 'default' | 'cache' | 'server'
 ) => async (dispatch: Dispatch) => {
   dispatch(
     getDocuments(
       STATE_KEY,
-      queries.USERS_POSTS_SINGLE.query({ userId: ownerUserId, postId }),
+      queries.USERS_POSTS_BY_POST.query({ postId }),
       source
     )
   );

@@ -242,14 +242,14 @@ The usersPosts state is a collection of usersPosts objects relevant to the curre
 ```javascript
 {
   'userPostIdA': {
-    addCount: 0,
+    addsCount: 0,
     adds: [],
     createdAt: null,
     description: '',
-    doneCount: 0,
+    donesCount: 0,
     dones: [],
     image: '',
-    likeCount: 0,
+    likesCount: 0,
     likes: [],
     medium: '',
     postId: '',
@@ -257,7 +257,7 @@ The usersPosts state is a collection of usersPosts objects relevant to the curre
       logo: '',
       name: ''
     },
-    shareCount: 0,
+    sharesCount: 0,
     shares: [],
     title: '',
     updatedAt: null,
@@ -265,14 +265,14 @@ The usersPosts state is a collection of usersPosts objects relevant to the curre
     userId: ''
   },
   'userPostIdB': {
-    addCount: 0,
+    addsCount: 0,
     adds: [],
     createdAt: null,
     description: '',
-    doneCount: 0,
+    donesCount: 0,
     dones: [],
     image: '',
-    likeCount: 0,
+    likesCount: 0,
     likes: [],
     medium: '',
     postId: '',
@@ -280,7 +280,7 @@ The usersPosts state is a collection of usersPosts objects relevant to the curre
       logo: '',
       name: ''
     },
-    shareCount: 0,
+    sharesCount: 0,
     shares: [],
     title: '',
     updatedAt: null,
@@ -292,20 +292,20 @@ The usersPosts state is a collection of usersPosts objects relevant to the curre
 
 ### fields
 
-- `addCount` _number_ -- Total number of global adds on a post.
+- `addsCount` _number_ -- Total number of global adds on a post.
 - `adds` _Array\<string\>_ -- An array of userIds from friends that have added a post.
 - `createdAt` _timestamp_
 - `description` _string_ -- Scraped description about a post.
-- `doneCount` _number_ -- Total number of global dones on a post.
+- `donesCount` _number_ -- Total number of global dones on a post.
 - `dones` _Array\<string\>_ -- An array of userIds from friends that have marked a post as done.
 - `image` _string_ -- Scraped image for a post.
-- `likeCount` _number_ -- Total number of global likes on a post.
+- `likesCount` _number_ -- Total number of global likes on a post.
 - `likes` _Array\<string\>_ -- An array of userIds from friends that have liked a post.
 - `medium` _string_ -- The type of content.
 - `postId` _string_ -- Unique ID for the original post.
 - `publisher.logo` _string_ -- Scraped image for a publisher.
 - `publisher.name` _string_ -- Scraped name of the publisher.
-- `shareCount` _number_ -- Total number of global shares on a post.
+- `sharesCount` _number_ -- Total number of global shares on a post.
 - `shares` _Array\<string\>_ -- An array of userIds from friends that have shared a post.
 - `title` _string_ -- Scraped title of the post.
 - `updatedAt` _timestamp_

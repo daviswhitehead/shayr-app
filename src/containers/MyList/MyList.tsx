@@ -1,7 +1,7 @@
 import { documentId, User } from '@daviswhitehead/shayr-resources';
 import _ from 'lodash';
 import React, { Component } from 'react';
-import { Text, View } from 'react-native';
+import { ActivityIndicator, Text, View } from 'react-native';
 import { DocumentSnapshot } from 'react-native-firebase/firestore';
 import { NavigationScreenProp, NavigationState } from 'react-navigation';
 import { connect } from 'react-redux';
@@ -12,11 +12,8 @@ import SegmentedControl from '../../components/SegmentedControl';
 import UserProfile from '../../components/UserProfile';
 import { queries, queryArguments, queryType } from '../../lib/FirebaseQueries';
 import { selectAuthUserId } from '../../redux/auth/selectors';
-import {
-  toggleAddDonePost,
-  toggleLikePost,
-  toggleSharePost
-} from '../../redux/postActions/actions';
+import { subscribeToFriendships } from '../../redux/friendships/actions';
+import { getUser } from '../../redux/users/actions';
 import {
   selectUserFromId,
   selectUsersFromList
@@ -26,11 +23,11 @@ import {
   selectFlatListReadyUsersPostsFromList,
   selectUsersPostsMetadataFromList
 } from '../../redux/usersPosts/selectors';
-import colors from '../../styles/Colors';
+import Colors from '../../styles/Colors';
 import styles from './styles';
 
 interface NavigationParams {
-  ownerUserId: string;
+  ownerUserId?: string;
 }
 
 type Navigation = NavigationScreenProp<NavigationState, NavigationParams>;
@@ -60,26 +57,6 @@ export interface Props {
     lastItem?: DocumentSnapshot | 'DONE',
     isLoading?: boolean
   ) => void;
-  toggleLikePost: (
-    isActive: boolean,
-    postId: documentId,
-    ownerUserId: documentId,
-    userId: documentId
-  ) => void;
-  toggleSharePost: (
-    isActive: boolean,
-    postId: documentId,
-    ownerUserId: documentId,
-    userId: documentId
-  ) => void;
-  toggleAddDonePost: (
-    type: 'adds' | 'dones',
-    isActive: boolean,
-    postId: documentId,
-    ownerUserId: documentId,
-    userId: documentId,
-    isOtherActive: boolean
-  ) => void;
 }
 
 export interface State {
@@ -89,7 +66,10 @@ export interface State {
 
 const mapStateToProps = (state: any, props: any) => {
   const authUserId = selectAuthUserId(state);
-  const ownerUserId = props.navigation.state.params.ownerUserId;
+  const ownerUserId =
+    _.get(props, ['navigation', 'state', 'params', 'ownerUserId'], false) ||
+    authUserId;
+
   const usersPostsViews = {
     [queries.USERS_POSTS_SHARES.type]: `${ownerUserId}_${
       queries.USERS_POSTS_SHARES.type
@@ -104,6 +84,7 @@ const mapStateToProps = (state: any, props: any) => {
       queries.USERS_POSTS_LIKES.type
     }`
   };
+
   const usersPostsData = {
     [usersPostsViews[queries.USERS_POSTS_SHARES.type]]: {
       data: selectFlatListReadyUsersPostsFromList(
@@ -164,6 +145,8 @@ const mapStateToProps = (state: any, props: any) => {
 };
 
 const mapDispatchToProps = (dispatch: any) => ({
+  getUser: userId => dispatch(getUser(userId)),
+  subscribeToFriendships: userId => dispatch(subscribeToFriendships(userId)),
   loadUsersPosts: (
     ownerUserId: string,
     queryType: queryType,
@@ -181,51 +164,30 @@ const mapDispatchToProps = (dispatch: any) => ({
         isLoading,
         lastItem
       )
-    ),
-  toggleLikePost: (
-    isActive: boolean,
-    postId: documentId,
-    ownerUserId: documentId,
-    userId: documentId
-  ) => dispatch(toggleLikePost(isActive, postId, ownerUserId, userId)),
-  toggleSharePost: (
-    isActive: boolean,
-    postId: documentId,
-    ownerUserId: documentId,
-    userId: documentId
-  ) => dispatch(toggleSharePost(isActive, postId, ownerUserId, userId)),
-  toggleAddDonePost: (
-    type: 'adds' | 'dones',
-    isActive: boolean,
-    postId: documentId,
-    ownerUserId: documentId,
-    userId: documentId,
-    isOtherActive: boolean
-  ) =>
-    dispatch(
-      toggleAddDonePost(
-        type,
-        isActive,
-        postId,
-        ownerUserId,
-        userId,
-        isOtherActive
-      )
     )
 });
 
 class MyList extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
-    const startingIndex = this.props.authIsOwner ? 0 : 1;
+    const startingIndex = this.props.authIsOwner ? 1 : 0;
 
     this.state = {
       selectedIndex: startingIndex,
       activeView: this.mapIndexToView(startingIndex)
     };
+    this.subscriptions = [];
   }
 
   async componentDidMount() {
+    this.props.ownerUser ? null : this.props.getUser(this.props.ownerUserId);
+
+    _.isEmpty(this.props.ownerFriends)
+      ? this.subscriptions.push(
+          await this.props.subscribeToFriendships(this.props.ownerUserId)
+        )
+      : null;
+
     // if (shares, adds, dones, likes) list doesnt exist yet, load initial posts
     if (
       !this.props.usersPostsData[
@@ -302,7 +264,11 @@ class MyList extends Component<Props, State> {
     }
   }
 
-  componentWillUnmount() {}
+  componentWillUnmount() {
+    Object.values(this.subscriptions).forEach(unsubscribe => {
+      unsubscribe();
+    });
+  }
 
   mapIndexToView = (index: number) => {
     const map: {
@@ -324,12 +290,25 @@ class MyList extends Component<Props, State> {
     return (
       <View style={styles.screen}>
         <Header
-          backgroundColor={colors.YELLOW}
+          backgroundColor={Colors.YELLOW}
           statusBarStyle='dark-content'
           shadow
           title={this.props.authIsOwner ? 'My List' : 'Their List'}
+          back={
+            this.props.navigation.state.key.slice(0, 3) === 'id-'
+              ? null
+              : () => this.props.navigation.goBack()
+          }
         />
-        <UserProfile />
+        <UserProfile
+          facebookProfilePhoto={_.get(
+            this.props,
+            ['ownerUser', 'facebookProfilePhoto'],
+            null
+          )}
+          firstName={_.get(this.props, ['ownerUser', 'firstName'], null)}
+          lastName={_.get(this.props, ['ownerUser', 'lastName'], null)}
+        />
         <SegmentedControl
           startingIndex={this.state.selectedIndex}
           onIndexChange={index =>
@@ -339,6 +318,10 @@ class MyList extends Component<Props, State> {
               activeView: this.mapIndexToView(index)
             }))
           }
+          sharesCount={_.get(this.props, ['ownerUser', 'sharesCount'], 0)}
+          addsCount={_.get(this.props, ['ownerUser', 'addsCount'], 0)}
+          donesCount={_.get(this.props, ['ownerUser', 'donesCount'], 0)}
+          likesCount={_.get(this.props, ['ownerUser', 'likesCount'], 0)}
         />
         {this.props.usersPostsData[this.addUserIdToView(this.state.activeView)]
           .isLoaded &&
@@ -415,7 +398,7 @@ class MyList extends Component<Props, State> {
           />
         ) : (
           <View style={styles.container}>
-            <Text>LOADING</Text>
+            <ActivityIndicator size='large' color={Colors.BLACK} />
           </View>
         )}
       </View>

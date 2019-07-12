@@ -15,13 +15,23 @@ export interface Props extends UserAtom {
   onPress?: () => void | undefined;
 }
 
-const UserProfile: React.SFC<Props> = ({  }: Props) => {
+const UserProfile: React.SFC<Props> = ({
+  facebookProfilePhoto,
+  firstName,
+  lastName
+}: Props) => {
   return (
     <View style={styles.profileContainer}>
-      <UserImage uri='' size='large' style={styles.profileImage} />
+      <UserImage
+        uri={facebookProfilePhoto}
+        size='large'
+        style={styles.profileImage}
+      />
       <View style={styles.profileContent}>
-        <Text style={styles.profileName}>Susan Altonabello</Text>
-        <IconWithCount name={'share'} count={35} isActive={false} />
+        <Text style={styles.profileName}>
+          {firstName} {lastName}
+        </Text>
+        <IconWithCount name={'share'} count={69} isActive={false} />
       </View>
     </View>
   );

@@ -27,6 +27,14 @@ export const queries = {
         .where('userId', '==', userId)
         .where('postId', '==', postId)
   },
+  USERS_POSTS_BY_POST: {
+    type: 'USERS_POSTS_BY_POST',
+    query: ({ postId }: { postId: string }) =>
+      firebase
+        .firestore()
+        .collection('users_posts')
+        .where('postId', '==', postId)
+  },
   USERS_POSTS_ALL: {
     type: 'USERS_POSTS_ALL',
     query: ({ userId }: { userId: string }) =>
@@ -74,6 +82,46 @@ export const queries = {
         .collection('users_posts')
         .where('userId', '==', userId)
         .where('likes', 'array-contains', userId)
+        .orderBy('updatedAt', 'desc')
+  },
+  USER_ADDS: {
+    type: 'USER_ADDS',
+    query: ({ userId }: { userId: string }) =>
+      firebase
+        .firestore()
+        .collection('adds')
+        .where('userId', '==', userId)
+        .where('active', '==', true)
+        .orderBy('updatedAt', 'desc')
+  },
+  USER_DONES: {
+    type: 'USER_DONES',
+    query: ({ userId }: { userId: string }) =>
+      firebase
+        .firestore()
+        .collection('dones')
+        .where('userId', '==', userId)
+        .where('active', '==', true)
+        .orderBy('updatedAt', 'desc')
+  },
+  USER_LIKES: {
+    type: 'USER_LIKES',
+    query: ({ userId }: { userId: string }) =>
+      firebase
+        .firestore()
+        .collection('likes')
+        .where('userId', '==', userId)
+        .where('active', '==', true)
+        .orderBy('updatedAt', 'desc')
+  },
+  USER_SHARES: {
+    type: 'USER_SHARES',
+    query: ({ userId }: { userId: string }) =>
+      firebase
+        .firestore()
+        .collection('shares')
+        .where('userId', '==', userId)
+        .where('active', '==', true)
         .orderBy('updatedAt', 'desc')
   },
   FRIENDSHIPS_ALL: {

@@ -1,6 +1,7 @@
 import { getDocument } from '@daviswhitehead/shayr-resources';
 import firebase from 'react-native-firebase';
 import { Dispatch } from 'redux';
+import { formatDocumentSnapshot } from '../../lib/FirebaseHelpers';
 
 export const types = {
   SUBSCRIBE_USER_START: 'SUBSCRIBE_USER_START',
@@ -23,7 +24,7 @@ export const subscribeToUser = (userId: string) => {
           dispatch({
             type: types.SUBSCRIBE_USER_SUCCESS,
             userId,
-            user: documentSnapshot.data()
+            user: formatDocumentSnapshot(documentSnapshot)
           });
         },
         error => {

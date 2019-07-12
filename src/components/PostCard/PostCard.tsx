@@ -1,5 +1,4 @@
 import {
-  documentId,
   User,
   userDefault,
   UsersPosts,
@@ -9,12 +8,9 @@ import _ from 'lodash';
 import * as React from 'react';
 import { Image, Text, TouchableWithoutFeedback, View } from 'react-native';
 import { connect } from 'react-redux';
-import { getActionActiveStatus } from '../../lib/StateHelpers';
+import withLikes from '../../higherOrderComponents/withLikes';
+import withShares from '../../higherOrderComponents/withShares';
 import { selectAuthUserId } from '../../redux/auth/selectors';
-import {
-  toggleLikePost,
-  toggleSharePost
-} from '../../redux/postActions/actions';
 import IconWithCount from '../IconWithCount';
 import UserAvatar from '../UserAvatar';
 import styles from './styles';
@@ -26,18 +22,6 @@ interface Users {
 export interface Props {
   authUserId: string;
   ownerUserId: string;
-  toggleLikePost: (
-    isActive: boolean,
-    postId: documentId,
-    ownerUserId: documentId,
-    userId: documentId
-  ) => void;
-  toggleSharePost: (
-    isActive: boolean,
-    postId: documentId,
-    ownerUserId: documentId,
-    userId: documentId
-  ) => void;
   onCardPress: () => void | undefined;
   post: UsersPosts;
   users?: Users | undefined;
@@ -47,7 +31,6 @@ export interface Props {
 const defaultProps = {
   authUserId: '',
   ownerUserId: '',
-  toggleLikePost: () => null,
   onCardPress: () => null,
   post: usersPostsDefault,
   users: { a: userDefault },
@@ -62,20 +45,7 @@ const mapStateToProps = (state: any) => {
   };
 };
 
-const mapDispatchToProps = (dispatch: any) => ({
-  toggleLikePost: (
-    isActive: boolean,
-    postId: documentId,
-    ownerUserId: documentId,
-    userId: documentId
-  ) => dispatch(toggleLikePost(isActive, postId, ownerUserId, userId)),
-  toggleSharePost: (
-    isActive: boolean,
-    postId: documentId,
-    ownerUserId: documentId,
-    userId: documentId
-  ) => dispatch(toggleSharePost(isActive, postId, ownerUserId, userId))
-});
+const mapDispatchToProps = (dispatch: any) => ({});
 
 const getFeaturedUser = (props: Props) => {
   const eligibleFeaturedUserIds: Array<string> = _.union(
@@ -104,15 +74,15 @@ const PostCard: React.SFC<Props> = props => {
   // const timeEstimate = '23 min';
   const timeEstimate = _.get(props, ['post', 'timeEstimate'], '');
 
-  const isShareActive = getActionActiveStatus(
-    props.authUserId,
+  const IconCountWithShares = withShares(
+    IconWithCount,
     props.post,
-    'shares'
+    props.ownerUserId
   );
-  const isLikeActive = getActionActiveStatus(
-    props.authUserId,
+  const IconCountWithLikes = withLikes(
+    IconWithCount,
     props.post,
-    'likes'
+    props.ownerUserId
   );
 
   return (
@@ -125,10 +95,12 @@ const PostCard: React.SFC<Props> = props => {
             <UserAvatar
               {...featuredUser}
               isVertical={false}
-              onPress={props.noTouching ? undefined : () => null}
+              noTouching={props.noTouching}
             />
           </View>
-        ) : null}
+        ) : (
+          <View style={styles.emptyAvatar} />
+        )}
         <View style={styles.contentBox}>
           {!!postImage ? (
             <Image style={styles.image} source={{ uri: postImage }} />
@@ -147,38 +119,14 @@ const PostCard: React.SFC<Props> = props => {
               </View>
             </View>
             <View style={styles.actionsBox}>
-              <IconWithCount
+              <IconCountWithShares
                 count={props.post.sharesCount || 0}
                 name={'share'}
-                isActive={isShareActive}
-                onPress={
-                  props.noTouching
-                    ? undefined
-                    : () =>
-                        props.toggleSharePost(
-                          isShareActive,
-                          props.post.postId,
-                          props.ownerUserId,
-                          props.authUserId
-                        )
-                }
               />
               <View style={styles.actionsSpacer} />
-              <IconWithCount
+              <IconCountWithLikes
                 count={props.post.likesCount || 0}
                 name={'like'}
-                isActive={isLikeActive}
-                onPress={
-                  props.noTouching
-                    ? undefined
-                    : () =>
-                        props.toggleLikePost(
-                          isLikeActive,
-                          props.post.postId,
-                          props.ownerUserId,
-                          props.authUserId
-                        )
-                }
               />
             </View>
           </View>

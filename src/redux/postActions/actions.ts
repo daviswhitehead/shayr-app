@@ -9,7 +9,7 @@ import {
   actionTypeActiveToasts,
   actionTypeInactiveToasts
 } from '../../styles/Copy';
-import { refreshUsersPostsDocument } from '../usersPosts/actions';
+import { refreshUsersPostsDocuments } from '../usersPosts/actions';
 
 export const types = {
   TOGGLE_ADD_DONE_POST_START: 'TOGGLE_ADD_DONE_POST_START',
@@ -66,7 +66,8 @@ export const toggleSharePost = (
 
     batcher.write();
 
-    dispatch(refreshUsersPostsDocument(ownerUserId, postId, 'cache'));
+    console.log(`refreshing documents for post: ${postId}`);
+    dispatch(refreshUsersPostsDocuments(postId, 'cache'));
 
     dispatch({
       type: types.TOGGLE_SHARE_POST_SUCCESS
@@ -123,7 +124,8 @@ export const toggleLikePost = (
 
     batcher.write();
 
-    dispatch(refreshUsersPostsDocument(ownerUserId, postId, 'cache'));
+    console.log(`refreshing documents for post: ${postId}`);
+    dispatch(refreshUsersPostsDocuments(postId, 'cache'));
 
     dispatch({
       type: types.TOGGLE_LIKE_POST_SUCCESS
@@ -211,7 +213,8 @@ export const toggleAddDonePost = (
 
     batcher.write();
 
-    dispatch(refreshUsersPostsDocument(ownerUserId, postId, 'cache'));
+    console.log(`refreshing documents for post: ${postId}`);
+    dispatch(refreshUsersPostsDocuments(postId, 'cache'));
 
     dispatch({
       type: types.TOGGLE_LIKE_POST_SUCCESS

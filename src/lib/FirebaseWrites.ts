@@ -72,6 +72,23 @@ export const updateCounts = (
       merge: true
     }
   );
+  if (ownerUserId != userId) {
+    // users_posts/{userId}_{postId} { {action}Count: +1, {action}: +{userId} }
+    batcher.set(
+      firebase
+        .firestore()
+        .collection('users_posts')
+        .doc(`${userId}_${postId}`),
+      {
+        [`${action}Count`]: increment(isIncremental ? 1 : -1),
+        [`${action}`]: isIncremental ? arrayUnion(userId) : arrayRemove(userId),
+        updatedAt: ts
+      },
+      {
+        merge: true
+      }
+    );
+  }
   // users/{userId} { {action}Count: +1 }
   batcher.set(
     firebase
