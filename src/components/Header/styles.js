@@ -23,5 +23,11 @@ export default StyleSheet.create({
   bookendsBox: {
     height: 24,
     width: 24
+  },
+  box: {
+    textAlign: 'center'
+  },
+  text: {
+    ...fontSystem.TITLE
   }
 });

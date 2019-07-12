@@ -19,11 +19,6 @@ import { getActionActiveStatus } from '../../lib/StateHelpers';
 import { openURL } from '../../lib/Utils';
 import { selectAuthUserId } from '../../redux/auth/selectors';
 import {
-  toggleAddDonePost,
-  toggleLikePost,
-  toggleSharePost
-} from '../../redux/postActions/actions';
-import {
   selectUserFromId,
   selectUsersFromList
 } from '../../redux/users/selectors';
