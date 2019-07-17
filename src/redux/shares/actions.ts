@@ -16,6 +16,7 @@ import {
   actionTypeInactiveToasts
 } from '../../styles/Copy';
 import { refreshUsersPostsDocuments } from '../usersPosts/actions';
+import { toggleUsersPostsListsItem } from '../usersPostsLists/actions';
 
 export const STATE_KEY = 'shares';
 
@@ -70,6 +71,14 @@ export const toggleSharePost = (
     batcher.write();
 
     dispatch(refreshUsersPostsDocuments(postId, 'cache'));
+    dispatch(
+      toggleUsersPostsListsItem(
+        userId,
+        queries.USERS_POSTS_SHARES.type,
+        postId,
+        !isActive
+      )
+    );
 
     dispatch({
       type: types.TOGGLE_SHARE_POST_SUCCESS

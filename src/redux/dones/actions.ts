@@ -16,6 +16,7 @@ import {
   actionTypeInactiveToasts
 } from '../../styles/Copy';
 import { refreshUsersPostsDocuments } from '../usersPosts/actions';
+import { toggleUsersPostsListsItem } from '../usersPostsLists/actions';
 
 export const STATE_KEY = 'dones';
 
@@ -52,12 +53,12 @@ export const toggleAddDonePost = (
     const collection = type === 'adds' ? 'adds' : 'dones';
     const otherCollection = type === 'adds' ? 'dones' : 'adds';
 
-    // {collection}/{userId}_{postId}
+    // {collection}/{ownerUserId}_{postId}
     batcher.set(
       firebase
         .firestore()
         .collection(collection)
-        .doc(`${userId}_${postId}`),
+        .doc(`${ownerUserId}_${postId}`),
       {
         active: !isActive,
         postId,
@@ -72,12 +73,12 @@ export const toggleAddDonePost = (
     updateCounts(batcher, !isActive, collection, postId, ownerUserId, userId);
 
     if (!isActive && isOtherActive) {
-      // {otherCollection}/{userId}_{postId}
+      // {otherCollection}/{ownerUserId}_{postId}
       batcher.set(
         firebase
           .firestore()
           .collection(otherCollection)
-          .doc(`${userId}_${postId}`),
+          .doc(`${ownerUserId}_${postId}`),
         {
           active: !isOtherActive,
           postId,
@@ -101,6 +102,25 @@ export const toggleAddDonePost = (
     batcher.write();
 
     dispatch(refreshUsersPostsDocuments(postId, 'cache'));
+
+    dispatch(
+      toggleUsersPostsListsItem(
+        userId,
+        queries.USERS_POSTS_DONES.type,
+        postId,
+        !isActive
+      )
+    );
+    if (!isActive && isOtherActive) {
+      dispatch(
+        toggleUsersPostsListsItem(
+          userId,
+          queries.USERS_POSTS_ADDS.type,
+          postId,
+          !isOtherActive
+        )
+      );
+    }
 
     dispatch({
       type: types.TOGGLE_ADD_DONE_POST_SUCCESS

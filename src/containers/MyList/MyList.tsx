@@ -33,14 +33,18 @@ interface NavigationParams {
 type Navigation = NavigationScreenProp<NavigationState, NavigationParams>;
 
 export interface Props {
+  adds: Array<documentId>;
   authUser: User;
   authIsOwner: boolean;
   authFriends: any;
   authUserId: string;
+  dones: Array<documentId>;
+  likes: Array<documentId>;
   navigation: Navigation;
   ownerUser: User;
   ownerFriends: any;
   ownerUserId: string;
+  shares: Array<documentId>;
   usersPostsViews: {
     [view: string]: string;
   };
@@ -129,14 +133,18 @@ const mapStateToProps = (state: any, props: any) => {
   };
 
   return {
+    adds: state.adds,
     auth: state.auth,
     authIsOwner: authUserId === ownerUserId,
     authUser: selectUserFromId(state, authUserId),
     authUserId,
     authFriends: selectUsersFromList(state, `${authUserId}_Friends`),
+    dones: state.dones,
+    likes: state.likes,
     ownerUser: selectUserFromId(state, ownerUserId),
     ownerUserId,
     ownerFriends: selectUsersFromList(state, `${ownerUserId}_Friends`),
+    shares: state.shares,
     usersPostsViews,
     usersPostsData,
     routing: state.routing,
@@ -318,10 +326,10 @@ class MyList extends Component<Props, State> {
               activeView: this.mapIndexToView(index)
             }))
           }
-          sharesCount={_.get(this.props, ['ownerUser', 'sharesCount'], 0)}
-          addsCount={_.get(this.props, ['ownerUser', 'addsCount'], 0)}
-          donesCount={_.get(this.props, ['ownerUser', 'donesCount'], 0)}
-          likesCount={_.get(this.props, ['ownerUser', 'likesCount'], 0)}
+          sharesCount={this.props.shares.length}
+          addsCount={this.props.adds.length}
+          donesCount={this.props.dones.length}
+          likesCount={this.props.likes.length}
         />
         {this.props.usersPostsData[this.addUserIdToView(this.state.activeView)]
           .isLoaded &&

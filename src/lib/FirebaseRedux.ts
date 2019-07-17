@@ -149,13 +149,13 @@ export const getDocuments = (
   await query
     .get({ source: source ? source : 'default' })
     .then((querySnapshot: QuerySnapshot) => {
+      const documents = {};
       if (!querySnapshot.empty) {
-        const documents = {};
         querySnapshot.forEach((document: DocumentSnapshot) => {
           documents[document.id] = formatDocumentSnapshot(document);
         });
-        dispatch(getSuccess(STATE_KEY, documents));
       }
+      dispatch(getSuccess(STATE_KEY, documents));
     })
     .catch((error: SnapshotError) => {
       console.error(error);
@@ -194,16 +194,16 @@ export const subscribeDocumentsIds = (
 
   return query.onSnapshot(
     (querySnapshot: QuerySnapshot) => {
+      const documents: Array<string> = [];
       if (!querySnapshot.empty) {
-        const documents: Array<string> = [];
         querySnapshot.forEach((document: DocumentSnapshot) => {
           const documentId = _.get(document.data(), [documentIdField], '');
           if (documentId) {
             documents.push(documentId);
           }
         });
-        dispatch(getSuccess(STATE_KEY, documents));
       }
+      dispatch(getSuccess(STATE_KEY, documents));
     },
     (error: SnapshotError) => {
       console.error(error);

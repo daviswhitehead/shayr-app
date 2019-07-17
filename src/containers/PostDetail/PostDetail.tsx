@@ -15,7 +15,6 @@ import PostCard from '../../components/PostCard';
 import UserAvatarsScrollView from '../../components/UserAvatarsScrollView';
 import { queries } from '../../lib/FirebaseQueries';
 import { getDocuments } from '../../lib/FirebaseRedux';
-import { getActionActiveStatus } from '../../lib/StateHelpers';
 import { openURL } from '../../lib/Utils';
 import { selectAuthUserId } from '../../redux/auth/selectors';
 import {
@@ -229,28 +228,6 @@ class PostDetail extends Component<Props> {
       this.props.users
     );
 
-    // get icon active status
-    const isShareActive = getActionActiveStatus(
-      this.props.authUserId,
-      this.props.post,
-      'shares'
-    );
-    const isAddActive = getActionActiveStatus(
-      this.props.authUserId,
-      this.props.post,
-      'adds'
-    );
-    const isDoneActive = getActionActiveStatus(
-      this.props.authUserId,
-      this.props.post,
-      'dones'
-    );
-    const isLikeActive = getActionActiveStatus(
-      this.props.authUserId,
-      this.props.post,
-      'likes'
-    );
-
     return (
       <View style={styles.screen}>
         {this.props.isFocused ? (
@@ -261,13 +238,17 @@ class PostDetail extends Component<Props> {
             back={() => this.props.navigation.goBack()}
           />
         ) : null}
-        <PostCard
-          ownerUserId={this.props.ownerUserId}
-          post={this.props.post}
-          onCardPress={() => openURL(this.props.post.url)}
-        />
-        <View style={styles.container}>
-          <ScrollView showsVerticalScrollIndicator={false}>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          overScrollMode='always'
+          style={styles.scrollView}
+        >
+          <PostCard
+            ownerUserId={this.props.ownerUserId}
+            post={this.props.post}
+            onCardPress={() => openURL(this.props.post.url)}
+          />
+          <View style={styles.container}>
             <View style={styles.sectionBox}>
               <Text style={styles.sectionHeader}>Summary</Text>
               <Text style={styles.body}> {this.props.post.description}</Text>
@@ -331,8 +312,8 @@ class PostDetail extends Component<Props> {
                 </View>
               ) : null}
             </View>
-          </ScrollView>
-        </View>
+          </View>
+        </ScrollView>
         <ActionBar
           authUser={this.props.authUser}
           post={this.props.post}

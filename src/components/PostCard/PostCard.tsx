@@ -8,6 +8,8 @@ import _ from 'lodash';
 import * as React from 'react';
 import { Image, Text, TouchableWithoutFeedback, View } from 'react-native';
 import { connect } from 'react-redux';
+import withAdds from '../../higherOrderComponents/withAdds';
+import withDones from '../../higherOrderComponents/withDones';
 import withLikes from '../../higherOrderComponents/withLikes';
 import withShares from '../../higherOrderComponents/withShares';
 import { selectAuthUserId } from '../../redux/auth/selectors';
@@ -85,6 +87,18 @@ const PostCard: React.SFC<Props> = props => {
     props.ownerUserId
   );
 
+  const IconCountWithAdds = withAdds(
+    IconWithCount,
+    props.post,
+    props.ownerUserId
+  );
+
+  const IconCountWithDones = withDones(
+    IconWithCount,
+    props.post,
+    props.ownerUserId
+  );
+
   return (
     <TouchableWithoutFeedback
       onPress={props.noTouching ? undefined : props.onCardPress}
@@ -122,6 +136,16 @@ const PostCard: React.SFC<Props> = props => {
               <IconCountWithShares
                 count={props.post.sharesCount || 0}
                 name={'share'}
+              />
+              <View style={styles.actionsSpacer} />
+              <IconCountWithAdds
+                count={props.post.addsCount || 0}
+                name={'add'}
+              />
+              <View style={styles.actionsSpacer} />
+              <IconCountWithDones
+                count={props.post.donesCount || 0}
+                name={'done'}
               />
               <View style={styles.actionsSpacer} />
               <IconCountWithLikes

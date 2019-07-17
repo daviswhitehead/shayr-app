@@ -1,13 +1,20 @@
 import firebase from 'react-native-firebase';
 import { DocumentSnapshot, Query } from 'react-native-firebase/firestore';
 
-export type queryType =
+export type usersPostsLists =
   | 'USERS_POSTS_SINGLE'
   | 'USERS_POSTS_ALL'
   | 'USERS_POSTS_SHARES'
   | 'USERS_POSTS_ADDS'
   | 'USERS_POSTS_DONES'
-  | 'USERS_POSTS_LIKES'
+  | 'USERS_POSTS_LIKES';
+
+export type queryType =
+  | usersPostsLists
+  | 'USER_ADDS'
+  | 'USER_DONES'
+  | 'USER_LIKES'
+  | 'USER_SHARES'
   | 'FRIENDSHIPS_ALL'
   | 'FRIENDS_ALL'
   | 'USERS_ALL';

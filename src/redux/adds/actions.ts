@@ -16,6 +16,7 @@ import {
   actionTypeInactiveToasts
 } from '../../styles/Copy';
 import { refreshUsersPostsDocuments } from '../usersPosts/actions';
+import { toggleUsersPostsListsItem } from '../usersPostsLists/actions';
 
 export const STATE_KEY = 'adds';
 
@@ -49,14 +50,12 @@ export const toggleAddDonePost = (
       : Toaster(actionTypeInactiveToasts[type]);
 
     const batcher = new Batcher(firebase.firestore());
-    const collection = type === 'adds' ? 'adds' : 'dones';
-    const otherCollection = type === 'adds' ? 'dones' : 'adds';
 
     // {collection}/{userId}_{postId}
     batcher.set(
       firebase
         .firestore()
-        .collection(collection)
+        .collection('adds')
         .doc(`${userId}_${postId}`),
       {
         active: !isActive,
@@ -69,14 +68,14 @@ export const toggleAddDonePost = (
       }
     );
 
-    updateCounts(batcher, !isActive, collection, postId, ownerUserId, userId);
+    updateCounts(batcher, !isActive, 'adds', postId, ownerUserId, userId);
 
     if (!isActive && isOtherActive) {
       // {otherCollection}/{userId}_{postId}
       batcher.set(
         firebase
           .firestore()
-          .collection(otherCollection)
+          .collection('dones')
           .doc(`${userId}_${postId}`),
         {
           active: !isOtherActive,
@@ -91,7 +90,7 @@ export const toggleAddDonePost = (
       updateCounts(
         batcher,
         !isOtherActive,
-        otherCollection,
+        'dones',
         postId,
         ownerUserId,
         userId
@@ -101,6 +100,24 @@ export const toggleAddDonePost = (
     batcher.write();
 
     dispatch(refreshUsersPostsDocuments(postId, 'cache'));
+    dispatch(
+      toggleUsersPostsListsItem(
+        userId,
+        queries.USERS_POSTS_ADDS.type,
+        postId,
+        !isActive
+      )
+    );
+    if (!isActive && isOtherActive) {
+      dispatch(
+        toggleUsersPostsListsItem(
+          userId,
+          queries.USERS_POSTS_DONES.type,
+          postId,
+          !isOtherActive
+        )
+      );
+    }
 
     dispatch({
       type: types.TOGGLE_ADD_DONE_POST_SUCCESS

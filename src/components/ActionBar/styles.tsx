@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import colors from '../../styles/Colors';
+import Colors from '../../styles/Colors';
 import Layout from '../../styles/Layout';
 import createShadow from '../../styles/Shadows';
 
@@ -7,11 +7,13 @@ const shadow = createShadow(4);
 
 export default StyleSheet.create({
   container: {
-    backgroundColor: colors.WHITE,
+    backgroundColor: Colors.WHITE,
     ...shadow,
     shadowOffset: {
       height: -1 * shadow.shadowOffset.height
-    }
+    },
+    borderTopWidth: 0.25,
+    borderTopColor: Colors.DARK_GRAY
   },
   safeArea: {
     flexDirection: 'column',
@@ -21,7 +23,8 @@ export default StyleSheet.create({
   actionBar: {
     flexDirection: 'row',
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+    marginVertical: Layout.MARGIN_MEDIUM
   },
   action: {
     margin: Layout.MARGIN_LONG

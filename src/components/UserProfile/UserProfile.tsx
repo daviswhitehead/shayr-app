@@ -31,7 +31,7 @@ const UserProfile: React.SFC<Props> = ({
         <Text style={styles.profileName}>
           {firstName} {lastName}
         </Text>
-        <IconWithCount name={'share'} count={69} isActive={false} />
+        <IconWithCount name={'friends'} count={69} isActive={false} />
       </View>
     </View>
   );

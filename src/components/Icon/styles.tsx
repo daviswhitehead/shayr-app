@@ -7,5 +7,10 @@ export default StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center'
+  },
+  image: {
+    height: 24,
+    width: 24,
+    resizeMode: 'contain'
   }
 });

@@ -4,7 +4,13 @@ import PropTypes from 'prop-types';
 import styles from './styles';
 import colors from '../../styles/Colors';
 import { getActiveRouteName } from '../../lib/ReactNavigationHelpers';
-import TabBarIcon from './TabBarIcon';
+import Icon from '../Icon';
+
+const routeIconNameMap = {
+  DiscoverTab: 'search',
+  MyListTab: 'list',
+  FriendsTab: 'friends'
+};
 
 const TabBar = props => {
   const { onTabPress, onTabLongPress, navigation } = props;
@@ -28,7 +34,9 @@ const TabBar = props => {
             const tintColor = isRouteActive
               ? activeTintColor
               : inactiveTintColor;
-            const name = route.routeName;
+            let name = isRouteActive
+              ? routeIconNameMap[route.routeName] + '-active'
+              : routeIconNameMap[route.routeName];
 
             return (
               <TouchableOpacity
@@ -41,13 +49,7 @@ const TabBar = props => {
                   onTabLongPress({ route });
                 }}
               >
-                {
-                  <TabBarIcon
-                    name={name}
-                    color={tintColor}
-                    active={isRouteActive}
-                  />
-                }
+                <Icon.default name={name} />
               </TouchableOpacity>
             );
           })}

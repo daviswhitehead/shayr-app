@@ -9,7 +9,7 @@
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
-	<string>com.daviswhitehead.shayr.ios.prod</string>
+	<string>com.daviswhitehead.shayr.ios.alpha</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
@@ -50,7 +50,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>54</string>
+	<string>57</string>
 	<key>CodePushDeploymentKey</key>
 	<string>__RN_CONFIG_IOS_CODEPUSH_DEPLOYMENT_KEY</string>
 	<key>Fabric</key>
@@ -94,7 +94,7 @@
 		</dict>
 	</dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string/>
+	<string></string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Entypo.ttf</string>

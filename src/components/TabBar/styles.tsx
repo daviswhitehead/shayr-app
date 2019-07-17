@@ -1,5 +1,5 @@
-import { StyleSheet, Dimensions } from 'react-native';
-import layout from '../../styles/Layout';
+import { StyleSheet } from 'react-native';
+import Layout from '../../styles/Layout';
 import colors from '../../styles/Colors';
 import createShadow from '../../styles/Shadows';
 
@@ -11,16 +11,17 @@ export default StyleSheet.create({
     ...shadow,
     shadowOffset: { height: -1 * shadow.shadowOffset.height },
     alignItems: 'center',
+    paddingVertical: Layout.MARGIN_LONG
   },
   tabBar: {
     flexDirection: 'row',
     backgroundColor: colors.YELLOW,
-    width: Dimensions.get('window').width * 0.8,
+    width: Layout.WINDOW_WIDTH * Layout.WINDOW_WIDTH_MULTIPLIER
   },
   tabButton: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: layout.PADDING_MEDIUM,
-  },
+    padding: Layout.PADDING_MEDIUM
+  }
 });

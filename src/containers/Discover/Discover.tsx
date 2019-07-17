@@ -152,13 +152,13 @@ class Discover extends Component<Props> {
     //   ownerUserId: this.props.authUserId,
     //   postId: 'cd2qGlHClQvzHnO1m5xY'
     // });
-    // this.props.navigation.navigate({
-    //   routeName: 'MyList',
-    //   params: {
-    //     ownerUserId: 'lOnI91XOvdRnQe5Hmdrkf2TY5lH2'
-    //     // ownerUserId: this.props.authUserId
-    //   }
-    // });
+    this.props.navigation.navigate({
+      routeName: 'MyList',
+      params: {
+        // ownerUserId: 'lOnI91XOvdRnQe5Hmdrkf2TY5lH2'
+        ownerUserId: this.props.authUserId
+      }
+    });
   }
 
   componentWillUnmount() {

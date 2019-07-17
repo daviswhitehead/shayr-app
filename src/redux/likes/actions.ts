@@ -16,6 +16,7 @@ import {
   actionTypeInactiveToasts
 } from '../../styles/Copy';
 import { refreshUsersPostsDocuments } from '../usersPosts/actions';
+import { toggleUsersPostsListsItem } from '../usersPostsLists/actions';
 
 export const STATE_KEY = 'likes';
 
@@ -70,6 +71,14 @@ export const toggleLikePost = (
     batcher.write();
 
     dispatch(refreshUsersPostsDocuments(postId, 'cache'));
+    dispatch(
+      toggleUsersPostsListsItem(
+        userId,
+        queries.USERS_POSTS_LIKES.type,
+        postId,
+        !isActive
+      )
+    );
 
     dispatch({
       type: types.TOGGLE_LIKE_POST_SUCCESS

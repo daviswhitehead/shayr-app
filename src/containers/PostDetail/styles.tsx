@@ -11,6 +11,9 @@ export default StyleSheet.create({
     alignItems: 'stretch',
     justifyContent: 'flex-start'
   },
+  scrollView: {
+    flex: 1
+  },
   container: {
     flex: 1,
     flexDirection: 'column',
