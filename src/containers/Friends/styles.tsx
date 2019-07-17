@@ -1,8 +1,8 @@
 import { StyleSheet } from 'react-native';
 
 import colors from '../../styles/Colors';
-import layout from '../../styles/Layout';
 import { fontSystem } from '../../styles/Fonts';
+import Layout from '../../styles/Layout';
 
 export default StyleSheet.create({
   container: {
@@ -10,37 +10,39 @@ export default StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: colors.WHITE,
+    backgroundColor: colors.WHITE
   },
   contentBox: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'space-between'
   },
   dividerBox: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: layout.PADDING_MEDIUM,
+    padding: Layout.PADDING_MEDIUM
   },
   actionBox: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'space-between'
   },
   divider: {
     backgroundColor: colors.LIGHT_GRAY,
     height: 1,
-    width: '20%',
+    width: '20%'
   },
   descriptionBox: {
-    padding: layout.PADDING_MEDIUM,
+    padding: Layout.PADDING_MEDIUM
   },
   header: {
-    ...fontSystem.H2,
+    ...fontSystem.H2
   },
   body: {
-    ...fontSystem.BODY,
+    ...fontSystem.BODY
   },
-  actionByBox: {
-    padding: layout.PADDING_MEDIUM,
-  },
+  sampleView: {
+    width: Layout.WINDOW_WIDTH,
+    height: 100,
+    backgroundColor: 'blue'
+  }
 });

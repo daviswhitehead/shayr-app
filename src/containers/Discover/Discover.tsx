@@ -1,4 +1,9 @@
-import { UsersPostsType, UserType } from '@daviswhitehead/shayr-resources';
+import {
+  documentId,
+  UsersPostsType,
+  UserType
+} from '@daviswhitehead/shayr-resources';
+import _ from 'lodash';
 import React, { Component } from 'react';
 import { Text, View } from 'react-native';
 import { DocumentSnapshot } from 'react-native-firebase/firestore';
@@ -7,8 +12,10 @@ import { connect } from 'react-redux';
 import Header from '../../components/Header';
 import List from '../../components/List';
 import PostCard from '../../components/PostCard';
+import SwipeCard from '../../components/SwipeCard';
 import { queries, queryArguments, queryType } from '../../lib/FirebaseQueries';
 import { subscribeToAdds } from '../../redux/adds/actions';
+import { toggleAddDonePost } from '../../redux/adds/actions';
 import { selectAuthUserId } from '../../redux/auth/selectors';
 import { subscribeToDones } from '../../redux/dones/actions';
 import { subscribeToFriendships } from '../../redux/friendships/actions';
@@ -107,7 +114,25 @@ const mapDispatchToProps = (dispatch: any, props: any) => {
     subscribeToFriendships: userId => dispatch(subscribeToFriendships(userId)),
     subscribeNotificationTokenRefresh: userId =>
       dispatch(subscribeNotificationTokenRefresh(userId)),
-    navigateToRoute: payload => dispatch(navigateToRoute(payload))
+    navigateToRoute: payload => dispatch(navigateToRoute(payload)),
+    toggleAddDonePost: (
+      type: 'adds' | 'dones',
+      isActive: boolean,
+      postId: documentId,
+      ownerUserId: documentId,
+      userId: documentId,
+      isOtherActive: boolean
+    ) =>
+      dispatch(
+        toggleAddDonePost(
+          type,
+          isActive,
+          postId,
+          ownerUserId,
+          userId,
+          isOtherActive
+        )
+      )
   };
 };
 
@@ -152,13 +177,13 @@ class Discover extends Component<Props> {
     //   ownerUserId: this.props.authUserId,
     //   postId: 'cd2qGlHClQvzHnO1m5xY'
     // });
-    this.props.navigation.navigate({
-      routeName: 'MyList',
-      params: {
-        // ownerUserId: 'lOnI91XOvdRnQe5Hmdrkf2TY5lH2'
-        ownerUserId: this.props.authUserId
-      }
-    });
+    // this.props.navigation.navigate({
+    //   routeName: 'MyList',
+    //   params: {
+    //     // ownerUserId: 'lOnI91XOvdRnQe5Hmdrkf2TY5lH2'
+    //     ownerUserId: this.props.authUserId
+    //   }
+    // });
   }
 
   componentWillUnmount() {
@@ -190,21 +215,39 @@ class Discover extends Component<Props> {
           ].data
         }
         renderItem={(item: any) => (
-          <PostCard
-            key={item._id}
-            post={item}
-            ownerUserId={this.props.authUserId}
-            users={{
-              [this.props.authUserId]: this.props.authUser,
-              ...this.props.friends
-            }}
-            onCardPress={() =>
-              this.props.navigation.navigate('PostDetail', {
-                ownerUserId: item.userId,
-                postId: item.postId
-              })
+          <SwipeCard
+            type={'add'}
+            isLeftAlreadyDone={_.includes(
+              item.adds || [],
+              this.props.authUserId
+            )}
+            leftAction={() =>
+              this.props.toggleAddDonePost(
+                'adds',
+                false,
+                item.postId,
+                this.props.authUserId,
+                this.props.authUserId,
+                _.includes(item.dones || [], this.props.authUserId)
+              )
             }
-          />
+          >
+            <PostCard
+              key={item._id}
+              post={item}
+              ownerUserId={this.props.authUserId}
+              users={{
+                [this.props.authUserId]: this.props.authUser,
+                ...this.props.friends
+              }}
+              onCardPress={() =>
+                this.props.navigation.navigate('PostDetail', {
+                  ownerUserId: item.userId,
+                  postId: item.postId
+                })
+              }
+            />
+          </SwipeCard>
         )}
         onEndReached={() =>
           this.props.loadUsersPosts(

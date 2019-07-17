@@ -67,20 +67,22 @@ export interface Props {
   isActive?: boolean;
   onPress?: () => void | undefined;
   style?: any;
+  iconStyle?: any;
 }
 
 const Icon: React.SFC<Props> = ({
   name,
   isActive = false,
   onPress,
-  style = {}
+  style = {},
+  iconStyle = {}
 }: Props) => {
   const color: string = isActive ? colors.YELLOW : colors.BLACK;
 
   const icon = (
     <Image
       source={iconMap[name]}
-      style={[styles.image, { tintColor: color }]}
+      style={[styles.image, { tintColor: color }, iconStyle]}
     />
   );
   // const icon = <Icons name={name} size={16} color={color} />;

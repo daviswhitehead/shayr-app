@@ -9,10 +9,14 @@ import Header from '../../components/Header';
 import List from '../../components/List';
 import PostCard from '../../components/PostCard';
 import SegmentedControl from '../../components/SegmentedControl';
+import SwipeCard from '../../components/SwipeCard';
 import UserProfile from '../../components/UserProfile';
 import { queries, queryArguments, queryType } from '../../lib/FirebaseQueries';
+import { toggleAddDonePost as toggleAdds } from '../../redux/adds/actions';
 import { selectAuthUserId } from '../../redux/auth/selectors';
+import { toggleAddDonePost as toggleDones } from '../../redux/dones/actions';
 import { subscribeToFriendships } from '../../redux/friendships/actions';
+import { toggleLikePost } from '../../redux/likes/actions';
 import { getUser } from '../../redux/users/actions';
 import {
   selectUserFromId,
@@ -172,7 +176,35 @@ const mapDispatchToProps = (dispatch: any) => ({
         isLoading,
         lastItem
       )
-    )
+    ),
+  toggleAdds: (
+    type: 'adds',
+    isActive: boolean,
+    postId: documentId,
+    ownerUserId: documentId,
+    userId: documentId,
+    isOtherActive: boolean
+  ) =>
+    dispatch(
+      toggleAdds(type, isActive, postId, ownerUserId, userId, isOtherActive)
+    ),
+  toggleDones: (
+    type: 'dones',
+    isActive: boolean,
+    postId: documentId,
+    ownerUserId: documentId,
+    userId: documentId,
+    isOtherActive: boolean
+  ) =>
+    dispatch(
+      toggleDones(type, isActive, postId, ownerUserId, userId, isOtherActive)
+    ),
+  toggleLikePost: (
+    isActive: boolean,
+    postId: documentId,
+    ownerUserId: documentId,
+    userId: documentId
+  ) => dispatch(toggleLikePost(isActive, postId, ownerUserId, userId))
 });
 
 class MyList extends Component<Props, State> {
@@ -341,25 +373,104 @@ class MyList extends Component<Props, State> {
                 this.addUserIdToView(this.state.activeView)
               ].data
             }
-            renderItem={(item: any) => (
-              <PostCard
-                key={item._id}
-                post={item}
-                ownerUserId={this.props.ownerUserId}
-                users={{
-                  [this.props.authUserId]: this.props.authUser,
-                  [this.props.ownerUserId]: this.props.ownerUser,
-                  ...this.props.authFriends,
-                  ...this.props.ownerFriends
-                }}
-                onCardPress={() =>
-                  this.props.navigation.navigate('PostDetail', {
-                    ownerUserId: item.userId,
-                    postId: item.postId
-                  })
-                }
-              />
-            )}
+            renderItem={(item: any) => {
+              const addSwiping = _.includes(
+                [queries.USERS_POSTS_ADDS.type, queries.USERS_POSTS_DONES.type],
+                this.state.activeView
+              );
+              const isDonesView =
+                this.state.activeView === queries.USERS_POSTS_DONES.type;
+              const isAddActive = _.includes(
+                item.adds || [],
+                this.props.authUserId
+              );
+              const isDoneActive = _.includes(
+                item.dones || [],
+                this.props.authUserId
+              );
+              const isLikeActive = _.includes(
+                item.likes || [],
+                this.props.authUserId
+              );
+
+              const renderPostCard = () => {
+                return (
+                  <PostCard
+                    key={item._id}
+                    post={item}
+                    ownerUserId={this.props.ownerUserId}
+                    users={{
+                      [this.props.authUserId]: this.props.authUser,
+                      [this.props.ownerUserId]: this.props.ownerUser,
+                      ...this.props.authFriends,
+                      ...this.props.ownerFriends
+                    }}
+                    onCardPress={() =>
+                      this.props.navigation.navigate('PostDetail', {
+                        ownerUserId: item.userId,
+                        postId: item.postId
+                      })
+                    }
+                  />
+                );
+              };
+              if (addSwiping) {
+                return (
+                  <SwipeCard
+                    type={isDonesView ? 'like' : 'done'}
+                    isLeftAlreadyDone={
+                      isDonesView ? isLikeActive : isDoneActive
+                    }
+                    leftAction={
+                      isDonesView
+                        ? () =>
+                            this.props.toggleLikePost(
+                              false,
+                              item.postId,
+                              item.userId,
+                              this.props.authUserId
+                            )
+                        : () =>
+                            this.props.toggleDones(
+                              'dones',
+                              false,
+                              item.postId,
+                              item.userId,
+                              this.props.authUserId,
+                              isAddActive
+                            )
+                    }
+                    isRightAlreadyDone={
+                      isDonesView ? !isDoneActive : !isAddActive
+                    }
+                    rightAction={
+                      isDonesView
+                        ? () =>
+                            this.props.toggleDones(
+                              'dones',
+                              true,
+                              item.postId,
+                              item.userId,
+                              this.props.authUserId,
+                              isAddActive
+                            )
+                        : () =>
+                            this.props.toggleAdds(
+                              'adds',
+                              true,
+                              item.postId,
+                              item.userId,
+                              this.props.authUserId,
+                              isDoneActive
+                            )
+                    }
+                  >
+                    {renderPostCard()}
+                  </SwipeCard>
+                );
+              }
+              return renderPostCard();
+            }}
             onEndReached={() =>
               this.props.loadUsersPosts(
                 this.props.ownerUserId,
