@@ -1,7 +1,7 @@
 import { documentId, User, UsersPosts } from '@daviswhitehead/shayr-resources';
 import _ from 'lodash';
 import React, { Component } from 'react';
-import { ScrollView, Text, View } from 'react-native';
+import { ActivityIndicator, ScrollView, Text, View } from 'react-native';
 import {
   NavigationScreenProp,
   NavigationState,
@@ -23,7 +23,7 @@ import {
 } from '../../redux/users/selectors';
 import { STATE_KEY } from '../../redux/usersPosts/actions';
 import { selectUsersPostFromId } from '../../redux/usersPosts/selectors';
-import colors from '../../styles/Colors';
+import Colors from '../../styles/Colors';
 import { actionTypeActivityFeature } from '../../styles/Copy';
 import styles from './styles';
 
@@ -105,8 +105,8 @@ const mapStateToProps = (state: any, props: any) => {
 
 const mapDispatchToProps = (dispatch: any, props: any) => {
   const query = queries.USERS_POSTS_SINGLE.query({
-    userId: props.ownerUserId,
-    postId: props.postId
+    userId: props.navigation.state.params.ownerUserId,
+    postId: props.navigation.state.params.postId
   });
 
   return {
@@ -200,8 +200,8 @@ class PostDetail extends Component<Props> {
   render() {
     if (!this.props.post) {
       return (
-        <View style={styles.container}>
-          <Text>LOADING</Text>
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size='large' color={Colors.BLACK} />
         </View>
       );
     }
@@ -232,7 +232,7 @@ class PostDetail extends Component<Props> {
       <View style={styles.screen}>
         {this.props.isFocused ? (
           <Header
-            backgroundColor={colors.WHITE}
+            backgroundColor={Colors.WHITE}
             statusBarStyle='dark-content'
             title=''
             back={() => this.props.navigation.goBack()}

@@ -10,7 +10,7 @@ import {
   generateActionTypes,
   subscribeDocumentsIds
 } from '../../lib/FirebaseRedux';
-import { updateCounts } from '../../lib/FirebaseWrites';
+import { overwriteUserCounts, updateCounts } from '../../lib/FirebaseWrites';
 import {
   actionTypeActiveToasts,
   actionTypeInactiveToasts
@@ -24,7 +24,10 @@ export const types = {
   ...generateActionTypes(STATE_KEY, dataActionTypes),
   TOGGLE_ADD_DONE_POST_START: 'TOGGLE_ADD_DONE_POST_START',
   TOGGLE_ADD_DONE_POST_SUCCESS: 'TOGGLE_ADD_DONE_POST_SUCCESS',
-  TOGGLE_ADD_DONE_POST_FAIL: 'TOGGLE_ADD_DONE_POST_FAIL'
+  TOGGLE_ADD_DONE_POST_FAIL: 'TOGGLE_ADD_DONE_POST_FAIL',
+  UPDATE_USER_DONES_START: 'UPDATE_USER_DONES_START',
+  UPDATE_USER_DONES_SUCCESS: 'UPDATE_USER_DONES_SUCCESS',
+  UPDATE_USER_DONES_FAIL: 'UPDATE_USER_DONES_FAIL'
 };
 
 export const toggleAddDonePost = (
@@ -144,4 +147,18 @@ export const subscribeToDones = (userId: string) => {
       )
     );
   };
+};
+
+export const updateUserDones = (userId: string, value: number) => (
+  dispatch: Dispatch
+) => {
+  dispatch({ type: types.UPDATE_USER_DONES_START });
+
+  const batcher = new Batcher(firebase.firestore());
+
+  overwriteUserCounts(batcher, 'dones', userId, value);
+
+  batcher.write();
+
+  dispatch({ type: types.UPDATE_USER_DONES_SUCCESS });
 };

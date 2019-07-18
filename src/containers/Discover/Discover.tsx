@@ -14,15 +14,21 @@ import List from '../../components/List';
 import PostCard from '../../components/PostCard';
 import SwipeCard from '../../components/SwipeCard';
 import { queries, queryArguments, queryType } from '../../lib/FirebaseQueries';
-import { subscribeToAdds } from '../../redux/adds/actions';
-import { toggleAddDonePost } from '../../redux/adds/actions';
+import {
+  subscribeToAdds,
+  toggleAddDonePost,
+  updateUserAdds
+} from '../../redux/adds/actions';
 import { selectAuthUserId } from '../../redux/auth/selectors';
-import { subscribeToDones } from '../../redux/dones/actions';
+import { subscribeToDones, updateUserDones } from '../../redux/dones/actions';
 import { subscribeToFriendships } from '../../redux/friendships/actions';
-import { subscribeToLikes } from '../../redux/likes/actions';
+import { subscribeToLikes, updateUserLikes } from '../../redux/likes/actions';
 import { subscribeNotificationTokenRefresh } from '../../redux/notifications/actions';
 import { navigateToRoute } from '../../redux/routing/actions';
-import { subscribeToShares } from '../../redux/shares/actions';
+import {
+  subscribeToShares,
+  updateUserShares
+} from '../../redux/shares/actions';
 import { subscribeToUser } from '../../redux/users/actions';
 import {
   selectUserFromId,
@@ -35,6 +41,8 @@ import {
 } from '../../redux/usersPosts/selectors';
 import colors from '../../styles/Colors';
 import styles from './styles';
+
+import { subscribe } from 'redux-subscriber';
 
 type ActionType = 'shares' | 'adds' | 'dones' | 'likes';
 
@@ -75,14 +83,18 @@ const mapStateToProps = (state: any) => {
   };
 
   return {
+    adds: state.adds,
     auth: state.auth,
     authUserId,
     authUser: selectUserFromId(state, authUserId),
+    dones: state.dones,
     friends: selectUsersFromList(state, `${authUserId}_Friends`),
-    usersPostsViews,
-    usersPostsData,
+    likes: state.likes,
+    posts: state.posts,
     routing: state.routing,
-    posts: state.posts
+    shares: state.shares,
+    usersPostsViews,
+    usersPostsData
   };
 };
 
@@ -108,9 +120,16 @@ const mapDispatchToProps = (dispatch: any, props: any) => {
       ),
     subscribeToUser: userId => dispatch(subscribeToUser(userId)),
     subscribeToAdds: userId => dispatch(subscribeToAdds(userId)),
+    updateUserAdds: (userId, value) => dispatch(updateUserAdds(userId, value)),
     subscribeToDones: userId => dispatch(subscribeToDones(userId)),
+    updateUserDones: (userId, value) =>
+      dispatch(updateUserDones(userId, value)),
     subscribeToLikes: userId => dispatch(subscribeToLikes(userId)),
+    updateUserLikes: (userId, value) =>
+      dispatch(updateUserLikes(userId, value)),
     subscribeToShares: userId => dispatch(subscribeToShares(userId)),
+    updateUserShares: (userId, value) =>
+      dispatch(updateUserShares(userId, value)),
     subscribeToFriendships: userId => dispatch(subscribeToFriendships(userId)),
     subscribeNotificationTokenRefresh: userId =>
       dispatch(subscribeNotificationTokenRefresh(userId)),
@@ -154,10 +173,19 @@ class Discover extends Component<Props> {
       await this.props.subscribeToShares(this.props.authUserId)
     );
 
-    // HOME - Respond to initial route and listen to routing updates
+    // HOME - Respond to initial route
     if (this.props.routing.screen) {
       this.props.navigateToRoute(this.props.routing);
     }
+
+    // HOME - Listen to routing updates from incoming notifications
+    this.subscriptions.push(
+      subscribe('routing', state => {
+        if (state.routing.screen) {
+          this.props.navigateToRoute(state.routing);
+        }
+      })
+    );
 
     // load initial data
     await this.props.loadUsersPosts(
@@ -184,6 +212,46 @@ class Discover extends Component<Props> {
     //     ownerUserId: this.props.authUserId
     //   }
     // });
+  }
+
+  componentDidUpdate(prevProps) {
+    if (
+      !this.props.adds.hasUpdatedUser &&
+      this.props.authUserId &&
+      this.props.adds.length >= 0
+    ) {
+      this.props.updateUserAdds(this.props.authUserId, this.props.adds.length);
+    }
+    if (
+      !this.props.dones.hasUpdatedUser &&
+      this.props.authUserId &&
+      this.props.dones.length >= 0
+    ) {
+      this.props.updateUserDones(
+        this.props.authUserId,
+        this.props.dones.length
+      );
+    }
+    if (
+      !this.props.likes.hasUpdatedUser &&
+      this.props.authUserId &&
+      this.props.likes.length >= 0
+    ) {
+      this.props.updateUserLikes(
+        this.props.authUserId,
+        this.props.likes.length
+      );
+    }
+    if (
+      !this.props.shares.hasUpdatedUser &&
+      this.props.authUserId &&
+      this.props.shares.length >= 0
+    ) {
+      this.props.updateUserShares(
+        this.props.authUserId,
+        this.props.shares.length
+      );
+    }
   }
 
   componentWillUnmount() {

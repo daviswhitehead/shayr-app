@@ -10,7 +10,7 @@ import {
   generateActionTypes,
   subscribeDocumentsIds
 } from '../../lib/FirebaseRedux';
-import { updateCounts } from '../../lib/FirebaseWrites';
+import { overwriteUserCounts, updateCounts } from '../../lib/FirebaseWrites';
 import {
   actionTypeActiveToasts,
   actionTypeInactiveToasts
@@ -24,7 +24,10 @@ export const types = {
   ...generateActionTypes(STATE_KEY, dataActionTypes),
   TOGGLE_SHARE_POST_START: 'TOGGLE_SHARE_POST_START',
   TOGGLE_SHARE_POST_SUCCESS: 'TOGGLE_SHARE_POST_SUCCESS',
-  TOGGLE_SHARE_POST_FAIL: 'TOGGLE_SHARE_POST_FAIL'
+  TOGGLE_SHARE_POST_FAIL: 'TOGGLE_SHARE_POST_FAIL',
+  UPDATE_USER_SHARES_START: 'UPDATE_USER_SHARES_START',
+  UPDATE_USER_SHARES_SUCCESS: 'UPDATE_USER_SHARES_SUCCESS',
+  UPDATE_USER_SHARES_FAIL: 'UPDATE_USER_SHARES_FAIL'
 };
 
 export const toggleSharePost = (
@@ -102,4 +105,18 @@ export const subscribeToShares = (userId: string) => {
       )
     );
   };
+};
+
+export const updateUserShares = (userId: string, value: number) => (
+  dispatch: Dispatch
+) => {
+  dispatch({ type: types.UPDATE_USER_SHARES_START });
+
+  const batcher = new Batcher(firebase.firestore());
+
+  overwriteUserCounts(batcher, 'shares', userId, value);
+
+  batcher.write();
+
+  dispatch({ type: types.UPDATE_USER_SHARES_SUCCESS });
 };

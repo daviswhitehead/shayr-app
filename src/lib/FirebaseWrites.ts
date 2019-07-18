@@ -104,3 +104,25 @@ export const updateCounts = (
     }
   );
 };
+
+export const overwriteUserCounts = (
+  batcher: any,
+  action: countActions,
+  userId: documentId,
+  value: number
+) => {
+  // users/{userId} { {action}Count: {value} }
+  batcher.set(
+    firebase
+      .firestore()
+      .collection('users')
+      .doc(userId),
+    {
+      [`${action}Count`]: value,
+      updatedAt: ts
+    },
+    {
+      merge: true
+    }
+  );
+};

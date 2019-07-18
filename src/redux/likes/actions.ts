@@ -10,7 +10,7 @@ import {
   generateActionTypes,
   subscribeDocumentsIds
 } from '../../lib/FirebaseRedux';
-import { updateCounts } from '../../lib/FirebaseWrites';
+import { overwriteUserCounts, updateCounts } from '../../lib/FirebaseWrites';
 import {
   actionTypeActiveToasts,
   actionTypeInactiveToasts
@@ -24,7 +24,10 @@ export const types = {
   ...generateActionTypes(STATE_KEY, dataActionTypes),
   TOGGLE_LIKE_POST_START: 'TOGGLE_LIKE_POST_START',
   TOGGLE_LIKE_POST_SUCCESS: 'TOGGLE_LIKE_POST_SUCCESS',
-  TOGGLE_LIKE_POST_FAIL: 'TOGGLE_LIKE_POST_FAIL'
+  TOGGLE_LIKE_POST_FAIL: 'TOGGLE_LIKE_POST_FAIL',
+  UPDATE_USER_LIKES_START: 'UPDATE_USER_LIKES_START',
+  UPDATE_USER_LIKES_SUCCESS: 'UPDATE_USER_LIKES_SUCCESS',
+  UPDATE_USER_LIKES_FAIL: 'UPDATE_USER_LIKES_FAIL'
 };
 
 export const toggleLikePost = (
@@ -102,4 +105,18 @@ export const subscribeToLikes = (userId: string) => {
       )
     );
   };
+};
+
+export const updateUserLikes = (userId: string, value: number) => (
+  dispatch: Dispatch
+) => {
+  dispatch({ type: types.UPDATE_USER_LIKES_START });
+
+  const batcher = new Batcher(firebase.firestore());
+
+  overwriteUserCounts(batcher, 'likes', userId, value);
+
+  batcher.write();
+
+  dispatch({ type: types.UPDATE_USER_LIKES_SUCCESS });
 };

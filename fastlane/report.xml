@@ -5,72 +5,47 @@
     
     
       
-      <testcase classname="fastlane.lanes" name="00: Verifying fastlane version" time="0.003581">
+      <testcase classname="fastlane.lanes" name="0: Verifying fastlane version" time="0.003291">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="01: Switch to ios development_certificates lane" time="0.003126">
+      <testcase classname="fastlane.lanes" name="1: gradle" time="10.684661">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="02: register_devices" time="2.068856">
+      <testcase classname="fastlane.lanes" name="2: increment_version_code" time="0.007169">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="03: match" time="9.455715">
+      <testcase classname="fastlane.lanes" name="3: gradle" time="88.885429">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="04: Switch to ios update_bundle_ids lane" time="0.003863">
+      <testcase classname="fastlane.lanes" name="4: crashlytics" time="10.619001">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="05: update_app_identifier" time="0.013546">
+      <testcase classname="fastlane.lanes" name="5: upload_to_play_store" time="19.580388">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="06: update_app_identifier" time="0.010991">
+      <testcase classname="fastlane.lanes" name="6: Switch to android update_codepush_builds lane" time="0.003399">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="07: Switch to ios build lane" time="0.004147">
+      <testcase classname="fastlane.lanes" name="7: pwd" time="0.007543">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="08: increment_build_number" time="1.229085">
-        
-      </testcase>
-    
-      
-      <testcase classname="fastlane.lanes" name="09: gym" time="636.77041">
-        
-      </testcase>
-    
-      
-      <testcase classname="fastlane.lanes" name="10: crashlytics" time="10.080429">
-        
-      </testcase>
-    
-      
-      <testcase classname="fastlane.lanes" name="11: Switch to ios update_codepush_builds lane" time="0.003075">
-        
-      </testcase>
-    
-      
-      <testcase classname="fastlane.lanes" name="12: pwd" time="0.009801">
-        
-      </testcase>
-    
-      
-      <testcase classname="fastlane.lanes" name="13: cd .. &amp;&amp; appcenter codepush release-react -a whitehead.davis/Shayr-iOS -d alpha" time="7.895008">
+      <testcase classname="fastlane.lanes" name="8: cd .. &amp;&amp; appcenter codepush release-react -a whitehead.davis/Shayr-Android -d alpha" time="8.723966">
         
       </testcase>
     

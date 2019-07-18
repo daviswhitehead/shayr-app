@@ -358,10 +358,14 @@ class MyList extends Component<Props, State> {
               activeView: this.mapIndexToView(index)
             }))
           }
-          sharesCount={this.props.shares.length}
-          addsCount={this.props.adds.length}
-          donesCount={this.props.dones.length}
-          likesCount={this.props.likes.length}
+          // sharesCount={this.props.shares.length}
+          // addsCount={this.props.adds.length}
+          // donesCount={this.props.dones.length}
+          // likesCount={this.props.likes.length}
+          sharesCount={_.get(this.props, ['ownerUser', 'sharesCount'], 0)}
+          addsCount={_.get(this.props, ['ownerUser', 'addsCount'], 0)}
+          donesCount={_.get(this.props, ['ownerUser', 'donesCount'], 0)}
+          likesCount={_.get(this.props, ['ownerUser', 'likesCount'], 0)}
         />
         {this.props.usersPostsData[this.addUserIdToView(this.state.activeView)]
           .isLoaded &&

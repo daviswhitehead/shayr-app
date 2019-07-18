@@ -5,10 +5,8 @@ import {
   createSwitchNavigator
 } from 'react-navigation';
 import TabBar from '../components/TabBar';
-import ComingSoon from '../containers/ComingSoon';
 import Discover from '../containers/Discover';
 import Friends from '../containers/Friends';
-import HelloWorld from '../containers/HelloWorld';
 import Login from '../containers/Login';
 import MyList from '../containers/MyList';
 import PostDetail from '../containers/PostDetail';
@@ -53,13 +51,13 @@ const MyListStack = createStackNavigator(
       navigationOptions: () => ({
         header: null
       })
-    },
-    Settings: {
-      screen: ComingSoon,
-      navigationOptions: () => ({
-        header: null
-      })
     }
+    // Settings: {
+    //   screen: Settings,
+    //   navigationOptions: () => ({
+    //     header: null
+    //   })
+    // }
   },
   {
     initialRouteName: 'MyList'

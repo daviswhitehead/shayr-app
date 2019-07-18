@@ -21,6 +21,13 @@ export default StyleSheet.create({
     alignItems: 'stretch',
     marginHorizontal: Layout.MARGIN_LONG
   },
+  loadingContainer: {
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: colors.YELLOW
+  },
   contentBox: {
     flexDirection: 'row',
     justifyContent: 'space-between'
