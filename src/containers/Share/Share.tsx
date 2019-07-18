@@ -1,27 +1,27 @@
+import { buildAppLink } from '@daviswhitehead/shayr-resources';
 import React, { Component } from 'react';
 import {
-  Text,
-  View,
-  Modal,
   Image,
+  Linking,
+  Modal,
+  Platform,
+  Text,
   TouchableOpacity,
   TouchableWithoutFeedback,
-  Linking,
-  Platform
+  View
 } from 'react-native';
 import firebase from 'react-native-firebase';
 import ShareExtension from 'react-native-share-extension';
-import codePush from 'react-native-code-push';
-import styles from './styles';
+import { connect } from 'react-redux';
 import shareExtensionLogo from '../../assets/ShareExtensionLogo.png';
 import { retrieveToken } from '../../lib/AppGroupTokens';
-import { getFBAuthCredential, getCurrentUser } from '../../lib/FirebaseLogin';
-import { createShare } from '../../lib/FirebaseHelpers';
-import { buildAppLink } from '@daviswhitehead/shayr-resources';
 import { userAnalytics } from '../../lib/FirebaseAnalytics';
+import { createShare } from '../../lib/FirebaseHelpers';
+import { getCurrentUser, getFBAuthCredential } from '../../lib/FirebaseLogin';
+import styles from './styles';
 
 const tapShareExtension = async () => {
-  const url = buildAppLink('shayr', 'shayr', 'Feed', {});
+  const url = buildAppLink('shayr', 'shayr', 'Discover', {});
   try {
     (await Platform.OS) === 'ios'
       ? ShareExtension.openURL(url)
@@ -31,10 +31,13 @@ const tapShareExtension = async () => {
   }
 };
 
+const mapStateToProps = state => ({});
+
+const mapDispatchToProps = dispatch => ({});
+
 class Share extends Component {
-  constructor() {
-    super();
-    const url = buildAppLink('shayr', 'shayr', 'Feed', {});
+  constructor(props) {
+    super(props);
     this.state = {
       modalVisible: true,
       shareText: 'Shayring...'
@@ -118,7 +121,7 @@ class Share extends Component {
     return (
       <Modal
         visible={this.state.modalVisible}
-        animationType="slide"
+        animationType='slide'
         onRequestClose={() => this.closeModal()}
         supportedOrientations={['portrait']}
         transparent
@@ -143,4 +146,7 @@ class Share extends Component {
   }
 }
 
-export default codePush(Share);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Share);

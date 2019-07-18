@@ -25,5 +25,5 @@ AppRegistry.registerComponent(
 );
 AppRegistry.registerComponent(
   'ShareExtension',
-  () => require('./src/containers/Share').default
+  () => require('./src/containers/ShareApp').default
 );
