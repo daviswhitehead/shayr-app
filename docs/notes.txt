@@ -1,8 +1,0 @@
-I want a feed of posts shared by my friends
-- query users
-- where userId in friends array
-- where postId in shares array
-
-I want to see all my friends
-- query users
-- where userId in friends array

@@ -3,7 +3,8 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "start": "node node_modules/react-native/local-cli/cli.js start",
+    "lint": "tslint -p \".\" -t stylish",
+    "start": "node node_modules/react-native/local-cli/cli.js start --reset-cache",
     "dev_menu": "adb shell input keyevent 82",
     "test": "jest",
     "dsyms": "find ./ios/ -name \"*.dSYM\" | xargs -I {} /Applications/Fabric.app/Contents/MacOS/upload-symbols -a <api-key> -p ios {}",
@@ -26,12 +27,12 @@
     "ios:dev": "sh scripts/env_manager.sh dev && ENVFILE=./environments/dev/.env.dev react-native run-ios --scheme shayr-dev --simulator=\"iPhone X\"",
     "ios:prod": "sh scripts/env_manager.sh prod && ENVFILE=./environments/prod/.env.prod react-native run-ios --scheme shayr-prod --simulator=\"iPhone X\" --configuration Release",
     "ios:staging": "sh scripts/env_manager.sh staging && ENVFILE=./environments/staging/.env.staging react-native run-ios --scheme shayr-prod --simulator=\"iPhone X\"",
-    "reset_node_modules": "rm -rf node_modules/ && npm cache verify && npm install",
     "reset": "sh scripts/package_reinstaller.sh",
-    "android-linux": "react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res"
+    "android-linux": "react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res",
+    "shayr-resources": "yarn add @daviswhitehead/shayr-resources@latest"
   },
   "dependencies": {
-    "@babel/runtime": "^7.1.2",
+    "@daviswhitehead/shayr-resources": "^1.2.3",
     "adm-zip": "^0.4.13",
     "bluebird": "^3.5.3",
     "fb": "^2.0.0",
@@ -39,7 +40,7 @@
     "fsevents": "^1.2.9",
     "lodash": "^4.17.5",
     "plist": "^3.0.1",
-    "prop-types": "^15.7.2",
+    "re-reselect": "^3.2.0",
     "react": "^16.6.3",
     "react-native": "^0.59.4",
     "react-native-action-button": "^2.8.4",
@@ -49,6 +50,7 @@
     "react-native-firebase": "^5.3.1",
     "react-native-gesture-handler": "^1.0.15",
     "react-native-root-toast": "^3.0.1",
+    "react-native-segmented-control-tab": "^3.4.0",
     "react-native-share-extension": "^2.0.0",
     "react-native-splash-screen": "^3.1.1",
     "react-native-swipeable": "^0.6.0",
@@ -60,30 +62,46 @@
     "redux-devtools-extension": "^2.13.8",
     "redux-subscriber": "^1.1.0",
     "redux-thunk": "^2.3.0",
+    "reselect": "^4.0.0",
     "urijs": "^1.19.1",
     "xcode": "^2.0.0"
   },
   "devDependencies": {
-    "babel-eslint": "^10.0.1",
+    "@babel/core": "^7.4.5",
+    "@babel/runtime": "^7.4.5",
+    "@types/jest": "^24.0.13",
+    "@types/react": "^16.8.19",
+    "@types/react-native": "^0.57.60",
+    "@types/react-native-fbsdk": "^0.6.3",
+    "@types/react-native-vector-icons": "^6.4.1",
+    "@types/react-navigation": "^3.0.7",
+    "@types/react-redux": "^7.0.9",
+    "@types/react-test-renderer": "^16.8.1",
+    "@types/redux-thunk": "^2.1.0",
     "babel-jest": "^24.7.1",
+    "babel-plugin-module-resolver": "^3.2.0",
     "babel-plugin-transform-remove-console": "^6.9.4",
-    "eslint": "5.3.0",
-    "eslint-config-airbnb": "17.1.0",
-    "eslint-plugin-import": "^2.14.0",
-    "eslint-plugin-jsx-a11y": "^6.1.1",
-    "eslint-plugin-react": "^7.11.0",
     "jest": "^24.7.1",
     "metro-react-native-babel-preset": "^0.49.0",
     "prettier": "^1.14.3",
-    "prettier-eslint": "^8.8.2",
-    "react-test-renderer": "16.2.0"
+    "react-native-typescript-transformer": "^1.2.12",
+    "react-test-renderer": "16.2.0",
+    "ts-jest": "^24.0.2",
+    "tslib": "^1.9.3",
+    "tslint": "^5.17.0",
+    "tslint-config-airbnb": "^5.11.1",
+    "tslint-config-prettier": "^1.18.0",
+    "tslint-eslint-rules": "^5.4.0",
+    "tslint-react": "^4.0.0",
+    "tslint-react-recommended": "^1.0.15",
+    "typescript": "^3.5.1"
   },
   "jest": {
     "preset": "react-native"
   },
   "rnpm": {
     "assets": [
-      "./app/assets/fonts/"
+      "./src/assets/fonts/"
     ]
   }
 }

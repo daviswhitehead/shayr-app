@@ -19,5 +19,11 @@ global.onunhandledrejection = function onunhandledrejection(error) {
 
 devSettings();
 
-AppRegistry.registerComponent('shayr', () => require('./app/containers/App').default);
-AppRegistry.registerComponent('ShareExtension', () => require('./app/containers/Share').default);
+AppRegistry.registerComponent(
+  'shayr',
+  () => require('./src/containers/App').default
+);
+AppRegistry.registerComponent(
+  'ShareExtension',
+  () => require('./src/containers/ShareApp').default
+);
