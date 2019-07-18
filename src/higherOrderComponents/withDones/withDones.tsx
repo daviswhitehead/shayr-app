@@ -53,11 +53,6 @@ const withDones = (
   const isDonesActive = _.includes(dones, post.postId);
   const isAddsActive = _.includes(adds, post.postId);
 
-  // console.log('isDonesActive');
-  // console.log(isDonesActive);
-  // console.log('isAddsActive');
-  // console.log(isAddsActive);
-
   return (
     <WrappedComponent
       isActive={isDonesActive}

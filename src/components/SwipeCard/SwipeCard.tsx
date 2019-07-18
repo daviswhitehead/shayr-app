@@ -156,8 +156,6 @@ export default class SwipeCard extends React.Component<Props, State> {
     } = this.state;
     const { leftAction, rightAction } = this.props;
 
-    // console.log(this.state);
-
     let swipeableOptions = {};
 
     // left

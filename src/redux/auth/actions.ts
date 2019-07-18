@@ -165,11 +165,6 @@ export function facebookAuth(error, result) {
 }
 
 // SIGN OUT
-// export function startSignOut() {
-//   console.log('startSignOut()');
-
-//   return { type: types.SIGN_OUT_START, isSigningOut: true };
-// }
 export const startSignOut = () => (dispatch: Dispatch) => {
   dispatch({ type: types.SIGN_OUT_START, isSigningOut: true });
   navigate('Login');
