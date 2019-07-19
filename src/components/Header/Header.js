@@ -3,7 +3,7 @@ import { View, SafeAreaView, Text } from 'react-native';
 import PropTypes from 'prop-types';
 import styles from './styles';
 import ShayrStatusBar from './ShayrStatusBar';
-import createShadow from '../../styles/Shadows';
+import { createShadow } from '../../styles/Shadows';
 import HeaderBack from './HeaderBack';
 
 class Header extends Component {

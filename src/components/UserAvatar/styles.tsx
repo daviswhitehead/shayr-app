@@ -1,6 +1,7 @@
 import { StyleSheet } from 'react-native';
+import Colors from '../../styles/Colors';
 import { fontSystem } from '../../styles/Fonts';
-import layout from '../../styles/Layout';
+import Layout from '../../styles/Layout';
 
 export default StyleSheet.create({
   container: {
@@ -9,10 +10,14 @@ export default StyleSheet.create({
   },
   verticalName: {
     ...fontSystem.NAME,
-    padding: layout.PADDING_SHORT
+    padding: Layout.PADDING_SHORT
   },
   horizontalName: {
     ...fontSystem.BODY,
-    padding: layout.PADDING_MEDIUM
+    padding: Layout.PADDING_MEDIUM
+  },
+  selectedName: {
+    ...fontSystem.BOLD_BODY,
+    color: Colors.YELLOW
   }
 });

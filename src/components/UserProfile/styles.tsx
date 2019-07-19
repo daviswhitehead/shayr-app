@@ -9,8 +9,8 @@ export default StyleSheet.create({
     justifyContent: 'flex-start'
   },
   profileImage: {
-    marginVertical: Layout.MARGIN_MEDIUM,
-    marginHorizontal: Layout.MARGIN_MEDIUM
+    marginVertical: Layout.MARGIN_LONG,
+    marginHorizontal: Layout.MARGIN_LONG
   },
   profileContent: {
     flex: 1,

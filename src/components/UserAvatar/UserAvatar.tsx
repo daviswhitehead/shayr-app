@@ -27,6 +27,7 @@ export interface Props extends UserAtom {
   isVertical?: boolean;
   onPress?: () => void | undefined;
   noTouching?: boolean;
+  isSelected?: boolean;
 }
 
 const mapStateToProps = (state: any) => {
@@ -48,7 +49,8 @@ const UserAvatar: React.SFC<Props> = ({
   _id,
   authUserId,
   noTouching,
-  navigation
+  navigation,
+  isSelected = false
 }: Props) => {
   const isTopLevelRoute =
     ['Discover', 'MyList', 'Friends'].indexOf(navigation.state.routeName) >=
@@ -92,7 +94,12 @@ const UserAvatar: React.SFC<Props> = ({
     >
       <UserImage uri={facebookProfilePhoto} size='small' />
       {firstName && lastName ? (
-        <Text style={isVertical ? styles.verticalName : styles.horizontalName}>
+        <Text
+          style={[
+            isVertical ? styles.verticalName : styles.horizontalName,
+            isSelected ? styles.selectedName : {}
+          ]}
+        >
           {isVertical
             ? `${firstName} ${lastName.charAt(0)}`
             : `${firstName} ${lastName}`}
