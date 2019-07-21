@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { Button, Text, View } from 'react-native';
+import { ActivityIndicator, Button, Text, View } from 'react-native';
 import { connect } from 'react-redux';
 import Header from '../../components/Header';
 import ShareModal from '../../components/ShareModal';
@@ -14,7 +14,7 @@ import {
 import colors from '../../styles/Colors';
 import styles from './styles';
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   const authUserId = selectAuthUserId(state);
 
   return {
@@ -25,7 +25,7 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch) => ({
   startSignOut: () => dispatch(startSignOut())
 });
 
@@ -54,6 +54,18 @@ class Friends extends Component {
   componentDidMount() {}
 
   render() {
+    console.log('this.modalRef');
+    console.log(this.modalRef);
+
+    const url = _.get(
+      this.props.usersPosts,
+      ['m592UXpes3azls6LnhN2VOf2PyT2_48PKLyY71DHin1XuIPop', 'url'],
+      ''
+    );
+    if (_.isEmpty(url)) {
+      return <ActivityIndicator />;
+    }
+
     return (
       <View style={styles.container}>
         <Text>COMING SOON</Text>
@@ -62,14 +74,28 @@ class Friends extends Component {
           onPress={() => this.modalRef.current.toggleModal()}
           title='Toggle Modal'
         />
-        <View style={styles.testShadow} />
         <ShareModal
           ref={this.modalRef}
-          post={_.get(
+          payload={_.get(
             this.props.usersPosts,
-            ['m592UXpes3azls6LnhN2VOf2PyT2_48PKLyY71DHin1XuIPop'],
-            {}
+            ['m592UXpes3azls6LnhN2VOf2PyT2_48PKLyY71DHin1XuIPop', 'url'],
+            ''
           )}
+          // url={_.get(
+          //   this.props.usersPosts,
+          //   ['m592UXpes3azls6LnhN2VOf2PyT2_48PKLyY71DHin1XuIPop', 'url'],
+          //   '',
+          // )}
+          // postId={_.get(
+          //   this.props.usersPosts,
+          //   ['m592UXpes3azls6LnhN2VOf2PyT2_48PKLyY71DHin1XuIPop', 'postId'],
+          //   '',
+          // )}
+          // post={_.get(
+          //   this.props.usersPosts,
+          //   ['m592UXpes3azls6LnhN2VOf2PyT2_48PKLyY71DHin1XuIPop'],
+          //   {}
+          // )}
           authUserId={this.props.authUserId}
           users={{
             [this.props.authUserId]: this.props.authUser,

@@ -5,8 +5,7 @@ import Layout from '../../styles/Layout';
 import { createShadow } from '../../styles/Shadows';
 
 const buttonShadow = createShadow(10);
-const containerShadow = createShadow(10);
-// const buttonShadow2 = createShadow2(5);
+const containerShadow = createShadow(24);
 
 export default StyleSheet.create({
   modal: {
@@ -21,6 +20,7 @@ export default StyleSheet.create({
     alignItems: 'stretch',
     paddingBottom: Layout.WINDOW_BOTTOM_SAFE_AREA,
     paddingTop: Layout.WINDOW_TOP_SAFE_AREA,
+    paddingHorizontal: Layout.PADDING_LONG,
     ...containerShadow
   },
   contentContainer: {
@@ -30,7 +30,9 @@ export default StyleSheet.create({
     alignItems: 'stretch',
     marginVertical: Layout.MARGIN_LONG,
     backgroundColor: Colors.WHITE,
-    borderRadius: Layout.BORDER_RADIUS_LARGE
+    borderRadius: Layout.BORDER_RADIUS_LARGE,
+    borderWidth: 0.25,
+    borderColor: Colors.LIGHT_GRAY
   },
   scrollViewContainer: {
     flexDirection: 'column',

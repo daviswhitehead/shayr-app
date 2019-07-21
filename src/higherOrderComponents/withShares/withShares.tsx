@@ -3,13 +3,19 @@ import _ from 'lodash';
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
+import { queries } from '../../lib/FirebaseQueries';
 import { selectAuthUserId } from '../../redux/auth/selectors';
 import { toggleSharePost } from '../../redux/shares/actions';
 
 const mapStateToProps = (state: any) => {
+  const authUserId = selectAuthUserId(state);
   return {
-    authUserId: selectAuthUserId(state),
-    shares: state.shares
+    authUserId,
+    authShares: _.get(
+      state,
+      ['sharesLists', `${authUserId}_${queries.USER_SHARES.type}`, 'items'],
+      []
+    )
   };
 };
 
@@ -29,9 +35,14 @@ const withShares = (
   post: UsersPosts,
   ownerUserId: documentId
 ) => (props: any) => {
-  const { authUserId, toggleSharePost, shares, ...passThroughProps } = props;
+  const {
+    authUserId,
+    toggleSharePost,
+    authShares,
+    ...passThroughProps
+  } = props;
 
-  const isSharesActive = _.includes(shares, post.postId);
+  const isSharesActive = _.includes(authShares, post.postId);
   return (
     <WrappedComponent
       isActive={isSharesActive}

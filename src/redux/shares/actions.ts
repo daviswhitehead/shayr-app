@@ -8,9 +8,9 @@ import { queries } from '../../lib/FirebaseQueries';
 import {
   dataActionTypes,
   generateActionTypes,
-  subscribeDocumentsIds
+  subscribeToDocument
 } from '../../lib/FirebaseRedux';
-import { overwriteUserCounts, updateCounts } from '../../lib/FirebaseWrites';
+import { updateCounts } from '../../lib/FirebaseWrites';
 import {
   actionTypeActiveToasts,
   actionTypeInactiveToasts
@@ -25,9 +25,18 @@ export const types = {
   TOGGLE_SHARE_POST_START: 'TOGGLE_SHARE_POST_START',
   TOGGLE_SHARE_POST_SUCCESS: 'TOGGLE_SHARE_POST_SUCCESS',
   TOGGLE_SHARE_POST_FAIL: 'TOGGLE_SHARE_POST_FAIL',
-  UPDATE_USER_SHARES_START: 'UPDATE_USER_SHARES_START',
-  UPDATE_USER_SHARES_SUCCESS: 'UPDATE_USER_SHARES_SUCCESS',
-  UPDATE_USER_SHARES_FAIL: 'UPDATE_USER_SHARES_FAIL'
+  START_SHARE_POST_START: 'START_SHARE_POST_START',
+  START_SHARE_POST_SUCCESS: 'START_SHARE_POST_SUCCESS',
+  START_SHARE_POST_FAIL: 'START_SHARE_POST_FAIL',
+  CONFIRM_SHARE_POST_START: 'CONFIRM_SHARE_POST_START',
+  CONFIRM_SHARE_POST_SUCCESS: 'CONFIRM_SHARE_POST_SUCCESS',
+  CONFIRM_SHARE_POST_FAIL: 'CONFIRM_SHARE_POST_FAIL',
+  CANCEL_SHARE_POST_START: 'CANCEL_SHARE_POST_START',
+  CANCEL_SHARE_POST_SUCCESS: 'CANCEL_SHARE_POST_SUCCESS',
+  CANCEL_SHARE_POST_FAIL: 'CANCEL_SHARE_POST_FAIL',
+  SUBSCRIBE_NEW_SHARE_START: 'SUBSCRIBE_NEW_SHARE_START',
+  SUBSCRIBE_NEW_SHARE_SUCCESS: 'SUBSCRIBE_NEW_SHARE_SUCCESS',
+  SUBSCRIBE_NEW_SHARE_FAIL: 'SUBSCRIBE_NEW_SHARE_FAIL'
 };
 
 export const toggleSharePost = (
@@ -95,28 +104,55 @@ export const toggleSharePost = (
   }
 };
 
-export const subscribeToShares = (userId: string) => {
-  return (dispatch: Dispatch) => {
-    return dispatch(
-      subscribeDocumentsIds(
-        STATE_KEY,
-        queries.USER_SHARES.query({ userId }),
-        'postId'
-      )
-    );
-  };
+export const startSharePost = (
+  payload: string,
+  userId: documentId,
+  postId: documentId = '',
+  url: string = ''
+) => async (dispatch: Dispatch) => {
+  dispatch({
+    type: types.START_SHARE_POST_START
+  });
+
+  firebase
+    .analytics()
+    .logEvent(`${types.START_SHARE_POST_START}`.toUpperCase());
+
+  try {
+    // sharesNew/{shareId}
+    return await firebase
+      .firestore()
+      .collection('sharesNew')
+      .add({
+        status: 'started',
+        createdAt: ts,
+        payload,
+        postId,
+        url,
+        updatedAt: ts,
+        userId
+      })
+      .then((ref) => {
+        dispatch({
+          type: types.START_SHARE_POST_SUCCESS
+        });
+
+        return ref.id;
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  } catch (error) {
+    console.error(error);
+    dispatch({
+      type: types.START_SHARE_POST_FAIL,
+      error
+    });
+  }
 };
 
-export const updateUserShares = (userId: string, value: number) => (
-  dispatch: Dispatch
-) => {
-  dispatch({ type: types.UPDATE_USER_SHARES_START });
-
-  const batcher = new Batcher(firebase.firestore());
-
-  overwriteUserCounts(batcher, 'shares', userId, value);
-
-  batcher.write();
-
-  dispatch({ type: types.UPDATE_USER_SHARES_SUCCESS });
+export const subscribeToNewShare = (shareId: documentId) => {
+  return (dispatch: Dispatch) => {
+    return dispatch(subscribeToDocument(STATE_KEY, 'sharesNew', shareId));
+  };
 };

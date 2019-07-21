@@ -8,11 +8,16 @@
 
 ```javascript
 {
+  adds: {},
   app: {},
   auth: {},
+  dones: {},
   friendships: {},
   friendshipsLists: {},
+  likes: {},
+  newShare: {},
   routing: {},
+  shares: {},
   usersLists: {},
   usersPosts: {},
   usersPostsLists: {},
@@ -411,6 +416,35 @@ The usersPostsLists state is a collection of lists that represent various views 
   },
 
   ...
+}
+```
+
+### fields
+
+- `userPostId` _string_ -- The userPost unique ID.
+
+## newShare
+
+### description
+
+The newShare state is a collection of lists that represent various views populated by usersPosts objects.
+
+### initialState
+
+```javascript
+{
+  [{shareId}]: {
+    status: 'started' | 'confirmed' | 'canceled',
+    comment: '',
+    createdAt: null,
+    mentions: ['userIdA', 'userIdB', ...],
+    payload: '',
+    postId: 'postId',
+    updatedAt: null,
+    url: '',
+    userId: 'userId',
+    _isPostLoading: false,
+  },
 }
 ```
 

@@ -9,6 +9,12 @@ import {
   View
 } from 'react-native';
 import Modal from 'react-native-modal';
+import { connect } from 'react-redux';
+import { getPost } from '../../redux/posts/actions';
+import {
+  startSharePost,
+  subscribeToNewShare
+} from '../../redux/shares/actions';
 import Colors from '../../styles/Colors';
 import Icon from '../Icon';
 import PostCard from '../PostCard';
@@ -21,11 +27,22 @@ interface Users {
 
 export interface Props {
   authUserId: documentId;
+  payload: string;
   post?: UsersPosts;
+  postId?: documentId;
+  url?: string;
   users?: Users;
+  startSharePost: (
+    payload: string,
+    userId: documentId,
+    postId: documentId,
+    url: string
+  ) => string;
+  subscribeToNewShare: (shareId: documentId) => () => void;
 }
 
 export interface State {
+  shareId: documentId;
   isVisible: boolean;
   isCommenting: boolean;
   commentText: string;
@@ -34,15 +51,38 @@ export interface State {
   selectedAllUsers: boolean;
 }
 
-export default class SwipeCard extends React.Component<Props, State> {
+const mapStateToProps = (state: any) => {
+  return {
+    shares: state.shares,
+    posts: state.posts
+  };
+};
+
+const mapDispatchToProps = (dispatch: any, props: Props) => {
+  return {
+    startSharePost: (
+      payload: string,
+      userId: documentId,
+      postId: documentId = '',
+      url: string = ''
+    ) => dispatch(startSharePost(payload, userId, postId, url)),
+    subscribeToNewShare: (shareId: documentId) =>
+      dispatch(subscribeToNewShare(shareId)),
+    getPost: (postId: documentId) => dispatch(getPost(postId))
+  };
+};
+
+class ShareModal extends React.Component<Props, State> {
   textInputRef: any;
   initialState: State;
+  subscriptions: Array<() => void>;
 
   constructor(props: Props) {
     super(props);
 
     this.initialState = {
-      // isVisible: true,
+      shareId: '',
+      isVisible: false,
       isCommenting: false,
       commentText: '',
       textInputHeight: 0,
@@ -54,6 +94,46 @@ export default class SwipeCard extends React.Component<Props, State> {
     };
 
     this.textInputRef = React.createRef();
+    this.subscriptions = [];
+  }
+
+  async componentDidMount() {
+    // create a new share
+    const shareId: documentId = await this.props.startSharePost(
+      this.props.payload,
+      this.props.authUserId,
+      this.props.postId || '',
+      this.props.url || ''
+    );
+    this.setState({ shareId });
+
+    if (!this.props.post) {
+      this.subscriptions.push(
+        // subscribe to updates to the new share (from the scraper)
+        await this.props.subscribeToNewShare(shareId)
+      );
+    }
+  }
+
+  componentDidUpdate(prevProps) {
+    const shareId = this.state.shareId;
+    const postId = _.get(this.props, ['shares', shareId, 'postId'], '');
+
+    // when the new share is assigned a postId
+    if (
+      !this.props.post &&
+      !_.isEmpty(postId) &&
+      postId !== _.get(prevProps, ['shares', shareId, 'postId'], '')
+    ) {
+      // get the post data
+      this.props.getPost(postId);
+    }
+  }
+
+  componentWillUnmount() {
+    Object.values(this.subscriptions).forEach((unsubscribe) => {
+      unsubscribe();
+    });
   }
 
   toggleModal = () => {
@@ -107,6 +187,7 @@ export default class SwipeCard extends React.Component<Props, State> {
         isVisible={this.state.isVisible}
         onBackdropPress={() => this.setState({ isVisible: false })}
         backdropColor={Colors.LIGHT_GRAY}
+        backdropOpacity={0.3}
         supportedOrientations={['portrait']}
         propagateSwipe
         hideModalContentWhileAnimating
@@ -121,7 +202,16 @@ export default class SwipeCard extends React.Component<Props, State> {
               overScrollMode='always'
             >
               <PostCard
-                post={this.props.post}
+                post={
+                  this.props.post ||
+                  this.props.posts[
+                    _.get(
+                      this.props,
+                      ['shares', this.state.shareId, 'postId'],
+                      ''
+                    )
+                  ]
+                }
                 ownerUserId={this.props.authUserId}
                 onCardPress={undefined}
                 noTouching
@@ -135,12 +225,12 @@ export default class SwipeCard extends React.Component<Props, State> {
                     { height: this.state.textInputHeight }
                   ]}
                   value={this.state.commentText}
-                  onChangeText={text => this.setState({ commentText: text })}
+                  onChangeText={(text) => this.setState({ commentText: text })}
                   onBlur={() => this.handleBlur()}
                   // returnKeyType='done'
                   // blurOnSubmit
                   multiline
-                  onContentSizeChange={event => {
+                  onContentSizeChange={(event) => {
                     this.setState({
                       textInputHeight: event.nativeEvent.contentSize.height
                     });
@@ -231,3 +321,10 @@ export default class SwipeCard extends React.Component<Props, State> {
     );
   }
 }
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+  null,
+  { forwardRef: true }
+)(ShareModal);
