@@ -40,8 +40,11 @@ const withShares = (WrappedComponent: React.SFC) => (props: any) => {
       />
       <ShareModal
         ref={modalRef}
-        payload={post.url}
         authUserId={authUserId}
+        payload={post.url}
+        url={post.url}
+        post={post}
+        postId={post._id}
         users={friends}
         // navigateToLogin={() => navigateToLogin()}
       />

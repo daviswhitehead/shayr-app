@@ -1,5 +1,5 @@
 import firebase from 'react-native-firebase';
-import { DocumentSnapshot, Query, } from 'react-native-firebase/firestore';
+import { DocumentSnapshot, Query } from 'react-native-firebase/firestore';
 
 export type usersPostsLists =
   | 'USERS_POSTS_SINGLE'
@@ -17,6 +17,7 @@ export type queryType =
   | 'USER_SHARES'
   | 'FRIENDSHIPS_ALL'
   | 'FRIENDS_ALL'
+  | 'USERS_POSTS_COMMENTS'
   | 'USERS_ALL';
 
 export interface queryArguments {
@@ -27,151 +28,152 @@ export interface queryArguments {
 export const queries = {
   USERS_POSTS_SINGLE: {
     type: 'USERS_POSTS_SINGLE',
-    query: ({ userId, postId, }: { userId: string; postId: string },) =>
+    query: ({ userId, postId }: { userId: string; postId: string }) =>
       firebase
         .firestore()
-        .collection('users_posts',)
-        .where('userId', '==', userId,)
-        .where('postId', '==', postId,),
+        .collection('users_posts')
+        .where('userId', '==', userId)
+        .where('postId', '==', postId)
   },
   USERS_POSTS_BY_POST: {
     type: 'USERS_POSTS_BY_POST',
-    query: ({ postId, }: { postId: string, },) =>
+    query: ({ postId }: { postId: string }) =>
       firebase
         .firestore()
-        .collection('users_posts',)
-        .where('postId', '==', postId,),
+        .collection('users_posts')
+        .where('postId', '==', postId)
   },
   USERS_POSTS_ALL: {
     type: 'USERS_POSTS_ALL',
-    query: ({ userId, }: { userId: string, },) =>
+    query: ({ userId }: { userId: string }) =>
       firebase
         .firestore()
-        .collection('users_posts',)
-        .where('userId', '==', userId,)
-        .orderBy('createdAt', 'desc',),
+        .collection('users_posts')
+        .where('userId', '==', userId)
+        .orderBy('createdAt', 'desc')
   },
   USERS_POSTS_SHARES: {
     type: 'USERS_POSTS_SHARES',
-    query: ({ userId, }: { userId: string, },) =>
+    query: ({ userId }: { userId: string }) =>
       firebase
         .firestore()
-        .collection('users_posts',)
-        .where('userId', '==', userId,)
-        .where('shares', 'array-contains', userId,)
-        .orderBy('updatedAt', 'desc',),
+        .collection('users_posts')
+        .where('userId', '==', userId)
+        .where('shares', 'array-contains', userId)
+        .orderBy('updatedAt', 'desc')
   },
   USERS_POSTS_ADDS: {
     type: 'USERS_POSTS_ADDS',
-    query: ({ userId, }: { userId: string, },) =>
+    query: ({ userId }: { userId: string }) =>
       firebase
         .firestore()
-        .collection('users_posts',)
-        .where('userId', '==', userId,)
-        .where('adds', 'array-contains', userId,)
-        .orderBy('updatedAt', 'desc',),
+        .collection('users_posts')
+        .where('userId', '==', userId)
+        .where('adds', 'array-contains', userId)
+        .orderBy('updatedAt', 'desc')
   },
   USERS_POSTS_DONES: {
     type: 'USERS_POSTS_DONES',
-    query: ({ userId, }: { userId: string, },) =>
+    query: ({ userId }: { userId: string }) =>
       firebase
         .firestore()
-        .collection('users_posts',)
-        .where('userId', '==', userId,)
-        .where('dones', 'array-contains', userId,)
-        .orderBy('updatedAt', 'desc',),
+        .collection('users_posts')
+        .where('userId', '==', userId)
+        .where('dones', 'array-contains', userId)
+        .orderBy('updatedAt', 'desc')
   },
   USERS_POSTS_LIKES: {
     type: 'USERS_POSTS_LIKES',
-    query: ({ userId, }: { userId: string, },) =>
+    query: ({ userId }: { userId: string }) =>
       firebase
         .firestore()
-        .collection('users_posts',)
-        .where('userId', '==', userId,)
-        .where('likes', 'array-contains', userId,)
-        .orderBy('updatedAt', 'desc',),
+        .collection('users_posts')
+        .where('userId', '==', userId)
+        .where('likes', 'array-contains', userId)
+        .orderBy('updatedAt', 'desc')
   },
   USER_ADDS: {
     type: 'USER_ADDS',
-    query: ({ userId, }: { userId: string, },) =>
+    query: ({ userId }: { userId: string }) =>
       firebase
         .firestore()
-        .collection('adds',)
-        .where('userId', '==', userId,)
-        .where('active', '==', true,)
-        .orderBy('updatedAt', 'desc',),
+        .collection('adds')
+        .where('userId', '==', userId)
+        .where('active', '==', true)
+        .orderBy('updatedAt', 'desc')
   },
   USER_DONES: {
     type: 'USER_DONES',
-    query: ({ userId, }: { userId: string, },) =>
+    query: ({ userId }: { userId: string }) =>
       firebase
         .firestore()
-        .collection('dones',)
-        .where('userId', '==', userId,)
-        .where('active', '==', true,)
-        .orderBy('updatedAt', 'desc',),
+        .collection('dones')
+        .where('userId', '==', userId)
+        .where('active', '==', true)
+        .orderBy('updatedAt', 'desc')
   },
   USER_LIKES: {
     type: 'USER_LIKES',
-    query: ({ userId, }: { userId: string, },) =>
+    query: ({ userId }: { userId: string }) =>
       firebase
         .firestore()
-        .collection('likes',)
-        .where('userId', '==', userId,)
-        .where('active', '==', true,)
-        .orderBy('updatedAt', 'desc',),
+        .collection('likes')
+        .where('userId', '==', userId)
+        .where('active', '==', true)
+        .orderBy('updatedAt', 'desc')
   },
   USER_SHARES: {
     type: 'USER_SHARES',
-    query: ({ userId, }: { userId: string, },) =>
+    query: ({ userId }: { userId: string }) =>
       firebase
         .firestore()
-        .collection('shares',)
-        .where('userId', '==', userId,)
-        .where('active', '==', true,)
-        .orderBy('updatedAt', 'desc',),
+        .collection('shares')
+        .where('userId', '==', userId)
+        .where('active', '==', true)
+        .orderBy('updatedAt', 'desc')
   },
-  NEW_SHARE: {
-    type: 'NEW_SHARE',
-    query: ({ shareId, }: { shareId: string, },) =>
+  USERS_POSTS_COMMENTS: {
+    type: 'USERS_POSTS_COMMENTS',
+    query: ({ userId, postId }: { userId: string; postId: string }) =>
       firebase
         .firestore()
-        .collection('shares',)
-        .doc(shareId,),
+        .collection('comments')
+        .where('postId', '==', `${postId}`)
+        .where('visibleToUserIds', 'array-contains', `${userId}`)
   },
   FRIENDSHIPS_ALL: {
     type: 'FRIENDSHIPS_ALL',
-    query: firebase.firestore().collection('',),
+    query: firebase.firestore().collection('')
   },
   FRIENDS_ALL: {
     type: 'FRIENDS_ALL',
-    query: firebase.firestore().collection('',),
+    query: firebase.firestore().collection('')
   },
   USERS_ALL: {
     type: 'USERS_ALL',
-    query: firebase.firestore().collection('',),
-  },
+    query: firebase.firestore().collection('')
+  }
 };
 
 export const getQuery = (
   queryType: queryType,
-  queryArguments: queryArguments,
+  queryArguments: queryArguments
 ) => {
-  return queries[queryType].query(queryArguments,);
+  return queries[queryType].query(queryArguments);
 };
 
 export const composeQuery = (
   query: Query,
   limit?: number,
-  lastItem?: DocumentSnapshot | 'DONE',
+  lastItem?: DocumentSnapshot | 'DONE'
 ) => {
   let newQuery = query;
 
   if (limit) {
-    newQuery = newQuery.limit(limit,);
+    newQuery = newQuery.limit(limit);
   }
   if (lastItem && lastItem != 'DONE') {
-    newQuery = newQuery.startAfter(lastItem,);
+    newQuery = newQuery.startAfter(lastItem);
   }
 
   return newQuery;

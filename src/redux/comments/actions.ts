@@ -5,10 +5,19 @@ import {
 } from '@daviswhitehead/shayr-resources';
 import _ from 'lodash';
 import firebase from 'react-native-firebase';
+import { Query } from 'react-native-firebase/firestore';
 import { Dispatch } from 'redux';
 import { logEvent } from '../../lib/FirebaseAnalytics';
 import { arrayUnion, ts } from '../../lib/FirebaseHelpers';
+import {
+  composeQuery,
+  getQuery,
+  queries,
+  queryArguments,
+  queryType
+} from '../../lib/FirebaseQueries';
 import { updateCounts } from '../../lib/FirebaseWrites';
+import { getFeedOfDocuments, LastItem } from '../FirebaseRedux';
 import { refreshUsersPostsDocuments } from '../usersPosts/actions';
 
 export const STATE_KEY = 'comments';
@@ -60,7 +69,9 @@ export const createComment = (
 
     updateCounts(batcher, true, 'comments', postId, ownerUserId, userId);
 
-    batcher.write();
+    if (!existingBatcher) {
+      batcher.write();
+    }
 
     dispatch(refreshUsersPostsDocuments(postId, 'cache'));
 
@@ -77,4 +88,34 @@ export const createComment = (
     });
     return undefined;
   }
+};
+
+const requestLimiter = 10;
+export const loadCommentsForUsersPosts = (
+  ownerUserId: string,
+  // queryType: queryType,
+  // queryArguments: queryArguments,
+  shouldRefresh?: boolean,
+  isLoading?: boolean,
+  lastItem?: LastItem
+) => async (dispatch: Dispatch) => {
+  const request: Query = composeQuery(
+    getQuery('USERS_POSTS_COMMENTS', {
+      postId: '48PKLyY71DHin1XuIPop',
+      userId: 'lOnI91XOvdRnQe5Hmdrkf2TY5lH2'
+    }),
+    requestLimiter,
+    shouldRefresh ? undefined : lastItem
+  );
+  dispatch(
+    getFeedOfDocuments(
+      STATE_KEY,
+      ownerUserId,
+      'test',
+      request,
+      shouldRefresh,
+      isLoading,
+      lastItem
+    )
+  );
 };

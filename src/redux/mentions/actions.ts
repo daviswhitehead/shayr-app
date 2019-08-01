@@ -55,7 +55,9 @@ export const createMention = (
 
     updateCounts(batcher, true, 'mentions', postId, ownerUserId, userId, users);
 
-    batcher.write();
+    if (!existingBatcher) {
+      batcher.write();
+    }
 
     dispatch(refreshUsersPostsDocuments(postId, 'cache'));
 

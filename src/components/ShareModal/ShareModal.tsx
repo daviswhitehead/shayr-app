@@ -163,8 +163,6 @@ class ShareModal extends React.Component<Props, State> {
       this.props.url || ''
     );
     this.setState({ shareId });
-    console.log('shareId');
-    console.log(shareId);
 
     if (!this.props.post) {
       this.subscriptions.push(
@@ -185,8 +183,6 @@ class ShareModal extends React.Component<Props, State> {
           ],
           {}
         );
-      console.log('post');
-      console.log(post);
 
       if (!this.state.shareId || _.isEmpty(post)) {
         this.setState({ isError: true });

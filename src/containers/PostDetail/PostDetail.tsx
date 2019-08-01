@@ -17,6 +17,8 @@ import { queries } from '../../lib/FirebaseQueries';
 import { getDocuments } from '../../lib/FirebaseRedux';
 import { openURL } from '../../lib/Utils';
 import { selectAuthUserId } from '../../redux/auth/selectors';
+import { loadCommentsForUsersPosts } from '../../redux/comments/actions';
+import { LastItem } from '../../redux/FirebaseRedux';
 import {
   selectUserFromId,
   selectUsersFromList
@@ -61,12 +63,6 @@ export interface Props {
     ownerUserId: documentId,
     userId: documentId
   ) => void;
-  toggleSharePost: (
-    isActive: boolean,
-    postId: documentId,
-    ownerUserId: documentId,
-    userId: documentId
-  ) => void;
   toggleAddDonePost: (
     type: 'adds' | 'dones',
     isActive: boolean,
@@ -74,6 +70,12 @@ export interface Props {
     ownerUserId: documentId,
     userId: documentId,
     isOtherActive: boolean
+  ) => void;
+  loadCommentsForUsersPosts: (
+    ownerUserId: string,
+    shouldRefresh?: boolean,
+    isLoading?: boolean,
+    lastItem?: LastItem
   ) => void;
 }
 
@@ -117,12 +119,6 @@ const mapDispatchToProps = (dispatch: any, props: any) => {
       ownerUserId: documentId,
       userId: documentId
     ) => dispatch(toggleLikePost(isActive, postId, ownerUserId, userId)),
-    toggleSharePost: (
-      isActive: boolean,
-      postId: documentId,
-      ownerUserId: documentId,
-      userId: documentId
-    ) => dispatch(toggleSharePost(isActive, postId, ownerUserId, userId)),
     toggleAddDonePost: (
       type: 'adds' | 'dones',
       isActive: boolean,
@@ -140,6 +136,20 @@ const mapDispatchToProps = (dispatch: any, props: any) => {
           userId,
           isOtherActive
         )
+      ),
+    loadCommentsForUsersPosts: (
+      ownerUserId: string,
+      shouldRefresh?: boolean,
+      isLoading?: boolean,
+      lastItem?: LastItem
+    ) =>
+      dispatch(
+        loadCommentsForUsersPosts(
+          ownerUserId,
+          shouldRefresh,
+          isLoading,
+          lastItem
+        )
       )
   };
 };
@@ -153,6 +163,12 @@ class PostDetail extends Component<Props> {
     if (!this.props.post) {
       await this.props.getPostDetailDocument();
     }
+    await this.props.loadCommentsForUsersPosts(
+      this.props.ownerUserId,
+      true,
+      false,
+      undefined
+    );
   }
 
   componentWillUnmount() {}

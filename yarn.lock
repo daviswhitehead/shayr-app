@@ -787,10 +787,10 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
-"@daviswhitehead/shayr-resources@^1.2.3":
-  version "1.2.3"
-  resolved "https://registry.yarnpkg.com/@daviswhitehead/shayr-resources/-/shayr-resources-1.2.3.tgz#4525427601827602b388c2be27301c65b60d846e"
-  integrity sha512-3ZFGJvOexg3Sx1U6mNUd93N25awt1AyRzsalBlKKbFwNbytnnCKl9S0Kzq8WBtIRDV/1QHeJNLe1wecarXbDcA==
+"@daviswhitehead/shayr-resources@^1.2.14":
+  version "1.2.14"
+  resolved "https://registry.yarnpkg.com/@daviswhitehead/shayr-resources/-/shayr-resources-1.2.14.tgz#a460dacf7511c7b2d5c70f863f3cccbd95314d0b"
+  integrity sha512-k0Zo8HBfG89MRvMFk3oJWdbY4Zphs7kbt0dm9EbZ0l3zI1IBLEb+9vZx4p2xR4i7gQ0iOuZ4gXmFX106topLCA==
   dependencies:
     "@types/lodash" "^4.14.133"
     "@types/urijs" "^1.19.1"

@@ -6,7 +6,6 @@ import {
 } from '@daviswhitehead/shayr-resources';
 import _ from 'lodash';
 import * as React from 'react';
-// import ContentLoader, { Instagram } from 'react-content-loader';
 import { Image, Text, TouchableWithoutFeedback, View } from 'react-native';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import { connect } from 'react-redux';

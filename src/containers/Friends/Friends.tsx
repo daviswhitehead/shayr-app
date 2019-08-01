@@ -4,10 +4,6 @@ import React, { Component } from 'react';
 import { ActivityIndicator, Button, Text, View } from 'react-native';
 import { connect } from 'react-redux';
 import Header from '../../components/Header';
-import Icon from '../../components/Icon';
-import IconWithCount from '../../components/IconWithCount';
-import PostCard from '../../components/PostCard';
-import ShareModal from '../../components/ShareModal';
 import { startSignOut } from '../../redux/auth/actions';
 import { selectAuthUserId } from '../../redux/auth/selectors';
 import {
@@ -50,19 +46,12 @@ class Friends extends Component {
 
   constructor(props: Props) {
     super(props);
-
-    this.modalRef = React.createRef();
   }
 
   componentDidMount() {}
 
   render() {
-    const url = _.get(
-      this.props.usersPosts,
-      ['m592UXpes3azls6LnhN2VOf2PyT2_48PKLyY71DHin1XuIPop', 'url'],
-      ''
-    );
-    if (_.isEmpty(url)) {
+    if (false) {
       return <ActivityIndicator />;
     }
 
@@ -70,36 +59,6 @@ class Friends extends Component {
       <View style={styles.container}>
         <Text>COMING SOON</Text>
         <Button onPress={this.props.startSignOut} title='Log Out' />
-        <Button
-          onPress={() => this.modalRef.current.toggleModal()}
-          title='Toggle Modal'
-        />
-        <ShareModal
-          ref={this.modalRef}
-          payload={_.get(
-            this.props.usersPosts,
-            ['m592UXpes3azls6LnhN2VOf2PyT2_48PKLyY71DHin1XuIPop', 'url'],
-            ''
-          )}
-          authUserId={this.props.authUserId}
-          users={this.props.friends}
-          // url={_.get(
-          //   this.props.usersPosts,
-          //   ['m592UXpes3azls6LnhN2VOf2PyT2_48PKLyY71DHin1XuIPop', 'url'],
-          //   '',
-          // )}
-          // postId={_.get(
-          //   this.props.usersPosts,
-          //   ['m592UXpes3azls6LnhN2VOf2PyT2_48PKLyY71DHin1XuIPop', 'postId'],
-          //   '',
-          // )}
-          // post={_.get(
-          //   this.props.usersPosts,
-          //   ['m592UXpes3azls6LnhN2VOf2PyT2_48PKLyY71DHin1XuIPop'],
-          //   {}
-          // )}
-          // ownerUserId={this.props.ownerUserId}
-        />
       </View>
     );
   }

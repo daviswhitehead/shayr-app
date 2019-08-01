@@ -29,9 +29,6 @@ export const STATE_KEY = 'shares';
 
 export const types = {
   ...generateActionTypes(STATE_KEY, dataActionTypes),
-  TOGGLE_SHARE_START: 'TOGGLE_SHARE_START',
-  TOGGLE_SHARE_SUCCESS: 'TOGGLE_SHARE_SUCCESS',
-  TOGGLE_SHARE_FAIL: 'TOGGLE_SHARE_FAIL',
   START_SHARE_START: 'START_SHARE_START',
   START_SHARE_SUCCESS: 'START_SHARE_SUCCESS',
   START_SHARE_FAIL: 'START_SHARE_FAIL',
@@ -44,69 +41,6 @@ export const types = {
   SUBSCRIBE_NEW_SHARE_START: 'SUBSCRIBE_NEW_SHARE_START',
   SUBSCRIBE_NEW_SHARE_SUCCESS: 'SUBSCRIBE_NEW_SHARE_SUCCESS',
   SUBSCRIBE_NEW_SHARE_FAIL: 'SUBSCRIBE_NEW_SHARE_FAIL'
-};
-
-export const toggleSharePost = (
-  isActive: boolean,
-  postId: documentId,
-  ownerUserId: documentId,
-  userId: documentId
-) => async (dispatch: Dispatch) => {
-  dispatch({
-    type: types.TOGGLE_SHARE_START
-  });
-
-  logEvent(types.TOGGLE_SHARE_START);
-
-  try {
-    // toast
-    !isActive
-      ? Toaster(actionTypeActiveToasts.shares)
-      : Toaster(actionTypeInactiveToasts.shares);
-
-    const batcher = new Batcher(firebase.firestore());
-
-    // shares/{userId}_{postId}
-    batcher.set(
-      firebase
-        .firestore()
-        .collection('shares')
-        .doc(`${userId}_${postId}`),
-      {
-        active: !isActive,
-        postId,
-        updatedAt: ts,
-        userId
-      },
-      {
-        merge: true
-      }
-    );
-
-    updateCounts(batcher, !isActive, 'shares', postId, ownerUserId, userId);
-
-    batcher.write();
-
-    dispatch(refreshUsersPostsDocuments(postId, 'cache'));
-    dispatch(
-      toggleUsersPostsListsItem(
-        userId,
-        queries.USERS_POSTS_SHARES.type,
-        postId,
-        !isActive
-      )
-    );
-
-    dispatch({
-      type: types.TOGGLE_SHARE_SUCCESS
-    });
-  } catch (error) {
-    console.error(error);
-    dispatch({
-      type: types.TOGGLE_SHARE_FAIL,
-      error
-    });
-  }
 };
 
 export const startShare = (
@@ -210,6 +144,7 @@ export const confirmShare = (
       .doc(shareId)
       .set(
         {
+          active: true,
           status: 'confirmed',
           commentId: commentId || '',
           mentionId: mentionId || '',

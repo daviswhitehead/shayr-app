@@ -2,11 +2,14 @@ import { combineReducers } from 'redux';
 import addsReducer from './adds/reducer';
 import appReducer from './app/reducer';
 import authReducer from './auth/reducer';
+import documentsReducer from './documents/reducer';
 import donesReducer from './dones/reducer';
 import friendshipsReducer from './friendships/reducer';
 import friendshipsListsReducer from './friendshipsLists/reducer';
 import likesReducer from './likes/reducer';
+import listsReducer from './lists/reducer';
 import postsReducer from './posts/reducer';
+import { createNamedWrapperReducer } from './ReducerHelpers';
 import routingReducer from './routing/reducer';
 import sharesReducer from './shares/reducer';
 import sharesListsReducer from './sharesLists/reducer';
@@ -20,6 +23,8 @@ export const makeRootReducer = () =>
     adds: addsReducer,
     app: appReducer,
     auth: authReducer,
+    comments: createNamedWrapperReducer(documentsReducer, 'comments'),
+    commentsLists: createNamedWrapperReducer(listsReducer, 'commentsLists'),
     dones: donesReducer,
     friendships: friendshipsReducer,
     friendshipsLists: friendshipsListsReducer,
