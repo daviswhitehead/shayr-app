@@ -10,11 +10,11 @@ export default StyleSheet.create({
   },
   verticalName: {
     ...fontSystem.NAME,
-    padding: Layout.PADDING_SHORT
+    padding: Layout.SPACING_SHORT
   },
   horizontalName: {
     ...fontSystem.BODY,
-    padding: Layout.PADDING_MEDIUM
+    padding: Layout.SPACING_MEDIUM
   },
   selectedName: {
     ...fontSystem.BOLD_BODY,

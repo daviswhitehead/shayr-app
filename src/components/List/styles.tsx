@@ -15,6 +15,6 @@ export default StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
-    marginVertical: Layout.MARGIN_LONG
+    marginVertical: Layout.SPACING_LONG
   }
 });

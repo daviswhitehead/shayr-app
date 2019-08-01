@@ -205,7 +205,7 @@ class Discover extends Component<Props> {
       ].lastItem
     );
 
-    this.props.navigation.navigate('FriendsTab', {});
+    // this.props.navigation.navigate('FriendsTab', {});
     // this.props.navigation.navigate('PostDetail', {
     //   ownerUserId: this.props.authUserId,
     //   postId: 'cd2qGlHClQvzHnO1m5xY'

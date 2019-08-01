@@ -1,35 +1,35 @@
 import { StyleSheet } from 'react-native';
 import colors from '../../styles/Colors';
 import { fontSystem } from '../../styles/Fonts';
-import layout from '../../styles/Layout';
+import Layout from '../../styles/Layout';
 
 export default StyleSheet.create({
   container: {
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'flex-start',
-    marginHorizontal: layout.MARGIN_MEDIUM,
-    paddingBottom: layout.PADDING_LONG,
-    paddingTop: layout.PADDING_MEDIUM
+    marginHorizontal: Layout.SPACING_MEDIUM,
+    paddingBottom: Layout.SPACING_LONG,
+    paddingTop: Layout.SPACING_MEDIUM
   },
   avatar: {
-    marginHorizontal: layout.MARGIN_MEDIUM,
-    marginBottom: layout.MARGIN_MEDIUM
+    marginHorizontal: Layout.SPACING_MEDIUM,
+    marginBottom: Layout.SPACING_MEDIUM
   },
   emptyAvatar: {
-    marginBottom: layout.MARGIN_MEDIUM
+    marginBottom: Layout.SPACING_MEDIUM
   },
   contentBox: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'flex-start',
-    marginHorizontal: layout.MARGIN_MEDIUM
+    marginHorizontal: Layout.SPACING_MEDIUM
   },
   image: {
     width: 104,
     height: 104,
-    borderRadius: layout.BORDER_RADIUS_LARGE,
-    marginRight: layout.MARGIN_MEDIUM,
+    borderRadius: Layout.BORDER_RADIUS_LARGE,
+    marginRight: Layout.SPACING_MEDIUM,
     resizeMode: 'cover'
   },
   textActionsBox: {
@@ -37,7 +37,7 @@ export default StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'flex-start',
     alignItems: 'stretch',
-    paddingHorizontal: layout.PADDING_MEDIUM
+    paddingHorizontal: Layout.SPACING_MEDIUM
   },
   textBox: {
     flexDirection: 'column'
@@ -46,10 +46,16 @@ export default StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignContent: 'center',
-    marginTop: layout.MARGIN_MEDIUM
+    marginTop: Layout.SPACING_MEDIUM
   },
   title: {
     ...fontSystem.H2
+  },
+  titleSkeleton: {
+    height: 24,
+    width: '100%',
+    borderRadius: Layout.BORDER_RADIUS_MEDIUM,
+    marginBottom: Layout.SPACING_MEDIUM
   },
   subtitleBox: {
     flexDirection: 'row',
@@ -63,6 +69,6 @@ export default StyleSheet.create({
     color: colors.BLACK
   },
   actionsSpacer: {
-    width: layout.MARGIN_LONG
+    width: Layout.SPACING_LONG
   }
 });

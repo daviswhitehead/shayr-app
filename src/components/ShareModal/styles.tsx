@@ -20,15 +20,14 @@ export default StyleSheet.create({
     alignItems: 'stretch',
     paddingBottom: Layout.WINDOW_BOTTOM_SAFE_AREA,
     paddingTop: Layout.WINDOW_TOP_SAFE_AREA,
-    paddingHorizontal: Layout.PADDING_LONG,
+    paddingHorizontal: Layout.SPACING_LONG,
     ...containerShadow
   },
   contentContainer: {
-    flex: 1,
     flexDirection: 'column',
     justifyContent: 'flex-start',
     alignItems: 'stretch',
-    marginVertical: Layout.MARGIN_LONG,
+    marginVertical: Layout.SPACING_LONG,
     backgroundColor: Colors.WHITE,
     borderRadius: Layout.BORDER_RADIUS_LARGE,
     borderWidth: 0.25,
@@ -40,7 +39,7 @@ export default StyleSheet.create({
     alignItems: 'stretch'
   },
   separator: {
-    height: 1,
+    height: StyleSheet.hairlineWidth,
     width: '100%',
     backgroundColor: Colors.DIVIDER
   },
@@ -51,31 +50,42 @@ export default StyleSheet.create({
     height: 56
   },
   commentInput: {
-    margin: Layout.MARGIN_LONG,
+    margin: Layout.SPACING_LONG,
+    ...fontSystem.BODY
+  },
+  otherText: {
     ...fontSystem.BODY
   },
   friendsContainer: {
-    margin: Layout.MARGIN_LONG
+    margin: Layout.SPACING_LONG
   },
-  friendsSectionHeader: {
-    ...fontSystem.H2
+  otherContainer: {
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'stretch',
+    marginHorizontal: Layout.SPACING_LONG,
+    marginVertical: Layout.SPACING_EXTRA_LONG
+  },
+  sectionHeader: {
+    ...fontSystem.H3
   },
   touchableRow: {
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',
-    marginLeft: Layout.MARGIN_LONG,
-    marginVertical: Layout.MARGIN_MEDIUM
+    marginLeft: Layout.SPACING_LONG,
+    marginVertical: Layout.SPACING_MEDIUM
   },
   friendsRowText: {
     ...fontSystem.BODY,
-    marginLeft: Layout.MARGIN_MEDIUM
+    marginLeft: Layout.SPACING_MEDIUM
   },
   buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: Layout.MARGIN_LONG,
+    marginBottom: Layout.SPACING_LONG,
     backgroundColor: Colors.WHITE,
     borderRadius: Layout.BORDER_RADIUS_LARGE,
     height: 56,
@@ -86,9 +96,8 @@ export default StyleSheet.create({
     marginBottom: 0
   },
   button: {
-    ...fontSystem.BODY,
-    fontSize: 18,
-    marginLeft: Layout.MARGIN_MEDIUM
+    ...fontSystem.BODY_LARGE,
+    marginLeft: Layout.SPACING_MEDIUM
   },
   iconStyle: {
     height: 32,
@@ -97,5 +106,8 @@ export default StyleSheet.create({
   selected: {
     ...fontSystem.BOLD_BODY,
     color: Colors.YELLOW
+  },
+  centerAlign: {
+    textAlign: 'center'
   }
 });

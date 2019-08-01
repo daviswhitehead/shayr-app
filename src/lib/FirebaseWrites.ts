@@ -1,4 +1,5 @@
 import { documentId } from '@daviswhitehead/shayr-resources';
+import _ from 'lodash';
 import firebase from 'react-native-firebase';
 import { arrayRemove, arrayUnion, increment, ts } from './FirebaseHelpers';
 
@@ -35,13 +36,11 @@ export type countActions =
   | 'replies'
   | 'shares';
 
-export const updateCounts = (
+const updatePostCounts = (
   batcher: any,
   isIncremental: boolean,
   action: countActions,
-  postId: documentId,
-  ownerUserId: documentId,
-  userId: documentId
+  postId: documentId
 ) => {
   // posts/{postId} { {action}Count: +1 }
   batcher.set(
@@ -57,38 +56,14 @@ export const updateCounts = (
       merge: true
     }
   );
-  // users_posts/{ownerUserId}_{postId} { {action}Count: +1, {action}: +{userId} }
-  batcher.set(
-    firebase
-      .firestore()
-      .collection('users_posts')
-      .doc(`${ownerUserId}_${postId}`),
-    {
-      [`${action}Count`]: increment(isIncremental ? 1 : -1),
-      [`${action}`]: isIncremental ? arrayUnion(userId) : arrayRemove(userId),
-      updatedAt: ts
-    },
-    {
-      merge: true
-    }
-  );
-  if (ownerUserId !== userId) {
-    // users_posts/{userId}_{postId} { {action}Count: +1, {action}: +{userId} }
-    batcher.set(
-      firebase
-        .firestore()
-        .collection('users_posts')
-        .doc(`${userId}_${postId}`),
-      {
-        [`${action}Count`]: increment(isIncremental ? 1 : -1),
-        [`${action}`]: isIncremental ? arrayUnion(userId) : arrayRemove(userId),
-        updatedAt: ts
-      },
-      {
-        merge: true
-      }
-    );
-  }
+};
+
+const updateUserCounts = (
+  batcher: any,
+  isIncremental: boolean,
+  action: countActions,
+  userId: documentId
+) => {
   // users/{userId} { {action}Count: +1 }
   batcher.set(
     firebase
@@ -103,6 +78,92 @@ export const updateCounts = (
       merge: true
     }
   );
+};
+
+const updateUsersPostsCounts = (
+  batcher: any,
+  isIncremental: boolean,
+  action: countActions,
+  postId: documentId,
+  ownerUserId: documentId,
+  userId: documentId,
+  users: Array<documentId> = []
+) => {
+  // users_posts/{ownerUserId}_{postId} { {action}Count: +1, {action}: +{userId} }
+  batcher.set(
+    firebase
+      .firestore()
+      .collection('users_posts')
+      .doc(`${ownerUserId}_${postId}`),
+    {
+      [`${action}Count`]: increment(isIncremental ? 1 : -1),
+      [`${action}`]: isIncremental
+        ? arrayUnion(_.isEmpty(users) ? userId : users)
+        : arrayRemove(_.isEmpty(users) ? userId : users),
+      postId,
+      updatedAt: ts,
+      userId: ownerUserId
+    },
+    {
+      merge: true
+    }
+  );
+};
+
+export const updateCounts = (
+  batcher: any,
+  isIncremental: boolean,
+  action: countActions,
+  postId: documentId,
+  ownerUserId: documentId,
+  userId: documentId,
+  users: Array<documentId> = [],
+  friends: Array<documentId> = []
+) => {
+  updatePostCounts(batcher, isIncremental, action, postId);
+
+  updateUsersPostsCounts(
+    batcher,
+    isIncremental,
+    action,
+    postId,
+    ownerUserId,
+    userId,
+    users
+  );
+  if (ownerUserId !== userId) {
+    updateUsersPostsCounts(
+      batcher,
+      isIncremental,
+      action,
+      postId,
+      userId,
+      userId,
+      users
+    );
+  }
+
+  if (_.isEmpty(users)) {
+    updateUserCounts(batcher, isIncremental, action, userId);
+  } else {
+    _.forEach(users, (userId) => {
+      updateUserCounts(batcher, isIncremental, action, userId);
+    });
+  }
+
+  if (!_.isEmpty(friends)) {
+    _.forEach(friends, (friendUserId) => {
+      updateUsersPostsCounts(
+        batcher,
+        isIncremental,
+        action,
+        postId,
+        friendUserId,
+        userId,
+        users
+      );
+    });
+  }
 };
 
 export const overwriteUserCounts = (

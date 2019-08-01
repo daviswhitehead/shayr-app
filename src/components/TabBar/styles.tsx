@@ -10,7 +10,7 @@ export default StyleSheet.create({
     backgroundColor: Colors.YELLOW,
     ...shadow,
     alignItems: 'center',
-    paddingVertical: Layout.MARGIN_LONG,
+    paddingVertical: Layout.SPACING_LONG,
     borderTopWidth: 0.25,
     borderTopColor: Colors.LIGHT_GRAY,
     overflow: 'visible'
@@ -24,6 +24,6 @@ export default StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: Layout.PADDING_MEDIUM
+    padding: Layout.SPACING_MEDIUM
   }
 });

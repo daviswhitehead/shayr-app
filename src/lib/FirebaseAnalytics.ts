@@ -18,3 +18,7 @@ export const currentScreenAnalytics = (
     firebase.analytics().setCurrentScreen(currentScreen);
   }
 };
+
+export const logEvent = (eventName: string) => {
+  firebase.analytics().logEvent(`${eventName}`.toUpperCase());
+};

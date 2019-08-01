@@ -21,9 +21,9 @@ export default StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    marginVertical: Layout.MARGIN_MEDIUM
+    marginVertical: Layout.SPACING_MEDIUM
   },
   action: {
-    margin: Layout.MARGIN_LONG
+    margin: Layout.SPACING_LONG
   }
 });

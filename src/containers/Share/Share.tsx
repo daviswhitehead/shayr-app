@@ -1,27 +1,27 @@
 import { buildAppLink } from '@daviswhitehead/shayr-resources';
+import _ from 'lodash';
 import React, { Component } from 'react';
-import {
-  Image,
-  Linking,
-  Modal,
-  Platform,
-  Text,
-  TouchableOpacity,
-  TouchableWithoutFeedback,
-  View
-} from 'react-native';
+import { Linking, Platform, Text, View } from 'react-native';
 import firebase from 'react-native-firebase';
 import ShareExtension from 'react-native-share-extension';
 import { connect } from 'react-redux';
-import shareExtensionLogo from '../../assets/ShareExtensionLogo.png';
+import ShareModal from '../../components/ShareModal';
 import { retrieveToken } from '../../lib/AppGroupTokens';
 import { userAnalytics } from '../../lib/FirebaseAnalytics';
-import { createShare } from '../../lib/FirebaseHelpers';
 import { getCurrentUser, getFBAuthCredential } from '../../lib/FirebaseLogin';
-import styles from './styles';
+import { subscribeToFriendships } from '../../redux/friendships/actions';
+import { selectUsersFromList } from '../../redux/users/selectors';
 
-const tapShareExtension = async () => {
-  const url = buildAppLink('shayr', 'shayr', 'Discover', {});
+// TESTING
+// // Switch registerComponent of main app to Share Extension
+// // // AppRegistry.registerComponent(
+// // //   'shayr',
+// // //   () => require('./src/containers/ShareApp').default
+// // // );
+// // Comment any calls to react-native-share-extension
+
+const navigateToLogin = async () => {
+  const url = buildAppLink('shayr', 'shayr', 'Login', {});
   try {
     (await Platform.OS) === 'ios'
       ? ShareExtension.openURL(url)
@@ -31,117 +31,109 @@ const tapShareExtension = async () => {
   }
 };
 
-const mapStateToProps = state => ({});
+const mapStateToProps = (state, props) => {
+  return {
+    users: state.users,
+    usersLists: state.usersLists
+  };
+};
 
-const mapDispatchToProps = dispatch => ({});
+const mapDispatchToProps = (dispatch) => ({
+  subscribeToFriendships: (userId) => dispatch(subscribeToFriendships(userId))
+});
 
 class Share extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      modalVisible: true,
-      shareText: 'Shayring...'
+      authUserId: '',
+      payload: '',
+      friends: {},
+      isLoading: true
     };
     firebase.analytics().logEvent('SHARE_EXTENSION_LAUNCH');
+
+    this.modalRef = React.createRef();
+    this.subscriptions = [];
   }
 
   async componentDidMount() {
     firebase.analytics().setCurrentScreen('Share');
-    this.authSubscription = firebase.auth().onAuthStateChanged(user => {
-      this.setState(previousState => ({
-        ...previousState,
-        user
-      }));
-    });
+
+    this.subscriptions.push(
+      firebase.auth().onAuthStateChanged((user) => {
+        this.setState((previousState) => ({
+          ...previousState,
+          user
+        }));
+      })
+    );
 
     try {
       const token = await retrieveToken('accessToken');
       const credential = getFBAuthCredential(token);
       const currentUser = await getCurrentUser(credential);
+      const authUserId = _.get(currentUser, ['user', 'uid'], '');
 
-      if (!currentUser) {
-        throw new Error('unable to authenticate');
-      }
-
-      userAnalytics(currentUser.user.uid);
-
-      const ref = firebase
-        .firestore()
-        .collection('users')
-        .doc(currentUser.user.uid);
+      userAnalytics(authUserId);
 
       const { type, value } = await ShareExtension.data();
+      // const value = 'https://medium.com/@khreniak/cloud-firestore-security-rules-basics-fac6b6bea18e';
 
-      const share = await createShare(ref, value);
+      this.setState({ authUserId, payload: value });
 
-      if (share) {
-        firebase.analytics().logEvent('SHARE_EXTENSION_SUCCESS', {
-          share: value.substring(0, 99)
-        });
-        setTimeout(() => {
-          this.setState(previousState => ({
-            ...previousState,
-            shareText: 'Success!'
-          }));
-        }, 500);
-      } else {
-        firebase.analytics().logEvent('SHARE_EXTENSION_FAIL');
-        setTimeout(() => {
-          this.setState(previousState => ({
-            ...previousState,
-            shareText: 'Failed.'
-          }));
-        }, 1000);
-      }
+      this.modalRef.current.toggleModal();
+
+      this.subscriptions.push(
+        await this.props.subscribeToFriendships(authUserId)
+      );
     } catch (error) {
       console.error(error);
     }
   }
 
+  componentDidUpdate(prevProps) {
+    if (
+      this.state.authUserId &&
+      _.get(
+        this.props,
+        ['usersLists', `${this.state.authUserId}_Friends`, 'isLoaded'],
+        false
+      ) &&
+      !_.get(
+        prevProps,
+        ['usersLists', `${this.state.authUserId}_Friends`, 'isLoaded'],
+        false
+      )
+    ) {
+      this.setState({
+        friends: selectUsersFromList(
+          this.props,
+          `${this.state.authUserId}_Friends`
+        ),
+        isLoading: false
+      });
+    }
+  }
+
   componentWillUnmount() {
-    this.authSubscription();
-  }
-
-  openModal() {
-    this.setState(previousState => ({
-      ...previousState,
-      modalVisible: true
-    }));
-  }
-
-  closeModal() {
-    this.setState(previousState => ({
-      ...previousState,
-      modalVisible: false
-    }));
-    ShareExtension.close();
+    Object.values(this.subscriptions).forEach((unsubscribe) => {
+      unsubscribe();
+    });
   }
 
   render() {
     return (
-      <Modal
-        visible={this.state.modalVisible}
-        animationType='slide'
-        onRequestClose={() => this.closeModal()}
-        supportedOrientations={['portrait']}
-        transparent
-      >
-        <TouchableWithoutFeedback
-          onPress={() => {
-            this.closeModal();
-          }}
-        >
-          <View style={styles.container}>
-            <TouchableOpacity
-              onPress={() => tapShareExtension()}
-              style={styles.modal}
-            >
-              <Image source={shareExtensionLogo} style={styles.logo} />
-              <Text style={styles.text}>{this.state.shareText}</Text>
-            </TouchableOpacity>
-          </View>
-        </TouchableWithoutFeedback>
-      </Modal>
+      <ShareModal
+        ref={this.modalRef}
+        payload={this.state.payload}
+        authUserId={this.state.authUserId}
+        users={this.state.friends}
+        navigateToLogin={() => navigateToLogin()}
+        onModalWillHide={() => ShareExtension.close()}
+        hideBackdrop
+        isLoading={this.state.isLoading}
+      />
     );
   }
 }

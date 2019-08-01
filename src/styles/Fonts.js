@@ -46,6 +46,16 @@ export const fontSystem = {
     color: colors.BLACK,
     fontSize: 16
   },
+  H3: {
+    ...fonts.REGULAR,
+    color: colors.BLACK,
+    fontSize: 18
+  },
+  BODY_LARGE: {
+    ...fonts.EXTRA_LIGHT,
+    color: colors.BLACK,
+    fontSize: 18
+  },
   BODY: {
     ...fonts.EXTRA_LIGHT,
     color: colors.BLACK,

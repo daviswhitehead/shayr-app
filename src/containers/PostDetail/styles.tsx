@@ -19,7 +19,7 @@ export default StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'flex-start',
     alignItems: 'stretch',
-    marginHorizontal: Layout.MARGIN_LONG
+    marginHorizontal: Layout.SPACING_LONG
   },
   loadingContainer: {
     flex: 1,
@@ -33,21 +33,21 @@ export default StyleSheet.create({
     justifyContent: 'space-between'
   },
   sectionBox: {
-    marginBottom: Layout.MARGIN_LONG
+    marginBottom: Layout.SPACING_LONG
   },
   sectionHeader: {
     ...fontSystem.H2,
-    marginVertical: Layout.MARGIN_MEDIUM
+    marginVertical: Layout.SPACING_MEDIUM
   },
   body: {
     ...fontSystem.BODY
   },
   boldBody: {
     ...fontSystem.BOLD_BODY,
-    marginLeft: Layout.MARGIN_SHORT
+    marginLeft: Layout.SPACING_SHORT
   },
   activityBox: {
-    marginBottom: Layout.MARGIN_LONG
+    marginBottom: Layout.SPACING_LONG
   },
   activityHeader: {
     flexDirection: 'row',

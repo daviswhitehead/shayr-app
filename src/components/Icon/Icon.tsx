@@ -1,8 +1,9 @@
 import * as React from 'react';
-import { Image } from 'react-native';
+import { Image, View } from 'react-native';
+import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 // import { createIconSetFromIcoMoon } from 'react-native-vector-icons';
 // import icoMoonConfig from '../../assets/fonts/selection.json';
-import colors from '../../styles/Colors';
+import Colors from '../../styles/Colors';
 import TouchableWrapper from '../TouchableWrapper';
 import styles from './styles';
 
@@ -68,6 +69,7 @@ export interface Props {
   onPress?: () => void | undefined;
   style?: any;
   iconStyle?: any;
+  isLoading?: boolean;
 }
 
 const Icon: React.SFC<Props> = ({
@@ -75,20 +77,29 @@ const Icon: React.SFC<Props> = ({
   isActive = false,
   onPress,
   style = {},
-  iconStyle = {}
+  iconStyle = {},
+  isLoading
 }: Props) => {
-  const color: string = isActive ? colors.YELLOW : colors.BLACK;
+  const color: string = isActive ? Colors.YELLOW : Colors.BLACK;
 
-  const icon = (
-    <Image
-      source={iconMap[name]}
-      style={[styles.image, { tintColor: color }, iconStyle]}
-    />
-  );
+  const _containerStyle = [styles.container, style];
+  const _iconStyle = [styles.image, { tintColor: color }, iconStyle];
+
+  const icon = <Image source={iconMap[name]} style={_iconStyle} />;
   // const icon = <Icons name={name} size={16} color={color} />;
 
+  if (isLoading) {
+    return (
+      <View style={_containerStyle}>
+        <SkeletonPlaceholder backgroundColor={Colors.SKELETON}>
+          <View style={_iconStyle} />
+        </SkeletonPlaceholder>
+      </View>
+    );
+  }
+
   return (
-    <TouchableWrapper style={[styles.container, style]} onPress={onPress}>
+    <TouchableWrapper style={_containerStyle} onPress={onPress}>
       {icon}
     </TouchableWrapper>
   );

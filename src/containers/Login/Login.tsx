@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { Image, Text, TouchableWithoutFeedback, View } from 'react-native';
 import { LoginButton } from 'react-native-fbsdk';
 import { connect } from 'react-redux';
-import vectorLogo from '../../assets/VectorLogo.png';
+import vectorLogo from '../../assets/images/VectorLogo.png';
 import {
   facebookAuth,
   facebookAuthTap,
@@ -11,11 +11,11 @@ import {
 } from '../../redux/auth/actions';
 import styles from './styles';
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   auth: state.auth
 });
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch) => ({
   facebookAuthTap: () => dispatch(facebookAuthTap()),
   facebookAuth: (error, result) => dispatch(facebookAuth(error, result)),
   signOutUser: () => dispatch(signOutUser())
