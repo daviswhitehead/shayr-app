@@ -91,3 +91,41 @@ export const getFeedOfDocuments = (
       dispatch(getDocumentsFail(stateKey, error));
     });
 };
+
+export const subscribeToAllDocuments = (
+  stateKey: StateKey,
+  query: Query,
+  ownerUserId: string,
+  listName: string
+) => async (dispatch: Dispatch) => {
+  const stateKeyList = generateStateKeyList(stateKey);
+
+  return query.onSnapshot(
+    (querySnapshot: QuerySnapshot) => {
+      const listKey = generateListKey(ownerUserId, listName);
+
+      dispatch(listRefreshing(stateKeyList, listKey));
+
+      dispatch(getDocumentsStart(stateKey));
+
+      if (!querySnapshot.empty) {
+        const documents = {};
+        querySnapshot.forEach((document: DocumentSnapshot) => {
+          documents[document.id] = formatDocumentSnapshot(document);
+        });
+
+        dispatch(getDocumentsSuccess(stateKey, documents));
+
+        dispatch(listAdd(stateKeyList, listKey, _.keys(documents)));
+
+        dispatch(listLoaded(stateKeyList, listKey, querySnapshot.docs.pop()));
+      } else {
+        dispatch(listLoaded(stateKeyList, listKey, 'DONE'));
+      }
+    },
+    (error: SnapshotError) => {
+      console.error(error);
+      dispatch(getDocumentsFail(stateKey, error));
+    }
+  );
+};

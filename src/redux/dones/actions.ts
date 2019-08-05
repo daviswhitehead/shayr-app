@@ -5,12 +5,8 @@ import { Dispatch } from 'redux';
 import { Toaster } from '../../components/Toaster';
 import { ts } from '../../lib/FirebaseHelpers';
 import { queries } from '../../lib/FirebaseQueries';
-import {
-  dataActionTypes,
-  generateActionTypes,
-  subscribeDocumentsIds
-} from '../../lib/FirebaseRedux';
 import { overwriteUserCounts, updateCounts } from '../../lib/FirebaseWrites';
+import { subscribeToAllDocuments } from '../../redux/FirebaseRedux';
 import {
   actionTypeActiveToasts,
   actionTypeInactiveToasts
@@ -21,7 +17,6 @@ import { toggleUsersPostsListsItem } from '../usersPostsLists/actions';
 export const STATE_KEY = 'dones';
 
 export const types = {
-  ...generateActionTypes(STATE_KEY, dataActionTypes),
   TOGGLE_ADD_DONE_POST_START: 'TOGGLE_ADD_DONE_POST_START',
   TOGGLE_ADD_DONE_POST_SUCCESS: 'TOGGLE_ADD_DONE_POST_SUCCESS',
   TOGGLE_ADD_DONE_POST_FAIL: 'TOGGLE_ADD_DONE_POST_FAIL',
@@ -140,10 +135,11 @@ export const toggleAddDonePost = (
 export const subscribeToDones = (userId: string) => {
   return (dispatch: Dispatch) => {
     return dispatch(
-      subscribeDocumentsIds(
+      subscribeToAllDocuments(
         STATE_KEY,
         queries.USER_DONES.query({ userId }),
-        'postId'
+        userId,
+        queries.USER_DONES.type
       )
     );
   };

@@ -21,14 +21,17 @@ import usersPostsListsReducer from './usersPostsLists/reducer';
 export const makeRootReducer = () =>
   combineReducers({
     adds: addsReducer,
+    addsLists: createNamedWrapperReducer(listsReducer, 'addsLists'),
     app: appReducer,
     auth: authReducer,
     comments: createNamedWrapperReducer(documentsReducer, 'comments'),
     commentsLists: createNamedWrapperReducer(listsReducer, 'commentsLists'),
     dones: donesReducer,
+    donesLists: createNamedWrapperReducer(listsReducer, 'donesLists'),
     friendships: friendshipsReducer,
     friendshipsLists: friendshipsListsReducer,
     likes: likesReducer,
+    likesLists: createNamedWrapperReducer(listsReducer, 'likesLists'),
     posts: postsReducer,
     routing: routingReducer,
     shares: sharesReducer,

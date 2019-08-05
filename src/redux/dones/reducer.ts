@@ -1,23 +1,19 @@
 import _ from 'lodash';
-
-import {
-  DataAction,
-  dataActionTypes,
-  DataInitialState,
-  generateActionType,
-  getSuccessReducer
-} from '../../lib/FirebaseRedux';
+import documentsReducer from '../documents/reducer';
+import { createNamedWrapperReducer } from '../ReducerHelpers';
 import { STATE_KEY, types } from './actions';
 
-const initialState: DataInitialState = {
+const initialState = {
   hasUpdatedUser: false
 };
 
-function reducer(state = initialState, action: DataAction) {
+const donesDocumentReducer = createNamedWrapperReducer(
+  documentsReducer,
+  STATE_KEY
+);
+
+function reducer(state = initialState, action: any) {
   switch (action.type) {
-    case types[generateActionType(STATE_KEY, dataActionTypes.GET_SUCCESS)]: {
-      return getSuccessReducer(state, action);
-    }
     case types.UPDATE_USER_DONES_SUCCESS: {
       return {
         ...state,
@@ -25,7 +21,7 @@ function reducer(state = initialState, action: DataAction) {
       };
     }
     default: {
-      return state;
+      return donesDocumentReducer(state, action);
     }
   }
 }

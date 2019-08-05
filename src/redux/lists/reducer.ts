@@ -26,6 +26,11 @@ function reducer(state = initialState, action: ListAction) {
             ...action.items
           ]);
 
+      console.log(types.LIST_ADD);
+      console.log(_.get(state, [action.listKey, 'isRefreshing'], false));
+      console.log(action.items);
+      console.log(items);
+
       return {
         ...state,
         [action.listKey]: {
