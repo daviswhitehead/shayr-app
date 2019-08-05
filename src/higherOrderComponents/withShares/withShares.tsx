@@ -31,22 +31,29 @@ const withShares = (WrappedComponent: React.SFC) => (props: any) => {
     authShares,
     friends,
     usersPost,
+    ownerUserId,
+    noTouching,
     ...passThroughProps
   } = props;
 
   const isSharesActive = _.includes(authShares, usersPost.postId);
   const modalRef = React.useRef(null);
 
+  // console.log(authUserId);
+
   return (
     <View>
       <WrappedComponent
         isActive={isSharesActive}
-        onPress={modalRef ? () => modalRef.current.toggleModal() : null}
+        onPress={
+          modalRef && !noTouching ? () => modalRef.current.toggleModal() : null
+        }
         {...passThroughProps}
       />
       <ShareModal
         ref={modalRef}
         authUserId={authUserId}
+        ownerUserId={ownerUserId}
         payload={usersPost.url}
         url={usersPost.url}
         post={usersPost}

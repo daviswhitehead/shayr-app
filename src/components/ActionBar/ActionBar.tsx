@@ -32,7 +32,12 @@ const ActionBar: React.SFC<Props> = ({ authUser, post, ownerUserId }) => {
             lastName={undefined}
             style={styles.action}
           />
-          <IconWithShares name='share' style={styles.action} usersPost={post} />
+          <IconWithShares
+            name='share'
+            style={styles.action}
+            usersPost={post}
+            ownerUserId={post.userId}
+          />
           <IconWithAdds name='add' style={styles.action} />
           <IconWithDones name='done' style={styles.action} />
           <IconWithLikes name='like' style={styles.action} />

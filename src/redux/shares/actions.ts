@@ -94,7 +94,7 @@ export const confirmShare = (
   shareId: documentId,
   comment: string,
   mentions: documentIds,
-  ownerUserId: documentId = userId,
+  ownerUserId?: documentId,
   visibleToUserIds?: documentIds,
   friends: documentIds = []
 ) => async (dispatch: Dispatch) => {

@@ -26,19 +26,3 @@ export const formatDocumentSnapshot = (documentSnapshot: DocumentSnapshot) => {
     _reference: documentSnapshot.ref.path
   };
 };
-
-export const createShare = (ref, payload) =>
-  ref
-    .collection('inboundShares')
-    .add({
-      createdAt: ts,
-      updatedAt: ts,
-      payload
-    })
-    .then((ref) => {
-      console.log('createShare success');
-      return true;
-    })
-    .catch((error) => {
-      console.error(error);
-    });

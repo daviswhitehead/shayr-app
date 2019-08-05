@@ -29,16 +29,29 @@ const withLikes = (
   post: UsersPosts,
   ownerUserId: documentId
 ) => (props: any) => {
-  const { authUserId, toggleLikePost, likes, ...passThroughProps } = props;
+  const {
+    authUserId,
+    toggleLikePost,
+    likes,
+    noTouching,
+    ...passThroughProps
+  } = props;
 
   const isLikesActive = _.includes(likes, post.postId);
-  // const isDonesActive = getActionActiveStatus(authUserId, post, 'dones');
 
   return (
     <WrappedComponent
       isActive={isLikesActive}
-      onPress={() =>
-        toggleLikePost(isLikesActive, post.postId, ownerUserId, authUserId)
+      onPress={
+        noTouching
+          ? null
+          : () =>
+              toggleLikePost(
+                isLikesActive,
+                post.postId,
+                ownerUserId,
+                authUserId
+              )
       }
       {...passThroughProps}
     />

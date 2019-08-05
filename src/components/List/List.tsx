@@ -4,7 +4,7 @@ import { ActivityIndicator, FlatList, Text, View } from 'react-native';
 import Colors from '../../styles/Colors';
 import styles from './styles';
 
-interface Props {
+interface Props extends FlatList<any> {
   data: Array<any>;
   renderItem: (item: any) => JSX.Element;
   onScroll?: () => void;
@@ -53,7 +53,7 @@ const List: React.SFC<Props> = ({
         return null;
       }}
       ListFooterComponent={() => {
-        if (isLoadedAll) {
+        if (!_.isEmpty(data) && isLoadedAll) {
           return (
             <View style={styles.loadingContainer}>
               <Text>List is loaded</Text>

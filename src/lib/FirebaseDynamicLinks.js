@@ -17,7 +17,6 @@ export const getTestLink = async (screen = '', params = {}) => {
   // import { Linking } from 'react-native';
   // import { getTestLink } from '../../lib/FirebaseDynamicLinks';
   // const test = await getTestLink('HelloWorld');
-  // console.log(test);
   // Linking.openURL(test);
 
   const appLink =

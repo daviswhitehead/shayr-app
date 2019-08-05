@@ -332,8 +332,7 @@ class PostDetail extends Component<Props> {
     );
   }
 
-  renderListItem = (item) => {
-    console.log(item);
+  renderListItem = (item: any) => {
     const user = this.props.users[item.userId];
 
     return (
@@ -354,8 +353,6 @@ class PostDetail extends Component<Props> {
         </View>
       );
     }
-    console.log('this.props');
-    console.log(this.props);
 
     return (
       <View style={styles.screen}>
@@ -420,17 +417,3 @@ export default withNavigationFocus(
     mapDispatchToProps
   )(PostDetail)
 );
-
-{
-  /* <View style={styles.sectionBox}>
-              <Text style={styles.sectionHeader}>Comments</Text>
-              <UserTextDate
-                userName={getUserShortName(this.props.authUser)}
-                profilePhoto={this.props.authUser.facebookProfilePhoto}
-                // text='Bob S I want to be like him when I grow up...'
-                text='Bob S finished with your shayr, My Undesireable Talent. Ask them how they liked it?'
-                createdAt={new Date('December 17, 1995 03:24:00')}
-                // createdAt={new Date()}
-              />
-            </View> */
-}

@@ -205,10 +205,10 @@ class Discover extends Component<Props> {
     );
 
     // this.props.navigation.navigate('FriendsTab', {});
-    this.props.navigation.navigate('PostDetail', {
-      ownerUserId: this.props.authUserId,
-      postId: '48PKLyY71DHin1XuIPop'
-    });
+    // this.props.navigation.navigate('PostDetail', {
+    //   ownerUserId: this.props.authUserId,
+    //   postId: '48PKLyY71DHin1XuIPop'
+    // });
     // this.props.navigation.navigate({
     //   routeName: 'MyList',
     //   params: {

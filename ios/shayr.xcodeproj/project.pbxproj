@@ -1857,7 +1857,7 @@
 				CODE_SIGN_ENTITLEMENTS = shayr/shayr.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 60;
+				CURRENT_PROJECT_VERSION = 61;
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = D5PU696EY8;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1882,7 +1882,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.daviswhitehead.shayr.ios.prod;
+				PRODUCT_BUNDLE_IDENTIFIER = com.daviswhitehead.shayr.ios.alpha;
 				PRODUCT_NAME = shayr;
 				PROVISIONING_PROFILE = "79422a41-6d0f-4716-a7e8-63a814ca54ea";
 				PROVISIONING_PROFILE_SPECIFIER = "match Development com.daviswhitehead.shayr.ios.prod";
@@ -1900,7 +1900,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 60;
+				CURRENT_PROJECT_VERSION = 61;
 				DEVELOPMENT_TEAM = D5PU696EY8;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1924,7 +1924,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.daviswhitehead.shayr.ios.prod;
+				PRODUCT_BUNDLE_IDENTIFIER = com.daviswhitehead.shayr.ios.alpha;
 				PRODUCT_NAME = shayr;
 				PROVISIONING_PROFILE = "56ed9696-3c0c-424a-8283-8e7224744bf2";
 				PROVISIONING_PROFILE_SPECIFIER = "match AppStore com.daviswhitehead.shayr.ios.prod";
@@ -1985,7 +1985,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.daviswhitehead.shayr.ios.prod.ShareExtension;
+				PRODUCT_BUNDLE_IDENTIFIER = com.daviswhitehead.shayr.ios.alpha.ShareExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "f4be2213-70d5-4fd6-a66f-babc46639bcd";
 				PROVISIONING_PROFILE_SPECIFIER = "match Development com.daviswhitehead.shayr.ios.prod.ShareExtension";
@@ -2048,7 +2048,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.daviswhitehead.shayr.ios.prod.ShareExtension;
+				PRODUCT_BUNDLE_IDENTIFIER = com.daviswhitehead.shayr.ios.alpha.ShareExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "9570e3fa-d09a-4775-a706-8137e021ed9a";
 				PROVISIONING_PROFILE_SPECIFIER = "match AppStore com.daviswhitehead.shayr.ios.prod.ShareExtension";

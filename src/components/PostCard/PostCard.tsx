@@ -159,6 +159,8 @@ const PostCard: React.SFC<Props> = (props) => {
                 count={props.post.sharesCount || 0}
                 name={'share'}
                 usersPost={props.post}
+                ownerUserId={props.post.userId}
+                noTouching={props.noTouching}
               />
               <View style={styles.actionsSpacer} />
               {/* <IconCountWithAdds
@@ -174,6 +176,7 @@ const PostCard: React.SFC<Props> = (props) => {
               <IconCountWithLikes
                 count={props.post.likesCount || 0}
                 name={'like'}
+                noTouching={props.noTouching}
               />
             </View>
           </View>

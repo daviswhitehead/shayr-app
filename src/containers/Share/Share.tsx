@@ -128,6 +128,7 @@ class Share extends Component {
         ref={this.modalRef}
         payload={this.state.payload}
         authUserId={this.state.authUserId}
+        ownerUserId={this.state.authUserId}
         users={this.state.friends}
         navigateToLogin={() => navigateToLogin()}
         onModalWillHide={() => ShareExtension.close()}
