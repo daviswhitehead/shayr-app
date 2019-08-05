@@ -12,9 +12,7 @@ import { connect } from 'react-redux';
 // import withAdds from '../../higherOrderComponents/withAdds';
 // import withDones from '../../higherOrderComponents/withDones';
 import withLikes from '../../higherOrderComponents/withLikes';
-import withShares, {
-  IconWithCountWithShares
-} from '../../higherOrderComponents/withShares';
+import { IconWithCountWithShares } from '../../higherOrderComponents/withShares';
 import { selectAuthUserId } from '../../redux/auth/selectors';
 import Colors from '../../styles/Colors';
 import IconWithCount from '../IconWithCount';
@@ -66,18 +64,10 @@ const PostCard: React.SFC<Props> = (props) => {
   const featuredUser = getFeaturedUser(props);
 
   const postImage = _.get(props, ['post', 'image'], '');
-
   const title = _.get(props, ['post', 'title'], '');
-
   const publisher = _.get(props, ['post', 'publisher', 'name'], '');
-  // const timeEstimate = '23 min';
   const timeEstimate = _.get(props, ['post', 'timeEstimate'], '');
 
-  // const IconCountWithShares = withShares(
-  //   IconWithCount,
-  //   props.post,
-  //   props.ownerUserId
-  // );
   const IconCountWithLikes = withLikes(
     IconWithCount,
     props.post,
@@ -168,7 +158,7 @@ const PostCard: React.SFC<Props> = (props) => {
               <IconWithCountWithShares
                 count={props.post.sharesCount || 0}
                 name={'share'}
-                post={props.post}
+                usersPost={props.post}
               />
               <View style={styles.actionsSpacer} />
               {/* <IconCountWithAdds

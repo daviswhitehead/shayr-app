@@ -26,9 +26,15 @@ const mapDispatchToProps = (dispatch: any) => {
 };
 
 const withShares = (WrappedComponent: React.SFC) => (props: any) => {
-  const { authUserId, authShares, friends, post, ...passThroughProps } = props;
+  const {
+    authUserId,
+    authShares,
+    friends,
+    usersPost,
+    ...passThroughProps
+  } = props;
 
-  const isSharesActive = _.includes(authShares, post.postId);
+  const isSharesActive = _.includes(authShares, usersPost.postId);
   const modalRef = React.useRef(null);
 
   return (
@@ -41,10 +47,10 @@ const withShares = (WrappedComponent: React.SFC) => (props: any) => {
       <ShareModal
         ref={modalRef}
         authUserId={authUserId}
-        payload={post.url}
-        url={post.url}
-        post={post}
-        postId={post._id}
+        payload={usersPost.url}
+        url={usersPost.url}
+        post={usersPost}
+        postId={usersPost.postId}
         users={friends}
         // navigateToLogin={() => navigateToLogin()}
       />

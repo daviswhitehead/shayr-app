@@ -14,6 +14,9 @@ export const fonts = {
   LIGHT: {
     fontFamily: 'NunitoSans-Light'
   },
+  ITALIC: {
+    fontFamily: 'NunitoSans-Italic'
+  },
   EXTRA_LIGHT: {
     fontFamily: 'NunitoSans-ExtraLight'
   },
@@ -69,6 +72,11 @@ export const fontSystem = {
   NAME: {
     ...fonts.EXTRA_LIGHT_ITALIC,
     color: colors.BLACK,
+    fontSize: 12
+  },
+  DATE_TIMEAGO: {
+    ...fonts.ITALIC,
+    color: colors.LIGHT_GRAY,
     fontSize: 12
   },
   ICON_NUMBER_INACTIVE: {

@@ -58,7 +58,7 @@ export const createComment = (
         text,
         updatedAt: ts,
         userId,
-        visibleToUserIds: arrayUnion(visibleToUserIds)
+        visibleToUserIds: arrayUnion([userId, ...visibleToUserIds])
       })
       .then((ref) => {
         return ref.id;
@@ -92,17 +92,16 @@ export const createComment = (
 
 const requestLimiter = 10;
 export const loadCommentsForUsersPosts = (
-  ownerUserId: string,
-  // queryType: queryType,
-  // queryArguments: queryArguments,
+  userId: string,
+  postId: string,
   shouldRefresh?: boolean,
   isLoading?: boolean,
   lastItem?: LastItem
 ) => async (dispatch: Dispatch) => {
   const request: Query = composeQuery(
     getQuery('USERS_POSTS_COMMENTS', {
-      postId: '48PKLyY71DHin1XuIPop',
-      userId: 'lOnI91XOvdRnQe5Hmdrkf2TY5lH2'
+      postId,
+      userId
     }),
     requestLimiter,
     shouldRefresh ? undefined : lastItem
@@ -110,8 +109,8 @@ export const loadCommentsForUsersPosts = (
   dispatch(
     getFeedOfDocuments(
       STATE_KEY,
-      ownerUserId,
-      'test',
+      userId,
+      postId,
       request,
       shouldRefresh,
       isLoading,

@@ -19,9 +19,6 @@ const initialState: ListInitialState = {};
 function reducer(state = initialState, action: ListAction) {
   switch (action.type) {
     case types.LIST_ADD: {
-      console.log('types.LIST_ADD');
-      console.log(action);
-
       const items = _.get(state, [action.listKey, 'isRefreshing'], false)
         ? [...action.items]
         : _.uniq([

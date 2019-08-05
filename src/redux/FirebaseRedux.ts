@@ -68,6 +68,11 @@ export const getFeedOfDocuments = (
 
   dispatch(getDocumentsStart(stateKey));
 
+  console.log('lastItem');
+  console.log(lastItem);
+  console.log('query');
+  console.log(query);
+
   await query
     .get()
     .then((querySnapshot: QuerySnapshot) => {

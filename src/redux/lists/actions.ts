@@ -49,7 +49,7 @@ interface ListLoadingAction {
 
 export const listLoading = (stateKey: StateKeyLists, listKey: ListKey) => {
   return {
-    type: types.LIST_REFRESHING,
+    type: types.LIST_LOADING,
     stateKey,
     listKey
   };

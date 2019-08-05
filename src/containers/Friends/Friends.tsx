@@ -1,9 +1,11 @@
+import { getUserShortName } from '@daviswhitehead/shayr-resources';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { ActivityIndicator, Button, Text, View } from 'react-native';
 import { connect } from 'react-redux';
 import Header from '../../components/Header';
+import UserTextDate from '../../components/UserTextDate';
 import { startSignOut } from '../../redux/auth/actions';
 import { selectAuthUserId } from '../../redux/auth/selectors';
 import {
@@ -51,14 +53,24 @@ class Friends extends Component {
   componentDidMount() {}
 
   render() {
-    if (false) {
+    if (!this.props.authUser) {
       return <ActivityIndicator />;
     }
+
+    // console.log(this.props.authUser);
 
     return (
       <View style={styles.container}>
         <Text>COMING SOON</Text>
         <Button onPress={this.props.startSignOut} title='Log Out' />
+        <UserTextDate
+          userName={getUserShortName(this.props.authUser)}
+          profilePhoto={this.props.authUser.facebookProfilePhoto}
+          // text='Bob S I want to be like him when I grow up...'
+          text='Bob S finished with your shayr, My Undesireable Talent. Ask them how they liked it?'
+          createdAt={new Date('December 17, 1995 03:24:00')}
+          // createdAt={new Date()}
+        />
       </View>
     );
   }

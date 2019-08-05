@@ -1,4 +1,3 @@
-import { UsersPostsType } from '@daviswhitehead/shayr-resources';
 import _ from 'lodash';
 import * as React from 'react';
 import { ActivityIndicator, FlatList, Text, View } from 'react-native';
@@ -6,31 +5,45 @@ import Colors from '../../styles/Colors';
 import styles from './styles';
 
 interface Props {
-  data: Array<UsersPostsType>;
-  renderItem: (item: UsersPostsType) => JSX.Element;
+  data: Array<any>;
+  renderItem: (item: any) => JSX.Element;
   onScroll?: () => void;
   onEndReached?: () => void;
   onRefresh?: () => void;
   refreshing?: boolean;
   isLoading?: boolean;
   isLoadedAll?: boolean;
+  noSeparator?: boolean;
 }
 
-const List: React.SFC<Props> = props => {
+const List: React.SFC<Props> = ({
+  data,
+  renderItem,
+  onScroll,
+  onEndReached,
+  onRefresh,
+  refreshing,
+  isLoading,
+  isLoadedAll,
+  noSeparator,
+  ...passThroughProps
+}) => {
   return (
     <FlatList
       style={styles.container}
-      data={props.data}
-      renderItem={({ item }) => props.renderItem(item)}
+      data={data}
+      renderItem={({ item }) => renderItem(item)}
       keyExtractor={({ key }) => key}
-      ItemSeparatorComponent={() => <View style={styles.separator} />}
-      onScroll={props.onScroll}
-      onEndReached={props.isLoadedAll ? null : props.onEndReached}
+      ItemSeparatorComponent={
+        noSeparator ? null : () => <View style={styles.separator} />
+      }
+      onScroll={onScroll}
+      onEndReached={isLoadedAll ? null : onEndReached}
       onEndReachedThreshold={0.1}
-      onRefresh={props.onRefresh}
-      refreshing={props.refreshing}
+      onRefresh={onRefresh}
+      refreshing={refreshing}
       ListEmptyComponent={() => {
-        if (_.isEmpty(props.data)) {
+        if (_.isEmpty(data) && !isLoading) {
           return (
             <View style={styles.loadingContainer}>
               <Text>List is empty</Text>
@@ -40,13 +53,13 @@ const List: React.SFC<Props> = props => {
         return null;
       }}
       ListFooterComponent={() => {
-        if (props.isLoadedAll) {
+        if (isLoadedAll) {
           return (
             <View style={styles.loadingContainer}>
-              <Text>Loaded all posts</Text>
+              <Text>List is loaded</Text>
             </View>
           );
-        } else if (props.isLoading) {
+        } else if (isLoading) {
           return (
             <View style={styles.loadingContainer}>
               <ActivityIndicator size='large' color={Colors.BLACK} />
@@ -55,6 +68,7 @@ const List: React.SFC<Props> = props => {
         }
         return null;
       }}
+      {...passThroughProps}
     />
   );
 };

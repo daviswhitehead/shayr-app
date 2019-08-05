@@ -9,6 +9,7 @@ import { Text, View } from 'react-native';
 import { DocumentSnapshot } from 'react-native-firebase/firestore';
 import { NavigationScreenProp, NavigationState } from 'react-navigation';
 import { connect } from 'react-redux';
+import { subscribe } from 'redux-subscriber';
 import Header from '../../components/Header';
 import List from '../../components/List';
 import PostCard from '../../components/PostCard';
@@ -41,8 +42,6 @@ import {
 } from '../../redux/usersPosts/selectors';
 import colors from '../../styles/Colors';
 import styles from './styles';
-
-import { subscribe } from 'redux-subscriber';
 
 type ActionType = 'shares' | 'adds' | 'dones' | 'likes';
 
@@ -206,10 +205,10 @@ class Discover extends Component<Props> {
     );
 
     // this.props.navigation.navigate('FriendsTab', {});
-    // this.props.navigation.navigate('PostDetail', {
-    //   ownerUserId: this.props.authUserId,
-    //   postId: 'cd2qGlHClQvzHnO1m5xY'
-    // });
+    this.props.navigation.navigate('PostDetail', {
+      ownerUserId: this.props.authUserId,
+      postId: '48PKLyY71DHin1XuIPop'
+    });
     // this.props.navigation.navigate({
     //   routeName: 'MyList',
     //   params: {

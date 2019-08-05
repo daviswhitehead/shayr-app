@@ -140,6 +140,7 @@ export const queries = {
         .collection('comments')
         .where('postId', '==', `${postId}`)
         .where('visibleToUserIds', 'array-contains', `${userId}`)
+        .orderBy('createdAt', 'desc')
   },
   FRIENDSHIPS_ALL: {
     type: 'FRIENDSHIPS_ALL',
