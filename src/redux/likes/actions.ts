@@ -5,12 +5,8 @@ import { Dispatch } from 'redux';
 import { Toaster } from '../../components/Toaster';
 import { ts } from '../../lib/FirebaseHelpers';
 import { queries } from '../../lib/FirebaseQueries';
-import {
-  dataActionTypes,
-  generateActionTypes,
-  subscribeDocumentsIds
-} from '../../lib/FirebaseRedux';
 import { overwriteUserCounts, updateCounts } from '../../lib/FirebaseWrites';
+import { subscribeToAllDocuments } from '../../redux/FirebaseRedux';
 import {
   actionTypeActiveToasts,
   actionTypeInactiveToasts
@@ -21,7 +17,6 @@ import { toggleUsersPostsListsItem } from '../usersPostsLists/actions';
 export const STATE_KEY = 'likes';
 
 export const types = {
-  ...generateActionTypes(STATE_KEY, dataActionTypes),
   TOGGLE_LIKE_POST_START: 'TOGGLE_LIKE_POST_START',
   TOGGLE_LIKE_POST_SUCCESS: 'TOGGLE_LIKE_POST_SUCCESS',
   TOGGLE_LIKE_POST_FAIL: 'TOGGLE_LIKE_POST_FAIL',
@@ -98,10 +93,11 @@ export const toggleLikePost = (
 export const subscribeToLikes = (userId: string) => {
   return (dispatch: Dispatch) => {
     return dispatch(
-      subscribeDocumentsIds(
+      subscribeToAllDocuments(
         STATE_KEY,
         queries.USER_LIKES.query({ userId }),
-        'postId'
+        userId,
+        queries.USER_LIKES.type
       )
     );
   };

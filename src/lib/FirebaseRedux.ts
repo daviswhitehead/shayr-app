@@ -1,4 +1,6 @@
+import { documentId } from '@daviswhitehead/shayr-resources';
 import _ from 'lodash';
+import firebase from 'react-native-firebase';
 import {
   DocumentSnapshot,
   Query,
@@ -15,6 +17,7 @@ export type stateKey =
   | 'adds'
   | 'dones'
   | 'shares'
+  | 'sharesLists'
   | 'likes';
 export type dataActionTypes = 'GET_START' | 'GET_SUCCESS' | 'GET_FAIL';
 export type listActionTypes =
@@ -185,10 +188,62 @@ export const subscribeDocuments = (STATE_KEY: stateKey, query: Query) => async (
   );
 };
 
+export const subscribeToDocument = (
+  STATE_KEY: stateKey,
+  collection: string,
+  documentId: documentId
+) => async (dispatch: Dispatch) => {
+  dispatch(getStart(STATE_KEY));
+
+  return firebase
+    .firestore()
+    .collection(collection)
+    .doc(documentId)
+    .onSnapshot(
+      (documentSnapshot: DocumentSnapshot) => {
+        if (documentSnapshot.exists) {
+          const documents = {
+            [documentSnapshot.id]: formatDocumentSnapshot(documentSnapshot)
+          };
+          dispatch(getSuccess(STATE_KEY, documents));
+        }
+      },
+      (error: SnapshotError) => {
+        console.error(error);
+        dispatch(getFail(STATE_KEY, error));
+      }
+    );
+};
+
+export const getDocument = (STATE_KEY: stateKey, reference: string) => async (
+  dispatch: Dispatch
+) => {
+  dispatch(getStart(STATE_KEY));
+
+  return firebase
+    .firestore()
+    .doc(reference)
+    .get()
+    .then((documentSnapshot: DocumentSnapshot) => {
+      if (documentSnapshot.exists) {
+        const documents = {
+          [documentSnapshot.id]: formatDocumentSnapshot(documentSnapshot)
+        };
+        dispatch(getSuccess(STATE_KEY, documents));
+      }
+      return documentSnapshot.id;
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+};
+
 export const subscribeDocumentsIds = (
   STATE_KEY: stateKey,
   query: Query,
-  documentIdField: string
+  documentIdField: string,
+  ownerUserId: documentId,
+  list: string
 ) => async (dispatch: Dispatch) => {
   dispatch(getStart(STATE_KEY));
 
@@ -203,7 +258,8 @@ export const subscribeDocumentsIds = (
           }
         });
       }
-      dispatch(getSuccess(STATE_KEY, documents));
+      dispatch(listAdd(STATE_KEY, ownerUserId, list, documents));
+      dispatch(listLoaded(STATE_KEY, ownerUserId, list, 'DONE'));
     },
     (error: SnapshotError) => {
       console.error(error);

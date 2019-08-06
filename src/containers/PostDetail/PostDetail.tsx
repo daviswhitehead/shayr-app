@@ -1,7 +1,12 @@
-import { documentId, User, UsersPosts } from '@daviswhitehead/shayr-resources';
+import {
+  documentId,
+  getUserShortName,
+  User,
+  UsersPosts
+} from '@daviswhitehead/shayr-resources';
 import _ from 'lodash';
 import React, { Component } from 'react';
-import { ActivityIndicator, ScrollView, Text, View } from 'react-native';
+import { ActivityIndicator, Text, View } from 'react-native';
 import {
   NavigationScreenProp,
   NavigationState,
@@ -11,12 +16,20 @@ import { connect } from 'react-redux';
 import ActionBar from '../../components/ActionBar';
 import Header from '../../components/Header';
 import Icon from '../../components/Icon';
+import List from '../../components/List';
 import PostCard from '../../components/PostCard';
 import UserAvatarsScrollView from '../../components/UserAvatarsScrollView';
+import UserTextDate from '../../components/UserTextDate';
 import { queries } from '../../lib/FirebaseQueries';
 import { getDocuments } from '../../lib/FirebaseRedux';
 import { openURL } from '../../lib/Utils';
 import { selectAuthUserId } from '../../redux/auth/selectors';
+import { loadCommentsForUsersPosts } from '../../redux/comments/actions';
+import {
+  selectCommentsForPostDetail,
+  selectCommentsMetadataForPostDetail
+} from '../../redux/comments/selectors';
+import { LastItem } from '../../redux/FirebaseRedux';
 import {
   selectUserFromId,
   selectUsersFromList
@@ -61,12 +74,6 @@ export interface Props {
     ownerUserId: documentId,
     userId: documentId
   ) => void;
-  toggleSharePost: (
-    isActive: boolean,
-    postId: documentId,
-    ownerUserId: documentId,
-    userId: documentId
-  ) => void;
   toggleAddDonePost: (
     type: 'adds' | 'dones',
     isActive: boolean,
@@ -75,25 +82,32 @@ export interface Props {
     userId: documentId,
     isOtherActive: boolean
   ) => void;
+  loadCommentsForUsersPosts: (
+    userId: string,
+    postId: string,
+    shouldRefresh?: boolean,
+    isLoading?: boolean,
+    lastItem?: LastItem
+  ) => void;
 }
 
-const defaultProps = {};
-
 const mapStateToProps = (state: any, props: any) => {
+  const ownerUserId = props.navigation.state.params.ownerUserId;
+  const postId = props.navigation.state.params.postId;
+
   const authUserId = selectAuthUserId(state);
   const authUser = selectUserFromId(state, authUserId);
-  const post = selectUsersPostFromId(
-    state,
-    `${props.navigation.state.params.ownerUserId}_${
-      props.navigation.state.params.postId
-    }`
-  );
+  const commentsListKey = `${ownerUserId}_${postId}`;
+  const post = selectUsersPostFromId(state, `${ownerUserId}_${postId}`);
 
   return {
     authUserId,
     authUser,
-    ownerUserId: props.navigation.state.params.ownerUserId,
-    postId: props.navigation.state.params.postId,
+    commentsData: selectCommentsForPostDetail(state, commentsListKey),
+    commentsListKey,
+    commentsMeta: selectCommentsMetadataForPostDetail(state, commentsListKey),
+    ownerUserId,
+    postId,
     post,
     routing: state.routing,
     users: {
@@ -117,12 +131,6 @@ const mapDispatchToProps = (dispatch: any, props: any) => {
       ownerUserId: documentId,
       userId: documentId
     ) => dispatch(toggleLikePost(isActive, postId, ownerUserId, userId)),
-    toggleSharePost: (
-      isActive: boolean,
-      postId: documentId,
-      ownerUserId: documentId,
-      userId: documentId
-    ) => dispatch(toggleSharePost(isActive, postId, ownerUserId, userId)),
     toggleAddDonePost: (
       type: 'adds' | 'dones',
       isActive: boolean,
@@ -140,6 +148,22 @@ const mapDispatchToProps = (dispatch: any, props: any) => {
           userId,
           isOtherActive
         )
+      ),
+    loadCommentsForUsersPosts: (
+      userId: string,
+      postId: string,
+      shouldRefresh?: boolean,
+      isLoading?: boolean,
+      lastItem?: LastItem
+    ) =>
+      dispatch(
+        loadCommentsForUsersPosts(
+          userId,
+          postId,
+          shouldRefresh,
+          isLoading,
+          lastItem
+        )
       )
   };
 };
@@ -153,6 +177,13 @@ class PostDetail extends Component<Props> {
     if (!this.props.post) {
       await this.props.getPostDetailDocument();
     }
+    await this.props.loadCommentsForUsersPosts(
+      this.props.ownerUserId,
+      this.props.postId,
+      true,
+      false,
+      undefined
+    );
   }
 
   componentWillUnmount() {}
@@ -197,15 +228,7 @@ class PostDetail extends Component<Props> {
       : {};
   };
 
-  render() {
-    if (!this.props.post) {
-      return (
-        <View style={styles.loadingContainer}>
-          <ActivityIndicator size='large' color={Colors.BLACK} />
-        </View>
-      );
-    }
-
+  renderListHeader() {
     // get featured users
     const shareFeatured = this.getFeaturedUsers(
       'shares',
@@ -229,6 +252,109 @@ class PostDetail extends Component<Props> {
     );
 
     return (
+      <View>
+        <PostCard
+          ownerUserId={this.props.ownerUserId}
+          post={this.props.post}
+          onCardPress={() => openURL(this.props.post.url)}
+        />
+        <View style={styles.headerContainer}>
+          <View style={styles.sectionBox}>
+            <Text style={styles.sectionHeader}>Summary</Text>
+            <Text style={styles.body}> {this.props.post.description}</Text>
+          </View>
+          <View style={styles.sectionBox}>
+            <Text style={styles.sectionHeader}>Activity</Text>
+            {!_.isEmpty(shareFeatured) ? (
+              <View style={styles.activityBox}>
+                <View style={styles.activityHeader}>
+                  <Icon.default name={'share'} />
+                  <Text style={styles.boldBody}>
+                    {shareFeatured.featuredUserName}
+                  </Text>
+                  <Text style={styles.body}>
+                    {` ${shareFeatured.featuredString}`}
+                  </Text>
+                </View>
+                <UserAvatarsScrollView users={shareFeatured.featuredUsers} />
+              </View>
+            ) : null}
+            {!_.isEmpty(addFeatured) ? (
+              <View style={styles.activityBox}>
+                <View style={styles.activityHeader}>
+                  <Icon.default name={'add'} />
+                  <Text style={styles.boldBody}>
+                    {addFeatured.featuredUserName}
+                  </Text>
+                  <Text style={styles.body}>
+                    {` ${addFeatured.featuredString}`}
+                  </Text>
+                </View>
+                <UserAvatarsScrollView users={addFeatured.featuredUsers} />
+              </View>
+            ) : null}
+            {!_.isEmpty(doneFeatured) ? (
+              <View style={styles.activityBox}>
+                <View style={styles.activityHeader}>
+                  <Icon.default name={'done'} />
+                  <Text style={styles.boldBody}>
+                    {doneFeatured.featuredUserName}
+                  </Text>
+                  <Text style={styles.body}>
+                    {` ${doneFeatured.featuredString}`}
+                  </Text>
+                </View>
+                <UserAvatarsScrollView users={doneFeatured.featuredUsers} />
+              </View>
+            ) : null}
+            {!_.isEmpty(likeFeatured) ? (
+              <View>
+                <View style={styles.activityHeader}>
+                  <Icon.default name={'like'} />
+                  <Text style={styles.boldBody}>
+                    {likeFeatured.featuredUserName}
+                  </Text>
+                  <Text style={styles.body}>
+                    {` ${likeFeatured.featuredString}`}
+                  </Text>
+                </View>
+                <UserAvatarsScrollView users={likeFeatured.featuredUsers} />
+              </View>
+            ) : null}
+          </View>
+          <View>
+            <Text style={[styles.sectionHeader, { marginBottom: 0 }]}>
+              Comments
+            </Text>
+          </View>
+        </View>
+      </View>
+    );
+  }
+
+  renderListItem = (item: any) => {
+    const user = this.props.users[item.userId];
+
+    return (
+      <UserTextDate
+        userName={getUserShortName(user)}
+        profilePhoto={user.facebookProfilePhoto}
+        text={item.text}
+        createdAt={item.createdAt.toDate()}
+      />
+    );
+  };
+
+  render() {
+    if (!this.props.post) {
+      return (
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size='large' color={Colors.BLACK} />
+        </View>
+      );
+    }
+
+    return (
       <View style={styles.screen}>
         {this.props.isFocused ? (
           <Header
@@ -238,82 +364,43 @@ class PostDetail extends Component<Props> {
             back={() => this.props.navigation.goBack()}
           />
         ) : null}
-        <ScrollView
+        <List
           showsVerticalScrollIndicator={false}
           overScrollMode='always'
-          style={styles.scrollView}
-        >
-          <PostCard
-            ownerUserId={this.props.ownerUserId}
-            post={this.props.post}
-            onCardPress={() => openURL(this.props.post.url)}
-          />
-          <View style={styles.container}>
-            <View style={styles.sectionBox}>
-              <Text style={styles.sectionHeader}>Summary</Text>
-              <Text style={styles.body}> {this.props.post.description}</Text>
-            </View>
-            <View style={styles.sectionBox}>
-              <Text style={styles.sectionHeader}>Activity</Text>
-              {!_.isEmpty(shareFeatured) ? (
-                <View style={styles.activityBox}>
-                  <View style={styles.activityHeader}>
-                    <Icon.default name={'share'} />
-                    <Text style={styles.boldBody}>
-                      {shareFeatured.featuredUserName}
-                    </Text>
-                    <Text style={styles.body}>
-                      {` ${shareFeatured.featuredString}`}
-                    </Text>
-                  </View>
-                  <UserAvatarsScrollView users={shareFeatured.featuredUsers} />
-                </View>
-              ) : null}
-              {!_.isEmpty(addFeatured) ? (
-                <View style={styles.activityBox}>
-                  <View style={styles.activityHeader}>
-                    <Icon.default name={'add'} />
-                    <Text style={styles.boldBody}>
-                      {addFeatured.featuredUserName}
-                    </Text>
-                    <Text style={styles.body}>
-                      {` ${addFeatured.featuredString}`}
-                    </Text>
-                  </View>
-                  <UserAvatarsScrollView users={addFeatured.featuredUsers} />
-                </View>
-              ) : null}
-              {!_.isEmpty(doneFeatured) ? (
-                <View style={styles.activityBox}>
-                  <View style={styles.activityHeader}>
-                    <Icon.default name={'done'} />
-                    <Text style={styles.boldBody}>
-                      {doneFeatured.featuredUserName}
-                    </Text>
-                    <Text style={styles.body}>
-                      {` ${doneFeatured.featuredString}`}
-                    </Text>
-                  </View>
-                  <UserAvatarsScrollView users={doneFeatured.featuredUsers} />
-                </View>
-              ) : null}
-              {!_.isEmpty(likeFeatured) ? (
-                <View style={styles.activityBox}>
-                  <View style={styles.activityHeader}>
-                    <Icon.default name={'like'} />
-                    <Text style={styles.boldBody}>
-                      {likeFeatured.featuredUserName}
-                    </Text>
-                    <Text style={styles.body}>
-                      {` ${likeFeatured.featuredString}`}
-                    </Text>
-                  </View>
-                  <UserAvatarsScrollView users={likeFeatured.featuredUsers} />
-                </View>
-              ) : null}
-            </View>
-          </View>
-        </ScrollView>
+          ListHeaderComponent={() => this.renderListHeader()}
+          data={this.props.commentsData}
+          renderItem={(item) => this.renderListItem(item)}
+          noSeparator
+          onEndReached={() =>
+            this.props.loadCommentsForUsersPosts(
+              this.props.ownerUserId,
+              this.props.postId,
+              false,
+              _.get(this.props, ['commentsMeta', 'isLoading'], true),
+              _.get(this.props, ['commentsMeta', 'lastItem'], undefined)
+            )
+          }
+          onRefresh={() =>
+            this.props.loadCommentsForUsersPosts(
+              this.props.ownerUserId,
+              this.props.postId,
+              true,
+              _.get(this.props, ['commentsMeta', 'isLoading'], true),
+              _.get(this.props, ['commentsMeta', 'lastItem'], undefined)
+            )
+          }
+          refreshing={_.get(
+            this.props,
+            ['commentsMeta', 'isRefreshing'],
+            false
+          )}
+          isLoading={_.get(this.props, ['commentsMeta', 'isLoading'], true)}
+          isLoadedAll={_.get(
+            this.props,
+            ['commentsMeta', 'isLoadedAll'],
+            false
+          )}
+        />
         <ActionBar
           authUser={this.props.authUser}
           post={this.props.post}
@@ -323,8 +410,6 @@ class PostDetail extends Component<Props> {
     );
   }
 }
-
-PostDetail.defaultProps = defaultProps;
 
 export default withNavigationFocus(
   connect(

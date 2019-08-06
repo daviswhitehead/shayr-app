@@ -1,45 +1,67 @@
-import { documentId, UsersPosts } from '@daviswhitehead/shayr-resources';
 import _ from 'lodash';
 import * as React from 'react';
+import { View } from 'react-native';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
+import ShareModal from '../../components/ShareModal';
+import { queries } from '../../lib/FirebaseQueries';
 import { selectAuthUserId } from '../../redux/auth/selectors';
-import { toggleSharePost } from '../../redux/shares/actions';
+import { selectUsersFromList } from '../../redux/users/selectors';
 
 const mapStateToProps = (state: any) => {
+  const authUserId = selectAuthUserId(state);
   return {
-    authUserId: selectAuthUserId(state),
-    shares: state.shares
+    authUserId,
+    authShares: _.get(
+      state,
+      ['sharesLists', `${authUserId}_${queries.USER_SHARES.type}`, 'items'],
+      []
+    ),
+    friends: selectUsersFromList(state, `${authUserId}_Friends`)
   };
 };
 
 const mapDispatchToProps = (dispatch: any) => {
-  return {
-    toggleSharePost: (
-      isActive: boolean,
-      postId: documentId,
-      ownerUserId: documentId,
-      userId: documentId
-    ) => dispatch(toggleSharePost(isActive, postId, ownerUserId, userId))
-  };
+  return {};
 };
 
-const withShares = (
-  WrappedComponent: React.SFC,
-  post: UsersPosts,
-  ownerUserId: documentId
-) => (props: any) => {
-  const { authUserId, toggleSharePost, shares, ...passThroughProps } = props;
+const withShares = (WrappedComponent: React.SFC) => (props: any) => {
+  const {
+    authUserId,
+    authShares,
+    friends,
+    usersPost,
+    ownerUserId,
+    noTouching,
+    ...passThroughProps
+  } = props;
 
-  const isSharesActive = _.includes(shares, post.postId);
+  const isSharesActive = _.includes(authShares, usersPost.postId);
+  const modalRef = React.useRef(null);
+
+  // console.log(authUserId);
+
   return (
-    <WrappedComponent
-      isActive={isSharesActive}
-      onPress={() =>
-        toggleSharePost(isSharesActive, post.postId, ownerUserId, authUserId)
-      }
-      {...passThroughProps}
-    />
+    <View>
+      <WrappedComponent
+        isActive={isSharesActive}
+        onPress={
+          modalRef && !noTouching ? () => modalRef.current.toggleModal() : null
+        }
+        {...passThroughProps}
+      />
+      <ShareModal
+        ref={modalRef}
+        authUserId={authUserId}
+        ownerUserId={ownerUserId}
+        payload={usersPost.url}
+        url={usersPost.url}
+        post={usersPost}
+        postId={usersPost.postId}
+        users={friends}
+        // navigateToLogin={() => navigateToLogin()}
+      />
+    </View>
   );
 };
 

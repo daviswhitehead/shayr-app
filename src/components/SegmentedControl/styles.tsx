@@ -11,17 +11,17 @@ export default StyleSheet.create({
     borderColor: Colors.DIVIDER
   },
   segment: {
-    marginHorizontal: Layout.MARGIN_MEDIUM,
-    paddingHorizontal: Layout.PADDING_MEDIUM
+    marginHorizontal: Layout.SPACING_MEDIUM,
+    paddingHorizontal: Layout.SPACING_MEDIUM
   },
   activeSegment: {
-    marginHorizontal: Layout.MARGIN_MEDIUM,
-    paddingHorizontal: Layout.PADDING_MEDIUM,
+    marginHorizontal: Layout.SPACING_MEDIUM,
+    paddingHorizontal: Layout.SPACING_MEDIUM,
     marginBottom: -1,
     borderBottomWidth: 3,
     borderColor: Colors.YELLOW
   },
   iconContainer: {
-    marginVertical: Layout.MARGIN_MEDIUM
+    marginVertical: Layout.SPACING_MEDIUM
   }
 });

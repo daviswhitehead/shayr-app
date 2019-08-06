@@ -1,8 +1,8 @@
 import { Linking } from 'react-native';
 
-export const isURL = (url) => {
+export const isURL = url => {
   Linking.canOpenURL(url)
-    .then((supported) => {
+    .then(supported => {
       if (!supported) {
         return false;
       }
@@ -11,11 +11,11 @@ export const isURL = (url) => {
     .catch(err => console.error('An error occurred', err));
 };
 
-export const openURL = (url) => {
+export const openURL = url => {
   Linking.canOpenURL(url)
-    .then((supported) => {
+    .then(supported => {
       if (!supported) {
-        console.log(`Can't handle url: ${url}`);
+        console.warn(`Can't handle url: ${url}`);
       } else {
         return Linking.openURL(url);
       }

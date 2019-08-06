@@ -1,5 +1,6 @@
 const colors = {
   YELLOW: '#F2C94C',
+  SKELETON: '#DADADA',
   BLACK: '#000000',
   SHADOW: '#000',
   GREEN: '#27AE60',

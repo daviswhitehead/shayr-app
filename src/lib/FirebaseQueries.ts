@@ -17,6 +17,7 @@ export type queryType =
   | 'USER_SHARES'
   | 'FRIENDSHIPS_ALL'
   | 'FRIENDS_ALL'
+  | 'USERS_POSTS_COMMENTS'
   | 'USERS_ALL';
 
 export interface queryArguments {
@@ -130,6 +131,16 @@ export const queries = {
         .where('userId', '==', userId)
         .where('active', '==', true)
         .orderBy('updatedAt', 'desc')
+  },
+  USERS_POSTS_COMMENTS: {
+    type: 'USERS_POSTS_COMMENTS',
+    query: ({ userId, postId }: { userId: string; postId: string }) =>
+      firebase
+        .firestore()
+        .collection('comments')
+        .where('postId', '==', `${postId}`)
+        .where('visibleToUserIds', 'array-contains', `${userId}`)
+        .orderBy('createdAt', 'desc')
   },
   FRIENDSHIPS_ALL: {
     type: 'FRIENDSHIPS_ALL',

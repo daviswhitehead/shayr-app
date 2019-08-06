@@ -70,7 +70,7 @@ export default class SwipeCard extends React.Component<Props, State> {
             styles.icon,
             {
               right:
-                styles.icon.width * -1 - Layout.MARGIN_LONG + leftDragDistance
+                styles.icon.width * -1 - Layout.SPACING_LONG + leftDragDistance
             }
           ]}
         />
@@ -104,7 +104,7 @@ export default class SwipeCard extends React.Component<Props, State> {
             styles.icon,
             {
               left:
-                styles.icon.width * -1 - Layout.MARGIN_LONG + rightDragDistance
+                styles.icon.width * -1 - Layout.SPACING_LONG + rightDragDistance
             }
           ]}
         />

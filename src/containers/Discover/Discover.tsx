@@ -9,6 +9,7 @@ import { Text, View } from 'react-native';
 import { DocumentSnapshot } from 'react-native-firebase/firestore';
 import { NavigationScreenProp, NavigationState } from 'react-navigation';
 import { connect } from 'react-redux';
+import { subscribe } from 'redux-subscriber';
 import Header from '../../components/Header';
 import List from '../../components/List';
 import PostCard from '../../components/PostCard';
@@ -28,7 +29,7 @@ import { navigateToRoute } from '../../redux/routing/actions';
 import {
   subscribeToShares,
   updateUserShares
-} from '../../redux/shares/actions';
+} from '../../redux/sharesLists/actions';
 import { subscribeToUser } from '../../redux/users/actions';
 import {
   selectUserFromId,
@@ -41,8 +42,6 @@ import {
 } from '../../redux/usersPosts/selectors';
 import colors from '../../styles/Colors';
 import styles from './styles';
-
-import { subscribe } from 'redux-subscriber';
 
 type ActionType = 'shares' | 'adds' | 'dones' | 'likes';
 
@@ -85,6 +84,11 @@ const mapStateToProps = (state: any) => {
   return {
     adds: state.adds,
     auth: state.auth,
+    authShares: _.get(
+      state,
+      ['sharesLists', `${authUserId}_${queries.USER_SHARES.type}`],
+      []
+    ),
     authUserId,
     authUser: selectUserFromId(state, authUserId),
     dones: state.dones,
@@ -92,7 +96,6 @@ const mapStateToProps = (state: any) => {
     likes: state.likes,
     posts: state.posts,
     routing: state.routing,
-    shares: state.shares,
     usersPostsViews,
     usersPostsData
   };
@@ -118,22 +121,22 @@ const mapDispatchToProps = (dispatch: any, props: any) => {
           lastItem
         )
       ),
-    subscribeToUser: userId => dispatch(subscribeToUser(userId)),
-    subscribeToAdds: userId => dispatch(subscribeToAdds(userId)),
+    subscribeToUser: (userId) => dispatch(subscribeToUser(userId)),
+    subscribeToAdds: (userId) => dispatch(subscribeToAdds(userId)),
     updateUserAdds: (userId, value) => dispatch(updateUserAdds(userId, value)),
-    subscribeToDones: userId => dispatch(subscribeToDones(userId)),
+    subscribeToDones: (userId) => dispatch(subscribeToDones(userId)),
     updateUserDones: (userId, value) =>
       dispatch(updateUserDones(userId, value)),
-    subscribeToLikes: userId => dispatch(subscribeToLikes(userId)),
+    subscribeToLikes: (userId) => dispatch(subscribeToLikes(userId)),
     updateUserLikes: (userId, value) =>
       dispatch(updateUserLikes(userId, value)),
-    subscribeToShares: userId => dispatch(subscribeToShares(userId)),
+    subscribeToShares: (userId) => dispatch(subscribeToShares(userId)),
     updateUserShares: (userId, value) =>
       dispatch(updateUserShares(userId, value)),
-    subscribeToFriendships: userId => dispatch(subscribeToFriendships(userId)),
-    subscribeNotificationTokenRefresh: userId =>
+    subscribeToFriendships: (userId) => dispatch(subscribeToFriendships(userId)),
+    subscribeNotificationTokenRefresh: (userId) =>
       dispatch(subscribeNotificationTokenRefresh(userId)),
-    navigateToRoute: payload => dispatch(navigateToRoute(payload)),
+    navigateToRoute: (payload) => dispatch(navigateToRoute(payload)),
     toggleAddDonePost: (
       type: 'adds' | 'dones',
       isActive: boolean,
@@ -180,7 +183,7 @@ class Discover extends Component<Props> {
 
     // HOME - Listen to routing updates from incoming notifications
     this.subscriptions.push(
-      subscribe('routing', state => {
+      subscribe('routing', (state) => {
         if (state.routing.screen) {
           this.props.navigateToRoute(state.routing);
         }
@@ -201,9 +204,10 @@ class Discover extends Component<Props> {
       ].lastItem
     );
 
+    // this.props.navigation.navigate('FriendsTab', {});
     // this.props.navigation.navigate('PostDetail', {
     //   ownerUserId: this.props.authUserId,
-    //   postId: 'cd2qGlHClQvzHnO1m5xY'
+    //   postId: '48PKLyY71DHin1XuIPop'
     // });
     // this.props.navigation.navigate({
     //   routeName: 'MyList',
@@ -243,19 +247,19 @@ class Discover extends Component<Props> {
       );
     }
     if (
-      !this.props.shares.hasUpdatedUser &&
+      !this.props.authShares.hasUpdatedUser &&
       this.props.authUserId &&
-      this.props.shares.length >= 0
+      _.get(this.props, ['authShares', 'items'], false)
     ) {
       this.props.updateUserShares(
         this.props.authUserId,
-        this.props.shares.length
+        _.get(this.props, ['authShares', 'items'], []).length
       );
     }
   }
 
   componentWillUnmount() {
-    Object.values(this.subscriptions).forEach(unsubscribe => {
+    Object.values(this.subscriptions).forEach((unsubscribe) => {
       unsubscribe();
     });
   }

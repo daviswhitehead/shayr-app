@@ -7,9 +7,15 @@ import { selectAuthUserId } from '../../redux/auth/selectors';
 import { toggleLikePost } from '../../redux/likes/actions';
 
 const mapStateToProps = (state: any) => {
+  const authUserId = selectAuthUserId(state);
+
   return {
-    authUserId: selectAuthUserId(state),
-    likes: state.likes
+    authUserId,
+    activeLikes: _.get(
+      state,
+      ['likesLists', `${authUserId}_USER_LIKES`, 'items'],
+      []
+    )
   };
 };
 
@@ -29,16 +35,29 @@ const withLikes = (
   post: UsersPosts,
   ownerUserId: documentId
 ) => (props: any) => {
-  const { authUserId, toggleLikePost, likes, ...passThroughProps } = props;
+  const {
+    authUserId,
+    toggleLikePost,
+    activeLikes,
+    noTouching,
+    ...passThroughProps
+  } = props;
 
-  const isLikesActive = _.includes(likes, post.postId);
-  // const isDonesActive = getActionActiveStatus(authUserId, post, 'dones');
+  const isLikesActive = _.includes(activeLikes, post._id);
 
   return (
     <WrappedComponent
       isActive={isLikesActive}
-      onPress={() =>
-        toggleLikePost(isLikesActive, post.postId, ownerUserId, authUserId)
+      onPress={
+        noTouching
+          ? null
+          : () =>
+              toggleLikePost(
+                isLikesActive,
+                post.postId,
+                ownerUserId,
+                authUserId
+              )
       }
       {...passThroughProps}
     />

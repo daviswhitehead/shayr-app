@@ -37,7 +37,12 @@
     "prefer-array-literal": false,
     "object-shorthand-properties-first": false,
     "indent": [true, "spaces", 2],
-    "interface-name": true
+    "interface-name": true,
+    "trailing-comma": [
+      true,
+      { "multiline": "as-needed", "singleline": "as-needed" }
+    ],
+    "arrow-parens": [true, "always"]
   },
   "linterOptions": {
     "exclude": ["node_modules"]

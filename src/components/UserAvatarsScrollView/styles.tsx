@@ -3,6 +3,6 @@ import Layout from '../../styles/Layout';
 
 export default StyleSheet.create({
   avatarContainer: {
-    marginHorizontal: Layout.MARGIN_SHORT
+    marginHorizontal: Layout.SPACING_SHORT
   }
 });

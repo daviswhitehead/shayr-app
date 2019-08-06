@@ -1,12 +1,10 @@
 import { StyleSheet } from 'react-native';
-import layout from '../../styles/Layout';
 
 export default StyleSheet.create({
   imageBox: {
     flexDirection: 'column',
     justifyContent: 'center',
-    alignItems: 'center',
-    padding: layout.PADDING_SHORT
+    alignItems: 'center'
   },
   small: {
     height: 32,

@@ -13,7 +13,7 @@ export default StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'flex-start',
-    marginLeft: Layout.MARGIN_SHORT
+    marginLeft: Layout.SPACING_SHORT
   },
   count: {
     textAlignVertical: 'center',
@@ -24,5 +24,10 @@ export default StyleSheet.create({
     textAlignVertical: 'center',
     textAlign: 'center',
     ...fontSystem.ICON_NUMBER_ACTIVE
+  },
+  skeleton: {
+    height: 24,
+    width: 24 * 2 + Layout.SPACING_LONG,
+    borderRadius: Layout.BORDER_RADIUS_MEDIUM
   }
 });

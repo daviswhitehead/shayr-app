@@ -7,10 +7,22 @@ import { selectAuthUserId } from '../../redux/auth/selectors';
 import { toggleAddDonePost } from '../../redux/dones/actions';
 
 const mapStateToProps = (state: any) => {
+  const authUserId = selectAuthUserId(state);
+
   return {
-    authUserId: selectAuthUserId(state),
-    adds: state.adds,
-    dones: state.dones
+    authUserId,
+    activeAdds: _.get(
+      state,
+      ['addsLists', `${authUserId}_USER_ADDS`, 'items'],
+      []
+    ),
+    activeDones: _.get(
+      state,
+      ['donesLists', `${authUserId}_USER_DONES`, 'items'],
+      []
+    )
+    // adds: state.adds,
+    // dones: state.dones
   };
 };
 
@@ -45,13 +57,17 @@ const withDones = (
   const {
     authUserId,
     toggleAddDonePost,
-    adds,
-    dones,
+    activeAdds,
+    activeDones,
+    // adds,
+    // dones,
     ...passThroughProps
   } = props;
 
-  const isDonesActive = _.includes(dones, post.postId);
-  const isAddsActive = _.includes(adds, post.postId);
+  const isAddsActive = _.includes(activeAdds, post._id);
+  const isDonesActive = _.includes(activeDones, post._id);
+  // const isAddsActive = _.includes(adds, post.postId);
+  // const isDonesActive = _.includes(dones, post.postId);
 
   return (
     <WrappedComponent

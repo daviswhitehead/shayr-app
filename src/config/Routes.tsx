@@ -10,7 +10,6 @@ import Friends from '../containers/Friends';
 import Login from '../containers/Login';
 import MyList from '../containers/MyList';
 import PostDetail from '../containers/PostDetail';
-// import RealtimeDataTester from '../containers/RealtimeDataTester';
 
 const DiscoverStack = createStackNavigator(
   {
@@ -64,14 +63,19 @@ const MyListStack = createStackNavigator(
   }
 );
 
-const FriendsStack = createStackNavigator({
-  Friends: {
-    screen: Friends,
-    navigationOptions: () => ({
-      header: null
-    })
+const FriendsStack = createStackNavigator(
+  {
+    Friends: {
+      screen: Friends,
+      navigationOptions: () => ({
+        header: null
+      })
+    }
+  },
+  {
+    initialRouteName: 'Friends'
   }
-});
+);
 
 const AuthStack = createStackNavigator({
   Login: {

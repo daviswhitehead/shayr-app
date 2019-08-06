@@ -12,7 +12,7 @@ export default StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginHorizontal: layout.MARGIN_LONG
+    marginHorizontal: layout.SPACING_LONG
   },
   titleBox: {
     textAlign: 'center'

@@ -19,16 +19,16 @@ import { authSubscription, hasAccessToken } from '../../redux/auth/actions';
 import { handleURLRoute } from '../../redux/routing/actions';
 import styles from './styles';
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   auth: state.auth,
   app: state.app
 });
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch) => ({
   authSubscription: () => dispatch(authSubscription()),
   hasAccessToken: () => dispatch(hasAccessToken()),
   isAppReady: (isReady: boolean) => dispatch(isAppReady(isReady)),
-  handleURLRoute: url => dispatch(handleURLRoute(url))
+  handleURLRoute: (url) => dispatch(handleURLRoute(url))
 });
 
 class AppLoading extends Component {
@@ -52,7 +52,7 @@ class AppLoading extends Component {
     this.props.hasAccessToken();
 
     // setup android notification channels
-    notificationChannels.forEach(channel => {
+    notificationChannels.forEach((channel) => {
       firebase.notifications().android.createChannel(channel);
     });
 
@@ -104,7 +104,7 @@ class AppLoading extends Component {
     this.props.isAppReady(false);
   }
 
-  handleAppStateChange = nextAppState => {
+  handleAppStateChange = (nextAppState) => {
     // https://facebook.github.io/react-native/docs/appstate
     if (nextAppState === 'active') {
       firebase.analytics().logEvent('APP_STATE_ACTIVE');
@@ -122,7 +122,7 @@ class AppLoading extends Component {
     if (this.props.app.isAppReady) {
       return (
         <RootNavigator
-          ref={navigatorRef => {
+          ref={(navigatorRef) => {
             setTopLevelNavigator(navigatorRef);
           }}
           // uriPrefix='shayr://'

@@ -7,13 +7,16 @@ import {
 import _ from 'lodash';
 import * as React from 'react';
 import { Image, Text, TouchableWithoutFeedback, View } from 'react-native';
+import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import { connect } from 'react-redux';
 // import withAdds from '../../higherOrderComponents/withAdds';
 // import withDones from '../../higherOrderComponents/withDones';
 import withLikes from '../../higherOrderComponents/withLikes';
-import withShares from '../../higherOrderComponents/withShares';
+import { IconWithCountWithShares } from '../../higherOrderComponents/withShares';
 import { selectAuthUserId } from '../../redux/auth/selectors';
+import Colors from '../../styles/Colors';
 import IconWithCount from '../IconWithCount';
+import SmartUserAvatar from '../SmartUserAvatar';
 import UserAvatar from '../UserAvatar';
 import styles from './styles';
 
@@ -28,16 +31,8 @@ export interface Props {
   post: UsersPosts;
   users?: Users | undefined;
   noTouching?: boolean;
+  isLoading?: boolean;
 }
-
-const defaultProps = {
-  authUserId: '',
-  ownerUserId: '',
-  onCardPress: () => null,
-  post: usersPostsDefault,
-  users: { a: userDefault },
-  noTouching: false
-};
 
 const mapStateToProps = (state: any) => {
   const authUserId = selectAuthUserId(state);
@@ -65,22 +60,14 @@ const getFeaturedUser = (props: Props) => {
   }
 };
 
-const PostCard: React.SFC<Props> = props => {
+const PostCard: React.SFC<Props> = (props) => {
   const featuredUser = getFeaturedUser(props);
 
   const postImage = _.get(props, ['post', 'image'], '');
-
   const title = _.get(props, ['post', 'title'], '');
-
   const publisher = _.get(props, ['post', 'publisher', 'name'], '');
-  // const timeEstimate = '23 min';
   const timeEstimate = _.get(props, ['post', 'timeEstimate'], '');
 
-  const IconCountWithShares = withShares(
-    IconWithCount,
-    props.post,
-    props.ownerUserId
-  );
   const IconCountWithLikes = withLikes(
     IconWithCount,
     props.post,
@@ -99,6 +86,40 @@ const PostCard: React.SFC<Props> = props => {
   //   props.ownerUserId
   // );
 
+  if (props.isLoading) {
+    return (
+      <View style={styles.container}>
+        {!_.isEmpty(featuredUser) ? (
+          <View style={styles.avatar}>
+            <UserAvatar isLoading />
+          </View>
+        ) : (
+          <View style={styles.emptyAvatar} />
+        )}
+        <View style={styles.contentBox}>
+          <SkeletonPlaceholder backgroundColor={Colors.SKELETON}>
+            <View style={styles.image} />
+          </SkeletonPlaceholder>
+          <View style={styles.textActionsBox}>
+            <View style={styles.textBox}>
+              <SkeletonPlaceholder backgroundColor={Colors.SKELETON}>
+                <View style={styles.titleSkeleton} />
+              </SkeletonPlaceholder>
+              <SkeletonPlaceholder backgroundColor={Colors.SKELETON}>
+                <View style={styles.titleSkeleton} />
+              </SkeletonPlaceholder>
+            </View>
+            <View style={styles.actionsBox}>
+              <IconWithCount isLoading />
+              <View style={styles.actionsSpacer} />
+              <IconWithCount isLoading />
+            </View>
+          </View>
+        </View>
+      </View>
+    );
+  }
+
   return (
     <TouchableWithoutFeedback
       onPress={props.noTouching ? undefined : props.onCardPress}
@@ -106,10 +127,11 @@ const PostCard: React.SFC<Props> = props => {
       <View style={styles.container}>
         {!_.isEmpty(featuredUser) ? (
           <View style={styles.avatar}>
-            <UserAvatar
+            <SmartUserAvatar
               {...featuredUser}
               isVertical={false}
               noTouching={props.noTouching}
+              userId={featuredUser._id}
             />
           </View>
         ) : (
@@ -133,9 +155,12 @@ const PostCard: React.SFC<Props> = props => {
               </View>
             </View>
             <View style={styles.actionsBox}>
-              <IconCountWithShares
+              <IconWithCountWithShares
                 count={props.post.sharesCount || 0}
                 name={'share'}
+                usersPost={props.post}
+                ownerUserId={props.post.userId}
+                noTouching={props.noTouching}
               />
               <View style={styles.actionsSpacer} />
               {/* <IconCountWithAdds
@@ -151,6 +176,7 @@ const PostCard: React.SFC<Props> = props => {
               <IconCountWithLikes
                 count={props.post.likesCount || 0}
                 name={'like'}
+                noTouching={props.noTouching}
               />
             </View>
           </View>
@@ -160,7 +186,14 @@ const PostCard: React.SFC<Props> = props => {
   );
 };
 
-PostCard.defaultProps = defaultProps;
+PostCard.defaultProps = {
+  authUserId: '',
+  ownerUserId: '',
+  onCardPress: () => null,
+  post: usersPostsDefault,
+  users: { a: userDefault },
+  noTouching: false
+};
 
 export default connect(
   mapStateToProps,
