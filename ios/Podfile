@@ -1,35 +1,43 @@
+# https://www.rubydoc.info/gems/cocoapods/Pod/Installer
+# https://stackoverflow.com/questions/30244675/how-can-i-modify-other-ldflags-via-cocoapods-post-install-hook
+
 install! 'cocoapods', :deterministic_uuids => false
 platform :ios, '11.0'
+require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
 
 def shared_pods
   # React Native Core
-  rn_path = '../node_modules/react-native'
-  pod 'yoga', :path => "#{rn_path}/ReactCommon/yoga/yoga.podspec"
-  pod 'React', path: rn_path, subspecs: [
-    'Core',
-    'CxxBridge',
-    'DevSupport',
-    'RCTActionSheet',
-    'RCTAnimation',
-    'RCTGeolocation',
-    'RCTImage',
-    'RCTLinkingIOS',
-    'RCTNetwork',
-    'RCTSettings',
-    'RCTText',
-    'RCTVibration',
-    'RCTWebSocket',
-  ]
-  pod 'DoubleConversion', :podspec => "#{rn_path}/third-party-podspecs/DoubleConversion.podspec"
-  pod 'glog', :podspec => "#{rn_path}/third-party-podspecs/glog.podspec"
-  pod 'Folly', :podspec => "#{rn_path}/third-party-podspecs/Folly.podspec"
+  pod 'React', :path => '../node_modules/react-native/'
+  pod 'React-Core', :path => '../node_modules/react-native/React'
+  pod 'React-DevSupport', :path => '../node_modules/react-native/React'
+  pod 'React-fishhook', :path => '../node_modules/react-native/Libraries/fishhook'
+  pod 'React-RCTActionSheet', :path => '../node_modules/react-native/Libraries/ActionSheetIOS'
+  pod 'React-RCTAnimation', :path => '../node_modules/react-native/Libraries/NativeAnimation'
+  pod 'React-RCTBlob', :path => '../node_modules/react-native/Libraries/Blob'
+  pod 'React-RCTImage', :path => '../node_modules/react-native/Libraries/Image'
+  pod 'React-RCTLinking', :path => '../node_modules/react-native/Libraries/LinkingIOS'
+  pod 'React-RCTNetwork', :path => '../node_modules/react-native/Libraries/Network'
+  pod 'React-RCTSettings', :path => '../node_modules/react-native/Libraries/Settings'
+  pod 'React-RCTText', :path => '../node_modules/react-native/Libraries/Text'
+  pod 'React-RCTVibration', :path => '../node_modules/react-native/Libraries/Vibration'
+  pod 'React-RCTWebSocket', :path => '../node_modules/react-native/Libraries/WebSocket'
+
+  pod 'React-cxxreact', :path => '../node_modules/react-native/ReactCommon/cxxreact'
+  pod 'React-jsi', :path => '../node_modules/react-native/ReactCommon/jsi'
+  pod 'React-jsiexecutor', :path => '../node_modules/react-native/ReactCommon/jsiexecutor'
+  pod 'React-jsinspector', :path => '../node_modules/react-native/ReactCommon/jsinspector'
+  pod 'yoga', :path => '../node_modules/react-native/ReactCommon/yoga'
+
+  pod 'DoubleConversion', :podspec => '../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec'
+  pod 'glog', :podspec => '../node_modules/react-native/third-party-podspecs/glog.podspec'
+  pod 'Folly', :podspec => '../node_modules/react-native/third-party-podspecs/Folly.podspec'
 
   # React Native Additional
   pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
-  # pod 'react-native-config', :path => '../node_modules/react-native-config'
+  pod 'react-native-fbsdk', :path => '../node_modules/react-native-fbsdk'
+  pod 'react-native-config', :path => '../node_modules/react-native-config'
   pod 'react-native-splash-screen', :path => '../node_modules/react-native-splash-screen'
   pod 'RNGestureHandler', :path => '../node_modules/react-native-gesture-handler'
-  # pod 'RNSVG', :path => '../node_modules/react-native-svg'
 
   # Firebase
   pod 'Firebase/Auth', '~> 5.20.1'
@@ -44,56 +52,87 @@ def shared_pods
 
   # Codepush
   pod 'CodePush', :path => '../node_modules/react-native-code-push'
-  
+
 end
 
 target 'shayr' do
   shared_pods
 
   # Facebook
-  pod 'FBSDKCoreKit', '~> 4.40.0'
-  pod 'FBSDKLoginKit', '~> 4.40.0'
-  pod 'FBSDKShareKit', '~> 4.40.0'  
+  pod 'FBSDKCoreKit', '~> 5.3.0'
+  pod 'FBSDKLoginKit', '~> 5.3.0'
+  pod 'FBSDKShareKit', '~> 5.3.0'
 
+  use_native_modules!
+  
+  # pod 'RNFirebase', :path => '../node_modules/react-native-firebase'
+
+  post_install do |installer|
+    # Fix Fabric Headers
+    system('mkdir ./Pods/Headers/Public/Fabric')
+    system('cp ./Pods/Fabric/iOS/Fabric.framework/Headers/Fabric.h ./Pods/Headers/Public/Fabric/Fabric.h')
+    system('cp ./Pods/Fabric/iOS/Fabric.framework/Headers/FABAttributes.h ./Pods/Headers/Public/Fabric/FABAttributes.h')
+    
+    # Fix Crashlytics Headers
+    system('mkdir ./Pods/Headers/Public/Crashlytics')
+    system('cp ./Pods/Crashlytics/iOS/Crashlytics.framework/Headers/Crashlytics.h ./Pods/Headers/Public/Crashlytics/Crashlytics.h')
+    system('cp ./Pods/Crashlytics/iOS/Crashlytics.framework/Headers/CLSStackFrame.h ./Pods/Headers/Public/Crashlytics/CLSStackFrame.h')
+    system('cp ./Pods/Crashlytics/iOS/Crashlytics.framework/Headers/CLSReport.h ./Pods/Headers/Public/Crashlytics/CLSReport.h')
+    system('cp ./Pods/Crashlytics/iOS/Crashlytics.framework/Headers/CLSLogging.h ./Pods/Headers/Public/Crashlytics/CLSLogging.h')
+    system('cp ./Pods/Crashlytics/iOS/Crashlytics.framework/Headers/CLSAttributes.h ./Pods/Headers/Public/Crashlytics/CLSAttributes.h')
+    system('cp ./Pods/Crashlytics/iOS/Crashlytics.framework/Headers/Answers.h ./Pods/Headers/Public/Crashlytics/Answers.h')
+    system('cp ./Pods/Crashlytics/iOS/Crashlytics.framework/Headers/ANSCompatibility.h ./Pods/Headers/Public/Crashlytics/ANSCompatibility.h')
+  
+    installer.pods_project.targets.each do |target|
+      puts "Target Found: #{target.name}"
+  
+      # Fix libraries breaking the Share Extension
+      if [
+        "FBSDKCoreKit",
+        "FBSDKLoginKit",
+        "FBSDKShareKit",
+        "FirebaseDynamicLinks",
+        "React",
+        "React-Core",
+        "React-DevSupport",
+        "React-RCTLinking"
+      ].include?(target.name)
+  
+        puts "Updating build configurations on target: #{target.name}"
+  
+        target.build_configurations.each do |build_configuration|
+          if build_configuration.build_settings['APPLICATION_EXTENSION_API_ONLY'] == 'YES'
+            build_configuration.build_settings['APPLICATION_EXTENSION_API_ONLY'] = 'NO'
+          end
+        end
+      end
+  
+      # Resolve react-native-config issues
+      # https://github.com/luggit/react-native-config/issues/187#issuecomment-514857871
+      targets_to_ignore = %w(React yoga)
+  
+      # if ["React", "yoga"].include?(target.name)
+      if targets_to_ignore.include? target.name
+        target.remove_from_project
+      end
+  
+      if target.name == 'react-native-config'
+        phase = target.project.new(Xcodeproj::Project::Object::PBXShellScriptBuildPhase)
+        phase.shell_script = "cd ../../"\
+                              " && RNC_ROOT=./node_modules/react-native-config/"\
+                              " && export SYMROOT=$RNC_ROOT/ios/ReactNativeConfig"\
+                              " && export BUILD_DIR=$RNC_ROOT/ios/ReactNativeConfig"\
+                              " && ruby $RNC_ROOT/ios/ReactNativeConfig/BuildDotenvConfig.ruby"
+  
+        target.build_phases << phase
+        target.build_phases.move(phase,0)
+      end
+    end
+  end
 end
 
 target 'ShareExtension' do
   shared_pods
-end
 
-
-post_install do |installer|
-  # Fix Fabric Headers
-  system('mkdir ./Pods/Headers/Public/Fabric')
-  system('cp ./Pods/Fabric/iOS/Fabric.framework/Headers/Fabric.h ./Pods/Headers/Public/Fabric/Fabric.h')
-  system('cp ./Pods/Fabric/iOS/Fabric.framework/Headers/FABAttributes.h ./Pods/Headers/Public/Fabric/FABAttributes.h')
-  
-  # Fix Crashlytics Headers
-  system('mkdir ./Pods/Headers/Public/Crashlytics')
-  system('cp ./Pods/Crashlytics/iOS/Crashlytics.framework/Headers/Crashlytics.h ./Pods/Headers/Public/Crashlytics/Crashlytics.h')
-  system('cp ./Pods/Crashlytics/iOS/Crashlytics.framework/Headers/CLSStackFrame.h ./Pods/Headers/Public/Crashlytics/CLSStackFrame.h')
-  system('cp ./Pods/Crashlytics/iOS/Crashlytics.framework/Headers/CLSReport.h ./Pods/Headers/Public/Crashlytics/CLSReport.h')
-  system('cp ./Pods/Crashlytics/iOS/Crashlytics.framework/Headers/CLSLogging.h ./Pods/Headers/Public/Crashlytics/CLSLogging.h')
-  system('cp ./Pods/Crashlytics/iOS/Crashlytics.framework/Headers/CLSAttributes.h ./Pods/Headers/Public/Crashlytics/CLSAttributes.h')
-  system('cp ./Pods/Crashlytics/iOS/Crashlytics.framework/Headers/Answers.h ./Pods/Headers/Public/Crashlytics/Answers.h')
-  system('cp ./Pods/Crashlytics/iOS/Crashlytics.framework/Headers/ANSCompatibility.h ./Pods/Headers/Public/Crashlytics/ANSCompatibility.h')
-
-  installer.pods_project.targets.each do |target|
-    # Fix DynamicLinks breaking the Share Extension
-    if target.name.end_with? "DynamicLinks"
-      target.build_configurations.each do |build_configuration|
-        if build_configuration.build_settings['APPLICATION_EXTENSION_API_ONLY'] == 'YES'
-          build_configuration.build_settings['APPLICATION_EXTENSION_API_ONLY'] = 'NO'
-        end
-      end
-    end
-    if target.name == "React"
-      target.build_configurations.each do |build_configuration|
-        if build_configuration.build_settings['APPLICATION_EXTENSION_API_ONLY'] == 'YES'
-          build_configuration.build_settings['APPLICATION_EXTENSION_API_ONLY'] = 'NO'
-        end
-      end
-      target.remove_from_project
-    end
-  end
+  use_native_modules!
 end
