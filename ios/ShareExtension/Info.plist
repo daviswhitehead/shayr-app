@@ -9,7 +9,7 @@
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
-	<string>com.daviswhitehead.shayr.ios.alpha.ShareExtension</string>
+	<string>com.daviswhitehead.shayr.ios.prod.ShareExtension</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
@@ -17,9 +17,9 @@
 	<key>CFBundlePackageType</key>
 	<string>XPC!</string>
 	<key>CFBundleShortVersionString</key>
-	<string>3.0.0</string>
+	<string>3.1.0</string>
 	<key>CFBundleVersion</key>
-	<string>61</string>
+	<string>64</string>
 	<key>CodePushDeploymentKey</key>
 	<string>__RN_CONFIG_IOS_CODEPUSH_DEPLOYMENT_KEY</string>
 	<key>Fabric</key>
