@@ -1,6 +1,7 @@
 import firebase from 'react-native-firebase';
-import { requestNotificationPermissions } from '../../lib/Notifications';
+import { Dispatch } from 'redux';
 import { ts } from '../../lib/FirebaseHelpers';
+import { requestNotificationPermissions } from '../../lib/Notifications';
 
 export const types = {
   // PERMISSIONS
@@ -20,14 +21,14 @@ export const types = {
     'SUBSCRIBE_NOTIFICATION_TOKEN_REFRESH_FAIL'
 };
 
-const saveNotificationToken = async (userId, token) => {
+const saveNotificationToken = async (userId: string, token: string) => {
   const didTokenUpdate = await firebase
     .firestore()
     .collection('users')
     .doc(userId)
     .update({ pushToken: token, updatedAt: ts })
     .then(() => true)
-    .catch(error => {
+    .catch((error) => {
       console.error(error);
       return false;
     });
@@ -35,7 +36,10 @@ const saveNotificationToken = async (userId, token) => {
 };
 
 // PERMISSIONS
-export const requestNotificationPermissionsRedux = async (userId, dispatch) => {
+export const requestNotificationPermissionsRedux = async (
+  userId: string,
+  dispatch: Dispatch
+) => {
   dispatch({ type: types.NOTIFICATION_PERMISSIONS_REQUEST_START });
   const token = await requestNotificationPermissions();
 
@@ -48,14 +52,14 @@ export const requestNotificationPermissionsRedux = async (userId, dispatch) => {
 };
 
 // NOTIFICATION TOKEN REFRESH
-export const subscribeNotificationTokenRefresh = userId =>
-  function _subscribeNotificationTokenRefresh(dispatch) {
+export const subscribeNotificationTokenRefresh = (userId: string) =>
+  function _subscribeNotificationTokenRefresh(dispatch: Dispatch) {
     dispatch({ type: types.SUBSCRIBE_NOTIFICATION_TOKEN_REFRESH_START });
     requestNotificationPermissionsRedux(userId, dispatch);
 
     return firebase
       .messaging()
-      .onTokenRefresh(notificationToken =>
+      .onTokenRefresh((notificationToken) =>
         saveNotificationToken(userId, notificationToken)
       );
   };

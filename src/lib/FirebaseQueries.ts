@@ -19,7 +19,7 @@ export enum queryTypes {
   USERS_ALL = 'USERS_ALL'
 }
 
-export const queries: Map<queryTypes, (...args: string[]) => void> = new Map([
+export const queries: Map<queryTypes, (...args: string[]) => Query> = new Map([
   [
     queryTypes.USERS_POSTS_SINGLE,
     (userId: string, postId: string) => {

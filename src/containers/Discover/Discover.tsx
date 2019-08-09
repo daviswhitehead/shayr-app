@@ -1,9 +1,10 @@
-import { Post, User, UsersPosts } from '@daviswhitehead/shayr-resources';
+import { User, UsersPosts } from '@daviswhitehead/shayr-resources';
 import _ from 'lodash';
 import React, { PureComponent } from 'react';
 import { Text, View } from 'react-native';
 import { NavigationScreenProps } from 'react-navigation';
 import { connect } from 'react-redux';
+// @ts-ignore
 import { subscribe } from 'redux-subscriber';
 import Header from '../../components/Header';
 import List from '../../components/List';
@@ -22,6 +23,7 @@ import { subscribeToLikes, updateUserLikes } from '../../redux/likes/actions';
 import { generateListKey } from '../../redux/lists/helpers';
 import { selectListCount, selectListMeta } from '../../redux/lists/selectors';
 import { subscribeNotificationTokenRefresh } from '../../redux/notifications/actions';
+import { State } from '../../redux/Reducers';
 import { navigateToRoute } from '../../redux/routing/actions';
 import {
   subscribeToShares,
@@ -37,35 +39,21 @@ import { selectFlatListReadyUsersPosts } from '../../redux/usersPosts/selectors'
 import colors from '../../styles/Colors';
 import styles from './styles';
 
-let RENDER_COUNT = 0;
-
-export const getObjectDiff = (obj1: any, obj2: any) => {
-  const diff = Object.keys(obj1).reduce((result, key) => {
-    if (!obj2.hasOwnProperty(key)) {
-      result.push(key);
-    } else if (_.isEqual(obj1[key], obj2[key])) {
-      const resultKeyIndex = result.indexOf(key);
-      result.splice(resultKeyIndex, 1);
-    }
-    return result;
-  }, Object.keys(obj2));
-
-  return diff;
-};
+// const RENDER_COUNT = 0;
 
 interface StateProps {
-  addsCount: number;
-  authUser: User;
+  addsCount?: number;
+  authUser?: User;
   authUserId: string;
-  donesCount: number;
-  friends: Array<User>;
-  likesCount: number;
-  routing: any; // routing state
-  sharesCount: number;
-  usersPostsListsMeta: {
+  donesCount?: number;
+  friends?: Array<User>;
+  likesCount?: number;
+  routing?: any; // routing state
+  sharesCount?: number;
+  usersPostsListsMeta?: {
     [listKey: string]: any; // listKey and meta state
   };
-  usersPostsListsData: {
+  usersPostsListsData?: {
     [listKey: string]: Array<UsersPosts>; // listKey
   };
 }
@@ -84,10 +72,14 @@ interface DispatchProps {
   updateUserShares: typeof updateUserShares;
   subscribeToFriendships: typeof subscribeToFriendships;
   subscribeNotificationTokenRefresh: typeof subscribeNotificationTokenRefresh;
-  toggleAddDonePost: typeof subscribeNotificationTokenRefresh;
+  toggleAddDonePost: typeof toggleAddDonePost;
 }
 
 interface OwnProps {}
+
+interface OwnState {
+  isLoading: boolean;
+}
 
 interface NavigationParams {}
 
@@ -96,8 +88,12 @@ type Props = OwnProps &
   DispatchProps &
   NavigationScreenProps<NavigationParams>;
 
-const mapStateToProps = (state: any) => {
+const mapStateToProps = (state: State) => {
   const authUserId = selectAuthUserId(state);
+
+  if (!authUserId) {
+    return {};
+  }
 
   return {
     addsCount: selectListCount(state, 'addsLists', `${authUserId}_USER_ADDS`),
@@ -158,7 +154,7 @@ const mapDispatchToProps = {
   toggleAddDonePost
 };
 
-class Discover extends PureComponent<Props> {
+class Discover extends PureComponent<Props, OwnState> {
   static whyDidYouRender = true;
 
   subscriptions: Array<any>;
@@ -167,6 +163,9 @@ class Discover extends PureComponent<Props> {
   // subscriptions: Array<Partial<DispatchProps>>;
   constructor(props: Props) {
     super(props);
+    this.state = {
+      isLoading: true
+    };
     this.subscriptions = [];
   }
 
@@ -220,17 +219,30 @@ class Discover extends PureComponent<Props> {
     // // });
   }
 
-  componentDidUpdate(prevProps) {
-    if (this.props.addsCount >= 0 && !prevProps.addsCount) {
+  componentDidUpdate(prevProps: Props) {
+    if (
+      this.state.isLoading &&
+      this.props.authUser &&
+      this.props.friends &&
+      this.props.usersPostsListsData &&
+      this.props.usersPostsListsMeta &&
+      this.props.usersPostsListsMeta[
+        generateListKey(this.props.authUserId, queryTypes.USERS_POSTS_ALL)
+      ].isLoaded
+    ) {
+      this.setState({ isLoading: false });
+    }
+
+    if (this.props.addsCount && !prevProps.addsCount) {
       this.props.updateUserAdds(this.props.authUserId, this.props.addsCount);
     }
-    if (this.props.donesCount >= 0 && !prevProps.donesCount) {
+    if (this.props.donesCount && !prevProps.donesCount) {
       this.props.updateUserDones(this.props.authUserId, this.props.donesCount);
     }
-    if (this.props.likesCount >= 0 && !prevProps.likesCount) {
+    if (this.props.likesCount && !prevProps.likesCount) {
       this.props.updateUserLikes(this.props.authUserId, this.props.likesCount);
     }
-    if (this.props.sharesCount >= 0 && !prevProps.sharesCount) {
+    if (this.props.sharesCount && !prevProps.sharesCount) {
       this.props.updateUserShares(
         this.props.authUserId,
         this.props.sharesCount
@@ -284,116 +296,84 @@ class Discover extends PureComponent<Props> {
     });
   }
 
-  loading = () => {
-    if (
-      !this.props.authUser ||
-      !this.props.friends ||
-      !this.props.usersPostsListsMeta ||
-      !this.props.usersPostsListsMeta[
-        generateListKey(this.props.authUserId, queryTypes.USERS_POSTS_ALL)
-      ].isLoaded
-    ) {
-      return (
-        <View style={styles.container}>
-          <Text>LOADING</Text>
-        </View>
-      );
+  paginateList = () => {
+    if (!this.props.usersPostsListsMeta) {
+      return;
     }
+    return this.props.loadUsersPosts(
+      this.props.authUserId,
+      getQuery(queryTypes.USERS_POSTS_ALL)!(this.props.authUserId),
+      queryTypes.USERS_POSTS_ALL,
+      false,
+      this.props.usersPostsListsMeta[
+        generateListKey(this.props.authUserId, queryTypes.USERS_POSTS_ALL)
+      ].isLoading,
+      this.props.usersPostsListsMeta[
+        generateListKey(this.props.authUserId, queryTypes.USERS_POSTS_ALL)
+      ].lastItem
+    );
+  };
 
+  refreshList = () => {
+    if (!this.props.usersPostsListsMeta) {
+      return;
+    }
+    return this.props.loadUsersPosts(
+      this.props.authUserId,
+      getQuery(queryTypes.USERS_POSTS_ALL)!(this.props.authUserId),
+      queryTypes.USERS_POSTS_ALL,
+      true,
+      this.props.usersPostsListsMeta[
+        generateListKey(this.props.authUserId, queryTypes.USERS_POSTS_ALL)
+      ].isLoading,
+      this.props.usersPostsListsMeta[
+        generateListKey(this.props.authUserId, queryTypes.USERS_POSTS_ALL)
+      ].lastItem
+    );
+  };
+
+  renderItem = ({ item }: { item: UsersPosts }) => {
     return (
-      <List
-        data={
-          this.props.usersPostsListsData[
-            generateListKey(this.props.authUserId, queryTypes.USERS_POSTS_ALL)
-          ]
-        }
-        renderItem={(item: any) => (
-          <SwipeCard
-            type={'add'}
-            isLeftAlreadyDone={_.includes(
-              item.adds || [],
-              this.props.authUserId
-            )}
-            leftAction={() =>
-              this.props.toggleAddDonePost(
-                'adds',
-                false,
-                item.postId,
-                this.props.authUserId,
-                this.props.authUserId,
-                _.includes(item.dones || [], this.props.authUserId)
-              )
-            }
-          >
-            <PostCard
-              key={item._id}
-              post={item}
-              ownerUserId={this.props.authUserId}
-              users={{
-                [this.props.authUserId]: this.props.authUser,
-                ...this.props.friends
-              }}
-              onCardPress={() =>
-                this.props.navigation.navigate('PostDetail', {
-                  ownerUserId: item.userId,
-                  postId: item.postId
-                })
-              }
-            />
-          </SwipeCard>
-        )}
-        onEndReached={() =>
-          this.props.loadUsersPosts(
-            this.props.authUserId,
-            getQuery(queryTypes.USERS_POSTS_ALL)(this.props.authUserId),
-            queryTypes.USERS_POSTS_ALL,
+      <SwipeCard
+        noSwiping={this.state.isLoading}
+        type={'add'}
+        isLeftAlreadyDone={_.includes(item.adds || [], this.props.authUserId)}
+        leftAction={() =>
+          this.props.toggleAddDonePost(
+            'adds',
             false,
-            this.props.usersPostsListsMeta[
-              generateListKey(this.props.authUserId, queryTypes.USERS_POSTS_ALL)
-            ].isLoading,
-            this.props.usersPostsListsMeta[
-              generateListKey(this.props.authUserId, queryTypes.USERS_POSTS_ALL)
-            ].lastItem
-          )
-        }
-        onRefresh={() =>
-          this.props.loadUsersPosts(
+            item.postId,
             this.props.authUserId,
-            getQuery(queryTypes.USERS_POSTS_ALL)(this.props.authUserId),
-            queryTypes.USERS_POSTS_ALL,
-            true,
-            this.props.usersPostsListsMeta[
-              generateListKey(this.props.authUserId, queryTypes.USERS_POSTS_ALL)
-            ].isLoading,
-            this.props.usersPostsListsMeta[
-              generateListKey(this.props.authUserId, queryTypes.USERS_POSTS_ALL)
-            ].lastItem
+            this.props.authUserId,
+            _.includes(item.dones || [], this.props.authUserId)
           )
         }
-        refreshing={
-          this.props.usersPostsListsMeta[
-            generateListKey(this.props.authUserId, queryTypes.USERS_POSTS_ALL)
-          ].isRefreshing
-        }
-        isLoading={
-          this.props.usersPostsListsMeta[
-            generateListKey(this.props.authUserId, queryTypes.USERS_POSTS_ALL)
-          ].isLoading
-        }
-        isLoadedAll={
-          this.props.usersPostsListsMeta[
-            generateListKey(this.props.authUserId, queryTypes.USERS_POSTS_ALL)
-          ].isLoadedAll
-        }
-      />
+      >
+        <PostCard
+          key={item._id}
+          isLoading={this.state.isLoading}
+          post={item}
+          ownerUserId={this.props.authUserId}
+          users={{
+            [this.props.authUserId]: this.props.authUser,
+            ...this.props.friends
+          }}
+          onCardPress={() =>
+            this.props.navigation.navigate('PostDetail', {
+              ownerUserId: item.userId,
+              postId: item.postId
+            })
+          }
+        />
+      </SwipeCard>
     );
   };
 
   render() {
-    console.log(`Discover - Render Count: ${RENDER_COUNT}`);
-    RENDER_COUNT += 1;
-    console.log('this.props');
-    console.log(this.props);
+    // console.log(`Discover - Render Count: ${RENDER_COUNT}`);
+    // RENDER_COUNT += 1;
+    // console.log('this.props');
+    // console.log(this.props);
 
     return (
       <View style={styles.screen}>
@@ -403,14 +383,54 @@ class Discover extends PureComponent<Props> {
           shadow
           title='Discover'
         />
-        {this.loading()}
+        <List
+          data={
+            this.props.usersPostsListsData![
+              generateListKey(this.props.authUserId, queryTypes.USERS_POSTS_ALL)
+            ]
+          }
+          renderItem={this.renderItem}
+          onEndReached={this.paginateList}
+          onRefresh={this.refreshList}
+          isLoading={this.state.isLoading}
+          isRefreshing={
+            this.state.isLoading
+              ? false
+              : this.props.usersPostsListsMeta![
+                  generateListKey(
+                    this.props.authUserId,
+                    queryTypes.USERS_POSTS_ALL
+                  )
+                ].isRefreshing
+          }
+          isPaginating={
+            this.state.isLoading
+              ? false
+              : this.props.usersPostsListsMeta![
+                  generateListKey(
+                    this.props.authUserId,
+                    queryTypes.USERS_POSTS_ALL
+                  )
+                ].isLoading
+          }
+          isLoadedAll={
+            this.state.isLoading
+              ? false
+              : this.props.usersPostsListsMeta![
+                  generateListKey(
+                    this.props.authUserId,
+                    queryTypes.USERS_POSTS_ALL
+                  )
+                ].isLoadedAll
+          }
+        />
       </View>
     );
   }
 }
 
 // export default Discover;
-export default connect<StateProps, DispatchProps>(
+export default connect<StateProps, DispatchProps, {}, {}, State>(
   mapStateToProps,
   mapDispatchToProps,
   undefined,

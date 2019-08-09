@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux';
 import appReducer from './app/reducer';
-import authReducer from './auth/reducer';
+import authReducer, { State as AuthState } from './auth/reducer';
 import documentsReducer, { State as DocumentsState } from './documents/reducer';
 import friendshipsReducer from './friendships/reducer';
 import friendshipsListsReducer from './friendshipsLists/reducer';
@@ -14,6 +14,7 @@ import usersListsReducer from './usersLists/reducer';
 export interface State {
   adds: DocumentsState;
   addsLists: ListsState;
+  auth: AuthState;
   comments: DocumentsState;
   commentsLists: ListsState;
   dones: DocumentsState;

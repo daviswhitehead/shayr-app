@@ -1,1 +1,3 @@
-export const selectAuthUserId = (state: any) => state.auth.user.uid;
+import { State } from '../Reducers';
+
+export const selectAuthUserId = (state: State) => state.auth.user.uid;

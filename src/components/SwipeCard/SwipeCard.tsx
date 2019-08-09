@@ -10,6 +10,8 @@ import Layout from '../../styles/Layout';
 import Icon from '../Icon';
 import styles from './styles';
 
+const RENDER_COUNT = 0;
+
 export interface Props {
   children: JSX.Element[] | JSX.Element;
   type: 'add' | 'done' | 'like';
@@ -17,6 +19,7 @@ export interface Props {
   leftAction?: () => void;
   isRightAlreadyDone?: boolean;
   rightAction?: () => void;
+  noSwiping?: boolean;
 }
 
 export interface State {
@@ -28,7 +31,7 @@ export interface State {
   rightDragDistance: number;
 }
 
-export default class SwipeCard extends React.Component<Props, State> {
+class SwipeCard extends React.Component<Props, State> {
   initialState: any;
   leftActionActivationDistance: number;
   rightActionActivationDistance: number;
@@ -146,6 +149,11 @@ export default class SwipeCard extends React.Component<Props, State> {
   };
 
   render() {
+    console.log(`SwipeCard - Render Count: ${RENDER_COUNT}`);
+    RENDER_COUNT += 1;
+    console.log('this.props');
+    console.log(this.props);
+
     const {
       isLeftActive,
       leftDragDistance,
@@ -154,52 +162,63 @@ export default class SwipeCard extends React.Component<Props, State> {
       rightDragDistance,
       triggeredRightAction
     } = this.state;
-    const { leftAction, rightAction } = this.props;
+    const { leftAction, rightAction, noSwiping } = this.props;
 
     let swipeableOptions = {};
-
-    // left
-    if (leftAction) {
+    if (!noSwiping) {
+      // baseline props
       swipeableOptions = {
-        ...swipeableOptions,
-        leftContent: this.renderLeftContent(
-          leftDragDistance,
-          isLeftActive,
-          triggeredLeftAction
-        ),
-        leftActionActivationDistance: this.leftActionActivationDistance,
-        onLeftActionActivate: () => this.setState({ isLeftActive: true }),
-        onLeftActionDeactivate: () => this.setState({ isLeftActive: false }),
-        onLeftActionRelease: this.handleLeftRelease
+        onSwipeComplete: () => this.setState(this.initialState),
+        onPanAnimatedValueRef: (a: any) =>
+          a.x.addListener(this.handleDistanceChange)
       };
-    }
 
-    // right
-    if (rightAction) {
-      swipeableOptions = {
-        ...swipeableOptions,
-        rightContent: this.renderRightContent(
-          rightDragDistance,
-          isRightActive,
-          triggeredRightAction
-        ),
-        rightActionActivationDistance: this.rightActionActivationDistance,
-        onRightActionActivate: () => this.setState({ isRightActive: true }),
-        onRightActionDeactivate: () => this.setState({ isRightActive: false }),
-        onRightActionRelease: this.handleRightRelease
-      };
+      // left
+      if (leftAction) {
+        swipeableOptions = {
+          ...swipeableOptions,
+          leftContent: this.renderLeftContent(
+            leftDragDistance,
+            isLeftActive,
+            triggeredLeftAction
+          ),
+          leftActionActivationDistance: this.leftActionActivationDistance,
+          onLeftActionActivate: () => this.setState({ isLeftActive: true }),
+          onLeftActionDeactivate: () => this.setState({ isLeftActive: false }),
+          onLeftActionRelease: this.handleLeftRelease
+        };
+      }
+
+      // right
+      if (rightAction) {
+        swipeableOptions = {
+          ...swipeableOptions,
+          rightContent: this.renderRightContent(
+            rightDragDistance,
+            isRightActive,
+            triggeredRightAction
+          ),
+          rightActionActivationDistance: this.rightActionActivationDistance,
+          onRightActionActivate: () => this.setState({ isRightActive: true }),
+          onRightActionDeactivate: () =>
+            this.setState({ isRightActive: false }),
+          onRightActionRelease: this.handleRightRelease
+        };
+      }
     }
 
     return (
       <Swipeable
         {...swipeableOptions}
-        onSwipeComplete={() => this.setState(this.initialState)}
-        onPanAnimatedValueRef={(a: any) =>
-          a.x.addListener(this.handleDistanceChange)
-        }
+        // onSwipeComplete={() => this.setState(this.initialState)}
+        // onPanAnimatedValueRef={(a: any) =>
+        //   a.x.addListener(this.handleDistanceChange)
+        // }
       >
         {this.props.children}
       </Swipeable>
     );
   }
 }
+
+export default SwipeCard;
