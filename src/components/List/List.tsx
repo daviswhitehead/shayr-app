@@ -33,13 +33,15 @@ const List: React.SFC<Props> = ({
       style={styles.container}
       data={data}
       renderItem={({ item }) => renderItem(item)}
-      keyExtractor={({ key }) => key}
+      keyExtractor={({ _id }) => {
+        return _id;
+      }}
       ItemSeparatorComponent={
         noSeparator ? null : () => <View style={styles.separator} />
       }
       onScroll={onScroll}
       onEndReached={isLoadedAll ? null : onEndReached}
-      onEndReachedThreshold={0.1}
+      onEndReachedThreshold={0.05}
       onRefresh={onRefresh}
       refreshing={refreshing}
       ListEmptyComponent={() => {

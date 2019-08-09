@@ -22,6 +22,7 @@ const mapDispatchToProps = (dispatch) => ({
 });
 
 class Login extends Component {
+  static whyDidYouRender = true;
   static propTypes = {
     auth: PropTypes.instanceOf(Object).isRequired,
     navigation: PropTypes.instanceOf(Object).isRequired,
@@ -32,7 +33,6 @@ class Login extends Component {
 
   constructor(props) {
     super(props);
-
     if (this.props.auth.isSigningOut) {
       // when a user navigates to the login screen with isSigningOut === true, sign out the user
       this.props.signOutUser();

@@ -4,15 +4,15 @@ import firebase from 'react-native-firebase';
 import { Dispatch } from 'redux';
 import { Toaster } from '../../components/Toaster';
 import { ts } from '../../lib/FirebaseHelpers';
-import { queries } from '../../lib/FirebaseQueries';
+import { getQuery, queryTypes } from '../../lib/FirebaseQueries';
 import { overwriteUserCounts, updateCounts } from '../../lib/FirebaseWrites';
 import { subscribeToAllDocuments } from '../../redux/FirebaseRedux';
 import {
   actionTypeActiveToasts,
   actionTypeInactiveToasts
 } from '../../styles/Copy';
+import { toggleItem } from '../lists/actions';
 import { refreshUsersPostsDocuments } from '../usersPosts/actions';
-import { toggleUsersPostsListsItem } from '../usersPostsLists/actions';
 
 export const STATE_KEY = 'likes';
 
@@ -70,10 +70,10 @@ export const toggleLikePost = (
 
     dispatch(refreshUsersPostsDocuments(postId, 'cache'));
     dispatch(
-      toggleUsersPostsListsItem(
-        userId,
-        queries.USERS_POSTS_LIKES.type,
-        postId,
+      toggleItem(
+        'usersPostsLists',
+        `${userId}_${queryTypes.USERS_POSTS_LIKES}`,
+        `${userId}_${postId}`,
         !isActive
       )
     );
@@ -92,13 +92,12 @@ export const toggleLikePost = (
 
 export const subscribeToLikes = (userId: string) => {
   return (dispatch: Dispatch) => {
-    return dispatch(
-      subscribeToAllDocuments(
-        STATE_KEY,
-        queries.USER_LIKES.query({ userId }),
-        userId,
-        queries.USER_LIKES.type
-      )
+    return subscribeToAllDocuments(
+      dispatch,
+      STATE_KEY,
+      getQuery(queryTypes.USER_LIKES)(userId),
+      userId,
+      queryTypes.USER_LIKES
     );
   };
 };

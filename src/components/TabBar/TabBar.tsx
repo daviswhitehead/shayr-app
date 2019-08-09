@@ -1,10 +1,10 @@
-import React from 'react';
-import { View, TouchableOpacity, SafeAreaView } from 'react-native';
 import PropTypes from 'prop-types';
-import styles from './styles';
-import colors from '../../styles/Colors';
+import React from 'react';
+import { SafeAreaView, TouchableOpacity, View } from 'react-native';
 import { getActiveRouteName } from '../../lib/ReactNavigationHelpers';
+import colors from '../../styles/Colors';
 import Icon from '../Icon';
+import styles from './styles';
 
 const routeIconNameMap = {
   DiscoverTab: 'search',
@@ -12,7 +12,7 @@ const routeIconNameMap = {
   FriendsTab: 'friends'
 };
 
-const TabBar = props => {
+const TabBar = (props) => {
   const { onTabPress, onTabLongPress, navigation } = props;
 
   // activity colors
@@ -34,7 +34,7 @@ const TabBar = props => {
             const tintColor = isRouteActive
               ? activeTintColor
               : inactiveTintColor;
-            let name = isRouteActive
+            const name = isRouteActive
               ? routeIconNameMap[route.routeName] + '-active'
               : routeIconNameMap[route.routeName];
 

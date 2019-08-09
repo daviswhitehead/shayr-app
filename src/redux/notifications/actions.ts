@@ -4,14 +4,20 @@ import { ts } from '../../lib/FirebaseHelpers';
 
 export const types = {
   // PERMISSIONS
-  NOTIFICATION_PERMISSIONS_REQUEST_START: 'NOTIFICATION_PERMISSIONS_REQUEST_START',
-  NOTIFICATION_PERMISSIONS_REQUEST_SUCCESS: 'NOTIFICATION_PERMISSIONS_REQUEST_SUCCESS',
-  NOTIFICATION_PERMISSIONS_REQUEST_FAIL: 'NOTIFICATION_PERMISSIONS_REQUEST_FAIL',
+  NOTIFICATION_PERMISSIONS_REQUEST_START:
+    'NOTIFICATION_PERMISSIONS_REQUEST_START',
+  NOTIFICATION_PERMISSIONS_REQUEST_SUCCESS:
+    'NOTIFICATION_PERMISSIONS_REQUEST_SUCCESS',
+  NOTIFICATION_PERMISSIONS_REQUEST_FAIL:
+    'NOTIFICATION_PERMISSIONS_REQUEST_FAIL',
 
   // NOTIFICATION TOKEN REFRESH
-  SUBSCRIBE_NOTIFICATION_TOKEN_REFRESH_START: 'SUBSCRIBE_NOTIFICATION_TOKEN_REFRESH_START',
-  SUBSCRIBE_NOTIFICATION_TOKEN_REFRESH_SUCCESS: 'SUBSCRIBE_NOTIFICATION_TOKEN_REFRESH_SUCCESS',
-  SUBSCRIBE_NOTIFICATION_TOKEN_REFRESH_FAIL: 'SUBSCRIBE_NOTIFICATION_TOKEN_REFRESH_FAIL',
+  SUBSCRIBE_NOTIFICATION_TOKEN_REFRESH_START:
+    'SUBSCRIBE_NOTIFICATION_TOKEN_REFRESH_START',
+  SUBSCRIBE_NOTIFICATION_TOKEN_REFRESH_SUCCESS:
+    'SUBSCRIBE_NOTIFICATION_TOKEN_REFRESH_SUCCESS',
+  SUBSCRIBE_NOTIFICATION_TOKEN_REFRESH_FAIL:
+    'SUBSCRIBE_NOTIFICATION_TOKEN_REFRESH_FAIL'
 };
 
 const saveNotificationToken = async (userId, token) => {
@@ -21,7 +27,7 @@ const saveNotificationToken = async (userId, token) => {
     .doc(userId)
     .update({ pushToken: token, updatedAt: ts })
     .then(() => true)
-    .catch((error) => {
+    .catch(error => {
       console.error(error);
       return false;
     });
@@ -42,11 +48,14 @@ export const requestNotificationPermissionsRedux = async (userId, dispatch) => {
 };
 
 // NOTIFICATION TOKEN REFRESH
-export const subscribeNotificationTokenRefresh = userId => function _subscribeNotificationTokenRefresh(dispatch) {
-  dispatch({ type: types.SUBSCRIBE_NOTIFICATION_TOKEN_REFRESH_START });
-  requestNotificationPermissionsRedux(userId, dispatch);
+export const subscribeNotificationTokenRefresh = userId =>
+  function _subscribeNotificationTokenRefresh(dispatch) {
+    dispatch({ type: types.SUBSCRIBE_NOTIFICATION_TOKEN_REFRESH_START });
+    requestNotificationPermissionsRedux(userId, dispatch);
 
-  return firebase
-    .messaging()
-    .onTokenRefresh(notificationToken => saveNotificationToken(userId, notificationToken));
-};
+    return firebase
+      .messaging()
+      .onTokenRefresh(notificationToken =>
+        saveNotificationToken(userId, notificationToken)
+      );
+  };

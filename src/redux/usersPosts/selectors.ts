@@ -1,62 +1,29 @@
 import _ from 'lodash';
 import createCachedSelector from 're-reselect';
+import { selectListItems } from '../lists/selectors';
 // https://github.com/toomuchdesign/re-reselect
 // https://github.com/reduxjs/reselect#sharing-selectors-with-props-across-multiple-component-instances
 
-const selectUsersPosts = state => state.usersPosts;
-const selectUsersPost = (state, userPostId) => state.usersPosts[userPostId];
-const selectUsersPostsLists = (state, listKey) =>
-  state.usersPostsLists[listKey];
+const selectUsersPosts = (state) => state.usersPosts;
 
-export const selectUsersPostFromId = createCachedSelector(
-  selectUsersPost,
-  usersPost => usersPost
-)((state, userPostId) => userPostId);
-
-export const selectUsersPostsFromList = createCachedSelector(
+export const selectUsersPostsFromItems = createCachedSelector(
   selectUsersPosts,
-  selectUsersPostsLists,
-  (usersPosts, usersPostsList) => {
-    if (!usersPosts || !_.get(usersPostsList, 'isLoaded', false)) {
+  selectListItems,
+  (usersPosts, items) => {
+    if (!usersPosts || !items) {
       return;
     }
-
-    return usersPostsList.items.reduce((result: any, usersPostsId: string) => {
-      return {
-        ...result,
-        [usersPostsId]: _.get(usersPosts, usersPostsId, {})
-      };
-    }, {});
+    return _.pick(usersPosts, items);
   }
-)((state, listKey) => listKey);
+)((state, listState, listKey) => `${listState}_${listKey}`);
 
-export const selectFlatListReadyUsersPostsFromList = createCachedSelector(
-  selectUsersPosts,
-  selectUsersPostsLists,
-  (usersPosts, usersPostsList) => {
-    if (!usersPosts || !_.get(usersPostsList, 'isLoaded', false)) {
+export const selectFlatListReadyUsersPosts = createCachedSelector(
+  selectUsersPostsFromItems,
+  (state, listState, listKey, sortKey) => sortKey,
+  (usersPosts, sortKey) => {
+    if (!usersPosts || !sortKey) {
       return;
     }
-
-    return usersPostsList.items.reduce((result: any, usersPostsId: string) => {
-      return [
-        ...result,
-        {
-          _key: usersPostsId,
-          ..._.get(usersPosts, usersPostsId, {})
-        }
-      ];
-    }, []);
+    return _.reverse(_.sortBy(usersPosts, (value) => value[sortKey]));
   }
-)((state, listKey) => listKey);
-
-export const selectUsersPostsMetadataFromList = createCachedSelector(
-  selectUsersPosts,
-  selectUsersPostsLists,
-  (usersPosts, usersPostsList) => {
-    if (!usersPosts || !_.get(usersPostsList, 'isLoaded', false)) {
-      return;
-    }
-    return { ..._.omit(usersPostsList, 'items') };
-  }
-)((state, listKey) => listKey);
+)((state, listState, listKey, sortKey) => `${listState}_${listKey}_${sortKey}`);

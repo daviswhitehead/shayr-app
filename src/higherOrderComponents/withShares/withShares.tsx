@@ -4,8 +4,9 @@ import { View } from 'react-native';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import ShareModal from '../../components/ShareModal';
-import { queries } from '../../lib/FirebaseQueries';
+import { queryTypes } from '../../lib/FirebaseQueries';
 import { selectAuthUserId } from '../../redux/auth/selectors';
+import { generateListKey } from '../../redux/lists/helpers';
 import { selectUsersFromList } from '../../redux/users/selectors';
 
 const mapStateToProps = (state: any) => {
@@ -14,7 +15,11 @@ const mapStateToProps = (state: any) => {
     authUserId,
     authShares: _.get(
       state,
-      ['sharesLists', `${authUserId}_${queries.USER_SHARES.type}`, 'items'],
+      [
+        'sharesLists',
+        generateListKey(authUserId, queryTypes.USER_SHARES),
+        'items'
+      ],
       []
     ),
     friends: selectUsersFromList(state, `${authUserId}_Friends`)
@@ -38,8 +43,6 @@ const withShares = (WrappedComponent: React.SFC) => (props: any) => {
 
   const isSharesActive = _.includes(authShares, usersPost.postId);
   const modalRef = React.useRef(null);
-
-  // console.log(authUserId);
 
   return (
     <View>

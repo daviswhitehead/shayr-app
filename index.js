@@ -1,6 +1,7 @@
 import { AppRegistry } from 'react-native';
-import Promise from 'bluebird';
+import Config from 'react-native-config';
 import { devSettings } from './dev';
+import Promise from 'bluebird';
 
 // https://stackoverflow.com/questions/48487089/global-unhandledrejection-listener-in-react-native/49129335#49129335
 // We use the "Bluebird" lib for Promises, because it shows good perf
@@ -17,7 +18,9 @@ global.onunhandledrejection = function onunhandledrejection(error) {
   }
 };
 
-devSettings();
+if (Config.ENV_NAME !== 'prod') {
+  devSettings();
+}
 
 AppRegistry.registerComponent(
   'shayr',

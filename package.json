@@ -34,6 +34,7 @@
   },
   "dependencies": {
     "@daviswhitehead/shayr-resources": "^1.2.14",
+    "@welldone-software/why-did-you-render": "^3.3.1",
     "adm-zip": "^0.4.13",
     "bluebird": "^3.5.3",
     "fb": "^2.0.0",

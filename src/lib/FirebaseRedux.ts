@@ -12,13 +12,16 @@ import { formatDocumentSnapshot } from './FirebaseHelpers';
 
 // Helpers
 export type stateKey =
-  | 'usersPostsLists'
-  | 'usersPosts'
   | 'adds'
+  | 'addsLists'
   | 'dones'
+  | 'donesLists'
+  | 'likes'
+  | 'likesLists'
   | 'shares'
   | 'sharesLists'
-  | 'likes';
+  | 'usersPostsLists'
+  | 'usersPosts';
 export type dataActionTypes = 'GET_START' | 'GET_SUCCESS' | 'GET_FAIL';
 export type listActionTypes =
   | 'LIST_REFRESHING'

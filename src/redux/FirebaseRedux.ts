@@ -36,7 +36,8 @@ export type StateKeyLists =
   | 'likesLists';
 
 export type ListKey = string;
-export type Items = Array<string>;
+export type Item = string;
+export type Items = Array<Item>;
 export type LastItem = DocumentSnapshot | 'DONE';
 
 const generateStateKeyList = (stateKey: StateKey) => `${stateKey}Lists`;
@@ -44,6 +45,7 @@ const generateStateKeyList = (stateKey: StateKey) => `${stateKey}Lists`;
 const generateListKey = (id: string, listName: string) => `${id}_${listName}`;
 
 export const getFeedOfDocuments = (
+  dispatch: Dispatch,
   stateKey: StateKey,
   ownerUserId: string,
   listName: string,
@@ -51,7 +53,7 @@ export const getFeedOfDocuments = (
   shouldRefresh?: boolean,
   isLoading?: boolean,
   lastItem?: DocumentSnapshot | 'DONE'
-) => async (dispatch: Dispatch) => {
+) => {
   // prevent loading more items when the end is reached or data is loading
   if (!shouldRefresh && (lastItem === 'DONE' || isLoading)) {
     return;
@@ -68,7 +70,7 @@ export const getFeedOfDocuments = (
 
   dispatch(getDocumentsStart(stateKey));
 
-  await query
+  return query
     .get()
     .then((querySnapshot: QuerySnapshot) => {
       if (!querySnapshot.empty) {
@@ -93,11 +95,12 @@ export const getFeedOfDocuments = (
 };
 
 export const subscribeToAllDocuments = (
+  dispatch: Dispatch,
   stateKey: StateKey,
   query: Query,
   ownerUserId: string,
   listName: string
-) => async (dispatch: Dispatch) => {
+) => {
   const stateKeyList = generateStateKeyList(stateKey);
 
   return query.onSnapshot(
@@ -128,4 +131,29 @@ export const subscribeToAllDocuments = (
       dispatch(getDocumentsFail(stateKey, error));
     }
   );
+};
+
+export const getDocuments = (
+  dispatch: Dispatch,
+  stateKey: StateKey,
+  query: Query,
+  source?: 'default' | 'cache' | 'server'
+) => {
+  dispatch(getDocumentsStart(stateKey));
+
+  return query
+    .get({ source: source ? source : 'default' })
+    .then((querySnapshot: QuerySnapshot) => {
+      const documents = {};
+      if (!querySnapshot.empty) {
+        querySnapshot.forEach((document: DocumentSnapshot) => {
+          documents[document.id] = formatDocumentSnapshot(document);
+        });
+      }
+      dispatch(getDocumentsSuccess(stateKey, documents));
+    })
+    .catch((error: SnapshotError) => {
+      console.error(error);
+      dispatch(getDocumentsFail(stateKey, error));
+    });
 };

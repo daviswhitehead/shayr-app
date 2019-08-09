@@ -1,8 +1,8 @@
 import _ from 'lodash';
 import { Items, LastItem } from '../FirebaseRedux';
-import { ListAction, types } from './actions';
+import { Actions, types } from './actions';
 
-interface ListInitialState {
+export interface State {
   [listKey: string]: {
     isRefreshing?: boolean;
     isLoading?: boolean;
@@ -14,9 +14,9 @@ interface ListInitialState {
   };
 }
 
-const initialState: ListInitialState = {};
+const initialState: State = {};
 
-function reducer(state = initialState, action: ListAction) {
+function reducer(state: State = initialState, action: Actions) {
   switch (action.type) {
     case types.LIST_ADD: {
       const items = _.get(state, [action.listKey, 'isRefreshing'], false)
@@ -25,11 +25,6 @@ function reducer(state = initialState, action: ListAction) {
             ..._.get(state, [action.listKey, 'items'], []),
             ...action.items
           ]);
-
-      console.log(types.LIST_ADD);
-      console.log(_.get(state, [action.listKey, 'isRefreshing'], false));
-      console.log(action.items);
-      console.log(items);
 
       return {
         ...state,
@@ -41,6 +36,10 @@ function reducer(state = initialState, action: ListAction) {
       };
     }
     case types.LIST_REFRESHING: {
+      if (_.get(state, [action.listKey, 'isRefreshing'], undefined) === true) {
+        return state;
+      }
+
       return {
         ...state,
         [action.listKey]: {
@@ -50,6 +49,10 @@ function reducer(state = initialState, action: ListAction) {
       };
     }
     case types.LIST_LOADING: {
+      if (_.get(state, [action.listKey, 'isLoading'], undefined) === true) {
+        return state;
+      }
+
       return {
         ...state,
         [action.listKey]: {
@@ -69,6 +72,25 @@ function reducer(state = initialState, action: ListAction) {
           isRefreshing: false,
           isLoadedAll: action.lastItem === 'DONE' ? true : false,
           lastItem: action.lastItem
+        }
+      };
+    }
+    case types.TOGGLE_ITEM: {
+      const items = _.get(state, [action.listKey, 'items'], []);
+      if (
+        (action.isNowActive && _.includes(items, action.item)) ||
+        (!action.isNowActive && !_.includes(items, action.item))
+      ) {
+        return state;
+      }
+
+      return {
+        ...state,
+        [action.listKey]: {
+          ..._.get(state, action.listKey, {}),
+          items: action.isNowActive
+            ? _.union([action.item], items)
+            : _.pull(items, action.item)
         }
       };
     }

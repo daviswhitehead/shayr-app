@@ -1,18 +1,42 @@
 import { parseAppLink, protocols } from '@daviswhitehead/shayr-resources';
+import { AnyAction, Dispatch } from 'redux';
+import { ThunkAction, ThunkDispatch } from 'redux-thunk';
 import { navigate } from '../../lib/ReactNavigationHelpers';
 
-export const types = {
-  ROUTE_ADDED: 'ROUTE_ADDED',
-  ROUTE_REMOVED: 'ROUTE_REMOVED'
-};
-
-export function navigateToRoute(payload) {
-  navigate(payload.screen, payload.params);
-  return { type: types.ROUTE_REMOVED };
+// Types
+export enum types {
+  ROUTE_ADDED = 'ROUTE_ADDED',
+  ROUTE_REMOVED = 'ROUTE_REMOVED'
 }
 
-export function handleURLRoute(payload) {
-  return function _handleURLRoute(dispatch) {
+// Actions
+interface NavigateToRouteAction {
+  type: types.ROUTE_REMOVED;
+}
+
+interface HandleURLRouteAction {
+  type: types.ROUTE_ADDED;
+  url: string;
+  screen: string;
+  params: any;
+}
+
+export type Actions = NavigateToRouteAction | HandleURLRouteAction;
+
+// Action Creators
+export const navigateToRoute = ({
+  screen,
+  params
+}: {
+  screen: string;
+  params: any;
+}): NavigateToRouteAction => {
+  navigate(screen, params);
+  return { type: types.ROUTE_REMOVED };
+};
+
+export const handleURLRoute = (payload: any) => {
+  return (dispatch: Dispatch) => {
     let url;
     if (payload) {
       url = payload.url ? payload.url : payload;
@@ -29,4 +53,4 @@ export function handleURLRoute(payload) {
       });
     }
   };
-}
+};

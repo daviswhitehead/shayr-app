@@ -97,7 +97,7 @@ export const loadCommentsForUsersPosts = (
   shouldRefresh?: boolean,
   isLoading?: boolean,
   lastItem?: LastItem
-) => async (dispatch: Dispatch) => {
+) => (dispatch: Dispatch) => {
   const request: Query = composeQuery(
     getQuery('USERS_POSTS_COMMENTS', {
       postId,
@@ -106,15 +106,14 @@ export const loadCommentsForUsersPosts = (
     requestLimiter,
     shouldRefresh ? undefined : lastItem
   );
-  dispatch(
-    getFeedOfDocuments(
-      STATE_KEY,
-      userId,
-      postId,
-      request,
-      shouldRefresh,
-      isLoading,
-      lastItem
-    )
+  getFeedOfDocuments(
+    dispatch,
+    STATE_KEY,
+    userId,
+    postId,
+    request,
+    shouldRefresh,
+    isLoading,
+    lastItem
   );
 };

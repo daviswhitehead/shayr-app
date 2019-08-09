@@ -32,6 +32,7 @@ const mapDispatchToProps = (dispatch) => ({
 });
 
 class AppLoading extends Component {
+  static whyDidYouRender = true;
   static propTypes = {
     auth: PropTypes.instanceOf(Object).isRequired,
     authSubscription: PropTypes.func.isRequired,

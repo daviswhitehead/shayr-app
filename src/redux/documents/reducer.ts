@@ -1,20 +1,42 @@
 import _ from 'lodash';
-import { Error, GetDocumentsAction, types } from './actions';
+import { Actions, Error, types } from './actions';
 
-interface InitialState {
+export interface State {
   [documentId: string]: any;
   _error?: Error;
 }
 
-const initialState: InitialState = {};
+const initialState: State = {};
 
-function reducer(state = initialState, action: GetDocumentsAction) {
+function reducer(state = initialState, action: Actions) {
   switch (action.type) {
     case types.GET_DOCUMENTS_SUCCESS: {
-      return {
-        ...state,
-        ...action.documents
-      };
+      // console.log('GET_DOCUMENTS_SUCCESS');
+      return _.reduce(
+        action.documents,
+        (result, value, key) => {
+          if (_.isEqual(result.key, value)) {
+            // console.log('EQUAL --> RETURN STATE');
+
+            return result;
+          }
+          // console.log('NEW --> RETURN STATE + NEW');
+          return {
+            ...result,
+            [key]: value
+          };
+        },
+        state
+      );
+
+      // if (_.isEqual(state, action.documents)) {
+      //   return state;
+      // }
+
+      // return {
+      //   ...state,
+      //   ...action.documents
+      // };
     }
     case types.GET_DOCUMENTS_FAIL: {
       return {

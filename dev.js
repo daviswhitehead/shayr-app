@@ -1,8 +1,9 @@
 import { YellowBox } from 'react-native';
-
-console.disableYellowBox = true;
+import React from 'react';
 
 export const devSettings = () => {
+  console.disableYellowBox = true;
+
   YellowBox.ignoreWarnings(['Warning: componentWillMount']);
   YellowBox.ignoreWarnings(['Warning: componentWillReceiveProps']);
   YellowBox.ignoreWarnings(['Warning: componentWillUpdate']);
@@ -17,4 +18,6 @@ export const devSettings = () => {
     'Cannot update during an existing state transition'
   ]);
   YellowBox.ignoreWarnings(['Require cycle']);
+  const whyDidYouRender = require('@welldone-software/why-did-you-render');
+  whyDidYouRender(React);
 };

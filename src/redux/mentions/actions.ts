@@ -32,6 +32,12 @@ export const createMention = (
 
   try {
     const batcher = existingBatcher || new Batcher(firebase.firestore());
+    console.log('existingBatcher');
+    console.log(existingBatcher);
+    console.log('batcher');
+    console.log(batcher);
+    console.log('batcher === existingBatcher');
+    console.log(batcher === existingBatcher);
 
     const mentionId = await firebase
       .firestore()

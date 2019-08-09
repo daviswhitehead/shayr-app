@@ -20,13 +20,13 @@ import { toggleLikePost } from '../../redux/likes/actions';
 import { getUser } from '../../redux/users/actions';
 import {
   selectUserFromId,
-  selectUsersFromList,
+  selectUsersFromList
 } from '../../redux/users/selectors';
 import { loadUsersPosts } from '../../redux/usersPosts/actions';
-import {
-  selectFlatListReadyUsersPostsFromList,
-  selectUsersPostsMetadataFromList,
-} from '../../redux/usersPosts/selectors';
+// import {
+//   selectFlatListReadyUsersPostsFromList,
+//   selectUsersPostsMetadataFromList,
+// } from '../../redux/usersPosts/selectors';
 import Colors from '../../styles/Colors';
 import styles from './styles';
 
@@ -62,7 +62,7 @@ export interface Props {
     requestType: RequestType,
     shouldRefresh: boolean,
     lastItem?: DocumentSnapshot | 'DONE',
-    isLoading?: boolean,
+    isLoading?: boolean
   ) => void;
 }
 
@@ -89,50 +89,50 @@ const mapStateToProps = (state: any, props: any) => {
     }`,
     [queries.USERS_POSTS_LIKES.type]: `${ownerUserId}_${
       queries.USERS_POSTS_LIKES.type
-    }`,
+    }`
   };
 
   const usersPostsData = {
     [usersPostsViews[queries.USERS_POSTS_SHARES.type]]: {
       data: selectFlatListReadyUsersPostsFromList(
         state,
-        usersPostsViews[queries.USERS_POSTS_SHARES.type],
+        usersPostsViews[queries.USERS_POSTS_SHARES.type]
       ),
       ...selectUsersPostsMetadataFromList(
         state,
-        usersPostsViews[queries.USERS_POSTS_SHARES.type],
-      ),
+        usersPostsViews[queries.USERS_POSTS_SHARES.type]
+      )
     },
     [usersPostsViews[queries.USERS_POSTS_ADDS.type]]: {
       data: selectFlatListReadyUsersPostsFromList(
         state,
-        usersPostsViews[queries.USERS_POSTS_ADDS.type],
+        usersPostsViews[queries.USERS_POSTS_ADDS.type]
       ),
       ...selectUsersPostsMetadataFromList(
         state,
-        usersPostsViews[queries.USERS_POSTS_ADDS.type],
-      ),
+        usersPostsViews[queries.USERS_POSTS_ADDS.type]
+      )
     },
     [usersPostsViews[queries.USERS_POSTS_DONES.type]]: {
       data: selectFlatListReadyUsersPostsFromList(
         state,
-        usersPostsViews[queries.USERS_POSTS_DONES.type],
+        usersPostsViews[queries.USERS_POSTS_DONES.type]
       ),
       ...selectUsersPostsMetadataFromList(
         state,
-        usersPostsViews[queries.USERS_POSTS_DONES.type],
-      ),
+        usersPostsViews[queries.USERS_POSTS_DONES.type]
+      )
     },
     [usersPostsViews[queries.USERS_POSTS_LIKES.type]]: {
       data: selectFlatListReadyUsersPostsFromList(
         state,
-        usersPostsViews[queries.USERS_POSTS_LIKES.type],
+        usersPostsViews[queries.USERS_POSTS_LIKES.type]
       ),
       ...selectUsersPostsMetadataFromList(
         state,
-        usersPostsViews[queries.USERS_POSTS_LIKES.type],
-      ),
-    },
+        usersPostsViews[queries.USERS_POSTS_LIKES.type]
+      )
+    }
   };
 
   return {
@@ -150,7 +150,7 @@ const mapStateToProps = (state: any, props: any) => {
     usersPostsViews,
     usersPostsData,
     routing: state.routing,
-    posts: state.posts,
+    posts: state.posts
   };
 };
 
@@ -163,7 +163,7 @@ const mapDispatchToProps = (dispatch: any) => ({
     queryArguments: queryArguments,
     shouldRefresh?: boolean,
     isLoading?: boolean,
-    lastItem?: DocumentSnapshot | 'DONE',
+    lastItem?: DocumentSnapshot | 'DONE'
   ) =>
     dispatch(
       loadUsersPosts(
@@ -172,8 +172,8 @@ const mapDispatchToProps = (dispatch: any) => ({
         queryArguments,
         shouldRefresh,
         isLoading,
-        lastItem,
-      ),
+        lastItem
+      )
     ),
   toggleAdds: (
     type: 'adds',
@@ -181,10 +181,10 @@ const mapDispatchToProps = (dispatch: any) => ({
     postId: documentId,
     ownerUserId: documentId,
     userId: documentId,
-    isOtherActive: boolean,
+    isOtherActive: boolean
   ) =>
     dispatch(
-      toggleAdds(type, isActive, postId, ownerUserId, userId, isOtherActive),
+      toggleAdds(type, isActive, postId, ownerUserId, userId, isOtherActive)
     ),
   toggleDones: (
     type: 'dones',
@@ -192,17 +192,17 @@ const mapDispatchToProps = (dispatch: any) => ({
     postId: documentId,
     ownerUserId: documentId,
     userId: documentId,
-    isOtherActive: boolean,
+    isOtherActive: boolean
   ) =>
     dispatch(
-      toggleDones(type, isActive, postId, ownerUserId, userId, isOtherActive),
+      toggleDones(type, isActive, postId, ownerUserId, userId, isOtherActive)
     ),
   toggleLikePost: (
     isActive: boolean,
     postId: documentId,
     ownerUserId: documentId,
-    userId: documentId,
-  ) => dispatch(toggleLikePost(isActive, postId, ownerUserId, userId)),
+    userId: documentId
+  ) => dispatch(toggleLikePost(isActive, postId, ownerUserId, userId))
 });
 
 class MyList extends Component<Props, State> {
@@ -212,7 +212,7 @@ class MyList extends Component<Props, State> {
 
     this.state = {
       selectedIndex: startingIndex,
-      activeView: this.mapIndexToView(startingIndex),
+      activeView: this.mapIndexToView(startingIndex)
     };
     this.subscriptions = [];
   }
@@ -222,7 +222,7 @@ class MyList extends Component<Props, State> {
 
     _.isEmpty(this.props.ownerFriends)
       ? this.subscriptions.push(
-          await this.props.subscribeToFriendships(this.props.ownerUserId),
+          await this.props.subscribeToFriendships(this.props.ownerUserId)
         )
       : null;
 
@@ -242,7 +242,7 @@ class MyList extends Component<Props, State> {
         ].isLoading,
         this.props.usersPostsData[
           this.props.usersPostsViews[queries.USERS_POSTS_SHARES.type]
-        ].lastItem,
+        ].lastItem
       );
     }
 
@@ -261,7 +261,7 @@ class MyList extends Component<Props, State> {
         ].isLoading,
         this.props.usersPostsData[
           this.props.usersPostsViews[queries.USERS_POSTS_ADDS.type]
-        ].lastItem,
+        ].lastItem
       );
     }
     if (
@@ -279,7 +279,7 @@ class MyList extends Component<Props, State> {
         ].isLoading,
         this.props.usersPostsData[
           this.props.usersPostsViews[queries.USERS_POSTS_DONES.type]
-        ].lastItem,
+        ].lastItem
       );
     }
     if (
@@ -297,7 +297,7 @@ class MyList extends Component<Props, State> {
         ].isLoading,
         this.props.usersPostsData[
           this.props.usersPostsViews[queries.USERS_POSTS_LIKES.type]
-        ].lastItem,
+        ].lastItem
       );
     }
   }
@@ -315,7 +315,7 @@ class MyList extends Component<Props, State> {
       0: queries.USERS_POSTS_SHARES.type,
       1: queries.USERS_POSTS_ADDS.type,
       2: queries.USERS_POSTS_DONES.type,
-      3: queries.USERS_POSTS_LIKES.type,
+      3: queries.USERS_POSTS_LIKES.type
     };
     return map[index];
   };
@@ -342,7 +342,7 @@ class MyList extends Component<Props, State> {
           facebookProfilePhoto={_.get(
             this.props,
             ['ownerUser', 'facebookProfilePhoto'],
-            null,
+            null
           )}
           firstName={_.get(this.props, ['ownerUser', 'firstName'], null)}
           lastName={_.get(this.props, ['ownerUser', 'lastName'], null)}
@@ -353,7 +353,7 @@ class MyList extends Component<Props, State> {
             this.setState((previousState) => ({
               ...previousState,
               selectedIndex: index,
-              activeView: this.mapIndexToView(index),
+              activeView: this.mapIndexToView(index)
             }))
           }
           sharesCount={_.get(this.props, ['ownerUser', 'sharesCount'], 0)}
@@ -374,21 +374,21 @@ class MyList extends Component<Props, State> {
             renderItem={(item: any) => {
               const addSwiping = _.includes(
                 [queries.USERS_POSTS_ADDS.type, queries.USERS_POSTS_DONES.type],
-                this.state.activeView,
+                this.state.activeView
               );
               const isDonesView =
                 this.state.activeView === queries.USERS_POSTS_DONES.type;
               const isAddActive = _.includes(
                 item.adds || [],
-                this.props.authUserId,
+                this.props.authUserId
               );
               const isDoneActive = _.includes(
                 item.dones || [],
-                this.props.authUserId,
+                this.props.authUserId
               );
               const isLikeActive = _.includes(
                 item.likes || [],
-                this.props.authUserId,
+                this.props.authUserId
               );
 
               const renderPostCard = () => {
@@ -401,12 +401,12 @@ class MyList extends Component<Props, State> {
                       [this.props.authUserId]: this.props.authUser,
                       [this.props.ownerUserId]: this.props.ownerUser,
                       ...this.props.authFriends,
-                      ...this.props.ownerFriends,
+                      ...this.props.ownerFriends
                     }}
                     onCardPress={() =>
                       this.props.navigation.navigate('PostDetail', {
                         ownerUserId: item.userId,
-                        postId: item.postId,
+                        postId: item.postId
                       })
                     }
                   />
@@ -426,7 +426,7 @@ class MyList extends Component<Props, State> {
                               false,
                               item.postId,
                               item.userId,
-                              this.props.authUserId,
+                              this.props.authUserId
                             )
                         : () =>
                             this.props.toggleDones(
@@ -435,7 +435,7 @@ class MyList extends Component<Props, State> {
                               item.postId,
                               item.userId,
                               this.props.authUserId,
-                              isAddActive,
+                              isAddActive
                             )
                     }
                     isRightAlreadyDone={
@@ -450,7 +450,7 @@ class MyList extends Component<Props, State> {
                               item.postId,
                               item.userId,
                               this.props.authUserId,
-                              isAddActive,
+                              isAddActive
                             )
                         : () =>
                             this.props.toggleAdds(
@@ -459,7 +459,7 @@ class MyList extends Component<Props, State> {
                               item.postId,
                               item.userId,
                               this.props.authUserId,
-                              isDoneActive,
+                              isDoneActive
                             )
                     }
                   >
@@ -480,7 +480,7 @@ class MyList extends Component<Props, State> {
                 ].isLoading,
                 this.props.usersPostsData[
                   this.addUserIdToView(this.state.activeView)
-                ].lastItem,
+                ].lastItem
               )
             }
             onRefresh={() =>
@@ -494,7 +494,7 @@ class MyList extends Component<Props, State> {
                 ].isLoading,
                 this.props.usersPostsData[
                   this.addUserIdToView(this.state.activeView)
-                ].lastItem,
+                ].lastItem
               )
             }
             refreshing={
@@ -525,5 +525,5 @@ class MyList extends Component<Props, State> {
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps,
+  mapDispatchToProps
 )(MyList);

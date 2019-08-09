@@ -7,11 +7,7 @@ import {
 import _ from 'lodash';
 import React, { Component } from 'react';
 import { ActivityIndicator, Text, View } from 'react-native';
-import {
-  NavigationScreenProp,
-  NavigationState,
-  withNavigationFocus
-} from 'react-navigation';
+import { NavigationScreenProps, withNavigationFocus } from 'react-navigation';
 import { connect } from 'react-redux';
 import ActionBar from '../../components/ActionBar';
 import Header from '../../components/Header';
@@ -45,7 +41,7 @@ interface NavigationParams {
   postId: string;
 }
 
-type Navigation = NavigationScreenProp<NavigationState, NavigationParams>;
+type Navigation = NavigationScreenProps<NavigationParams>;
 
 interface Users {
   [userId: string]: User;
