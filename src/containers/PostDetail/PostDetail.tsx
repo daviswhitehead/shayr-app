@@ -7,17 +7,21 @@ import {
 import _ from 'lodash';
 import React, { Component } from 'react';
 import { ActivityIndicator, Text, View } from 'react-native';
-import { NavigationScreenProps, withNavigationFocus } from 'react-navigation';
+import { NavigationScreenProps } from 'react-navigation';
+import {
+  NavigationScreenProp,
+  NavigationState,
+  withNavigationFocus
+} from 'react-navigation';
 import { connect } from 'react-redux';
 import ActionBar from '../../components/ActionBar';
 import Header from '../../components/Header';
-import Icon from '../../components/Icon';
+import Icon, { names } from '../../components/Icon';
 import List from '../../components/List';
 import PostCard from '../../components/PostCard';
 import UserAvatarsScrollView from '../../components/UserAvatarsScrollView';
 import UserTextDate from '../../components/UserTextDate';
-import { queries } from '../../lib/FirebaseQueries';
-import { getDocuments } from '../../lib/FirebaseRedux';
+import { getQuery, queryTypes } from '../../lib/FirebaseQueries';
 import { openURL } from '../../lib/Utils';
 import { selectAuthUserId } from '../../redux/auth/selectors';
 import { loadCommentsForUsersPosts } from '../../redux/comments/actions';
@@ -25,23 +29,50 @@ import {
   selectCommentsForPostDetail,
   selectCommentsMetadataForPostDetail
 } from '../../redux/comments/selectors';
-import { LastItem } from '../../redux/FirebaseRedux';
+import { generateListKey } from '../../redux/lists/helpers';
 import {
   selectUserFromId,
   selectUsersFromList
 } from '../../redux/users/selectors';
-import { STATE_KEY } from '../../redux/usersPosts/actions';
+import { getUsersPostsDocument } from '../../redux/usersPosts/actions';
 import { selectUsersPostFromId } from '../../redux/usersPosts/selectors';
 import Colors from '../../styles/Colors';
 import { actionTypeActivityFeature } from '../../styles/Copy';
 import styles from './styles';
+
+let RENDER_COUNT = 0;
+
+interface StateProps {
+  authUserId: string;
+  authUser: User;
+  ownerUserId: string;
+  post: UsersPosts;
+  postId: string;
+  users: Users;
+}
+
+interface DispatchProps {
+  getUsersPostsDocument: typeof getUsersPostsDocument;
+  loadCommentsForUsersPosts: typeof loadCommentsForUsersPosts;
+}
+
+interface OwnProps {
+  isFocused: boolean;
+}
+
+interface OwnState {
+  isLoading: boolean;
+}
 
 interface NavigationParams {
   ownerUserId: string;
   postId: string;
 }
 
-type Navigation = NavigationScreenProps<NavigationParams>;
+type Props = OwnProps &
+  StateProps &
+  DispatchProps &
+  NavigationScreenProp<NavigationState, NavigationParams>;
 
 interface Users {
   [userId: string]: User;
@@ -49,119 +80,40 @@ interface Users {
 
 type ActionType = 'shares' | 'adds' | 'dones' | 'likes';
 
-export interface Props {
-  authUserId: string;
-  authUser: User;
-  isFocused: boolean;
-  navigation: Navigation;
-  onActionPress: (
-    userId: string,
-    postId: string,
-    actionType: ActionType,
-    isNowActive: boolean
-  ) => void;
-  ownerUserId: string;
-  post: UsersPosts;
-  postId: string;
-  users: Users;
-  toggleLikePost: (
-    isActive: boolean,
-    postId: documentId,
-    ownerUserId: documentId,
-    userId: documentId
-  ) => void;
-  toggleAddDonePost: (
-    type: 'adds' | 'dones',
-    isActive: boolean,
-    postId: documentId,
-    ownerUserId: documentId,
-    userId: documentId,
-    isOtherActive: boolean
-  ) => void;
-  loadCommentsForUsersPosts: (
-    userId: string,
-    postId: string,
-    shouldRefresh?: boolean,
-    isLoading?: boolean,
-    lastItem?: LastItem
-  ) => void;
-}
-
-const mapStateToProps = (state: any, props: any) => {
-  const ownerUserId = props.navigation.state.params.ownerUserId;
-  const postId = props.navigation.state.params.postId;
-
-  const authUserId = selectAuthUserId(state);
-  const authUser = selectUserFromId(state, authUserId);
-  const commentsListKey = `${ownerUserId}_${postId}`;
-  const post = selectUsersPostFromId(state, `${ownerUserId}_${postId}`);
+const mapStateToProps = (
+  state: any,
+  { navigation }: NavigationScreenProps<NavigationState, NavigationParams>
+) => {
+  const ownerUserId = navigation.state.params.ownerUserId;
+  const postId = navigation.state.params.postId;
 
   return {
-    authUserId,
-    authUser,
-    commentsData: selectCommentsForPostDetail(state, commentsListKey),
-    commentsListKey,
-    commentsMeta: selectCommentsMetadataForPostDetail(state, commentsListKey),
+    authUserId: selectAuthUserId(state),
+    authUser: selectUserFromId(state, selectAuthUserId(state)),
+    commentsData: selectCommentsForPostDetail(
+      state,
+      generateListKey(selectAuthUserId(state), postId)
+    ),
+    commentsMeta: selectCommentsMetadataForPostDetail(
+      state,
+      generateListKey(selectAuthUserId(state), postId)
+    ),
     ownerUserId,
     postId,
-    post,
-    routing: state.routing,
+    post: selectUsersPostFromId(state, generateListKey(ownerUserId, postId)),
     users: {
-      [authUserId]: authUser,
-      ...selectUsersFromList(state, `${authUserId}_Friends`)
+      [selectAuthUserId(state)]: selectUserFromId(
+        state,
+        selectAuthUserId(state)
+      ),
+      ...selectUsersFromList(state, `${selectAuthUserId(state)}_Friends`)
     }
   };
 };
 
-const mapDispatchToProps = (dispatch: any, props: any) => {
-  const query = queries.USERS_POSTS_SINGLE.query({
-    userId: props.navigation.state.params.ownerUserId,
-    postId: props.navigation.state.params.postId
-  });
-
-  return {
-    getPostDetailDocument: () => dispatch(getDocuments(STATE_KEY, query)),
-    toggleLikePost: (
-      isActive: boolean,
-      postId: documentId,
-      ownerUserId: documentId,
-      userId: documentId
-    ) => dispatch(toggleLikePost(isActive, postId, ownerUserId, userId)),
-    toggleAddDonePost: (
-      type: 'adds' | 'dones',
-      isActive: boolean,
-      postId: documentId,
-      ownerUserId: documentId,
-      userId: documentId,
-      isOtherActive: boolean
-    ) =>
-      dispatch(
-        toggleAddDonePost(
-          type,
-          isActive,
-          postId,
-          ownerUserId,
-          userId,
-          isOtherActive
-        )
-      ),
-    loadCommentsForUsersPosts: (
-      userId: string,
-      postId: string,
-      shouldRefresh?: boolean,
-      isLoading?: boolean,
-      lastItem?: LastItem
-    ) =>
-      dispatch(
-        loadCommentsForUsersPosts(
-          userId,
-          postId,
-          shouldRefresh,
-          isLoading,
-          lastItem
-        )
-      )
-  };
+const mapDispatchToProps = {
+  getUsersPostsDocument,
+  loadCommentsForUsersPosts
 };
 
 class PostDetail extends Component<Props> {
@@ -169,16 +121,20 @@ class PostDetail extends Component<Props> {
     super(props);
   }
 
-  async componentDidMount() {
+  componentDidMount() {
     if (!this.props.post) {
-      await this.props.getPostDetailDocument();
+      this.props.getUsersPostsDocument(
+        this.props.ownerUserId,
+        this.props.postId
+      );
     }
-    await this.props.loadCommentsForUsersPosts(
+    this.props.loadCommentsForUsersPosts(
       this.props.ownerUserId,
-      this.props.postId,
-      true,
-      false,
-      undefined
+      getQuery(queryTypes.USERS_POSTS_COMMENTS)!(
+        this.props.ownerUserId,
+        this.props.postId
+      ),
+      queryTypes.USERS_POSTS_COMMENTS
     );
   }
 
@@ -264,7 +220,7 @@ class PostDetail extends Component<Props> {
             {!_.isEmpty(shareFeatured) ? (
               <View style={styles.activityBox}>
                 <View style={styles.activityHeader}>
-                  <Icon.default name={'share'} />
+                  <Icon name={names.SHARE} />
                   <Text style={styles.boldBody}>
                     {shareFeatured.featuredUserName}
                   </Text>
@@ -278,7 +234,7 @@ class PostDetail extends Component<Props> {
             {!_.isEmpty(addFeatured) ? (
               <View style={styles.activityBox}>
                 <View style={styles.activityHeader}>
-                  <Icon.default name={'add'} />
+                  <Icon name={names.ADD} />
                   <Text style={styles.boldBody}>
                     {addFeatured.featuredUserName}
                   </Text>
@@ -292,7 +248,7 @@ class PostDetail extends Component<Props> {
             {!_.isEmpty(doneFeatured) ? (
               <View style={styles.activityBox}>
                 <View style={styles.activityHeader}>
-                  <Icon.default name={'done'} />
+                  <Icon name={names.DONE} />
                   <Text style={styles.boldBody}>
                     {doneFeatured.featuredUserName}
                   </Text>
@@ -306,7 +262,7 @@ class PostDetail extends Component<Props> {
             {!_.isEmpty(likeFeatured) ? (
               <View>
                 <View style={styles.activityHeader}>
-                  <Icon.default name={'like'} />
+                  <Icon name={names.LIKE} />
                   <Text style={styles.boldBody}>
                     {likeFeatured.featuredUserName}
                   </Text>
@@ -333,7 +289,7 @@ class PostDetail extends Component<Props> {
 
     return (
       <UserTextDate
-        userName={getUserShortName(user)}
+        userName={user.shortName}
         profilePhoto={user.facebookProfilePhoto}
         text={item.text}
         createdAt={item.createdAt.toDate()}
@@ -342,6 +298,13 @@ class PostDetail extends Component<Props> {
   };
 
   render() {
+    console.log(`PostDetail - Render Count: ${RENDER_COUNT}`);
+    // console.log('this.props');
+    // console.log(this.props);
+    // console.log('this.state');
+    // console.log(this.state);
+    RENDER_COUNT += 1;
+
     if (!this.props.post) {
       return (
         <View style={styles.loadingContainer}>
@@ -360,7 +323,7 @@ class PostDetail extends Component<Props> {
             back={() => this.props.navigation.goBack()}
           />
         ) : null}
-        <List
+        {/* <List
           showsVerticalScrollIndicator={false}
           overScrollMode='always'
           ListHeaderComponent={() => this.renderListHeader()}
@@ -396,11 +359,12 @@ class PostDetail extends Component<Props> {
             ['commentsMeta', 'isLoadedAll'],
             false
           )}
-        />
+        /> */}
         <ActionBar
           authUser={this.props.authUser}
-          post={this.props.post}
-          ownerUserId={this.props.ownerUserId}
+          ownerUserId={this.props.authUserId}
+          usersPostsId={this.props.post._id}
+          postId={this.props.post.postId}
         />
       </View>
     );

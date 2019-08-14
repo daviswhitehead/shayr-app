@@ -1,10 +1,18 @@
 import _ from 'lodash';
 import createCachedSelector from 're-reselect';
 import { selectListItems } from '../lists/selectors';
+import { State } from '../Reducers';
 // https://github.com/toomuchdesign/re-reselect
 // https://github.com/reduxjs/reselect#sharing-selectors-with-props-across-multiple-component-instances
 
-const selectUsersPosts = (state) => state.usersPosts;
+const selectUsersPosts = (state: State) => state.usersPosts;
+const selectUsersPost = (state: State, userPostId: string) =>
+  state.usersPosts[userPostId];
+
+export const selectUsersPostFromId = createCachedSelector(
+  selectUsersPost,
+  (usersPost) => usersPost
+)((state, userPostId) => userPostId);
 
 export const selectUsersPostsFromItems = createCachedSelector(
   selectUsersPosts,

@@ -1,18 +1,20 @@
-import * as React from 'react';
+import React, { memo, SFC } from 'react';
 import { TouchableOpacity, View } from 'react-native';
 
 interface Props {
-  children: JSX.Element[] | JSX.Element;
-  onPress?: () => void | undefined;
+  children?: JSX.Element[] | JSX.Element;
   style?: any;
+  onPress?: () => void | undefined;
+  noTouching?: boolean;
 }
 
-const TouchableWrapper: React.SFC<Props> = ({
+const TouchableWrapper: SFC<Props> = ({
   children,
+  style,
   onPress,
-  style
+  noTouching
 }: Props) => {
-  return onPress ? (
+  return onPress && !noTouching ? (
     <TouchableOpacity style={style} onPress={onPress}>
       {children}
     </TouchableOpacity>
@@ -21,4 +23,4 @@ const TouchableWrapper: React.SFC<Props> = ({
   );
 };
 
-export default TouchableWrapper;
+export default memo(TouchableWrapper);

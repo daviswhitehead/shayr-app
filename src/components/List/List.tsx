@@ -85,16 +85,19 @@ class List extends PureComponent<Props, OwnState> {
       ...passThroughProps
     } = this.props;
 
+    const tempData = isLoading ? [this.loadingData[0]] : [data[0]];
+
     return (
       <FlatList
         style={styles.container}
-        data={isLoading ? this.loadingData : data}
+        data={tempData}
+        // data={isLoading ? this.loadingData : data}
         renderItem={renderItem}
         keyExtractor={this.keyExtractor}
         ItemSeparatorComponent={noSeparator ? null : this.renderSeparator}
         onScroll={onScroll}
-        onEndReached={isLoadedAll || isLoading ? null : onEndReached}
-        onEndReachedThreshold={0.05}
+        // onEndReached={isLoadedAll || isLoading ? null : onEndReached}
+        // onEndReachedThreshold={0.05}
         onRefresh={isLoading ? null : onRefresh}
         refreshing={isLoading ? false : isRefreshing}
         ListEmptyComponent={this.renderEmptyComponent}

@@ -1,10 +1,9 @@
 import { User, UsersPosts } from '@daviswhitehead/shayr-resources';
 import _ from 'lodash';
 import React, { PureComponent } from 'react';
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
 import { NavigationScreenProps } from 'react-navigation';
 import { connect } from 'react-redux';
-// @ts-ignore
 import { subscribe } from 'redux-subscriber';
 import Header from '../../components/Header';
 import List from '../../components/List';
@@ -38,8 +37,6 @@ import { loadUsersPosts } from '../../redux/usersPosts/actions';
 import { selectFlatListReadyUsersPosts } from '../../redux/usersPosts/selectors';
 import colors from '../../styles/Colors';
 import styles from './styles';
-
-// const RENDER_COUNT = 0;
 
 interface StateProps {
   addsCount?: number;
@@ -89,48 +86,57 @@ type Props = OwnProps &
   NavigationScreenProps<NavigationParams>;
 
 const mapStateToProps = (state: State) => {
-  const authUserId = selectAuthUserId(state);
-
-  if (!authUserId) {
+  if (!selectAuthUserId(state)) {
     return {};
   }
 
   return {
-    addsCount: selectListCount(state, 'addsLists', `${authUserId}_USER_ADDS`),
-    authUserId,
-    authUser: selectUserFromId(state, authUserId),
+    addsCount: selectListCount(
+      state,
+      'addsLists',
+      `${selectAuthUserId(state)}_USER_ADDS`
+    ),
+    authUserId: selectAuthUserId(state),
+    authUser: selectUserFromId(state, selectAuthUserId(state), true),
     donesCount: selectListCount(
       state,
       'donesLists',
-      `${authUserId}_USER_DONES`
+      `${selectAuthUserId(state)}_USER_DONES`
     ),
-    friends: selectUsersFromList(state, `${authUserId}_Friends`),
+    friends: selectUsersFromList(
+      state,
+      `${selectAuthUserId(state)}_Friends`,
+      true
+    ),
     likesCount: selectListCount(
       state,
       'likesLists',
-      `${authUserId}_USER_LIKES`
+      `${selectAuthUserId(state)}_USER_LIKES`
     ),
     routing: state.routing,
     sharesCount: selectListCount(
       state,
       'sharesLists',
-      `${authUserId}_USER_SHARES`
+      `${selectAuthUserId(state)}_USER_SHARES`
     ),
     usersPostsListsMeta: {
-      [generateListKey(authUserId, queryTypes.USERS_POSTS_ALL)]: selectListMeta(
+      [generateListKey(
+        selectAuthUserId(state),
+        queryTypes.USERS_POSTS_ALL
+      )]: selectListMeta(
         state,
         'usersPostsLists',
-        generateListKey(authUserId, queryTypes.USERS_POSTS_ALL)
+        generateListKey(selectAuthUserId(state), queryTypes.USERS_POSTS_ALL)
       )
     },
     usersPostsListsData: {
       [generateListKey(
-        authUserId,
+        selectAuthUserId(state),
         queryTypes.USERS_POSTS_ALL
       )]: selectFlatListReadyUsersPosts(
         state,
         'usersPostsLists',
-        generateListKey(authUserId, queryTypes.USERS_POSTS_ALL),
+        generateListKey(selectAuthUserId(state), queryTypes.USERS_POSTS_ALL),
         'createdAt'
       )
     }
@@ -158,9 +164,6 @@ class Discover extends PureComponent<Props, OwnState> {
   static whyDidYouRender = true;
 
   subscriptions: Array<any>;
-  // subscriptions: Array<() => void>;
-  // subscriptions: Array<typeof subscribeToUser>;
-  // subscriptions: Array<Partial<DispatchProps>>;
   constructor(props: Props) {
     super(props);
     this.state = {
@@ -200,16 +203,16 @@ class Discover extends PureComponent<Props, OwnState> {
     // load initial data
     this.props.loadUsersPosts(
       this.props.authUserId,
-      getQuery(queryTypes.USERS_POSTS_ALL)(this.props.authUserId),
+      getQuery(queryTypes.USERS_POSTS_ALL)!(this.props.authUserId),
       queryTypes.USERS_POSTS_ALL
     );
 
     // DEVELOPMENT HELPERS
     // // this.props.navigation.navigate('FriendsTab', {});
-    // // this.props.navigation.navigate('PostDetail', {
-    // //   ownerUserId: this.props.authUserId,
-    // //   postId: '48PKLyY71DHin1XuIPop'
-    // // });
+    this.props.navigation.navigate('PostDetail', {
+      ownerUserId: this.props.authUserId,
+      postId: '48PKLyY71DHin1XuIPop'
+    });
     // // this.props.navigation.navigate({
     // //   routeName: 'MyList',
     // //   params: {
@@ -332,9 +335,23 @@ class Discover extends PureComponent<Props, OwnState> {
     );
   };
 
+  onItemPress = ({
+    ownerUserId,
+    postId
+  }: {
+    ownerUserId: string;
+    postId: string;
+  }) => {
+    this.props.navigation.navigate('PostDetail', {
+      ownerUserId,
+      postId
+    });
+  };
+
   renderItem = ({ item }: { item: UsersPosts }) => {
     return (
       <SwipeCard
+        key={item._id}
         noSwiping={this.state.isLoading}
         type={'add'}
         isLeftAlreadyDone={_.includes(item.adds || [], this.props.authUserId)}
@@ -353,28 +370,21 @@ class Discover extends PureComponent<Props, OwnState> {
           key={item._id}
           isLoading={this.state.isLoading}
           post={item}
-          ownerUserId={this.props.authUserId}
+          onPressParameters={{
+            ownerUserId: item.userId,
+            postId: item.postId
+          }}
+          onPress={this.onItemPress}
           users={{
             [this.props.authUserId]: this.props.authUser,
             ...this.props.friends
           }}
-          onCardPress={() =>
-            this.props.navigation.navigate('PostDetail', {
-              ownerUserId: item.userId,
-              postId: item.postId
-            })
-          }
         />
       </SwipeCard>
     );
   };
 
   render() {
-    // console.log(`Discover - Render Count: ${RENDER_COUNT}`);
-    // RENDER_COUNT += 1;
-    // console.log('this.props');
-    // console.log(this.props);
-
     return (
       <View style={styles.screen}>
         <Header
@@ -429,8 +439,7 @@ class Discover extends PureComponent<Props, OwnState> {
   }
 }
 
-// export default Discover;
-export default connect<StateProps, DispatchProps, {}, {}, State>(
+export default connect(
   mapStateToProps,
   mapDispatchToProps,
   undefined,

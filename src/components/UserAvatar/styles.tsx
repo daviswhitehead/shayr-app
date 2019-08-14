@@ -19,5 +19,15 @@ export default StyleSheet.create({
   selectedName: {
     ...fontSystem.BOLD_BODY,
     color: Colors.YELLOW
+  },
+  skeletonVertical: {
+    height: 24,
+    width: 24 * 2 + Layout.SPACING_LONG,
+    borderRadius: Layout.BORDER_RADIUS_MEDIUM
+  },
+  skeletonHorizontal: {
+    height: 24,
+    width: 24 * 4 + Layout.SPACING_LONG,
+    borderRadius: Layout.BORDER_RADIUS_MEDIUM
   }
 });

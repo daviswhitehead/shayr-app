@@ -1,21 +1,22 @@
-import * as React from 'react';
+import React, { ComponentProps, memo, SFC } from 'react';
 import { Text, View } from 'react-native';
-import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
-import Colors from '../../styles/Colors';
 import Icon from '../Icon';
+import Skeleton from '../Skeleton';
 import TouchableWrapper from '../TouchableWrapper';
 import styles from './styles';
 
-export interface Props extends Icon.Props {
+interface Props
+  extends ComponentProps<typeof Icon>,
+    ComponentProps<typeof TouchableWrapper> {
   count: number;
-  isLoading?: boolean;
 }
 
-const IconWithCount: React.SFC<Props> = ({
+const IconWithCount: SFC<Props> = ({
   count,
   name,
   isActive = false,
   onPress,
+  noTouching,
   style = {},
   isLoading = false
 }: Props) => {
@@ -24,16 +25,18 @@ const IconWithCount: React.SFC<Props> = ({
   if (isLoading) {
     return (
       <View style={_containerStyle}>
-        <SkeletonPlaceholder backgroundColor={Colors.SKELETON}>
-          <View style={styles.skeleton} />
-        </SkeletonPlaceholder>
+        <Skeleton childStyle={styles.skeleton} />
       </View>
     );
   }
 
   return (
-    <TouchableWrapper style={_containerStyle} onPress={onPress}>
-      <Icon.default name={name} isActive={isActive} style={style} />
+    <TouchableWrapper
+      style={_containerStyle}
+      onPress={onPress}
+      noTouching={noTouching}
+    >
+      <Icon name={name} isActive={isActive} style={style} />
       <View style={styles.countBox}>
         <Text style={isActive ? styles.activeCount : styles.count}>
           {count}
@@ -43,4 +46,4 @@ const IconWithCount: React.SFC<Props> = ({
   );
 };
 
-export default IconWithCount;
+export default memo(IconWithCount);

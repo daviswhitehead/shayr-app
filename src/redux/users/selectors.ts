@@ -16,17 +16,35 @@ const formatUserForClient = (user: User) => {
   };
 };
 
-export const selectUserFromId = createCachedSelector(selectUser, (user) => {
-  if (!user) {
-    return;
+const formatUserForPresentation = (user: User) => {
+  return _.pick(user, [
+    '_id',
+    '_reference',
+    'firstName',
+    'lastName',
+    'shortName',
+    'facebookProfilePhoto'
+  ]);
+};
+
+export const selectUserFromId = createCachedSelector(
+  selectUser,
+  (state, userId, isPresentational) => isPresentational,
+  (user, isPresentational) => {
+    if (!user) {
+      return;
+    }
+    return isPresentational
+      ? formatUserForPresentation(formatUserForClient(user))
+      : formatUserForClient(user);
   }
-  return formatUserForClient(user);
-})((state, userId) => userId);
+)((state, userId, isPresentational) => `${userId}_${isPresentational}`);
 
 export const selectUsersFromList = createCachedSelector(
   selectUsers,
   selectUsersLists,
-  (users, usersList) => {
+  (state, listKey, isPresentational) => isPresentational,
+  (users, usersList, isPresentational) => {
     if (!users || !_.get(usersList, 'isLoaded', false)) {
       return;
     }
@@ -34,8 +52,12 @@ export const selectUsersFromList = createCachedSelector(
     return usersList.items.reduce((result: any, userId: string) => {
       return {
         ...result,
-        [userId]: formatUserForClient(_.get(users, userId, {}))
+        [userId]: isPresentational
+          ? formatUserForPresentation(
+              formatUserForClient(_.get(users, userId, {}))
+            )
+          : formatUserForClient(_.get(users, userId, {}))
       };
     }, {});
   }
-)((state, listKey) => listKey);
+)((state, listKey, isPresentational) => `${listKey}_${isPresentational}`);

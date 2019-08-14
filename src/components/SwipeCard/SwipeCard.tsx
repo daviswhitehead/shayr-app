@@ -1,4 +1,5 @@
-import * as React from 'react';
+import _ from 'lodash';
+import React, { PureComponent } from 'react';
 import { View } from 'react-native';
 import Swipeable from 'react-native-swipeable';
 import { Toaster } from '../../components/Toaster';
@@ -7,12 +8,10 @@ import {
   actionTypeInactiveToasts
 } from '../../styles/Copy';
 import Layout from '../../styles/Layout';
-import Icon from '../Icon';
+import Icon, { names } from '../Icon';
 import styles from './styles';
 
-const RENDER_COUNT = 0;
-
-export interface Props {
+interface Props {
   children: JSX.Element[] | JSX.Element;
   type: 'add' | 'done' | 'like';
   isLeftAlreadyDone?: boolean;
@@ -22,7 +21,7 @@ export interface Props {
   noSwiping?: boolean;
 }
 
-export interface State {
+interface State {
   isLeftActive: boolean;
   isRightActive: boolean;
   triggeredLeftAction: boolean;
@@ -31,10 +30,13 @@ export interface State {
   rightDragDistance: number;
 }
 
-class SwipeCard extends React.Component<Props, State> {
+class SwipeCard extends PureComponent<Props, State> {
+  static whyDidYouRender = false;
+
   initialState: any;
   leftActionActivationDistance: number;
   rightActionActivationDistance: number;
+  typeNameMap: any;
 
   constructor(props: Props) {
     super(props);
@@ -51,6 +53,11 @@ class SwipeCard extends React.Component<Props, State> {
     this.state = this.initialState;
     this.leftActionActivationDistance = 100;
     this.rightActionActivationDistance = 100;
+    this.typeNameMap = {
+      add: names.ADD,
+      done: names.DONE,
+      like: names.LIKE
+    };
   }
 
   renderLeftContent = (leftDragDistance, isLeftActive, triggeredLeftAction) => {
@@ -67,8 +74,8 @@ class SwipeCard extends React.Component<Props, State> {
           isLeftActive || triggeredLeftAction ? styles.activeLeftContainer : {}
         ]}
       >
-        <Icon.default
-          name={this.props.type}
+        <Icon
+          name={this.typeNameMap[this.props.type]}
           iconStyle={[
             styles.icon,
             {
@@ -101,8 +108,8 @@ class SwipeCard extends React.Component<Props, State> {
             : {}
         ]}
       >
-        <Icon.default
-          name={'x-exit'}
+        <Icon
+          name={names.X_EXIT}
           iconStyle={[
             styles.icon,
             {
@@ -148,12 +155,23 @@ class SwipeCard extends React.Component<Props, State> {
     }
   };
 
-  render() {
-    console.log(`SwipeCard - Render Count: ${RENDER_COUNT}`);
-    RENDER_COUNT += 1;
-    console.log('this.props');
-    console.log(this.props);
+  // shouldComponentUpdate(nextProps: Props, nextState: State) {
+  //   // implement if performance is bad with constant re-renders
+  //   // the lines below will break holding the icon in a constant place on the screen :(
+  //   if (
+  //     _.isEqual(nextProps, this.props) &&
+  //     _.isEqual(
+  //       _.omit(nextState, ['leftDragDistance', 'rightDragDistance']),
+  //       _.omit(this.state, ['leftDragDistance', 'rightDragDistance'])
+  //     )
+  //   ) {
+  //     return false;
+  //   }
 
+  //   return true;
+  // }
+
+  render() {
     const {
       isLeftActive,
       leftDragDistance,
@@ -207,17 +225,7 @@ class SwipeCard extends React.Component<Props, State> {
       }
     }
 
-    return (
-      <Swipeable
-        {...swipeableOptions}
-        // onSwipeComplete={() => this.setState(this.initialState)}
-        // onPanAnimatedValueRef={(a: any) =>
-        //   a.x.addListener(this.handleDistanceChange)
-        // }
-      >
-        {this.props.children}
-      </Swipeable>
-    );
+    return <Swipeable {...swipeableOptions}>{this.props.children}</Swipeable>;
   }
 }
 

@@ -5,7 +5,7 @@ import { getDocuments, getFeedOfDocuments } from '../FirebaseRedux';
 
 export const STATE_KEY = 'usersPosts';
 
-const requestLimiter = 10;
+const requestLimiter = 1;
 
 export const loadUsersPosts = (
   ownerUserId: string,
@@ -36,13 +36,28 @@ export const loadUsersPosts = (
 
 export const refreshUsersPostsDocuments = (
   postId: string,
-  source: 'default' | 'cache' | 'server'
+  source?: 'default' | 'cache' | 'server'
 ) => {
   return (dispatch: Dispatch) => {
     getDocuments(
       dispatch,
       STATE_KEY,
       getQuery(queryTypes.USERS_POSTS_BY_POST)(postId),
+      source
+    );
+  };
+};
+
+export const getUsersPostsDocument = (
+  userId: string,
+  postId: string,
+  source?: 'default' | 'cache' | 'server'
+) => {
+  return (dispatch: Dispatch) => {
+    getDocuments(
+      dispatch,
+      STATE_KEY,
+      getQuery(queryTypes.USERS_POSTS_SINGLE)(userId, postId),
       source
     );
   };

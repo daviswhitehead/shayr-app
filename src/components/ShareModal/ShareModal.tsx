@@ -23,7 +23,7 @@ import {
   subscribeToNewShare
 } from '../../redux/shares/actions';
 import Colors from '../../styles/Colors';
-import Icon from '../Icon';
+import Icon, { names } from '../Icon';
 import PostCard from '../PostCard';
 import UserAvatar from '../UserAvatar';
 import styles from './styles';
@@ -261,8 +261,8 @@ class ShareModal extends React.Component<Props, State> {
       <View style={styles.friendsContainer}>
         <Text style={styles.sectionHeader}>Shayr with your friends...</Text>
         {/* <TouchableOpacity style={styles.touchableRow}>
-          <Icon.default
-            name={'invite'}
+          <Icon
+            name={names.INVITE}
             style={styles.iconStyle}
             iconStyle={styles.iconStyle}
           />
@@ -274,8 +274,10 @@ class ShareModal extends React.Component<Props, State> {
           style={styles.touchableRow}
           onPress={() => this.toggleSelectedAllUsers()}
         >
-          <Icon.default
-            name={this.state.selectedAllUsers ? 'friends-active' : 'friends'}
+          <Icon
+            name={
+              this.state.selectedAllUsers ? names.FRIENDS_ACTIVE : names.FRIENDS
+            }
             style={styles.iconStyle}
             iconStyle={styles.iconStyle}
             isActive={this.state.selectedAllUsers}
@@ -338,7 +340,7 @@ class ShareModal extends React.Component<Props, State> {
         style={[styles.commentButton]}
         onPress={this.initiateCommenting}
       >
-        <Icon.default name={'reaction'} />
+        <Icon name={names.REACTION} />
         <Text style={styles.button}>Write a comment</Text>
       </TouchableOpacity>
     );
@@ -413,7 +415,7 @@ class ShareModal extends React.Component<Props, State> {
         style={[styles.buttonContainer, styles.shareButtonContainer]}
         onPress={onPress}
       >
-        <Icon.default name={'share'} />
+        <Icon name={names.SHARE} />
         <Text style={styles.button}>
           {this.props.authUserId ? 'Shayr' : 'Login'}
         </Text>
@@ -498,7 +500,7 @@ class ShareModal extends React.Component<Props, State> {
             style={styles.buttonContainer}
             onPress={this.toggleModal}
           >
-            <Icon.default name={'x-exit'} />
+            <Icon name={names.X_EXIT} />
             <Text style={styles.button}>Cancel</Text>
           </TouchableOpacity>
         </View>

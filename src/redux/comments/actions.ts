@@ -92,26 +92,24 @@ export const createComment = (
 
 const requestLimiter = 10;
 export const loadCommentsForUsersPosts = (
-  userId: string,
-  postId: string,
+  ownerUserId: string,
+  query: Query,
+  listName: string,
   shouldRefresh?: boolean,
   isLoading?: boolean,
   lastItem?: LastItem
 ) => (dispatch: Dispatch) => {
-  const request: Query = composeQuery(
-    getQuery('USERS_POSTS_COMMENTS', {
-      postId,
-      userId
-    }),
+  const composedQuery: Query = composeQuery(
+    query,
     requestLimiter,
     shouldRefresh ? undefined : lastItem
   );
   getFeedOfDocuments(
     dispatch,
     STATE_KEY,
-    userId,
-    postId,
-    request,
+    ownerUserId,
+    listName,
+    composedQuery,
     shouldRefresh,
     isLoading,
     lastItem

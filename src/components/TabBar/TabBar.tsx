@@ -1,24 +1,37 @@
-import PropTypes from 'prop-types';
-import React from 'react';
+import React, { memo, SFC } from 'react';
 import { SafeAreaView, TouchableOpacity, View } from 'react-native';
+import { NavigationScreenProp, NavigationState } from 'react-navigation';
 import { getActiveRouteName } from '../../lib/ReactNavigationHelpers';
-import colors from '../../styles/Colors';
-import Icon from '../Icon';
+import Icon, { names } from '../Icon';
 import styles from './styles';
 
-const routeIconNameMap = {
-  DiscoverTab: 'search',
-  MyListTab: 'list',
-  FriendsTab: 'friends'
+enum tabRoutes {
+  DISCOVER_TAB = 'DiscoverTab',
+  MYLIST_TAB = 'MyListTab',
+  FRIENDS_TAB = 'FriendsTab'
+}
+
+interface NavigationParams {}
+type Navigation = NavigationScreenProp<NavigationState, NavigationParams>;
+
+interface Props {
+  onTabPress: () => void;
+  onTabLongPress: () => void;
+  navigation: Navigation;
+}
+
+const INACTIVE_ROUTE_ICON_MAP = {
+  [tabRoutes.DISCOVER_TAB]: names.SEARCH,
+  [tabRoutes.MYLIST_TAB]: names.LIST,
+  [tabRoutes.FRIENDS_TAB]: names.FRIENDS
+};
+const ACTIVE_ROUTE_ICON_MAP = {
+  [tabRoutes.DISCOVER_TAB]: names.SEARCH_ACTIVE,
+  [tabRoutes.MYLIST_TAB]: names.LIST_ACTIVE,
+  [tabRoutes.FRIENDS_TAB]: names.FRIENDS_ACTIVE
 };
 
-const TabBar = (props) => {
-  const { onTabPress, onTabLongPress, navigation } = props;
-
-  // activity colors
-  const activeTintColor = colors.BLACK;
-  const inactiveTintColor = colors.DARK_GRAY;
-
+const TabBar: SFC<Props> = ({ onTabPress, onTabLongPress, navigation }) => {
   const { routes, index: activeRouteIndex } = navigation.state;
 
   // visibility logic
@@ -29,14 +42,11 @@ const TabBar = (props) => {
     <View style={styles.container}>
       <SafeAreaView>
         <View style={styles.tabBar}>
-          {routes.map((route, routeIndex) => {
+          {routes.map((route: { routeName: tabRoutes }, routeIndex) => {
             const isRouteActive = routeIndex === activeRouteIndex;
-            const tintColor = isRouteActive
-              ? activeTintColor
-              : inactiveTintColor;
             const name = isRouteActive
-              ? routeIconNameMap[route.routeName] + '-active'
-              : routeIconNameMap[route.routeName];
+              ? ACTIVE_ROUTE_ICON_MAP[route.routeName]
+              : INACTIVE_ROUTE_ICON_MAP[route.routeName];
 
             return (
               <TouchableOpacity
@@ -49,7 +59,7 @@ const TabBar = (props) => {
                   onTabLongPress({ route });
                 }}
               >
-                <Icon.default name={name} />
+                <Icon name={name} />
               </TouchableOpacity>
             );
           })}
@@ -59,10 +69,4 @@ const TabBar = (props) => {
   ) : null;
 };
 
-TabBar.propTypes = {
-  onTabPress: PropTypes.func.isRequired,
-  onTabLongPress: PropTypes.func.isRequired,
-  navigation: PropTypes.object.isRequired
-};
-
-export default TabBar;
+export default memo(TabBar);
