@@ -9,13 +9,7 @@ import { Query } from 'react-native-firebase/firestore';
 import { Dispatch } from 'redux';
 import { logEvent } from '../../lib/FirebaseAnalytics';
 import { arrayUnion, ts } from '../../lib/FirebaseHelpers';
-import {
-  composeQuery,
-  getQuery,
-  queries,
-  queryArguments,
-  queryType
-} from '../../lib/FirebaseQueries';
+import { composeQuery } from '../../lib/FirebaseQueries';
 import { updateCounts } from '../../lib/FirebaseWrites';
 import { getFeedOfDocuments, LastItem } from '../FirebaseRedux';
 import { refreshUsersPostsDocuments } from '../usersPosts/actions';
@@ -92,9 +86,8 @@ export const createComment = (
 
 const requestLimiter = 10;
 export const loadCommentsForUsersPosts = (
-  ownerUserId: string,
+  listKey: string,
   query: Query,
-  listName: string,
   shouldRefresh?: boolean,
   isLoading?: boolean,
   lastItem?: LastItem
@@ -107,8 +100,7 @@ export const loadCommentsForUsersPosts = (
   getFeedOfDocuments(
     dispatch,
     STATE_KEY,
-    ownerUserId,
-    listName,
+    listKey,
     composedQuery,
     shouldRefresh,
     isLoading,

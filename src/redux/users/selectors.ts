@@ -40,6 +40,17 @@ export const selectUserFromId = createCachedSelector(
   }
 )((state, userId, isPresentational) => `${userId}_${isPresentational}`);
 
+export const selectUserActionCounts = createCachedSelector(
+  selectUserFromId,
+  (state, userId, isPresentational, action) => action,
+  (user, action) => {
+    if (!user || !action) {
+      return;
+    }
+    return user[action] || 0;
+  }
+)((state, userId, action) => `${userId}_${action}`);
+
 export const selectUsersFromList = createCachedSelector(
   selectUsers,
   selectUsersLists,

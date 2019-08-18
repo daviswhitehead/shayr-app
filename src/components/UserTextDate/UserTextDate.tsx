@@ -1,7 +1,8 @@
 import _ from 'lodash';
 import moment from 'moment';
-import * as React from 'react';
+import React, { memo, SFC } from 'react';
 import { Text, View } from 'react-native';
+import Skeleton from '../Skeleton';
 import TouchableWrapper from '../TouchableWrapper';
 import UserImage from '../UserImage';
 import styles from './styles';
@@ -19,7 +20,7 @@ export interface Props {
   isLoading?: boolean;
 }
 
-const UserAvatar: React.SFC<Props> = ({
+const UserAvatar: SFC<Props> = ({
   userName,
   profilePhoto,
   text,
@@ -32,7 +33,15 @@ const UserAvatar: React.SFC<Props> = ({
   isLoading = false
 }: Props) => {
   if (isLoading) {
-    return null;
+    return (
+      <View style={styles.container}>
+        <UserImage isLoading style={styles.userImageSpacing} />
+        <View style={styles.textContainer}>
+          <Skeleton childStyle={styles.skeletonText} />
+          <Skeleton childStyle={styles.skeletonDate} />
+        </View>
+      </View>
+    );
   }
   const parsedText = userName ? _.replace(text, userName, '') : text;
 
@@ -65,4 +74,4 @@ const UserAvatar: React.SFC<Props> = ({
   );
 };
 
-export default UserAvatar;
+export default memo(UserAvatar);

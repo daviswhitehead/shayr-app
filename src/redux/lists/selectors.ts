@@ -1,17 +1,21 @@
 import _ from 'lodash';
 import createCachedSelector, { ParametricSelector } from 're-reselect';
-import { stateKey } from '../../lib/FirebaseRedux';
+import { StateKeyLists } from '../FirebaseRedux';
 import { State } from '../Reducers';
 // https://github.com/toomuchdesign/re-reselect
 // https://github.com/reduxjs/reselect#sharing-selectors-with-props-across-multiple-component-instances
 
-const selectListState = (state: State, stateKey: stateKey) => state[stateKey];
-const selectListKey = (state: State, stateKey: stateKey, listKey: string) =>
-  listKey;
+const selectListState = (state: State, stateKey: StateKeyLists) =>
+  state[stateKey];
+const selectListKey = (
+  state: State,
+  stateKey: StateKeyLists,
+  listKey: string
+) => listKey;
 
 export const selectList: ParametricSelector<
   State,
-  stateKey,
+  StateKeyLists,
   any | undefined
 > = createCachedSelector(
   selectListState,
@@ -50,7 +54,7 @@ export const selectListMeta = createCachedSelector(
 
 export const selectListCount: ParametricSelector<
   State,
-  stateKey,
+  StateKeyLists,
   number | undefined
 > = createCachedSelector(
   selectListState,

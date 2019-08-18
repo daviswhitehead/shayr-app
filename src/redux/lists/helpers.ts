@@ -1,5 +1,5 @@
-import { queryTypes } from '../../lib/FirebaseQueries';
+import _ from 'lodash';
 
-export const generateListKey = (id: string, queryType: queryTypes) => {
-  return `${id}_${queryType}`;
+export const generateListKey = (...ids: string[]) => {
+  return _.join(ids, '_');
 };

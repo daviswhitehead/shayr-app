@@ -3,8 +3,8 @@ import React, { SFC } from 'react';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { queryTypes } from '../../lib/FirebaseQueries';
-import { toggleAddDonePost } from '../../redux/adds/actions';
 import { selectAuthUserId } from '../../redux/auth/selectors';
+import { toggleAddDonePost } from '../../redux/dones/actions';
 import { generateListKey } from '../../redux/lists/helpers';
 import { selectListItems } from '../../redux/lists/selectors';
 

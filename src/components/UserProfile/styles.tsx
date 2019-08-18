@@ -19,5 +19,10 @@ export default StyleSheet.create({
   profileName: {
     ...fontSystem.H2,
     marginVertical: Layout.SPACING_MEDIUM
+  },
+  skeletonProfileName: {
+    height: 24,
+    width: 24 * 8 + Layout.SPACING_LONG,
+    marginVertical: Layout.SPACING_MEDIUM
   }
 });

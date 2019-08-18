@@ -1,19 +1,19 @@
 import { DocumentSnapshot, Query } from 'react-native-firebase/firestore';
 import { Dispatch } from 'redux';
 import { composeQuery, getQuery, queryTypes } from '../../lib/FirebaseQueries';
-import { getDocuments, getFeedOfDocuments } from '../FirebaseRedux';
+import { getDocuments, getFeedOfDocuments, LastItem } from '../FirebaseRedux';
 
 export const STATE_KEY = 'usersPosts';
 
-const requestLimiter = 1;
+// const requestLimiter = 1;
+const requestLimiter = 5;
 
 export const loadUsersPosts = (
-  ownerUserId: string,
+  listKey: string,
   query: Query,
-  listName: string,
   shouldRefresh?: boolean,
   isLoading?: boolean,
-  lastItem?: DocumentSnapshot | 'DONE'
+  lastItem?: LastItem
 ) => {
   return (dispatch: Dispatch) => {
     const composedQuery: Query = composeQuery(
@@ -24,8 +24,7 @@ export const loadUsersPosts = (
     getFeedOfDocuments(
       dispatch,
       STATE_KEY,
-      ownerUserId,
-      listName,
+      listKey,
       composedQuery,
       shouldRefresh,
       isLoading,

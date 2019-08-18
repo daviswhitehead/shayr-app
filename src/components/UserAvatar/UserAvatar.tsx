@@ -1,4 +1,4 @@
-import React, { ComponentProps, memo, SFC } from 'react';
+import React, { memo, SFC } from 'react';
 import { Text, View } from 'react-native';
 import Skeleton from '../Skeleton';
 import TouchableWrapper from '../TouchableWrapper';
@@ -41,7 +41,7 @@ const UserAvatar: SFC<Props> = ({
   if (isLoading) {
     return (
       <View style={_containerStyle}>
-        <UserImage isLoading={true} />
+        <UserImage isLoading />
         {shouldHideName ? null : (
           <Skeleton
             childStyle={

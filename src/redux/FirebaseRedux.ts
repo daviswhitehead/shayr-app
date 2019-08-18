@@ -18,8 +18,10 @@ import {
   listLoading,
   listRefreshing
 } from './lists/actions';
+import { generateListKey } from './lists/helpers';
 
 export type StateKey =
+  | 'users'
   | 'usersPosts'
   | 'adds'
   | 'dones'
@@ -42,13 +44,10 @@ export type LastItem = DocumentSnapshot | 'DONE';
 
 const generateStateKeyList = (stateKey: StateKey) => `${stateKey}Lists`;
 
-const generateListKey = (id: string, listName: string) => `${id}_${listName}`;
-
 export const getFeedOfDocuments = (
   dispatch: Dispatch,
   stateKey: StateKey,
-  ownerUserId: string,
-  listName: string,
+  listKey: string,
   query: Query,
   shouldRefresh?: boolean,
   isLoading?: boolean,
@@ -60,7 +59,6 @@ export const getFeedOfDocuments = (
   }
 
   const stateKeyList = generateStateKeyList(stateKey);
-  const listKey = generateListKey(ownerUserId, listName);
 
   if (shouldRefresh) {
     dispatch(listRefreshing(stateKeyList, listKey));

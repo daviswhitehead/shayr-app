@@ -1,9 +1,9 @@
 // https://facebook.github.io/react-native/docs/flatlist
 // https://facebook.github.io/react-native/docs/optimizing-flatlist-configuration
 import _ from 'lodash';
-import React, { PureComponent } from 'react';
-import { ActivityIndicator, FlatList, Text, View } from 'react-native';
-import Colors from '../../styles/Colors';
+import React, { Component } from 'react';
+import { FlatList, Text, View } from 'react-native';
+import Loading from '../Loading';
 import styles from './styles';
 
 interface Props {
@@ -22,7 +22,7 @@ interface Props {
 
 interface OwnState {}
 
-class List extends PureComponent<Props, OwnState> {
+class List extends Component<Props, OwnState> {
   static whyDidYouRender = true;
 
   loadingData: Array<{ _id: string }>;
@@ -37,6 +37,14 @@ class List extends PureComponent<Props, OwnState> {
     ];
   }
 
+  shouldComponentUpdate(nextProps: Props) {
+    if (_.isEqual(nextProps, this.props)) {
+      return false;
+    }
+
+    return true;
+  }
+
   keyExtractor = (item: { _id: string }) => {
     return item._id;
   };
@@ -47,7 +55,7 @@ class List extends PureComponent<Props, OwnState> {
 
   renderEmptyComponent = () => {
     return (
-      <View style={styles.loadingContainer}>
+      <View style={styles.bottomContainer}>
         <Text>List is empty</Text>
       </View>
     );
@@ -56,16 +64,12 @@ class List extends PureComponent<Props, OwnState> {
   renderFooterComponent = () => {
     if (!_.isEmpty(this.props.data) && this.props.isLoadedAll) {
       return (
-        <View style={styles.loadingContainer}>
+        <View style={styles.bottomContainer}>
           <Text>List is loaded</Text>
         </View>
       );
     } else if (this.props.isPaginating) {
-      return (
-        <View style={styles.loadingContainer}>
-          <ActivityIndicator size='large' color={Colors.BLACK} />
-        </View>
-      );
+      return <Loading />;
     }
     return null;
   };
@@ -85,19 +89,19 @@ class List extends PureComponent<Props, OwnState> {
       ...passThroughProps
     } = this.props;
 
-    const tempData = isLoading ? [this.loadingData[0]] : [data[0]];
+    // const tempData = isLoading ? [this.loadingData[0]] : [data[0]];
 
     return (
       <FlatList
         style={styles.container}
-        data={tempData}
-        // data={isLoading ? this.loadingData : data}
+        // data={tempData}
+        data={isLoading ? this.loadingData : data}
         renderItem={renderItem}
         keyExtractor={this.keyExtractor}
         ItemSeparatorComponent={noSeparator ? null : this.renderSeparator}
         onScroll={onScroll}
-        // onEndReached={isLoadedAll || isLoading ? null : onEndReached}
-        // onEndReachedThreshold={0.05}
+        onEndReached={isLoadedAll || isLoading ? null : onEndReached}
+        onEndReachedThreshold={0.05}
         onRefresh={isLoading ? null : onRefresh}
         refreshing={isLoading ? false : isRefreshing}
         ListEmptyComponent={this.renderEmptyComponent}

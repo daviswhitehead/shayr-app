@@ -91,60 +91,6 @@ export const getFail = (stateKey: stateKey, error: SnapshotError) => (
   });
 };
 
-export const getFeedOfDocuments = (
-  STATE_KEY: stateKey,
-  STATE_KEY_LIST: stateKey,
-  ownerUserId: string,
-  list: string,
-  query: Query,
-  shouldRefresh?: boolean,
-  isLoading?: boolean,
-  lastItem?: DocumentSnapshot | 'DONE'
-) => async (dispatch: Dispatch) => {
-  // prevent loading more items when the end is reached or data is loading
-  if (!shouldRefresh && (lastItem === 'DONE' || isLoading)) {
-    return;
-  }
-
-  if (shouldRefresh) {
-    dispatch(listRefresh(STATE_KEY_LIST, ownerUserId, list));
-  } else {
-    dispatch(listLoading(STATE_KEY_LIST, ownerUserId, list));
-  }
-
-  dispatch(getStart(STATE_KEY));
-
-  await query
-    .get()
-    .then((querySnapshot: QuerySnapshot) => {
-      if (!querySnapshot.empty) {
-        const documents = {};
-        querySnapshot.forEach((document: DocumentSnapshot) => {
-          documents[document.id] = formatDocumentSnapshot(document);
-        });
-
-        dispatch(getSuccess(STATE_KEY, documents));
-
-        dispatch(listAdd(STATE_KEY_LIST, ownerUserId, list, _.keys(documents)));
-
-        dispatch(
-          listLoaded(
-            STATE_KEY_LIST,
-            ownerUserId,
-            list,
-            querySnapshot.docs.pop()
-          )
-        );
-      } else {
-        dispatch(listLoaded(STATE_KEY_LIST, ownerUserId, list, 'DONE'));
-      }
-    })
-    .catch((error: SnapshotError) => {
-      console.error(error);
-      dispatch(getFail(STATE_KEY, error));
-    });
-};
-
 export const getDocuments = (
   STATE_KEY: stateKey,
   query: Query,

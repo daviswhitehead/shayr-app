@@ -1,23 +1,25 @@
 import _ from 'lodash';
-import * as React from 'react';
+import React, { PureComponent } from 'react';
 import { TouchableOpacity, View } from 'react-native';
+import { names } from '../Icon';
 import IconWithCount from '../IconWithCount';
 import styles from './styles';
 
 export interface Props {
   startingIndex?: number;
   onIndexChange?: (index: number) => void;
-  sharesCount: number;
-  addsCount: number;
-  donesCount: number;
-  likesCount: number;
+  sharesCount?: number;
+  addsCount?: number;
+  donesCount?: number;
+  likesCount?: number;
+  isLoading?: boolean;
 }
 
 export interface State {
   selectedIndex: number;
 }
 
-export default class SegmentedControl extends React.Component<Props, State> {
+export default class SegmentedControl extends PureComponent<Props, State> {
   constructor(props: Props) {
     super(props);
 
@@ -31,7 +33,7 @@ export default class SegmentedControl extends React.Component<Props, State> {
       this.props.onIndexChange(index);
     }
 
-    this.setState(previousState => ({
+    this.setState((previousState) => ({
       ...previousState,
       selectedIndex: index
     }));
@@ -49,8 +51,9 @@ export default class SegmentedControl extends React.Component<Props, State> {
         >
           <View style={styles.iconContainer}>
             <IconWithCount
-              name={'share'}
-              count={this.props.sharesCount}
+              isLoading={this.props.isLoading}
+              name={names.SHARE}
+              count={this.props.sharesCount || 0}
               isActive={false}
             />
           </View>
@@ -64,8 +67,9 @@ export default class SegmentedControl extends React.Component<Props, State> {
         >
           <View style={styles.iconContainer}>
             <IconWithCount
-              name={'add'}
-              count={this.props.addsCount}
+              isLoading={this.props.isLoading}
+              name={names.ADD}
+              count={this.props.addsCount || 0}
               isActive={false}
             />
           </View>
@@ -79,8 +83,9 @@ export default class SegmentedControl extends React.Component<Props, State> {
         >
           <View style={styles.iconContainer}>
             <IconWithCount
-              name={'done'}
-              count={this.props.donesCount}
+              isLoading={this.props.isLoading}
+              name={names.DONE}
+              count={this.props.donesCount || 0}
               isActive={false}
             />
           </View>
@@ -94,8 +99,9 @@ export default class SegmentedControl extends React.Component<Props, State> {
         >
           <View style={styles.iconContainer}>
             <IconWithCount
-              name={'like'}
-              count={this.props.likesCount}
+              isLoading={this.props.isLoading}
+              name={names.LIKE}
+              count={this.props.likesCount || 0}
               isActive={false}
             />
           </View>

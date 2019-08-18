@@ -23,11 +23,13 @@ export default StyleSheet.create({
   skeletonVertical: {
     height: 24,
     width: 24 * 2 + Layout.SPACING_LONG,
-    borderRadius: Layout.BORDER_RADIUS_MEDIUM
+    borderRadius: Layout.BORDER_RADIUS_MEDIUM,
+    marginTop: Layout.SPACING_MEDIUM
   },
   skeletonHorizontal: {
     height: 24,
     width: 24 * 4 + Layout.SPACING_LONG,
-    borderRadius: Layout.BORDER_RADIUS_MEDIUM
+    borderRadius: Layout.BORDER_RADIUS_MEDIUM,
+    marginLeft: Layout.SPACING_MEDIUM
   }
 });

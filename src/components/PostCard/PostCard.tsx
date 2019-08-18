@@ -20,6 +20,7 @@ interface Props {
   onPressParameters: any;
   onPress: (parameters: any) => void | undefined;
   users?: Users;
+  noUser?: boolean;
   noTouching?: boolean;
   isLoading?: boolean;
 }
@@ -67,25 +68,17 @@ class PostCard extends Component<Props> {
   };
 
   render() {
-    const { post, noTouching, isLoading } = this.props;
-
-    const currentUserIds = this.unionUserIds(post);
-    const featuredUser = this.getFeaturedUser(currentUserIds, this.props.users);
-
-    const postImage = _.get(post, 'image', '');
-    const title = _.get(post, 'title', '');
-    const publisher = _.get(post, ['publisher', 'name'], '');
-    const timeEstimate = _.get(post, 'timeEstimate', '');
+    const { post, noUser, noTouching, isLoading } = this.props;
 
     if (isLoading) {
       return (
         <View style={styles.container}>
-          {!_.isEmpty(featuredUser) ? (
-            <View style={styles.avatar}>
-              <UserAvatar isLoading />
-            </View>
-          ) : (
+          {noUser ? (
             <View style={styles.emptyAvatar} />
+          ) : (
+            <View style={styles.avatar}>
+              <UserAvatar isLoading isVertical={false} />
+            </View>
           )}
           <View style={styles.contentBox}>
             <Skeleton childStyle={styles.image} />
@@ -105,10 +98,20 @@ class PostCard extends Component<Props> {
       );
     }
 
+    const currentUserIds = this.unionUserIds(post);
+    const featuredUser = this.getFeaturedUser(currentUserIds, this.props.users);
+
+    const postImage = _.get(post, 'image', '');
+    const title = _.get(post, 'title', '');
+    const publisher = _.get(post, ['publisher', 'name'], '');
+    const timeEstimate = _.get(post, 'timeEstimate', '');
+
     return (
       <TouchableWithoutFeedback onPress={noTouching ? undefined : this.onPress}>
         <View style={styles.container}>
-          {!_.isEmpty(featuredUser) ? (
+          {_.isEmpty(featuredUser) || noUser ? (
+            <View style={styles.emptyAvatar} />
+          ) : (
             <View style={styles.avatar}>
               <SmartUserAvatar
                 {...featuredUser}
@@ -117,8 +120,6 @@ class PostCard extends Component<Props> {
                 userId={_.get(featuredUser, '_id', '')}
               />
             </View>
-          ) : (
-            <View style={styles.emptyAvatar} />
           )}
           <View style={styles.contentBox}>
             {!!postImage ? (

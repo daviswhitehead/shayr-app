@@ -45,6 +45,11 @@ export default StyleSheet.create({
   activityBox: {
     marginBottom: Layout.SPACING_LONG
   },
+  commentsMargin: {
+    // should be -1 * activityBox margin
+    marginTop: Layout.SPACING_LONG * -1,
+    marginBottom: 0
+  },
   activityHeader: {
     flexDirection: 'row',
     justifyContent: 'flex-start',

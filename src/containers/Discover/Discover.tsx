@@ -16,11 +16,16 @@ import {
   updateUserAdds
 } from '../../redux/adds/actions';
 import { selectAuthUserId } from '../../redux/auth/selectors';
+import { selectFlatListReadyDocuments } from '../../redux/documents/selectors';
 import { subscribeToDones, updateUserDones } from '../../redux/dones/actions';
 import { subscribeToFriendships } from '../../redux/friendships/actions';
 import { subscribeToLikes, updateUserLikes } from '../../redux/likes/actions';
 import { generateListKey } from '../../redux/lists/helpers';
-import { selectListCount, selectListMeta } from '../../redux/lists/selectors';
+import {
+  selectListCount,
+  selectListItems,
+  selectListMeta
+} from '../../redux/lists/selectors';
 import { subscribeNotificationTokenRefresh } from '../../redux/notifications/actions';
 import { State } from '../../redux/Reducers';
 import { navigateToRoute } from '../../redux/routing/actions';
@@ -34,7 +39,6 @@ import {
   selectUsersFromList
 } from '../../redux/users/selectors';
 import { loadUsersPosts } from '../../redux/usersPosts/actions';
-import { selectFlatListReadyUsersPosts } from '../../redux/usersPosts/selectors';
 import colors from '../../styles/Colors';
 import styles from './styles';
 
@@ -133,9 +137,14 @@ const mapStateToProps = (state: State) => {
       [generateListKey(
         selectAuthUserId(state),
         queryTypes.USERS_POSTS_ALL
-      )]: selectFlatListReadyUsersPosts(
+      )]: selectFlatListReadyDocuments(
         state,
-        'usersPostsLists',
+        'usersPosts',
+        selectListItems(
+          state,
+          'usersPostsLists',
+          generateListKey(selectAuthUserId(state), queryTypes.USERS_POSTS_ALL)
+        ),
         generateListKey(selectAuthUserId(state), queryTypes.USERS_POSTS_ALL),
         'createdAt'
       )
@@ -173,6 +182,7 @@ class Discover extends PureComponent<Props, OwnState> {
   }
 
   componentDidMount() {
+    this.checkLoading();
     // GLOBAL - REQUIRED
     // setup subscriptions
     this.subscriptions.push(
@@ -202,40 +212,28 @@ class Discover extends PureComponent<Props, OwnState> {
     // SCREEN
     // load initial data
     this.props.loadUsersPosts(
-      this.props.authUserId,
-      getQuery(queryTypes.USERS_POSTS_ALL)!(this.props.authUserId),
-      queryTypes.USERS_POSTS_ALL
+      generateListKey(this.props.authUserId, queryTypes.USERS_POSTS_ALL),
+      getQuery(queryTypes.USERS_POSTS_ALL)!(this.props.authUserId)
     );
 
     // DEVELOPMENT HELPERS
     // // this.props.navigation.navigate('FriendsTab', {});
-    this.props.navigation.navigate('PostDetail', {
-      ownerUserId: this.props.authUserId,
-      postId: '48PKLyY71DHin1XuIPop'
-    });
-    // // this.props.navigation.navigate({
-    // //   routeName: 'MyList',
-    // //   params: {
-    // //     // ownerUserId: 'lOnI91XOvdRnQe5Hmdrkf2TY5lH2'
-    // //     ownerUserId: this.props.authUserId
-    // //   }
-    // // });
+    // this.props.navigation.navigate('PostDetail', {
+    //   ownerUserId: this.props.authUserId,
+    //   postId: '48PKLyY71DHin1XuIPop'
+    // });
+    // this.props.navigation.navigate({
+    //   // routeName: 'MyList',
+    //   routeName: 'MyListTab',
+    //   params: {
+    //     // ownerUserId: 'lOnI91XOvdRnQe5Hmdrkf2TY5lH2'
+    //     ownerUserId: this.props.authUserId
+    //   }
+    // });
   }
 
   componentDidUpdate(prevProps: Props) {
-    if (
-      this.state.isLoading &&
-      this.props.authUser &&
-      this.props.friends &&
-      this.props.usersPostsListsData &&
-      this.props.usersPostsListsMeta &&
-      this.props.usersPostsListsMeta[
-        generateListKey(this.props.authUserId, queryTypes.USERS_POSTS_ALL)
-      ].isLoaded
-    ) {
-      this.setState({ isLoading: false });
-    }
-
+    this.checkLoading();
     if (this.props.addsCount && !prevProps.addsCount) {
       this.props.updateUserAdds(this.props.authUserId, this.props.addsCount);
     }
@@ -253,60 +251,33 @@ class Discover extends PureComponent<Props, OwnState> {
     }
   }
 
-  // componentDidUpdate(prevProps) {
-  //   // console.log('NEW COMPONENT_DID_UPDATE:');
-
-  //   // console.log(
-  //   //   `DIFF ${JSON.stringify(
-  //   //     getObjectDiff(
-  //   //       _.get(this.props, 'authUser', {}),
-  //   //       _.get(prevProps, 'authUser', {})
-  //   //     ),
-  //   //     undefined,
-  //   //     2
-  //   //   )}`
-  //   // );
-
-  //   // const now = Object.entries(this.props);
-  //   // const added = now.filter(([key, val]) => {
-  //   //   if (prevProps[key] === undefined) return true;
-  //   //   if (prevProps[key] !== val) {
-  //   //     console.log(`
-  //   //     CHANGED
-  //   //     ${key}
-  //   //       DIFF ${JSON.stringify(
-  //   //         getObjectDiff(val, prevProps[key]),
-  //   //         undefined,
-  //   //         2
-  //   //       )}
-  //   //       NEW ${JSON.stringify(val, undefined, 2)}
-  //   //       OLD ${JSON.stringify(prevProps[key], undefined, 2)}`);
-  //   //   }
-  //   //   return false;
-  //   // });
-  //   // added.forEach(([key, val]) =>
-  //   //   console.log(`
-  //   //   ADDED
-  //   //   ${key}
-  //   //       ${JSON.stringify(val, undefined, 2)}`)
-  //   // );
-  //   console.log();
-  // }
-
   componentWillUnmount() {
     Object.values(this.subscriptions).forEach((unsubscribe) => {
       unsubscribe();
     });
   }
 
+  checkLoading = () => {
+    if (
+      this.state.isLoading &&
+      this.props.authUser &&
+      this.props.friends &&
+      this.props.usersPostsListsMeta &&
+      this.props.usersPostsListsMeta[
+        generateListKey(this.props.authUserId, queryTypes.USERS_POSTS_ALL)
+      ].isLoaded
+    ) {
+      this.setState({ isLoading: false });
+    }
+  };
+
   paginateList = () => {
     if (!this.props.usersPostsListsMeta) {
       return;
     }
     return this.props.loadUsersPosts(
-      this.props.authUserId,
+      generateListKey(this.props.authUserId, queryTypes.USERS_POSTS_ALL),
       getQuery(queryTypes.USERS_POSTS_ALL)!(this.props.authUserId),
-      queryTypes.USERS_POSTS_ALL,
       false,
       this.props.usersPostsListsMeta[
         generateListKey(this.props.authUserId, queryTypes.USERS_POSTS_ALL)
@@ -322,9 +293,8 @@ class Discover extends PureComponent<Props, OwnState> {
       return;
     }
     return this.props.loadUsersPosts(
-      this.props.authUserId,
+      generateListKey(this.props.authUserId, queryTypes.USERS_POSTS_ALL),
       getQuery(queryTypes.USERS_POSTS_ALL)!(this.props.authUserId),
-      queryTypes.USERS_POSTS_ALL,
       true,
       this.props.usersPostsListsMeta[
         generateListKey(this.props.authUserId, queryTypes.USERS_POSTS_ALL)
@@ -342,9 +312,13 @@ class Discover extends PureComponent<Props, OwnState> {
     ownerUserId: string;
     postId: string;
   }) => {
-    this.props.navigation.navigate('PostDetail', {
-      ownerUserId,
-      postId
+    this.props.navigation.navigate({
+      routeName: 'PostDetail',
+      params: {
+        ownerUserId,
+        postId
+      },
+      key: `PostDetail:${ownerUserId}_${postId}`
     });
   };
 

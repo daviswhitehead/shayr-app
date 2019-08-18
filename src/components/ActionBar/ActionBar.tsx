@@ -1,13 +1,15 @@
-import { documentId, User, UsersPosts } from '@daviswhitehead/shayr-resources';
+import { User } from '@daviswhitehead/shayr-resources';
 import _ from 'lodash';
-import * as React from 'react';
+import React, { memo, SFC } from 'react';
 import { SafeAreaView, View } from 'react-native';
 import { IconWithAdds } from '../../higherOrderComponents/withAdds';
 import { IconWithDones } from '../../higherOrderComponents/withDones';
 import { IconWithLikes } from '../../higherOrderComponents/withLikes';
 import { IconWithShares } from '../../higherOrderComponents/withShares';
+import Icon from '../Icon';
 import { names } from '../Icon';
 import SmartUserAvatar from '../SmartUserAvatar';
+import UserImage from '../UserImage';
 import styles from './styles';
 
 export interface Props {
@@ -15,14 +17,32 @@ export interface Props {
   ownerUserId: string;
   postId: string;
   usersPostsId: string;
+  isLoading?: boolean;
 }
 
-const ActionBar: React.SFC<Props> = ({
+const ActionBar: SFC<Props> = ({
   authUser,
   ownerUserId,
   usersPostsId,
-  postId
+  postId,
+  isLoading
 }) => {
+  if (isLoading) {
+    return (
+      <View style={styles.container}>
+        <SafeAreaView style={styles.safeArea}>
+          <View style={styles.actionBar}>
+            <UserImage isLoading size={'small'} />
+            <Icon isLoading name={names.SHARE} style={styles.action} />
+            <Icon isLoading name={names.ADD} style={styles.action} />
+            <Icon isLoading name={names.DONE} style={styles.action} />
+            <Icon isLoading name={names.LIKE} style={styles.action} />
+          </View>
+        </SafeAreaView>
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
       <SafeAreaView style={styles.safeArea}>
@@ -67,4 +87,4 @@ const ActionBar: React.SFC<Props> = ({
   );
 };
 
-export default ActionBar;
+export default memo(ActionBar);
