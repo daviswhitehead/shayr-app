@@ -208,6 +208,8 @@ android {
 }
 
 dependencies {
+    implementation project(':react-native-screens')
+    implementation project(':react-native-reanimated')
     implementation project(':react-native-firebase')
     // Required
     implementation fileTree(dir: "libs", include: ["*.jar"])

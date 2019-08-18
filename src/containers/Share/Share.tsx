@@ -1,10 +1,11 @@
-import { buildAppLink } from '@daviswhitehead/shayr-resources';
+import { buildAppLink, User } from '@daviswhitehead/shayr-resources';
 import _ from 'lodash';
 import React, { Component } from 'react';
 import { Linking, Platform, Text, View } from 'react-native';
 import firebase from 'react-native-firebase';
 import ShareExtension from 'react-native-share-extension';
 import { connect } from 'react-redux';
+import { State } from 'src/src/redux/Reducers';
 import ShareModal from '../../components/ShareModal';
 import { retrieveToken } from '../../lib/AppGroupTokens';
 import { userAnalytics } from '../../lib/FirebaseAnalytics';
@@ -20,30 +21,47 @@ import { selectUsersFromList } from '../../redux/users/selectors';
 // // // );
 // // Comment any calls to react-native-share-extension
 
-const navigateToLogin = async () => {
-  const url = buildAppLink('shayr', 'shayr', 'Login', {});
-  try {
-    (await Platform.OS) === 'ios'
-      ? ShareExtension.openURL(url)
-      : Linking.openURL(url);
-  } catch (error) {
-    console.error('An error occurred:', error);
-  }
-};
+interface StateProps {
+  users: {
+    [userId: string]: User;
+  };
+  usersLists: {
+    [listKey: string]: any; // TODO: meta type
+  };
+}
 
-const mapStateToProps = (state, props) => {
+interface DispatchProps {
+  subscribeToFriendships: typeof subscribeToFriendships;
+}
+
+interface OwnProps {}
+
+interface OwnState {
+  authUserId: string;
+  payload: string;
+  friends: {
+    [userId: string]: User;
+  };
+  isLoading: boolean;
+}
+
+type Props = OwnProps & StateProps & DispatchProps;
+
+const mapStateToProps = (state: State) => {
   return {
     users: state.users,
     usersLists: state.usersLists
   };
 };
 
-const mapDispatchToProps = (dispatch) => ({
-  subscribeToFriendships: (userId) => dispatch(subscribeToFriendships(userId))
-});
+const mapDispatchToProps = {
+  subscribeToFriendships
+};
 
-class Share extends Component {
-  constructor(props) {
+class Share extends Component<Props, OwnState> {
+  modalRef: any;
+  subscriptions: Array<any>;
+  constructor(props: Props) {
     super(props);
     this.state = {
       authUserId: '',
@@ -77,8 +95,9 @@ class Share extends Component {
 
       userAnalytics(authUserId);
 
-      const { type, value } = await ShareExtension.data();
-      // const value = 'https://medium.com/@khreniak/cloud-firestore-security-rules-basics-fac6b6bea18e';
+      // const { type, value } = await ShareExtension.data();
+      const value =
+        'https://medium.com/@khreniak/cloud-firestore-security-rules-basics-fac6b6bea18e';
 
       this.setState({ authUserId, payload: value });
 
@@ -92,7 +111,7 @@ class Share extends Component {
     }
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps: Props) {
     if (
       this.state.authUserId &&
       _.get(
@@ -109,7 +128,8 @@ class Share extends Component {
       this.setState({
         friends: selectUsersFromList(
           this.props,
-          `${this.state.authUserId}_Friends`
+          `${this.state.authUserId}_Friends`,
+          true
         ),
         isLoading: false
       });
@@ -122,6 +142,17 @@ class Share extends Component {
     });
   }
 
+  navigateToLogin = async () => {
+    const url = buildAppLink('shayr', 'shayr', 'Login', {});
+    try {
+      (await Platform.OS) === 'ios'
+        ? ShareExtension.openURL(url)
+        : Linking.openURL(url);
+    } catch (error) {
+      console.error('An error occurred:', error);
+    }
+  };
+
   render() {
     return (
       <ShareModal
@@ -130,8 +161,8 @@ class Share extends Component {
         authUserId={this.state.authUserId}
         ownerUserId={this.state.authUserId}
         users={this.state.friends}
-        navigateToLogin={() => navigateToLogin()}
-        onModalWillHide={() => ShareExtension.close()}
+        navigateToLogin={this.navigateToLogin}
+        // onModalWillHide={() => ShareExtension.close()}
         hideBackdrop
         isLoading={this.state.isLoading}
       />

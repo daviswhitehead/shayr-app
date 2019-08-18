@@ -9,12 +9,17 @@ import { Dispatch } from 'redux';
 import { Toaster } from '../../components/Toaster';
 import { logEvent } from '../../lib/FirebaseAnalytics';
 import { ts } from '../../lib/FirebaseHelpers';
-import { getQuery, queryTypes } from '../../lib/FirebaseQueries';
-import { subscribeToDocument } from '../../lib/FirebaseRedux';
+import {
+  getQuery,
+  queryTypes,
+  references,
+  referenceTypes
+} from '../../lib/FirebaseQueries';
 import { overwriteUserCounts, updateCounts } from '../../lib/FirebaseWrites';
 import { subscribeToAllDocuments } from '../../redux/FirebaseRedux';
 import { actionTypeActiveToasts } from '../../styles/Copy';
 import { createComment } from '../comments/actions';
+import { subscribeToDocument } from '../FirebaseRedux';
 import { toggleItem } from '../lists/actions';
 import { createMention } from '../mentions/actions';
 import { refreshUsersPostsDocuments } from '../usersPosts/actions';
@@ -189,9 +194,13 @@ export const confirmShare = (
   }
 };
 
-export const subscribeToNewShare = (shareId: documentId) => {
+export const subscribeToShare = (shareId: documentId) => {
   return (dispatch: Dispatch) => {
-    return dispatch(subscribeToDocument(STATE_KEY, 'shares', shareId));
+    return subscribeToDocument(
+      dispatch,
+      STATE_KEY,
+      references.get(referenceTypes.GET_DOCUMENT)(`shares/${shareId}`)
+    );
   };
 };
 

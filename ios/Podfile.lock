@@ -250,6 +250,10 @@ PODS:
     - React
   - RNGestureHandler (1.3.0):
     - React
+  - RNReanimated (1.2.0):
+    - React
+  - RNScreens (1.0.0-alpha.23):
+    - React
   - RNVectorIcons (4.6.0):
     - React
   - SSZipArchive (2.2.2)
@@ -292,6 +296,8 @@ DEPENDENCIES:
   - React-RCTWebSocket (from `../node_modules/react-native/Libraries/WebSocket`)
   - RNFirebase (from `../node_modules/react-native-firebase/ios`)
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
+  - RNReanimated (from `../node_modules/react-native-reanimated`)
+  - RNScreens (from `../node_modules/react-native-screens`)
   - RNVectorIcons (from `../node_modules/react-native-vector-icons`)
   - yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
@@ -379,6 +385,10 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-firebase/ios"
   RNGestureHandler:
     :path: "../node_modules/react-native-gesture-handler"
+  RNReanimated:
+    :path: "../node_modules/react-native-reanimated"
+  RNScreens:
+    :path: "../node_modules/react-native-screens"
   RNVectorIcons:
     :path: "../node_modules/react-native-vector-icons"
   yoga:
@@ -438,10 +448,12 @@ SPEC CHECKSUMS:
   React-RCTWebSocket: 163873f4cdd5f1058a9483443404fc3801581cb6
   RNFirebase: ac0de8b24c6f91ae9459575491ed6a77327619c6
   RNGestureHandler: 5329a942fce3d41c68b84c2c2276ce06a696d8b0
+  RNReanimated: 1b52415c4302f198cb581282a0166690bad62c43
+  RNScreens: f28b48b8345f2f5f39ed6195518291515032a788
   RNVectorIcons: a3c395829c56e2cb054a0730126298bf805a2dca
   SSZipArchive: fa16b8cc4cdeceb698e5e5d9f67e9558532fbf23
   yoga: c2c050f6ae6e222534760cc82f559b89214b67e2
 
-PODFILE CHECKSUM: b830c20ca9f6933ae1d77c54e9654b6a9ad30a82
+PODFILE CHECKSUM: 4f39e5fe44589f984c61c6771ef7eac671452021
 
 COCOAPODS: 1.6.1

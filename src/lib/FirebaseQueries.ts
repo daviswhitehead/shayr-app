@@ -1,5 +1,9 @@
 import firebase from 'react-native-firebase';
-import { DocumentSnapshot, Query } from 'react-native-firebase/firestore';
+import {
+  DocumentReference,
+  DocumentSnapshot,
+  Query
+} from 'react-native-firebase/firestore';
 
 export enum queryTypes {
   USERS_POSTS_SINGLE = 'USERS_POSTS_SINGLE',
@@ -18,6 +22,22 @@ export enum queryTypes {
   USERS_POSTS_COMMENTS = 'USERS_POSTS_COMMENTS',
   USERS_ALL = 'USERS_ALL'
 }
+
+export enum referenceTypes {
+  GET_DOCUMENT = 'GET_DOCUMENT'
+}
+
+export const references: Map<
+  referenceTypes,
+  (...args: string[]) => DocumentReference
+> = new Map([
+  [
+    referenceTypes.GET_DOCUMENT,
+    (reference: string) => {
+      return firebase.firestore().doc(reference);
+    }
+  ]
+]);
 
 export const queries: Map<queryTypes, (...args: string[]) => Query> = new Map([
   [

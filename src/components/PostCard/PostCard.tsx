@@ -146,6 +146,7 @@ class PostCard extends Component<Props> {
                   usersPostsId={post._id}
                   postId={post.postId}
                   noTouching={noTouching}
+                  url={post.url}
                 />
                 <View style={styles.actionsSpacer} />
                 <IconWithCountWithLikes

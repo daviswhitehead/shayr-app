@@ -1,4 +1,4 @@
-import { DocumentSnapshot, Query } from 'react-native-firebase/firestore';
+import { Query } from 'react-native-firebase/firestore';
 import { Dispatch } from 'redux';
 import { composeQuery, getQuery, queryTypes } from '../../lib/FirebaseQueries';
 import { getDocuments, getFeedOfDocuments, LastItem } from '../FirebaseRedux';

@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { ActivityIndicator, AppState, Linking, View } from 'react-native';
 import firebase from 'react-native-firebase';
+// import { useScreens } from 'react-native-screens';
 import { connect } from 'react-redux';
 import { applyFirestoreSettings } from '../../config/FirebaseConfig';
 import RootNavigator from '../../config/Routes';
@@ -44,6 +45,10 @@ class AppLoading extends Component {
   async componentDidMount() {
     // listen to app state changes
     AppState.addEventListener('change', this.handleAppStateChange);
+
+    // enabling screens support before navigator
+    // https://github.com/kmagiera/react-native-screens
+    // useScreens();
 
     // apply firestore settings before any other firestore calls
     applyFirestoreSettings();

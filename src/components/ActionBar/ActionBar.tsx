@@ -18,6 +18,7 @@ export interface Props {
   postId: string;
   usersPostsId: string;
   isLoading?: boolean;
+  url: string;
 }
 
 const ActionBar: SFC<Props> = ({
@@ -25,7 +26,8 @@ const ActionBar: SFC<Props> = ({
   ownerUserId,
   usersPostsId,
   postId,
-  isLoading
+  isLoading,
+  url
 }) => {
   if (isLoading) {
     return (
@@ -59,6 +61,7 @@ const ActionBar: SFC<Props> = ({
             ownerUserId={ownerUserId}
             usersPostsId={usersPostsId}
             postId={postId}
+            url={url}
           />
           <IconWithAdds
             name={names.ADD}

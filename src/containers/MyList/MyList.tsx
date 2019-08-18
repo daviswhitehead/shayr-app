@@ -594,7 +594,7 @@ class MyList extends Component<Props, OwnState> {
           back={
             this.props.navigation.state.key.slice(0, 3) === 'id-'
               ? undefined
-              : () => this.props.navigation.goBack()
+              : () => this.props.navigation.goBack(null)
           }
         />
         <UserProfile

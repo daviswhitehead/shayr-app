@@ -81,7 +81,8 @@ class SwipeCard extends PureComponent<Props, State> {
             {
               right:
                 styles.icon.width * -1 - Layout.SPACING_LONG + leftDragDistance
-            }
+            },
+            leftDragDistance > 0 ? {} : { tintColor: 'transparent' }
           ]}
         />
       </View>
@@ -115,7 +116,8 @@ class SwipeCard extends PureComponent<Props, State> {
             {
               left:
                 styles.icon.width * -1 - Layout.SPACING_LONG + rightDragDistance
-            }
+            },
+            rightDragDistance > 0 ? {} : { tintColor: 'transparent' }
           ]}
         />
       </View>

@@ -5,7 +5,6 @@ import documentsReducer, { State as DocumentsState } from './documents/reducer';
 import friendshipsReducer from './friendships/reducer';
 import friendshipsListsReducer from './friendshipsLists/reducer';
 import listsReducer, { State as ListsState } from './lists/reducer';
-import postsReducer from './posts/reducer';
 import { createNamedWrapperReducer } from './ReducerHelpers';
 import routingReducer, { State as RoutingState } from './routing/reducer';
 import usersReducer, { State as UsersState } from './users/reducer';
@@ -21,6 +20,7 @@ export interface State {
   donesLists: ListsState;
   likes: DocumentsState;
   likesLists: ListsState;
+  posts: DocumentsState;
   routing: RoutingState;
   shares: DocumentsState;
   sharesLists: ListsState;
@@ -43,7 +43,7 @@ export const makeRootReducer = () =>
     friendshipsLists: friendshipsListsReducer,
     likes: createNamedWrapperReducer(documentsReducer, 'likes'),
     likesLists: createNamedWrapperReducer(listsReducer, 'likesLists'),
-    posts: postsReducer,
+    posts: createNamedWrapperReducer(documentsReducer, 'posts'),
     routing: routingReducer,
     shares: createNamedWrapperReducer(documentsReducer, 'shares'),
     sharesLists: createNamedWrapperReducer(listsReducer, 'sharesLists'),

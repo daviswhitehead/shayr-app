@@ -1,6 +1,7 @@
 import { formatDocumentSnapshot } from '@daviswhitehead/shayr-resources';
 import _ from 'lodash';
 import {
+  DocumentReference,
   DocumentSnapshot,
   Query,
   QuerySnapshot,
@@ -25,6 +26,7 @@ export type StateKey =
   | 'usersPosts'
   | 'adds'
   | 'dones'
+  | 'posts'
   | 'shares'
   | 'comments'
   | 'likes';
@@ -131,6 +133,29 @@ export const subscribeToAllDocuments = (
   );
 };
 
+export const subscribeToDocument = (
+  dispatch: Dispatch,
+  stateKey: StateKey,
+  reference: DocumentReference
+) => {
+  dispatch(getDocumentsStart(stateKey));
+
+  return reference.onSnapshot(
+    (documentSnapshot: DocumentSnapshot) => {
+      if (documentSnapshot.exists) {
+        const documents = {
+          [documentSnapshot.id]: formatDocumentSnapshot(documentSnapshot)
+        };
+        dispatch(getDocumentsSuccess(stateKey, documents));
+      }
+    },
+    (error: SnapshotError) => {
+      console.error(error);
+      dispatch(getDocumentsFail(stateKey, error));
+    }
+  );
+};
+
 export const getDocuments = (
   dispatch: Dispatch,
   stateKey: StateKey,
@@ -149,6 +174,31 @@ export const getDocuments = (
         });
       }
       dispatch(getDocumentsSuccess(stateKey, documents));
+    })
+    .catch((error: SnapshotError) => {
+      console.error(error);
+      dispatch(getDocumentsFail(stateKey, error));
+    });
+};
+
+export const getDocument = (
+  dispatch: Dispatch,
+  stateKey: StateKey,
+  reference: DocumentReference,
+  source?: 'default' | 'cache' | 'server'
+) => {
+  dispatch(getDocumentsStart(stateKey));
+
+  return reference
+    .get({ source: source ? source : 'default' })
+    .then((documentSnapshot: DocumentSnapshot) => {
+      if (documentSnapshot.exists) {
+        const documents = {
+          [documentSnapshot.id]: formatDocumentSnapshot(documentSnapshot)
+        };
+        dispatch(getDocumentsSuccess(stateKey, documents));
+      }
+      return documentSnapshot.id;
     })
     .catch((error: SnapshotError) => {
       console.error(error);

@@ -413,7 +413,7 @@ class PostDetail extends Component<Props, OwnState> {
             backgroundColor={Colors.WHITE}
             statusBarStyle='dark-content'
             title=''
-            back={() => this.props.navigation.goBack()}
+            back={() => this.props.navigation.goBack(null)}
           />
         ) : null}
         <List
@@ -444,11 +444,12 @@ class PostDetail extends Component<Props, OwnState> {
           }
         />
         <ActionBar
+          isLoading={this.state.isLoading}
           authUser={this.props.authUser}
           ownerUserId={this.props.authUserId}
           usersPostsId={this.state.isLoading ? undefined : this.props.post._id}
           postId={this.state.isLoading ? undefined : this.props.post.postId}
-          isLoading={this.state.isLoading}
+          url={this.state.isLoading ? undefined : this.props.post.url}
         />
       </View>
     );

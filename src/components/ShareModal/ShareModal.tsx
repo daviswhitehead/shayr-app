@@ -1,6 +1,8 @@
 import {
   documentId,
   documentIds,
+  Post,
+  ShareAction,
   User,
   UsersPosts
 } from '@daviswhitehead/shayr-resources';
@@ -16,60 +18,65 @@ import {
 } from 'react-native';
 import Modal from 'react-native-modal';
 import { connect } from 'react-redux';
+import { selectDocumentFromId } from '../../redux/documents/selectors';
 import { getPost } from '../../redux/posts/actions';
 import {
   confirmShare,
   startShare,
-  subscribeToNewShare
+  subscribeToShare
 } from '../../redux/shares/actions';
+import { getUsersPostsDocument } from '../../redux/usersPosts/actions';
 import Colors from '../../styles/Colors';
 import Icon, { names } from '../Icon';
 import PostCard from '../PostCard';
 import UserAvatar from '../UserAvatar';
 import styles from './styles';
 
+let RENDER_COUNT = 0;
+
 interface Users {
   [userId: string]: User;
 }
-interface Posts {
-  [postId: string]: UsersPosts;
+
+interface StateProps {
+  post: Post;
+  posts: {
+    [documentId: string]: Post;
+  };
+  shares: {
+    [documentId: string]: ShareAction;
+  };
+  usersPost: UsersPosts;
 }
 
-export interface Props {
+interface DispatchProps {
+  startShare: typeof startShare;
+  confirmShare: typeof confirmShare;
+  subscribeToShare: typeof subscribeToShare;
+  getPost: typeof getPost;
+  getUsersPostsDocument: typeof getUsersPostsDocument;
+}
+
+interface OwnProps {
+  ref: any;
   authUserId: documentId;
-  ownerUserId?: documentId;
+  ownerUserId: documentId;
   payload: string;
-  post?: UsersPosts;
-  posts?: Posts;
+  usersPostsId?: documentId;
   postId?: documentId;
   url?: string;
   users?: Users;
-  startShare: (
-    payload: string,
-    userId: documentId,
-    postId: documentId,
-    url: string
-  ) => string;
-  confirmShare: (
-    userId: documentId,
-    postId: documentId,
-    shareId: documentId,
-    comment: string,
-    mentions: documentIds,
-    ownerUserId: documentId,
-    visibleToUserIds: documentIds,
-    friends: documentIds
-  ) => void;
-  subscribeToNewShare: (shareId: documentId) => () => void;
   navigateToLogin?: () => void;
   onModalWillHide?: () => void;
   hideBackdrop?: boolean;
   isLoading?: boolean;
 }
 
-export interface State {
+type Props = OwnProps & StateProps & DispatchProps;
+
+interface OwnState {
   shareId: documentId;
-  postId: documentId;
+  postId?: documentId;
   isVisible: boolean;
   isError: boolean;
   isCommenting: boolean;
@@ -77,62 +84,38 @@ export interface State {
   textInputHeight: number;
   selectedUsers: documentIds;
   selectedAllUsers: boolean;
+  post?: Post | UsersPosts;
 }
 
-const mapStateToProps = (state: any) => {
+const mapStateToProps = (state: any, props: OwnProps) => {
   return {
+    post: selectDocumentFromId(state, 'posts', props.postId),
+    posts: state.posts,
     shares: state.shares,
-    posts: state.posts
+    usersPost: selectDocumentFromId(state, 'usersPosts', props.usersPostsId)
   };
 };
 
-const mapDispatchToProps = (dispatch: any, props: Props) => {
-  return {
-    startShare: (
-      payload: string,
-      userId: documentId,
-      postId: documentId = '',
-      url: string = ''
-    ) => dispatch(startShare(payload, userId, postId, url)),
-    confirmShare: (
-      userId: documentId,
-      postId: documentId,
-      shareId: documentId,
-      comment: string,
-      mentions: documentIds,
-      ownerUserId: documentId,
-      visibleToUserIds: documentIds,
-      friends: documentIds
-    ) =>
-      dispatch(
-        confirmShare(
-          userId,
-          postId,
-          shareId,
-          comment,
-          mentions,
-          ownerUserId,
-          visibleToUserIds,
-          friends
-        )
-      ),
-    subscribeToNewShare: (shareId: documentId) =>
-      dispatch(subscribeToNewShare(shareId)),
-    getPost: (postId: documentId) => dispatch(getPost(postId))
-  };
+const mapDispatchToProps = {
+  startShare,
+  confirmShare,
+  subscribeToShare,
+  getPost,
+  getUsersPostsDocument
 };
 
-class ShareModal extends React.Component<Props, State> {
+class ShareModal extends React.Component<Props, OwnState> {
   textInputRef: any;
-  initialState: State;
+  initialState: OwnState;
   subscriptions: Array<() => void>;
 
   constructor(props: Props) {
     super(props);
+    this.RENDER_COUNT = 0;
 
     this.initialState = {
       shareId: '',
-      postId: this.props.postId || '',
+      postId: this.props.postId,
       isVisible: false,
       isError: false,
       isCommenting: false,
@@ -159,32 +142,26 @@ class ShareModal extends React.Component<Props, State> {
     const shareId: documentId = await this.props.startShare(
       this.props.payload,
       this.props.authUserId,
-      this.props.postId || '',
-      this.props.url || ''
+      this.props.postId || ''
     );
     this.setState({ shareId });
 
-    if (!this.props.post) {
+    if (!this.props.postId || !this.props.usersPostsId) {
       this.subscriptions.push(
         // subscribe to updates to the new share (from the scraper)
-        await this.props.subscribeToNewShare(shareId)
+        this.props.subscribeToShare(shareId)
+      );
+    } else {
+      this.props.getPost(this.props.postId);
+      this.props.getUsersPostsDocument(
+        this.props.ownerUserId,
+        this.props.usersPostsId
       );
     }
 
     // trigger an error in 15 sec if there's no post
     setTimeout(() => {
-      const post =
-        this.props.post ||
-        _.get(
-          this.props,
-          [
-            'posts',
-            _.get(this.props, ['shares', this.state.shareId, 'postId'], '')
-          ],
-          {}
-        );
-
-      if (!this.state.shareId || _.isEmpty(post)) {
+      if (!this.state.shareId || !this.state.post) {
         this.setState({ isError: true });
       }
     }, 15000);
@@ -199,19 +176,29 @@ class ShareModal extends React.Component<Props, State> {
     }
   };
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps: Props) {
     const shareId = this.state.shareId;
-    const postId = _.get(this.props, ['shares', shareId, 'postId'], '');
+    const postId =
+      this.props.postId ||
+      _.get(this.props, ['shares', shareId, 'postId'], undefined);
+    const post =
+      this.props.post ||
+      this.props.usersPost ||
+      _.get(this.props, ['posts', postId], undefined);
 
     // when the new share is assigned a postId
     if (
-      !this.props.post &&
-      !_.isEmpty(postId) &&
-      postId !== _.get(prevProps, ['shares', shareId, 'postId'], '')
+      !this.props.postId &&
+      postId &&
+      postId !== _.get(prevProps, ['shares', shareId, 'postId'], undefined)
     ) {
       // get the post data
       this.props.getPost(postId);
       this.setState({ postId, isError: false });
+    }
+    // when the post loads
+    if (!this.state.post && post) {
+      this.setState({ post });
     }
   }
 
@@ -445,14 +432,15 @@ class ShareModal extends React.Component<Props, State> {
   };
 
   render() {
-    const {} = this.state;
-    const {} = this.props;
+    console.log(`ShareModal - Render Count: ${this.RENDER_COUNT}`);
+    // console.log('this.props');
+    // console.log(this.props);
+    // console.log('this.state');
+    // console.log(this.state);
+    RENDER_COUNT += 1;
+    this.RENDER_COUNT += 1;
 
-    const post =
-      this.props.post ||
-      this.props.posts[
-        _.get(this.props, ['shares', this.state.shareId, 'postId'], '')
-      ];
+    const { post } = this.state;
 
     return (
       <Modal
@@ -486,8 +474,8 @@ class ShareModal extends React.Component<Props, State> {
               overScrollMode='always'
             >
               <PostCard
+                isLoading={!post}
                 post={post}
-                isLoading={_.isEmpty(post)}
                 ownerUserId={this.props.authUserId}
                 onCardPress={undefined}
                 noTouching
@@ -513,5 +501,17 @@ export default connect(
   mapStateToProps,
   mapDispatchToProps,
   null,
-  { forwardRef: true }
+  {
+    forwardRef: true,
+    areStatePropsEqual: (next, prev) => {
+      // console.log('next');
+      // console.log(next);
+      // console.log('prev');
+      // console.log(prev);
+      // console.log('_.isEqual(next, prev)');
+      // console.log(_.isEqual(next, prev));
+
+      return _.isEqual(next, prev);
+    }
+  }
 )(ShareModal);
