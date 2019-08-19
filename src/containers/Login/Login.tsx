@@ -85,23 +85,9 @@ class Login extends Component<Props, OwnState> {
           <TouchableWithoutFeedback onPress={this.props.facebookAuthTap}>
             <LoginButton
               readPermissions={['public_profile', 'email']}
-              onLoginFinished={(error, result) => {
-                this.setState({ test: true });
-                console.log('onLoginFinished');
-                console.log('error');
-                console.log(error);
-                console.log('result');
-                console.log(result);
-                this.props.facebookAuth(error, result);
-              }}
-              // onLoginFinished={(error, result) => {
-              //   console.log('onLoginFinished');
-
-              //   this.props.facebookAuth(error, result);
-              // }}
-              // onLoginFinished={(error, result) =>
-              //   this.props.facebookAuth(error, result)
-              // }
+              onLoginFinished={(error, result) =>
+                this.props.facebookAuth(error, result)
+              }
               onLogoutFinished={() => this.props.signOutUser()}
             />
           </TouchableWithoutFeedback>
