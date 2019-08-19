@@ -1,35 +1,40 @@
 package com.daviswhitehead.shayr.android;
 
 import android.app.Application;
+import android.util.Log;
 
-import java.util.Arrays;
+import com.facebook.react.PackageList;
+import com.facebook.hermes.reactexecutor.HermesExecutorFactory;
+import com.facebook.react.bridge.JavaScriptExecutorFactory;
+import com.facebook.react.ReactApplication;
+import com.swmansion.rnscreens.RNScreensPackage;
+import com.swmansion.reanimated.ReanimatedPackage;
+import com.facebook.react.ReactNativeHost;
+import com.facebook.react.ReactPackage;
+import com.facebook.soloader.SoLoader;
+
+// import java.util.Arrays;
 import java.util.List;
 
-// React Native
-import com.facebook.react.ReactApplication;
+// React Native Extras
 import com.microsoft.codepush.react.CodePush;
 import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
 import org.devio.rn.splashscreen.SplashScreenReactPackage;
-import com.facebook.react.ReactNativeHost;
-import com.facebook.react.ReactPackage;
-import com.facebook.react.shell.MainReactPackage;
-import com.facebook.soloader.SoLoader;
+
 
 // Firebase
 // // Core
 import io.invertase.firebase.RNFirebasePackage;
-// // Authentication
-import io.invertase.firebase.auth.RNFirebaseAuthPackage;
 // // Analytics
 import io.invertase.firebase.analytics.RNFirebaseAnalyticsPackage;
+// // Authentication
+import io.invertase.firebase.auth.RNFirebaseAuthPackage;
 // // Performance Monitoring
 // import io.invertase.firebase.perf.RNFirebasePerformancePackage;
 // // Remote Config
 // import io.invertase.firebase.config.RNFirebaseRemoteConfigPackage;
 // // Cloud Storage
 // import io.invertase.firebase.storage.RNFirebaseStoragePackage;
-// // Invites
-import io.invertase.firebase.invites.RNFirebaseInvitesPackage;
 // // Dynamic Links
 import io.invertase.firebase.links.RNFirebaseLinksPackage;
 // // Cloud Firestore
@@ -43,7 +48,6 @@ import io.invertase.firebase.fabric.crashlytics.RNFirebaseCrashlyticsPackage;
 // FBSDK
 import com.facebook.CallbackManager;
 import com.facebook.FacebookSdk;
-import com.facebook.reactnative.androidsdk.FBSDKPackage;
 import com.facebook.appevents.AppEventsLogger;
 
 // Crashlytics
@@ -82,14 +86,21 @@ public class MainApplication extends Application implements ReactApplication {
 
     @Override
     protected List<ReactPackage> getPackages() {
-      return Arrays.<ReactPackage>asList(new MainReactPackage(),
-          new CodePush(BuildConfig.ANDROID_CODEPUSH_DEPLOYMENT_KEY, getApplicationContext(), BuildConfig.DEBUG),
-          new RNFirebaseAnalyticsPackage(),
-          new RNGestureHandlerPackage(), new SplashScreenReactPackage(), new ReactNativeConfigPackage(),
-          new VectorIconsPackage(), new RNSKPackage(), new SharePackage(), new RNFirebasePackage(),
-          new RNFirebaseAuthPackage(), new RNFirebaseFirestorePackage(), new RNFirebaseCrashlyticsPackage(),
-          new RNFirebaseMessagingPackage(), new RNFirebaseNotificationsPackage(), new RNFirebaseLinksPackage(),
-          new RNFirebaseInvitesPackage(), new FBSDKPackage(mCallbackManager));
+      @SuppressWarnings("UnnecessaryLocalVariable")
+      List<ReactPackage> packages = new PackageList(this).getPackages();
+      // Packages that cannot be autolinked yet can be added manually here, for example:
+      // packages.add(new MyReactNativePackage());
+      
+      packages.add(new CodePush(BuildConfig.ANDROID_CODEPUSH_DEPLOYMENT_KEY, getApplicationContext(), BuildConfig.DEBUG));
+      packages.add(new RNFirebaseAnalyticsPackage());
+      packages.add(new RNFirebaseAuthPackage());
+      packages.add(new RNFirebaseFirestorePackage());
+      packages.add(new RNFirebaseCrashlyticsPackage());
+      packages.add(new RNFirebaseMessagingPackage());
+      packages.add(new RNFirebaseNotificationsPackage());
+      packages.add(new RNFirebaseLinksPackage());
+
+      return packages;
     }
 
     @Override

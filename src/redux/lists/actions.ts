@@ -1,24 +1,63 @@
-import { Items, LastItem, ListKey, StateKeyLists } from '../FirebaseRedux';
+import {
+  Item,
+  Items,
+  LastItem,
+  ListKey,
+  StateKeyLists
+} from '../FirebaseRedux';
 
-export const types = {
-  LIST_ADD: 'LIST_ADD',
-  LIST_REFRESHING: 'LIST_REFRESHING',
-  LIST_LOADING: 'LIST_LOADING',
-  LIST_LOADED: 'LIST_LOADED'
-};
+// Types
+export enum types {
+  LIST_ADD = 'LIST_ADD',
+  LIST_REFRESHING = 'LIST_REFRESHING',
+  LIST_LOADING = 'LIST_LOADING',
+  LIST_LOADED = 'LIST_LOADED',
+  TOGGLE_ITEM = 'TOGGLE_ITEM'
+}
 
+// Actions
 interface ListAddAction {
-  type: string;
+  type: types.LIST_ADD;
   stateKey: StateKeyLists;
   listKey: ListKey;
   items: Items;
 }
+interface ListRefreshingAction {
+  type: types.LIST_REFRESHING;
+  stateKey: StateKeyLists;
+  listKey: ListKey;
+}
+interface ListLoadingAction {
+  type: types.LIST_LOADING;
+  stateKey: StateKeyLists;
+  listKey: ListKey;
+}
+interface ListLoadedAction {
+  type: types.LIST_LOADED;
+  stateKey: StateKeyLists;
+  listKey: ListKey;
+  lastItem: LastItem;
+}
+interface ToggleItemAction {
+  type: types.TOGGLE_ITEM;
+  stateKey: StateKeyLists;
+  listKey: ListKey;
+  item: Item;
+  isNowActive: boolean;
+}
+export type Actions =
+  | ListAddAction
+  | ListRefreshingAction
+  | ListLoadingAction
+  | ListLoadedAction
+  | ToggleItemAction;
 
+// Action Creators
 export const listAdd = (
   stateKey: StateKeyLists,
   listKey: ListKey,
   items: Items
-) => {
+): ListAddAction => {
   return {
     type: types.LIST_ADD,
     stateKey,
@@ -27,13 +66,10 @@ export const listAdd = (
   };
 };
 
-interface ListRefreshingAction {
-  type: string;
-  stateKey: StateKeyLists;
-  listKey: ListKey;
-}
-
-export const listRefreshing = (stateKey: StateKeyLists, listKey: ListKey) => {
+export const listRefreshing = (
+  stateKey: StateKeyLists,
+  listKey: ListKey
+): ListRefreshingAction => {
   return {
     type: types.LIST_REFRESHING,
     stateKey,
@@ -41,13 +77,10 @@ export const listRefreshing = (stateKey: StateKeyLists, listKey: ListKey) => {
   };
 };
 
-interface ListLoadingAction {
-  type: string;
-  stateKey: StateKeyLists;
-  listKey: ListKey;
-}
-
-export const listLoading = (stateKey: StateKeyLists, listKey: ListKey) => {
+export const listLoading = (
+  stateKey: StateKeyLists,
+  listKey: ListKey
+): ListLoadingAction => {
   return {
     type: types.LIST_LOADING,
     stateKey,
@@ -55,18 +88,11 @@ export const listLoading = (stateKey: StateKeyLists, listKey: ListKey) => {
   };
 };
 
-interface ListLoadedAction {
-  type: string;
-  stateKey: StateKeyLists;
-  listKey: ListKey;
-  lastItem: LastItem;
-}
-
 export const listLoaded = (
   stateKey: StateKeyLists,
   listKey: ListKey,
   lastItem: LastItem
-) => {
+): ListLoadedAction => {
   return {
     type: types.LIST_LOADED,
     stateKey,
@@ -75,8 +101,17 @@ export const listLoaded = (
   };
 };
 
-export type ListAction =
-  | ListAddAction
-  | ListRefreshingAction
-  | ListLoadingAction
-  | ListLoadedAction;
+export const toggleItem = (
+  stateKey: StateKeyLists,
+  listKey: ListKey,
+  item: Item,
+  isNowActive: boolean
+): ToggleItemAction => {
+  return {
+    type: types.TOGGLE_ITEM,
+    stateKey,
+    listKey,
+    item,
+    isNowActive
+  };
+};

@@ -9,13 +9,7 @@ import { Query } from 'react-native-firebase/firestore';
 import { Dispatch } from 'redux';
 import { logEvent } from '../../lib/FirebaseAnalytics';
 import { arrayUnion, ts } from '../../lib/FirebaseHelpers';
-import {
-  composeQuery,
-  getQuery,
-  queries,
-  queryArguments,
-  queryType
-} from '../../lib/FirebaseQueries';
+import { composeQuery } from '../../lib/FirebaseQueries';
 import { updateCounts } from '../../lib/FirebaseWrites';
 import { getFeedOfDocuments, LastItem } from '../FirebaseRedux';
 import { refreshUsersPostsDocuments } from '../usersPosts/actions';
@@ -92,29 +86,24 @@ export const createComment = (
 
 const requestLimiter = 10;
 export const loadCommentsForUsersPosts = (
-  userId: string,
-  postId: string,
+  listKey: string,
+  query: Query,
   shouldRefresh?: boolean,
   isLoading?: boolean,
   lastItem?: LastItem
-) => async (dispatch: Dispatch) => {
-  const request: Query = composeQuery(
-    getQuery('USERS_POSTS_COMMENTS', {
-      postId,
-      userId
-    }),
+) => (dispatch: Dispatch) => {
+  const composedQuery: Query = composeQuery(
+    query,
     requestLimiter,
     shouldRefresh ? undefined : lastItem
   );
-  dispatch(
-    getFeedOfDocuments(
-      STATE_KEY,
-      userId,
-      postId,
-      request,
-      shouldRefresh,
-      isLoading,
-      lastItem
-    )
+  getFeedOfDocuments(
+    dispatch,
+    STATE_KEY,
+    listKey,
+    composedQuery,
+    shouldRefresh,
+    isLoading,
+    lastItem
   );
 };

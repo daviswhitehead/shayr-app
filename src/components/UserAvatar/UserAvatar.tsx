@@ -1,63 +1,80 @@
-import * as React from 'react';
-import { Text } from 'react-native';
+import React, { memo, SFC } from 'react';
+import { Text, View } from 'react-native';
+import Skeleton from '../Skeleton';
 import TouchableWrapper from '../TouchableWrapper';
 import UserImage from '../UserImage';
 import styles from './styles';
 
 interface UserAtom {
   facebookProfilePhoto: string;
-  firstName?: string;
-  lastName?: string;
-  _id?: string;
+  shortName: string;
+  firstName: string;
+  lastName: string;
 }
 
 export interface Props extends UserAtom {
+  shouldHideName?: boolean;
   isVertical?: boolean;
   onPress?: () => void | undefined;
   noTouching?: boolean;
   isSelected?: boolean;
   isLoading?: boolean;
+  style?: any;
 }
 
-const mapDispatchToProps = (dispatch: any) => ({});
-
-const UserAvatar: React.SFC<Props> = ({
+const UserAvatar: SFC<Props> = ({
   facebookProfilePhoto,
   firstName,
   lastName,
+  shortName,
+  shouldHideName = false,
   isVertical = true,
   onPress,
   noTouching,
   isSelected = false,
-  isLoading = false
+  isLoading = false,
+  style = {}
 }: Props) => {
+  const _containerStyle = [
+    styles.container,
+    { flexDirection: isVertical ? 'column' : 'row' },
+    style
+  ];
+
   if (isLoading) {
-    return null;
+    return (
+      <View style={_containerStyle}>
+        <UserImage isLoading />
+        {shouldHideName ? null : (
+          <Skeleton
+            childStyle={
+              isVertical ? styles.skeletonVertical : styles.skeletonHorizontal
+            }
+          />
+        )}
+      </View>
+    );
   }
 
   return (
     <TouchableWrapper
-      style={[
-        styles.container,
-        { flexDirection: isVertical ? 'column' : 'row' }
-      ]}
-      onPress={noTouching ? undefined : onPress}
+      style={_containerStyle}
+      onPress={onPress}
+      noTouching={noTouching}
     >
       <UserImage uri={facebookProfilePhoto} size='small' />
-      {firstName && lastName ? (
+      {shouldHideName ? null : (
         <Text
           style={[
             isVertical ? styles.verticalName : styles.horizontalName,
             isSelected ? styles.selectedName : {}
           ]}
         >
-          {isVertical
-            ? `${firstName} ${lastName.charAt(0)}`
-            : `${firstName} ${lastName}`}
+          {isVertical ? `${shortName}` : `${firstName} ${lastName}`}
         </Text>
-      ) : null}
+      )}
     </TouchableWrapper>
   );
 };
 
-export default UserAvatar;
+export default memo(UserAvatar);

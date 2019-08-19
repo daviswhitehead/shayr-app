@@ -1,7 +1,7 @@
 import { types } from './actions';
 
 const initialState = {
-  error: null,
+  error: null
 };
 
 function notificationsReducer(state = initialState, action) {
@@ -9,7 +9,7 @@ function notificationsReducer(state = initialState, action) {
   if (action.type.substr(action.type.length - 4) === 'FAIL') {
     return {
       ...state,
-      error: action.error,
+      error: action.error
     };
   }
 

@@ -24,7 +24,19 @@ export default StyleSheet.create({
   text: {
     ...fontSystem.BODY
   },
+  skeletonText: {
+    height: 24,
+    width: '100%',
+    borderRadius: Layout.BORDER_RADIUS_MEDIUM,
+    marginBottom: Layout.SPACING_MEDIUM
+  },
   date: {
     ...fontSystem.DATE_TIMEAGO
+  },
+  skeletonDate: {
+    height: 12,
+    width: 48,
+    borderRadius: Layout.BORDER_RADIUS_MEDIUM,
+    marginBottom: Layout.SPACING_MEDIUM
   }
 });

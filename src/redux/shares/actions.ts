@@ -9,39 +9,40 @@ import { Dispatch } from 'redux';
 import { Toaster } from '../../components/Toaster';
 import { logEvent } from '../../lib/FirebaseAnalytics';
 import { ts } from '../../lib/FirebaseHelpers';
-import { queries } from '../../lib/FirebaseQueries';
 import {
-  dataActionTypes,
-  generateActionTypes,
-  subscribeToDocument
-} from '../../lib/FirebaseRedux';
-import { updateCounts } from '../../lib/FirebaseWrites';
-import {
-  actionTypeActiveToasts,
-  actionTypeInactiveToasts
-} from '../../styles/Copy';
+  getQuery,
+  queryTypes,
+  references,
+  referenceTypes
+} from '../../lib/FirebaseQueries';
+import { overwriteUserCounts, updateCounts } from '../../lib/FirebaseWrites';
+import { subscribeToAllDocuments } from '../../redux/FirebaseRedux';
+import { actionTypeActiveToasts } from '../../styles/Copy';
 import { createComment } from '../comments/actions';
+import { subscribeToDocument } from '../FirebaseRedux';
+import { toggleItem } from '../lists/actions';
 import { createMention } from '../mentions/actions';
 import { refreshUsersPostsDocuments } from '../usersPosts/actions';
-import { toggleUsersPostsListsItem } from '../usersPostsLists/actions';
 
 export const STATE_KEY = 'shares';
 
-export const types = {
-  ...generateActionTypes(STATE_KEY, dataActionTypes),
-  START_SHARE_START: 'START_SHARE_START',
-  START_SHARE_SUCCESS: 'START_SHARE_SUCCESS',
-  START_SHARE_FAIL: 'START_SHARE_FAIL',
-  CONFIRM_SHARE_START: 'CONFIRM_SHARE_START',
-  CONFIRM_SHARE_SUCCESS: 'CONFIRM_SHARE_SUCCESS',
-  CONFIRM_SHARE_FAIL: 'CONFIRM_SHARE_FAIL',
-  CANCEL_SHARE_START: 'CANCEL_SHARE_START',
-  CANCEL_SHARE_SUCCESS: 'CANCEL_SHARE_SUCCESS',
-  CANCEL_SHARE_FAIL: 'CANCEL_SHARE_FAIL',
-  SUBSCRIBE_NEW_SHARE_START: 'SUBSCRIBE_NEW_SHARE_START',
-  SUBSCRIBE_NEW_SHARE_SUCCESS: 'SUBSCRIBE_NEW_SHARE_SUCCESS',
-  SUBSCRIBE_NEW_SHARE_FAIL: 'SUBSCRIBE_NEW_SHARE_FAIL'
-};
+export enum types {
+  START_SHARE_START = 'START_SHARE_START',
+  START_SHARE_SUCCESS = 'START_SHARE_SUCCESS',
+  START_SHARE_FAIL = 'START_SHARE_FAIL',
+  CONFIRM_SHARE_START = 'CONFIRM_SHARE_START',
+  CONFIRM_SHARE_SUCCESS = 'CONFIRM_SHARE_SUCCESS',
+  CONFIRM_SHARE_FAIL = 'CONFIRM_SHARE_FAIL',
+  CANCEL_SHARE_START = 'CANCEL_SHARE_START',
+  CANCEL_SHARE_SUCCESS = 'CANCEL_SHARE_SUCCESS',
+  CANCEL_SHARE_FAIL = 'CANCEL_SHARE_FAIL',
+  SUBSCRIBE_NEW_SHARE_START = 'SUBSCRIBE_NEW_SHARE_START',
+  SUBSCRIBE_NEW_SHARE_SUCCESS = 'SUBSCRIBE_NEW_SHARE_SUCCESS',
+  SUBSCRIBE_NEW_SHARE_FAIL = 'SUBSCRIBE_NEW_SHARE_FAIL',
+  UPDATE_USER_SHARES_START = 'UPDATE_USER_SHARES_START',
+  UPDATE_USER_SHARES_SUCCESS = 'UPDATE_USER_SHARES_SUCCESS',
+  UPDATE_USER_SHARES_FAIL = 'UPDATE_USER_SHARES_FAIL'
+}
 
 export const startShare = (
   payload: string,
@@ -171,10 +172,10 @@ export const confirmShare = (
 
     dispatch(refreshUsersPostsDocuments(postId, 'cache'));
     dispatch(
-      toggleUsersPostsListsItem(
-        userId,
-        queries.USERS_POSTS_SHARES.type,
-        postId,
+      toggleItem(
+        'usersPostsLists',
+        `${userId}_${queryTypes.USERS_POSTS_SHARES}`,
+        `${userId}_${postId}`,
         true
       )
     );
@@ -193,8 +194,38 @@ export const confirmShare = (
   }
 };
 
-export const subscribeToNewShare = (shareId: documentId) => {
+export const subscribeToShare = (shareId: documentId) => {
   return (dispatch: Dispatch) => {
-    return dispatch(subscribeToDocument(STATE_KEY, 'shares', shareId));
+    return subscribeToDocument(
+      dispatch,
+      STATE_KEY,
+      references.get(referenceTypes.GET_DOCUMENT)(`shares/${shareId}`)
+    );
   };
+};
+
+export const subscribeToShares = (userId: string) => {
+  return (dispatch: Dispatch) => {
+    return subscribeToAllDocuments(
+      dispatch,
+      STATE_KEY,
+      getQuery(queryTypes.USER_SHARES)(userId),
+      userId,
+      queryTypes.USER_SHARES
+    );
+  };
+};
+
+export const updateUserShares = (userId: string, value: number) => (
+  dispatch: Dispatch
+) => {
+  dispatch({ type: types.UPDATE_USER_SHARES_START });
+
+  const batcher = new Batcher(firebase.firestore());
+
+  overwriteUserCounts(batcher, 'shares', userId, value);
+
+  batcher.write();
+
+  dispatch({ type: types.UPDATE_USER_SHARES_SUCCESS });
 };

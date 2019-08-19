@@ -1,63 +1,63 @@
-import { documentId, UsersPosts } from '@daviswhitehead/shayr-resources';
 import _ from 'lodash';
-import * as React from 'react';
+import React, { SFC } from 'react';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
+import { queryTypes } from '../../lib/FirebaseQueries';
 import { selectAuthUserId } from '../../redux/auth/selectors';
 import { toggleLikePost } from '../../redux/likes/actions';
+import { generateListKey } from '../../redux/lists/helpers';
+import { selectListItems } from '../../redux/lists/selectors';
+
+interface StateProps {
+  authUserId: string;
+  authLikes: Array<string>;
+}
+
+interface DispatchProps {
+  toggleLikePost: typeof toggleLikePost;
+}
+
+interface OwnProps {
+  ownerUserId: string;
+  usersPostsId: string;
+  postId: string;
+}
+
+type Props = OwnProps & StateProps & DispatchProps;
 
 const mapStateToProps = (state: any) => {
-  const authUserId = selectAuthUserId(state);
-
   return {
-    authUserId,
-    activeLikes: _.get(
+    authUserId: selectAuthUserId(state),
+    authLikes: selectListItems(
       state,
-      ['likesLists', `${authUserId}_USER_LIKES`, 'items'],
-      []
+      'likesLists',
+      generateListKey(selectAuthUserId(state), queryTypes.USER_LIKES)
     )
   };
 };
 
-const mapDispatchToProps = (dispatch: any) => {
-  return {
-    toggleLikePost: (
-      isActive: boolean,
-      postId: documentId,
-      ownerUserId: documentId,
-      userId: documentId
-    ) => dispatch(toggleLikePost(isActive, postId, ownerUserId, userId))
-  };
+const mapDispatchToProps = {
+  toggleLikePost
 };
 
-const withLikes = (
-  WrappedComponent: React.SFC,
-  post: UsersPosts,
-  ownerUserId: documentId
-) => (props: any) => {
+const withLikes = (WrappedComponent: SFC) => (props: Props) => {
   const {
     authUserId,
+    authLikes,
     toggleLikePost,
-    activeLikes,
-    noTouching,
+    ownerUserId,
+    usersPostsId,
+    postId,
     ...passThroughProps
   } = props;
 
-  const isLikesActive = _.includes(activeLikes, post._id);
+  const isLikesActive = _.includes(authLikes, usersPostsId);
 
   return (
     <WrappedComponent
       isActive={isLikesActive}
-      onPress={
-        noTouching
-          ? null
-          : () =>
-              toggleLikePost(
-                isLikesActive,
-                post.postId,
-                ownerUserId,
-                authUserId
-              )
+      onPress={() =>
+        toggleLikePost(isLikesActive, postId, ownerUserId, authUserId)
       }
       {...passThroughProps}
     />
@@ -67,7 +67,25 @@ const withLikes = (
 export default compose(
   connect(
     mapStateToProps,
-    mapDispatchToProps
+    mapDispatchToProps,
+    undefined,
+    {
+      areStatesEqual: (next, prev) => {
+        return (
+          selectAuthUserId(next) === selectAuthUserId(prev) &&
+          selectListItems(
+            next,
+            'likesLists',
+            generateListKey(selectAuthUserId(next), queryTypes.USER_LIKES)
+          ) ===
+            selectListItems(
+              prev,
+              'likesLists',
+              generateListKey(selectAuthUserId(prev), queryTypes.USER_LIKES)
+            )
+        );
+      }
+    }
   ),
   withLikes
 );

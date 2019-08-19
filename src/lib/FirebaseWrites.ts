@@ -3,25 +3,6 @@ import _ from 'lodash';
 import firebase from 'react-native-firebase';
 import { arrayRemove, arrayUnion, increment, ts } from './FirebaseHelpers';
 
-export type writeType =
-  // Post Actions
-  | 'TOGGLE_ADD_DONE_POST'
-  | 'TOGGLE_SHARE_POST'
-  | 'TOGGLE_LIKE_POST'
-  // Sharing
-  | 'START_SHARE_POST'
-  | 'CONFIRM_SHARE_POST'
-  | 'CANCEL_SHARE_POST'
-  // Commenting
-  | 'CREATE_COMMENT_POST'
-  | 'DELETE_COMMENT_POST'
-  | 'CREATE_REPLY_COMMENT_POST'
-  // Friending
-  | 'SEND_FRIEND_REQUEST'
-  | 'ACCEPT_FRIEND_REQUEST'
-  | 'REJECT_FRIEND_REQUEST'
-  | 'DELETE_FRIEND';
-
 export const wrapAnalytics = (label: string, func: (...args: any[]) => any) => {
   firebase.analytics().logEvent(`${label}`.toUpperCase());
   func();
@@ -179,7 +160,7 @@ export const overwriteUserCounts = (
       .collection('users')
       .doc(userId),
     {
-      [`${action}Count`]: value,
+      [`${action}Count`]: value >= 0 ? value : 0,
       updatedAt: ts
     },
     {

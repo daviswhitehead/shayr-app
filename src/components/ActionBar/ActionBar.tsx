@@ -1,25 +1,51 @@
-import { documentId, User, UsersPosts } from '@daviswhitehead/shayr-resources';
+import { User } from '@daviswhitehead/shayr-resources';
 import _ from 'lodash';
-import * as React from 'react';
+import React, { memo, SFC } from 'react';
 import { SafeAreaView, View } from 'react-native';
-import withAdds from '../../higherOrderComponents/withAdds';
-import withDones from '../../higherOrderComponents/withDones';
-import withLikes from '../../higherOrderComponents/withLikes';
+import { IconWithAdds } from '../../higherOrderComponents/withAdds';
+import { IconWithDones } from '../../higherOrderComponents/withDones';
+import { IconWithLikes } from '../../higherOrderComponents/withLikes';
 import { IconWithShares } from '../../higherOrderComponents/withShares';
 import Icon from '../Icon';
+import { names } from '../Icon';
 import SmartUserAvatar from '../SmartUserAvatar';
+import UserImage from '../UserImage';
 import styles from './styles';
 
 export interface Props {
   authUser: User;
-  post: UsersPosts;
-  ownerUserId: documentId;
+  isLoading?: boolean;
+  ownerUserId: string;
+  postId: string;
+  url: string;
+  usersPostsId: string;
+  usersPostsShares: Array<string>;
 }
 
-const ActionBar: React.SFC<Props> = ({ authUser, post, ownerUserId }) => {
-  const IconWithDones = withDones(Icon.default, post, ownerUserId);
-  const IconWithAdds = withAdds(Icon.default, post, ownerUserId);
-  const IconWithLikes = withLikes(Icon.default, post, ownerUserId);
+const ActionBar: SFC<Props> = ({
+  authUser,
+  ownerUserId,
+  postId,
+  isLoading,
+  url,
+  usersPostsId,
+  usersPostsShares
+}) => {
+  if (isLoading) {
+    return (
+      <View style={styles.container}>
+        <SafeAreaView style={styles.safeArea}>
+          <View style={styles.actionBar}>
+            <UserImage isLoading size={'small'} />
+            <Icon isLoading name={names.SHARE} style={styles.action} />
+            <Icon isLoading name={names.ADD} style={styles.action} />
+            <Icon isLoading name={names.DONE} style={styles.action} />
+            <Icon isLoading name={names.LIKE} style={styles.action} />
+          </View>
+        </SafeAreaView>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -27,24 +53,44 @@ const ActionBar: React.SFC<Props> = ({ authUser, post, ownerUserId }) => {
         <View style={styles.actionBar}>
           <SmartUserAvatar
             {...authUser}
+            shouldHideName
             userId={authUser._id}
-            firstName={undefined}
-            lastName={undefined}
             style={styles.action}
           />
           <IconWithShares
-            name='share'
+            name={names.SHARE}
             style={styles.action}
-            usersPost={post}
-            ownerUserId={post.userId}
+            ownerUserId={ownerUserId}
+            usersPostsId={usersPostsId}
+            usersPostsShares={usersPostsShares}
+            postId={postId}
+            url={url}
           />
-          <IconWithAdds name='add' style={styles.action} />
-          <IconWithDones name='done' style={styles.action} />
-          <IconWithLikes name='like' style={styles.action} />
+          <IconWithAdds
+            name={names.ADD}
+            style={styles.action}
+            ownerUserId={ownerUserId}
+            usersPostsId={usersPostsId}
+            postId={postId}
+          />
+          <IconWithDones
+            name={names.DONE}
+            style={styles.action}
+            ownerUserId={ownerUserId}
+            usersPostsId={usersPostsId}
+            postId={postId}
+          />
+          <IconWithLikes
+            name={names.LIKE}
+            style={styles.action}
+            ownerUserId={ownerUserId}
+            usersPostsId={usersPostsId}
+            postId={postId}
+          />
         </View>
       </SafeAreaView>
     </View>
   );
 };
 
-export default ActionBar;
+export default memo(ActionBar);

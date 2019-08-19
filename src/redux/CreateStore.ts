@@ -1,8 +1,8 @@
-import { applyMiddleware, compose, createStore } from 'redux';
-import thunk from 'redux-thunk';
-import { composeWithDevTools } from 'redux-devtools-extension';
 import Config from 'react-native-config';
+import { applyMiddleware, compose, createStore } from 'redux';
+import { composeWithDevTools } from 'redux-devtools-extension';
 import initSubscriber from 'redux-subscriber';
+import thunk from 'redux-thunk';
 import { makeRootReducer } from './Reducers';
 
 export default (initialState = {}) => {

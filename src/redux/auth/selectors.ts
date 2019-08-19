@@ -1,6 +1,3 @@
-import _ from 'lodash';
-import createCachedSelector from 're-reselect';
-// https://github.com/toomuchdesign/re-reselect
-// https://github.com/reduxjs/reselect#sharing-selectors-with-props-across-multiple-component-instances
+import { State } from '../Reducers';
 
-export const selectAuthUserId = state => state.auth.user.uid;
+export const selectAuthUserId = (state: State) => state.auth.user.uid;

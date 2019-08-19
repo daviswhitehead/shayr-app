@@ -1,62 +1,63 @@
-import { DocumentSnapshot, Query } from 'react-native-firebase/firestore';
+import { Query } from 'react-native-firebase/firestore';
 import { Dispatch } from 'redux';
-import { documentId } from '../../../../shayr-resources/src/DataModel/Fields';
-import {
-  composeQuery,
-  getQuery,
-  queries,
-  queryArguments,
-  queryType
-} from '../../lib/FirebaseQueries';
-import {
-  dataActionTypes,
-  generateActionTypes,
-  getDocuments,
-  getFeedOfDocuments
-} from '../../lib/FirebaseRedux';
-import { STATE_KEY as STATE_KEY_LIST } from '../usersPostsLists/actions';
+import { composeQuery, getQuery, queryTypes } from '../../lib/FirebaseQueries';
+import { getDocuments, getFeedOfDocuments, LastItem } from '../FirebaseRedux';
 
 export const STATE_KEY = 'usersPosts';
 
-export const types = generateActionTypes(STATE_KEY, dataActionTypes);
+// const requestLimiter = 1;
+const requestLimiter = 5;
 
-const requestLimiter = 10;
 export const loadUsersPosts = (
-  ownerUserId: string,
-  queryType: queryType,
-  queryArguments: queryArguments,
+  listKey: string,
+  query: Query,
   shouldRefresh?: boolean,
   isLoading?: boolean,
-  lastItem?: DocumentSnapshot | 'DONE'
-) => async (dispatch: Dispatch) => {
-  const request: Query = composeQuery(
-    getQuery(queryType, queryArguments),
-    requestLimiter,
-    shouldRefresh ? undefined : lastItem
-  );
-  dispatch(
+  lastItem?: LastItem
+) => {
+  return (dispatch: Dispatch) => {
+    const composedQuery: Query = composeQuery(
+      query,
+      requestLimiter,
+      shouldRefresh ? undefined : lastItem
+    );
     getFeedOfDocuments(
+      dispatch,
       STATE_KEY,
-      STATE_KEY_LIST,
-      ownerUserId,
-      queryType,
-      request,
+      listKey,
+      composedQuery,
       shouldRefresh,
       isLoading,
       lastItem
-    )
-  );
+    );
+  };
 };
 
 export const refreshUsersPostsDocuments = (
-  postId: documentId,
-  source: 'default' | 'cache' | 'server'
-) => async (dispatch: Dispatch) => {
-  dispatch(
+  postId: string,
+  source?: 'default' | 'cache' | 'server'
+) => {
+  return (dispatch: Dispatch) => {
     getDocuments(
+      dispatch,
       STATE_KEY,
-      queries.USERS_POSTS_BY_POST.query({ postId }),
+      getQuery(queryTypes.USERS_POSTS_BY_POST)(postId),
       source
-    )
-  );
+    );
+  };
+};
+
+export const getUsersPostsDocument = (
+  userId: string,
+  postId: string,
+  source?: 'default' | 'cache' | 'server'
+) => {
+  return (dispatch: Dispatch) => {
+    getDocuments(
+      dispatch,
+      STATE_KEY,
+      getQuery(queryTypes.USERS_POSTS_SINGLE)(userId, postId),
+      source
+    );
+  };
 };

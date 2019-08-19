@@ -1,108 +1,101 @@
-import * as React from 'react';
+import React, { ComponentProps, memo, SFC } from 'react';
 import { Image, View } from 'react-native';
-import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
-// import { createIconSetFromIcoMoon } from 'react-native-vector-icons';
-// import icoMoonConfig from '../../assets/fonts/selection.json';
 import Colors from '../../styles/Colors';
+import Skeleton from '../Skeleton';
 import TouchableWrapper from '../TouchableWrapper';
 import styles from './styles';
 
-// https://www.reactnative.guide/12-svg-icons-using-react-native-vector-icons/12.1-creating-custom-iconset.html
-// const Icons = createIconSetFromIcoMoon(icoMoonConfig);
+export enum names {
+  SETTINGS = 'settings',
+  SEARCH = 'search',
+  SEARCH_ACTIVE = 'search-active',
+  PERSON = 'person',
+  REACTION = 'reaction',
+  X_EXIT = 'x-exit',
+  SHARE = 'share',
+  DONE = 'done',
+  ADD = 'add',
+  BACK = 'back',
+  AT_SIGN = 'at-sign',
+  FLAME = 'flame',
+  LIST = 'list',
+  LIST_ACTIVE = 'list-active',
+  FRIENDS = 'friends',
+  FRIENDS_ACTIVE = 'friends-active',
+  PENDING_FRIEND_ALT = 'pending-friend-alt',
+  PENDING_FRIEND = 'pending-friend',
+  REMOVE_FRIEND = 'remove-friend',
+  ADD_FRIEND = 'add-friend',
+  ACCEPT_FRIEND = 'accept-friend',
+  INVITE = 'invite',
+  INVITE_ALT = 'invite-alt',
+  LIKE = 'like'
+}
 
 const iconMap = {
-  ['settings']: require('../../assets/icons/icon-settings.png'),
-  ['search']: require('../../assets/icons/icon-search.png'),
-  ['search-active']: require('../../assets/icons/icon-search-active.png'),
-  ['person']: require('../../assets/icons/icon-person.png'),
-  ['reaction']: require('../../assets/icons/icon-reaction.png'),
-  ['x-exit']: require('../../assets/icons/icon-x-exit.png'),
-  ['share']: require('../../assets/icons/icon-share.png'),
-  ['done']: require('../../assets/icons/icon-done.png'),
-  ['add']: require('../../assets/icons/icon-add.png'),
-  ['back']: require('../../assets/icons/icon-back.png'),
-  ['at-sign']: require('../../assets/icons/icon-at-sign.png'),
-  ['flame']: require('../../assets/icons/icon-flame.png'),
-  ['list']: require('../../assets/icons/icon-list.png'),
-  ['list-active']: require('../../assets/icons/icon-list-active.png'),
-  ['friends']: require('../../assets/icons/icon-friends.png'),
-  ['friends-active']: require('../../assets/icons/icon-friends-active.png'),
-  ['pending-friend-alt']: require('../../assets/icons/icon-pending-friend-alt.png'),
-  ['pending-friend']: require('../../assets/icons/icon-pending-friend.png'),
-  ['remove-friend']: require('../../assets/icons/icon-remove-friend.png'),
-  ['add-friend']: require('../../assets/icons/icon-add-friend.png'),
-  ['accept-friend']: require('../../assets/icons/icon-accept-friend.png'),
-  ['invite']: require('../../assets/icons/icon-invite.png'),
-  ['invite-alt']: require('../../assets/icons/icon-invite-alt.png'),
-  ['like']: require('../../assets/icons/icon-like.png')
+  [names.SETTINGS]: require('../../assets/icons/icon-settings.png'),
+  [names.SEARCH]: require('../../assets/icons/icon-search.png'),
+  [names.SEARCH_ACTIVE]: require('../../assets/icons/icon-search-active.png'),
+  [names.PERSON]: require('../../assets/icons/icon-person.png'),
+  [names.REACTION]: require('../../assets/icons/icon-reaction.png'),
+  [names.X_EXIT]: require('../../assets/icons/icon-x-exit.png'),
+  [names.SHARE]: require('../../assets/icons/icon-share.png'),
+  [names.DONE]: require('../../assets/icons/icon-done.png'),
+  [names.ADD]: require('../../assets/icons/icon-add.png'),
+  [names.BACK]: require('../../assets/icons/icon-back.png'),
+  [names.AT_SIGN]: require('../../assets/icons/icon-at-sign.png'),
+  [names.FLAME]: require('../../assets/icons/icon-flame.png'),
+  [names.LIST]: require('../../assets/icons/icon-list.png'),
+  [names.LIST_ACTIVE]: require('../../assets/icons/icon-list-active.png'),
+  [names.FRIENDS]: require('../../assets/icons/icon-friends.png'),
+  [names.FRIENDS_ACTIVE]: require('../../assets/icons/icon-friends-active.png'),
+  [names.PENDING_FRIEND_ALT]: require('../../assets/icons/icon-pending-friend-alt.png'),
+  [names.PENDING_FRIEND]: require('../../assets/icons/icon-pending-friend.png'),
+  [names.REMOVE_FRIEND]: require('../../assets/icons/icon-remove-friend.png'),
+  [names.ADD_FRIEND]: require('../../assets/icons/icon-add-friend.png'),
+  [names.ACCEPT_FRIEND]: require('../../assets/icons/icon-accept-friend.png'),
+  [names.INVITE]: require('../../assets/icons/icon-invite.png'),
+  [names.INVITE_ALT]: require('../../assets/icons/icon-invite-alt.png'),
+  [names.LIKE]: require('../../assets/icons/icon-like.png')
 };
 
-export type names =
-  | 'settings'
-  | 'search'
-  | 'search-active'
-  | 'person'
-  | 'reaction'
-  | 'x-exit'
-  | 'share'
-  | 'done'
-  | 'add'
-  | 'back'
-  | 'at-sign'
-  | 'flame'
-  | 'list'
-  | 'list-active'
-  | 'friends'
-  | 'friends-active'
-  | 'pending-friend-alt'
-  | 'pending-friend'
-  | 'remove-friend'
-  | 'add-friend'
-  | 'accept-friend'
-  | 'invite'
-  | 'invite-alt'
-  | 'like';
-
-export interface Props {
+interface Props extends ComponentProps<typeof TouchableWrapper> {
   name: names;
   isActive?: boolean;
-  onPress?: () => void | undefined;
-  style?: any;
   iconStyle?: any;
   isLoading?: boolean;
 }
 
-const Icon: React.SFC<Props> = ({
+const Icon: SFC<Props> = ({
   name,
   isActive = false,
-  onPress,
-  style = {},
   iconStyle = {},
-  isLoading
+  isLoading,
+  style,
+  onPress,
+  noTouching
 }: Props) => {
   const color: string = isActive ? Colors.YELLOW : Colors.BLACK;
-
   const _containerStyle = [styles.container, style];
   const _iconStyle = [styles.image, { tintColor: color }, iconStyle];
-
-  const icon = <Image source={iconMap[name]} style={_iconStyle} />;
-  // const icon = <Icons name={name} size={16} color={color} />;
 
   if (isLoading) {
     return (
       <View style={_containerStyle}>
-        <SkeletonPlaceholder backgroundColor={Colors.SKELETON}>
-          <View style={_iconStyle} />
-        </SkeletonPlaceholder>
+        <Skeleton childStyle={_iconStyle} />
       </View>
     );
   }
 
   return (
-    <TouchableWrapper style={_containerStyle} onPress={onPress}>
-      {icon}
+    <TouchableWrapper
+      style={_containerStyle}
+      onPress={onPress}
+      noTouching={noTouching}
+    >
+      <Image source={iconMap[name]} style={_iconStyle} />
     </TouchableWrapper>
   );
 };
 
-export default Icon;
+export default memo(Icon);

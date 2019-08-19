@@ -1,14 +1,22 @@
-import { types } from './actions';
+import { Actions, types } from './actions';
+
+export interface State {
+  url: string;
+  protocol: string;
+  hostname: string;
+  screen: string;
+  params: any;
+}
 
 const initialState = {
-  url: null,
-  protocol: null,
-  hostname: null,
-  screen: null,
+  url: '',
+  protocol: '',
+  hostname: '',
+  screen: '',
   params: {}
 };
 
-function routingReducer(state = initialState, action) {
+function reducer(state: State = initialState, action: Actions) {
   switch (action.type) {
     case types.ROUTE_ADDED: {
       return {
@@ -23,10 +31,10 @@ function routingReducer(state = initialState, action) {
     case types.ROUTE_REMOVED: {
       return {
         ...state,
-        url: null,
-        protocol: null,
-        hostname: null,
-        screen: null,
+        url: '',
+        protocol: '',
+        hostname: '',
+        screen: '',
         params: {}
       };
     }
@@ -36,4 +44,4 @@ function routingReducer(state = initialState, action) {
   }
 }
 
-export default routingReducer;
+export default reducer;

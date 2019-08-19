@@ -11,7 +11,7 @@ export default StyleSheet.create({
     width: '100%',
     backgroundColor: Colors.DIVIDER
   },
-  loadingContainer: {
+  bottomContainer: {
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',

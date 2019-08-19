@@ -1,20 +1,15 @@
-import { documentId } from '@daviswhitehead/shayr-resources';
-import _ from 'lodash';
 import { Dispatch } from 'redux';
-import {
-  dataActionTypes,
-  generateActionTypes,
-  getDocument
-} from '../../lib/FirebaseRedux';
+import { references, referenceTypes } from '../../lib/FirebaseQueries';
+import { getDocument } from '../FirebaseRedux';
 
 export const STATE_KEY = 'posts';
 
-export const types = {
-  ...generateActionTypes(STATE_KEY, dataActionTypes)
-};
-
-export const getPost = (postId: documentId) => {
+export const getPost = (postId: string) => {
   return (dispatch: Dispatch) => {
-    return dispatch(getDocument(STATE_KEY, `posts/${postId}`));
+    return getDocument(
+      dispatch,
+      STATE_KEY,
+      references.get(referenceTypes.GET_DOCUMENT)(`posts/${postId}`)
+    );
   };
 };

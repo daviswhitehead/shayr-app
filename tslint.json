@@ -2,6 +2,7 @@
   "extends": [
     "tslint:recommended",
     "tslint-react",
+    "tslint-react-native",
     "tslint-config-airbnb",
     "tslint-config-prettier"
   ],

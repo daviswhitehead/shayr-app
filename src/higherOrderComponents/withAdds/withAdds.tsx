@@ -1,73 +1,65 @@
-import { documentId, UsersPosts } from '@daviswhitehead/shayr-resources';
 import _ from 'lodash';
-import * as React from 'react';
+import React, { SFC } from 'react';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
+import { queryTypes } from '../../lib/FirebaseQueries';
 import { toggleAddDonePost } from '../../redux/adds/actions';
 import { selectAuthUserId } from '../../redux/auth/selectors';
+import { generateListKey } from '../../redux/lists/helpers';
+import { selectListItems } from '../../redux/lists/selectors';
+
+interface StateProps {
+  authUserId: string;
+  authAdds: Array<string>;
+  authDones: Array<string>;
+}
+
+interface DispatchProps {
+  toggleAddDonePost: typeof toggleAddDonePost;
+}
+
+interface OwnProps {
+  ownerUserId: string;
+  usersPostsId: string;
+  postId: string;
+}
+
+type Props = OwnProps & StateProps & DispatchProps;
 
 const mapStateToProps = (state: any) => {
-  const authUserId = selectAuthUserId(state);
-
   return {
-    authUserId,
-    activeAdds: _.get(
+    authUserId: selectAuthUserId(state),
+    authAdds: selectListItems(
       state,
-      ['addsLists', `${authUserId}_USER_ADDS`, 'items'],
-      []
+      'addsLists',
+      generateListKey(selectAuthUserId(state), queryTypes.USER_ADDS)
     ),
-    activeDones: _.get(
+    authDones: selectListItems(
       state,
-      ['donesLists', `${authUserId}_USER_DONES`, 'items'],
-      []
+      'donesLists',
+      generateListKey(selectAuthUserId(state), queryTypes.USER_DONES)
     )
-    // adds: state.adds,
-    // dones: state.dones
   };
 };
 
-const mapDispatchToProps = (dispatch: any) => {
-  return {
-    toggleAddDonePost: (
-      type: 'adds' | 'dones',
-      isActive: boolean,
-      postId: documentId,
-      ownerUserId: documentId,
-      userId: documentId,
-      isOtherActive: boolean
-    ) =>
-      dispatch(
-        toggleAddDonePost(
-          type,
-          isActive,
-          postId,
-          ownerUserId,
-          userId,
-          isOtherActive
-        )
-      )
-  };
+const mapDispatchToProps = {
+  toggleAddDonePost
 };
 
-const withAdds = (
-  WrappedComponent: React.SFC,
-  post: UsersPosts,
-  ownerUserId: documentId
-) => (props: any) => {
+const withAdds = (WrappedComponent: SFC) => (props: Props) => {
   const {
     authUserId,
+    authAdds,
+    authDones,
     toggleAddDonePost,
-    activeAdds,
-    activeDones,
-    // adds,
-    // dones,
+    ownerUserId,
+    usersPostsId,
+    postId,
     ...passThroughProps
   } = props;
 
-  const isAddsActive = _.includes(activeAdds, post._id);
-  const isDonesActive = _.includes(activeDones, post._id);
-  // const isAddsActive = _.includes(adds, post.postId);
-  // const isDonesActive = _.includes(dones, post.postId);
+  const isAddsActive = _.includes(authAdds, usersPostsId);
+  const isDonesActive = _.includes(authDones, usersPostsId);
 
   return (
     <WrappedComponent
@@ -76,7 +68,7 @@ const withAdds = (
         toggleAddDonePost(
           'adds',
           isAddsActive,
-          post.postId,
+          postId,
           ownerUserId,
           authUserId,
           isDonesActive
@@ -90,7 +82,35 @@ const withAdds = (
 export default compose(
   connect(
     mapStateToProps,
-    mapDispatchToProps
+    mapDispatchToProps,
+    undefined,
+    {
+      areStatesEqual: (next, prev) => {
+        return (
+          selectAuthUserId(next) === selectAuthUserId(prev) &&
+          selectListItems(
+            next,
+            'addsLists',
+            generateListKey(selectAuthUserId(next), queryTypes.USER_ADDS)
+          ) ===
+            selectListItems(
+              prev,
+              'addsLists',
+              generateListKey(selectAuthUserId(prev), queryTypes.USER_ADDS)
+            ) &&
+          selectListItems(
+            next,
+            'donesLists',
+            generateListKey(selectAuthUserId(next), queryTypes.USER_DONES)
+          ) ===
+            selectListItems(
+              prev,
+              'donesLists',
+              generateListKey(selectAuthUserId(prev), queryTypes.USER_DONES)
+            )
+        );
+      }
+    }
   ),
   withAdds
 );

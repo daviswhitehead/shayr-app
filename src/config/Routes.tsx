@@ -1,9 +1,9 @@
 import {
   createAppContainer,
-  createBottomTabNavigator,
   createStackNavigator,
   createSwitchNavigator
 } from 'react-navigation';
+import { createBottomTabNavigator } from 'react-navigation-tabs';
 import TabBar from '../components/TabBar';
 import Discover from '../containers/Discover';
 import Friends from '../containers/Friends';

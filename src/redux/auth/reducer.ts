@@ -1,6 +1,15 @@
 import { types } from './actions';
 
-const initialState = {
+export interface State {
+  user: {
+    uid?: string;
+    [any: string]: any;
+  };
+  hasAccessToken: boolean;
+  isSigningOut: boolean;
+}
+
+const initialState: State = {
   user: {},
   hasAccessToken: false,
   isSigningOut: false

@@ -1,6 +1,6 @@
 import { documentId } from '@daviswhitehead/shayr-resources';
 import _ from 'lodash';
-import * as React from 'react';
+import React, { SFC } from 'react';
 import {
   NavigationParams,
   NavigationScreenProp,
@@ -13,25 +13,24 @@ import { selectAuthUserId } from '../../redux/auth/selectors';
 
 type Navigation = NavigationScreenProp<NavigationState, NavigationParams>;
 
-export interface Props {
-  authUserId: documentId;
-  navigation: Navigation;
-  userId: documentId;
+interface StateProps {
+  authUserId: string;
 }
 
-const mapStateToProps = (state: any) => {
-  const authUserId = selectAuthUserId(state);
+interface OwnProps {
+  userId: documentId;
+  navigation: Navigation;
+}
 
+type Props = OwnProps & StateProps;
+
+const mapStateToProps = (state: any) => {
   return {
-    authUserId
+    authUserId: selectAuthUserId(state)
   };
 };
 
-const mapDispatchToProps = (dispatch: any) => ({});
-
-const withNavigateToTheirList = (WrappedComponent: React.SFC) => (
-  props: Props
-) => {
+const withNavigateToTheirList = (WrappedComponent: SFC) => (props: Props) => {
   const { userId, authUserId, navigation, ...passThroughProps } = props;
 
   const isTopLevelRoute =
@@ -74,7 +73,13 @@ const withNavigateToTheirList = (WrappedComponent: React.SFC) => (
 export default compose(
   connect(
     mapStateToProps,
-    mapDispatchToProps
+    undefined,
+    undefined,
+    {
+      areStatesEqual: (next, prev) => {
+        return selectAuthUserId(next) === selectAuthUserId(prev);
+      }
+    }
   ),
   withNavigation,
   withNavigateToTheirList

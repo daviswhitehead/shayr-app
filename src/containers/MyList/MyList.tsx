@@ -1,9 +1,13 @@
-import { documentId, User } from '@daviswhitehead/shayr-resources';
+import { User, UsersPosts } from '@daviswhitehead/shayr-resources';
 import _ from 'lodash';
 import React, { Component } from 'react';
-import { ActivityIndicator, Text, View } from 'react-native';
-import { DocumentSnapshot } from 'react-native-firebase/firestore';
-import { NavigationScreenProp, NavigationState } from 'react-navigation';
+import { View } from 'react-native';
+import { Query } from 'react-native-firebase/database';
+import {
+  NavigationScreenProp,
+  NavigationScreenProps,
+  NavigationState
+} from 'react-navigation';
 import { connect } from 'react-redux';
 import Header from '../../components/Header';
 import List from '../../components/List';
@@ -11,24 +15,66 @@ import PostCard from '../../components/PostCard';
 import SegmentedControl from '../../components/SegmentedControl';
 import SwipeCard from '../../components/SwipeCard';
 import UserProfile from '../../components/UserProfile';
-import { queries, queryArguments, queryType } from '../../lib/FirebaseQueries';
+import { getQuery, queryTypes } from '../../lib/FirebaseQueries';
 import { toggleAddDonePost as toggleAdds } from '../../redux/adds/actions';
 import { selectAuthUserId } from '../../redux/auth/selectors';
+import { selectFlatListReadyDocuments } from '../../redux/documents/selectors';
 import { toggleAddDonePost as toggleDones } from '../../redux/dones/actions';
 import { subscribeToFriendships } from '../../redux/friendships/actions';
 import { toggleLikePost } from '../../redux/likes/actions';
+import { generateListKey } from '../../redux/lists/helpers';
+import { selectListItems, selectListMeta } from '../../redux/lists/selectors';
 import { getUser } from '../../redux/users/actions';
 import {
+  selectUserActionCounts,
   selectUserFromId,
-  selectUsersFromList,
+  selectUsersFromList
 } from '../../redux/users/selectors';
 import { loadUsersPosts } from '../../redux/usersPosts/actions';
-import {
-  selectFlatListReadyUsersPostsFromList,
-  selectUsersPostsMetadataFromList,
-} from '../../redux/usersPosts/selectors';
 import Colors from '../../styles/Colors';
 import styles from './styles';
+
+interface StateProps {
+  authAdds: Array<string>;
+  authDones: Array<string>;
+  authIsOwner?: boolean;
+  authLikes: Array<string>;
+  authShares: Array<string>;
+  authUser?: User;
+  authUserId: string;
+  authFriends?: Array<User>;
+  ownerAddsCount?: number;
+  ownerDonesCount?: number;
+  ownerFriends?: Array<User>;
+  ownerLikesCount?: number;
+  ownerSharesCount?: number;
+  ownerUser?: User;
+  ownerUserId: string;
+  usersPostsListsData?: {
+    [listKey: string]: Array<UsersPosts>;
+  };
+  usersPostsListsMeta?: {
+    [listKey: string]: any; // TODO: meta type
+  };
+  usersPostsListsQueries: {
+    [listKey: string]: Query;
+  };
+  usersPostsListsViews: {
+    adds: string;
+    dones: string;
+    likes: string;
+    shares: string;
+  };
+}
+
+interface DispatchProps {
+  getUser: typeof getUser;
+  subscribeToFriendships: typeof subscribeToFriendships;
+  loadUsersPosts: typeof loadUsersPosts;
+  toggleAdds: typeof toggleAdds;
+  toggleDones: typeof toggleDones;
+  toggleLikePost: typeof toggleLikePost;
+}
 
 interface NavigationParams {
   ownerUserId?: string;
@@ -36,270 +82,279 @@ interface NavigationParams {
 
 type Navigation = NavigationScreenProp<NavigationState, NavigationParams>;
 
-export interface Props {
-  adds: Array<documentId>;
-  authUser: User;
-  authIsOwner: boolean;
-  authFriends: any;
-  authUserId: string;
-  dones: Array<documentId>;
-  likes: Array<documentId>;
+interface OwnProps {
   navigation: Navigation;
-  ownerUser: User;
-  ownerFriends: any;
-  ownerUserId: string;
-  usersPostsViews: {
-    [view: string]: string;
-  };
-  usersPostsData: {
-    [view: string]: {
-      data: any;
-      [meta: string]: any;
-    };
-  };
-  loadUsersPosts: (
-    userId: string,
-    requestType: RequestType,
-    shouldRefresh: boolean,
-    lastItem?: DocumentSnapshot | 'DONE',
-    isLoading?: boolean,
-  ) => void;
 }
 
-export interface State {
+interface OwnState {
+  isProfileLoading: boolean;
+  isSegmentedControlLoading: boolean;
   selectedIndex: number;
-  activeView: RequestType;
+  activeView: string;
+  isUsersPostsListsLoaded: {
+    [listKey: string]: boolean;
+  };
 }
+
+interface NavigationParams {}
+
+type Props = OwnProps &
+  StateProps &
+  DispatchProps &
+  NavigationScreenProps<NavigationParams>;
 
 const mapStateToProps = (state: any, props: any) => {
   const authUserId = selectAuthUserId(state);
   const ownerUserId =
-    _.get(props, ['navigation', 'state', 'params', 'ownerUserId'], false) ||
+    _.get(props, ['navigation', 'state', 'params', 'ownerUserId'], undefined) ||
     authUserId;
 
-  const usersPostsViews = {
-    [queries.USERS_POSTS_SHARES.type]: `${ownerUserId}_${
-      queries.USERS_POSTS_SHARES.type
-    }`,
-    [queries.USERS_POSTS_ADDS.type]: `${ownerUserId}_${
-      queries.USERS_POSTS_ADDS.type
-    }`,
-    [queries.USERS_POSTS_DONES.type]: `${ownerUserId}_${
-      queries.USERS_POSTS_DONES.type
-    }`,
-    [queries.USERS_POSTS_LIKES.type]: `${ownerUserId}_${
-      queries.USERS_POSTS_LIKES.type
-    }`,
-  };
-
-  const usersPostsData = {
-    [usersPostsViews[queries.USERS_POSTS_SHARES.type]]: {
-      data: selectFlatListReadyUsersPostsFromList(
-        state,
-        usersPostsViews[queries.USERS_POSTS_SHARES.type],
-      ),
-      ...selectUsersPostsMetadataFromList(
-        state,
-        usersPostsViews[queries.USERS_POSTS_SHARES.type],
-      ),
-    },
-    [usersPostsViews[queries.USERS_POSTS_ADDS.type]]: {
-      data: selectFlatListReadyUsersPostsFromList(
-        state,
-        usersPostsViews[queries.USERS_POSTS_ADDS.type],
-      ),
-      ...selectUsersPostsMetadataFromList(
-        state,
-        usersPostsViews[queries.USERS_POSTS_ADDS.type],
-      ),
-    },
-    [usersPostsViews[queries.USERS_POSTS_DONES.type]]: {
-      data: selectFlatListReadyUsersPostsFromList(
-        state,
-        usersPostsViews[queries.USERS_POSTS_DONES.type],
-      ),
-      ...selectUsersPostsMetadataFromList(
-        state,
-        usersPostsViews[queries.USERS_POSTS_DONES.type],
-      ),
-    },
-    [usersPostsViews[queries.USERS_POSTS_LIKES.type]]: {
-      data: selectFlatListReadyUsersPostsFromList(
-        state,
-        usersPostsViews[queries.USERS_POSTS_LIKES.type],
-      ),
-      ...selectUsersPostsMetadataFromList(
-        state,
-        usersPostsViews[queries.USERS_POSTS_LIKES.type],
-      ),
-    },
+  const usersPostsListsViews = {
+    adds: generateListKey(ownerUserId, queryTypes.USERS_POSTS_ADDS),
+    dones: generateListKey(ownerUserId, queryTypes.USERS_POSTS_DONES),
+    likes: generateListKey(ownerUserId, queryTypes.USERS_POSTS_LIKES),
+    shares: generateListKey(ownerUserId, queryTypes.USERS_POSTS_SHARES)
   };
 
   return {
-    adds: state.adds,
-    auth: state.auth,
+    authAdds: selectListItems(
+      state,
+      'addsLists',
+      generateListKey(authUserId, queryTypes.USER_ADDS)
+    ),
+    authDones: selectListItems(
+      state,
+      'donesLists',
+      generateListKey(authUserId, queryTypes.USER_DONES)
+    ),
     authIsOwner: authUserId === ownerUserId,
-    authUser: selectUserFromId(state, authUserId),
+    authLikes: selectListItems(
+      state,
+      'likesLists',
+      generateListKey(authUserId, queryTypes.USER_LIKES)
+    ),
+    authShares: selectListItems(
+      state,
+      'sharesLists',
+      generateListKey(authUserId, queryTypes.USER_SHARES)
+    ),
+    authUser: selectUserFromId(state, authUserId, true),
     authUserId,
-    authFriends: selectUsersFromList(state, `${authUserId}_Friends`),
-    dones: state.dones,
-    likes: state.likes,
-    ownerUser: selectUserFromId(state, ownerUserId),
+    authFriends: selectUsersFromList(state, `${authUserId}_Friends`, true),
+    ownerAddsCount: selectUserActionCounts(
+      state,
+      ownerUserId,
+      false,
+      'addsCount'
+    ),
+    ownerDonesCount: selectUserActionCounts(
+      state,
+      ownerUserId,
+      false,
+      'donesCount'
+    ),
+    ownerFriends: selectUsersFromList(state, `${ownerUserId}_Friends`, true),
+    ownerLikesCount: selectUserActionCounts(
+      state,
+      ownerUserId,
+      false,
+      'likesCount'
+    ),
+    ownerSharesCount: selectUserActionCounts(
+      state,
+      ownerUserId,
+      false,
+      'sharesCount'
+    ),
+    ownerUser: selectUserFromId(state, ownerUserId, true),
     ownerUserId,
-    ownerFriends: selectUsersFromList(state, `${ownerUserId}_Friends`),
-    usersPostsViews,
-    usersPostsData,
-    routing: state.routing,
-    posts: state.posts,
+    usersPostsListsData: {
+      [usersPostsListsViews.adds]: selectFlatListReadyDocuments(
+        state,
+        'usersPosts',
+        selectListItems(state, 'usersPostsLists', usersPostsListsViews.adds),
+        usersPostsListsViews.adds,
+        'updatedAt'
+      ),
+      [usersPostsListsViews.dones]: selectFlatListReadyDocuments(
+        state,
+        'usersPosts',
+        selectListItems(state, 'usersPostsLists', usersPostsListsViews.dones),
+        usersPostsListsViews.dones,
+        'updatedAt'
+      ),
+      [usersPostsListsViews.likes]: selectFlatListReadyDocuments(
+        state,
+        'usersPosts',
+        selectListItems(state, 'usersPostsLists', usersPostsListsViews.likes),
+        usersPostsListsViews.likes,
+        'updatedAt'
+      ),
+      [usersPostsListsViews.shares]: selectFlatListReadyDocuments(
+        state,
+        'usersPosts',
+        selectListItems(state, 'usersPostsLists', usersPostsListsViews.shares),
+        usersPostsListsViews.shares,
+        'updatedAt'
+      )
+    },
+    usersPostsListsMeta: {
+      [usersPostsListsViews.adds]: selectListMeta(
+        state,
+        'usersPostsLists',
+        usersPostsListsViews.adds
+      ),
+      [usersPostsListsViews.dones]: selectListMeta(
+        state,
+        'usersPostsLists',
+        usersPostsListsViews.dones
+      ),
+      [usersPostsListsViews.likes]: selectListMeta(
+        state,
+        'usersPostsLists',
+        usersPostsListsViews.likes
+      ),
+      [usersPostsListsViews.shares]: selectListMeta(
+        state,
+        'usersPostsLists',
+        usersPostsListsViews.shares
+      )
+    },
+    usersPostsListsQueries: {
+      [usersPostsListsViews.adds]: getQuery(queryTypes.USERS_POSTS_ADDS)(
+        ownerUserId
+      ),
+      [usersPostsListsViews.dones]: getQuery(queryTypes.USERS_POSTS_DONES)(
+        ownerUserId
+      ),
+      [usersPostsListsViews.likes]: getQuery(queryTypes.USERS_POSTS_LIKES)(
+        ownerUserId
+      ),
+      [usersPostsListsViews.shares]: getQuery(queryTypes.USERS_POSTS_SHARES)(
+        ownerUserId
+      )!
+    },
+    usersPostsListsViews
   };
 };
 
-const mapDispatchToProps = (dispatch: any) => ({
-  getUser: (userId) => dispatch(getUser(userId)),
-  subscribeToFriendships: (userId) => dispatch(subscribeToFriendships(userId)),
-  loadUsersPosts: (
-    ownerUserId: string,
-    queryType: queryType,
-    queryArguments: queryArguments,
-    shouldRefresh?: boolean,
-    isLoading?: boolean,
-    lastItem?: DocumentSnapshot | 'DONE',
-  ) =>
-    dispatch(
-      loadUsersPosts(
-        ownerUserId,
-        queryType,
-        queryArguments,
-        shouldRefresh,
-        isLoading,
-        lastItem,
-      ),
-    ),
-  toggleAdds: (
-    type: 'adds',
-    isActive: boolean,
-    postId: documentId,
-    ownerUserId: documentId,
-    userId: documentId,
-    isOtherActive: boolean,
-  ) =>
-    dispatch(
-      toggleAdds(type, isActive, postId, ownerUserId, userId, isOtherActive),
-    ),
-  toggleDones: (
-    type: 'dones',
-    isActive: boolean,
-    postId: documentId,
-    ownerUserId: documentId,
-    userId: documentId,
-    isOtherActive: boolean,
-  ) =>
-    dispatch(
-      toggleDones(type, isActive, postId, ownerUserId, userId, isOtherActive),
-    ),
-  toggleLikePost: (
-    isActive: boolean,
-    postId: documentId,
-    ownerUserId: documentId,
-    userId: documentId,
-  ) => dispatch(toggleLikePost(isActive, postId, ownerUserId, userId)),
-});
+const mapDispatchToProps = {
+  getUser,
+  subscribeToFriendships,
+  loadUsersPosts,
+  toggleAdds,
+  toggleDones,
+  toggleLikePost
+};
 
-class MyList extends Component<Props, State> {
+class MyList extends Component<Props, OwnState> {
+  static whyDidYouRender = true;
+
+  subscriptions: Array<any>;
   constructor(props: Props) {
     super(props);
     const startingIndex = this.props.authIsOwner ? 1 : 0;
 
     this.state = {
+      isProfileLoading: true,
+      isSegmentedControlLoading: true,
+      isUsersPostsListsLoaded: {},
       selectedIndex: startingIndex,
-      activeView: this.mapIndexToView(startingIndex),
+      activeView: this.mapIndexToView(startingIndex)
     };
     this.subscriptions = [];
   }
 
-  async componentDidMount() {
-    this.props.ownerUser ? null : this.props.getUser(this.props.ownerUserId);
+  componentDidMount() {
+    // check loading status
+    this.checkProfileLoading();
+    this.checkSegmentedControlLoading();
+    this.checkUsersPostsListsLoaded();
 
-    _.isEmpty(this.props.ownerFriends)
-      ? this.subscriptions.push(
-          await this.props.subscribeToFriendships(this.props.ownerUserId),
-        )
-      : null;
+    // get owner user if not already loaded
+    !this.props.ownerUser && this.props.getUser(this.props.ownerUserId);
 
-    // if (shares, adds, dones, likes) list doesnt exist yet, load initial posts
-    if (
-      !this.props.usersPostsData[
-        this.props.usersPostsViews[queries.USERS_POSTS_SHARES.type]
-      ].isLoaded
-    ) {
-      await this.props.loadUsersPosts(
-        this.props.ownerUserId,
-        queries.USERS_POSTS_SHARES.type,
-        { userId: this.props.ownerUserId },
-        true,
-        this.props.usersPostsData[
-          this.props.usersPostsViews[queries.USERS_POSTS_SHARES.type]
-        ].isLoading,
-        this.props.usersPostsData[
-          this.props.usersPostsViews[queries.USERS_POSTS_SHARES.type]
-        ].lastItem,
+    // get owner friends if not already loaded
+    _.isEmpty(this.props.ownerFriends) &&
+      this.subscriptions.push(
+        this.props.subscribeToFriendships(this.props.ownerUserId)
       );
-    }
 
+    // SOMEDAY: load list data in the right order and/or in advance
+    // if (adds, shares, dones, likes) list doesnt exist yet, load initial posts
     if (
-      !this.props.usersPostsData[
-        this.props.usersPostsViews[queries.USERS_POSTS_ADDS.type]
-      ].isLoaded
+      !_.get(
+        this.props,
+        [
+          'usersPostsListsMeta',
+          this.props.usersPostsListsViews.adds,
+          'isLoaded'
+        ],
+        undefined
+      )
     ) {
-      await this.props.loadUsersPosts(
-        this.props.ownerUserId,
-        queries.USERS_POSTS_ADDS.type,
-        { userId: this.props.ownerUserId },
-        true,
-        this.props.usersPostsData[
-          this.props.usersPostsViews[queries.USERS_POSTS_ADDS.type]
-        ].isLoading,
-        this.props.usersPostsData[
-          this.props.usersPostsViews[queries.USERS_POSTS_ADDS.type]
-        ].lastItem,
+      this.props.loadUsersPosts(
+        this.props.usersPostsListsViews.adds,
+        this.props.usersPostsListsQueries[this.props.usersPostsListsViews.adds]
       );
     }
     if (
-      !this.props.usersPostsData[
-        this.props.usersPostsViews[queries.USERS_POSTS_DONES.type]
-      ].isLoaded
+      !_.get(
+        this.props,
+        [
+          'usersPostsListsMeta',
+          this.props.usersPostsListsViews.shares,
+          'isLoaded'
+        ],
+        undefined
+      )
     ) {
-      await this.props.loadUsersPosts(
-        this.props.ownerUserId,
-        queries.USERS_POSTS_DONES.type,
-        { userId: this.props.ownerUserId },
-        true,
-        this.props.usersPostsData[
-          this.props.usersPostsViews[queries.USERS_POSTS_DONES.type]
-        ].isLoading,
-        this.props.usersPostsData[
-          this.props.usersPostsViews[queries.USERS_POSTS_DONES.type]
-        ].lastItem,
+      this.props.loadUsersPosts(
+        this.props.usersPostsListsViews.shares,
+        this.props.usersPostsListsQueries[
+          this.props.usersPostsListsViews.shares
+        ]
       );
     }
     if (
-      !this.props.usersPostsData[
-        this.props.usersPostsViews[queries.USERS_POSTS_LIKES.type]
-      ].isLoaded
+      !_.get(
+        this.props,
+        [
+          'usersPostsListsMeta',
+          this.props.usersPostsListsViews.dones,
+          'isLoaded'
+        ],
+        undefined
+      )
     ) {
-      await this.props.loadUsersPosts(
-        this.props.ownerUserId,
-        queries.USERS_POSTS_LIKES.type,
-        { userId: this.props.ownerUserId },
-        true,
-        this.props.usersPostsData[
-          this.props.usersPostsViews[queries.USERS_POSTS_LIKES.type]
-        ].isLoading,
-        this.props.usersPostsData[
-          this.props.usersPostsViews[queries.USERS_POSTS_LIKES.type]
-        ].lastItem,
+      this.props.loadUsersPosts(
+        this.props.usersPostsListsViews.dones,
+        this.props.usersPostsListsQueries[this.props.usersPostsListsViews.dones]
       );
     }
+    if (
+      !_.get(
+        this.props,
+        [
+          'usersPostsListsMeta',
+          this.props.usersPostsListsViews.likes,
+          'isLoaded'
+        ],
+        undefined
+      )
+    ) {
+      this.props.loadUsersPosts(
+        this.props.usersPostsListsViews.likes,
+        this.props.usersPostsListsQueries[this.props.usersPostsListsViews.likes]
+      );
+    }
+  }
+
+  componentDidUpdate(prevProps: Props) {
+    // check loading status
+    this.checkProfileLoading();
+    this.checkSegmentedControlLoading();
+    this.checkUsersPostsListsLoaded();
   }
 
   componentWillUnmount() {
@@ -308,23 +363,202 @@ class MyList extends Component<Props, State> {
     });
   }
 
+  checkProfileLoading = () => {
+    if (this.state.isProfileLoading && this.props.ownerUser) {
+      this.setState({ isProfileLoading: false });
+    }
+  };
+
+  checkSegmentedControlLoading = () => {
+    if (
+      this.state.isSegmentedControlLoading &&
+      typeof this.props.ownerAddsCount === 'number' &&
+      typeof this.props.ownerDonesCount === 'number' &&
+      typeof this.props.ownerLikesCount === 'number' &&
+      typeof this.props.ownerSharesCount === 'number'
+    ) {
+      this.setState({ isSegmentedControlLoading: false });
+    }
+  };
+
+  checkUsersPostsListsLoaded = () => {
+    if (
+      !this.state.isUsersPostsListsLoaded[this.state.activeView] &&
+      this.props.authUser &&
+      this.props.ownerUser &&
+      this.props.authFriends &&
+      this.props.ownerFriends &&
+      _.get(
+        this.props,
+        ['usersPostsListsMeta', this.state.activeView, 'isLoaded'],
+        undefined
+      )
+    ) {
+      this.setState((previousState) => ({
+        ...previousState,
+        isUsersPostsListsLoaded: {
+          ...previousState.isUsersPostsListsLoaded,
+          [this.state.activeView]: true
+        }
+      }));
+    }
+  };
+
   mapIndexToView = (index: number) => {
-    const map: {
-      [number: string]: RequestType;
-    } = {
-      0: queries.USERS_POSTS_SHARES.type,
-      1: queries.USERS_POSTS_ADDS.type,
-      2: queries.USERS_POSTS_DONES.type,
-      3: queries.USERS_POSTS_LIKES.type,
-    };
+    const map = [
+      this.props.usersPostsListsViews.shares,
+      this.props.usersPostsListsViews.adds,
+      this.props.usersPostsListsViews.dones,
+      this.props.usersPostsListsViews.likes
+    ];
     return map[index];
   };
 
-  addUserIdToView = (view: string) => {
-    return `${this.props.ownerUserId}_${view}`;
+  onSegmentedControlChange = (index: number) => {
+    this.setState((previousState) => ({
+      ...previousState,
+      selectedIndex: index,
+      activeView: this.mapIndexToView(index)
+    }));
+  };
+
+  onItemPress = ({
+    ownerUserId,
+    postId
+  }: {
+    ownerUserId: string;
+    postId: string;
+  }) => {
+    this.props.navigation.navigate({
+      routeName: 'PostDetail',
+      params: {
+        ownerUserId,
+        postId
+      },
+      key: `PostDetail:${ownerUserId}_${postId}`
+    });
+  };
+
+  renderPostCard = (item: UsersPosts) => {
+    return (
+      <PostCard
+        key={item._id}
+        isLoading={!this.state.isUsersPostsListsLoaded[this.state.activeView]}
+        post={item}
+        onPressParameters={{
+          ownerUserId: item.userId,
+          postId: item.postId
+        }}
+        onPress={this.onItemPress}
+        users={{
+          [this.props.authUserId]: this.props.authUser,
+          [this.props.ownerUserId]: this.props.ownerUser,
+          ...this.props.authFriends,
+          ...this.props.ownerFriends
+        }}
+      />
+    );
+  };
+
+  renderItem = ({ item }: { item: UsersPosts }) => {
+    const addSwiping = _.includes(
+      [
+        this.props.usersPostsListsViews.adds,
+        this.props.usersPostsListsViews.dones
+      ],
+      this.state.activeView
+    );
+    const isDonesView =
+      this.state.activeView === this.props.usersPostsListsViews.dones;
+    const isAddActive = _.includes(this.props.authAdds, item._id);
+    const isDoneActive = _.includes(this.props.authDones, item._id);
+    const isLikeActive = _.includes(this.props.authLikes, item._id);
+
+    if (addSwiping) {
+      return (
+        <SwipeCard
+          type={isDonesView ? 'like' : 'done'}
+          isLeftAlreadyDone={isDonesView ? isLikeActive : isDoneActive}
+          leftAction={
+            isDonesView
+              ? () =>
+                  this.props.toggleLikePost(
+                    false,
+                    item.postId,
+                    item.userId,
+                    this.props.authUserId
+                  )
+              : () =>
+                  this.props.toggleDones(
+                    'dones',
+                    false,
+                    item.postId,
+                    item.userId,
+                    this.props.authUserId,
+                    isAddActive
+                  )
+          }
+          isRightAlreadyDone={isDonesView ? !isDoneActive : !isAddActive}
+          rightAction={
+            isDonesView
+              ? () =>
+                  this.props.toggleDones(
+                    'dones',
+                    true,
+                    item.postId,
+                    item.userId,
+                    this.props.authUserId,
+                    isAddActive
+                  )
+              : () =>
+                  this.props.toggleAdds(
+                    'adds',
+                    true,
+                    item.postId,
+                    item.userId,
+                    this.props.authUserId,
+                    isDoneActive
+                  )
+          }
+        >
+          {this.renderPostCard(item, true)}
+        </SwipeCard>
+      );
+    }
+    return this.renderPostCard(item, true);
+  };
+
+  paginateList = () => {
+    if (!this.props.usersPostsListsMeta[this.state.activeView]) {
+      return;
+    }
+    return this.props.loadUsersPosts(
+      this.state.activeView,
+      this.props.usersPostsListsQueries[this.state.activeView],
+      false,
+      this.props.usersPostsListsMeta[this.state.activeView].isLoading,
+      this.props.usersPostsListsMeta[this.state.activeView].lastItem
+    );
+  };
+
+  refreshList = () => {
+    if (!this.props.usersPostsListsMeta[this.state.activeView]) {
+      return;
+    }
+    return this.props.loadUsersPosts(
+      this.state.activeView,
+      this.props.usersPostsListsQueries[this.state.activeView],
+      true,
+      this.props.usersPostsListsMeta[this.state.activeView].isLoading,
+      this.props.usersPostsListsMeta[this.state.activeView].lastItem
+    );
   };
 
   render() {
+    const isListLoading = !this.state.isUsersPostsListsLoaded[
+      this.state.activeView
+    ];
+
     return (
       <View style={styles.screen}>
         <Header
@@ -332,192 +566,56 @@ class MyList extends Component<Props, State> {
           statusBarStyle='dark-content'
           shadow
           title={this.props.authIsOwner ? 'My List' : 'Their List'}
+          // TODO: troubleshoot this
           back={
             this.props.navigation.state.key.slice(0, 3) === 'id-'
-              ? null
-              : () => this.props.navigation.goBack()
+              ? undefined
+              : () => this.props.navigation.goBack(null)
           }
         />
         <UserProfile
+          isLoading={this.state.isProfileLoading}
           facebookProfilePhoto={_.get(
             this.props,
             ['ownerUser', 'facebookProfilePhoto'],
-            null,
+            null
           )}
           firstName={_.get(this.props, ['ownerUser', 'firstName'], null)}
           lastName={_.get(this.props, ['ownerUser', 'lastName'], null)}
         />
         <SegmentedControl
+          isLoading={this.state.isSegmentedControlLoading}
           startingIndex={this.state.selectedIndex}
-          onIndexChange={(index) =>
-            this.setState((previousState) => ({
-              ...previousState,
-              selectedIndex: index,
-              activeView: this.mapIndexToView(index),
-            }))
-          }
-          sharesCount={_.get(this.props, ['ownerUser', 'sharesCount'], 0)}
-          addsCount={_.get(this.props, ['ownerUser', 'addsCount'], 0)}
-          donesCount={_.get(this.props, ['ownerUser', 'donesCount'], 0)}
-          likesCount={_.get(this.props, ['ownerUser', 'likesCount'], 0)}
+          onIndexChange={this.onSegmentedControlChange}
+          sharesCount={this.props.ownerSharesCount}
+          addsCount={this.props.ownerAddsCount}
+          donesCount={this.props.ownerDonesCount}
+          likesCount={this.props.ownerLikesCount}
         />
-        {this.props.usersPostsData[this.addUserIdToView(this.state.activeView)]
-          .isLoaded &&
-        this.props.ownerFriends &&
-        this.props.authUser ? (
-          <List
-            data={
-              this.props.usersPostsData[
-                this.addUserIdToView(this.state.activeView)
-              ].data
-            }
-            renderItem={(item: any) => {
-              const addSwiping = _.includes(
-                [queries.USERS_POSTS_ADDS.type, queries.USERS_POSTS_DONES.type],
-                this.state.activeView,
-              );
-              const isDonesView =
-                this.state.activeView === queries.USERS_POSTS_DONES.type;
-              const isAddActive = _.includes(
-                item.adds || [],
-                this.props.authUserId,
-              );
-              const isDoneActive = _.includes(
-                item.dones || [],
-                this.props.authUserId,
-              );
-              const isLikeActive = _.includes(
-                item.likes || [],
-                this.props.authUserId,
-              );
-
-              const renderPostCard = () => {
-                return (
-                  <PostCard
-                    key={item._id}
-                    post={item}
-                    ownerUserId={this.props.ownerUserId}
-                    users={{
-                      [this.props.authUserId]: this.props.authUser,
-                      [this.props.ownerUserId]: this.props.ownerUser,
-                      ...this.props.authFriends,
-                      ...this.props.ownerFriends,
-                    }}
-                    onCardPress={() =>
-                      this.props.navigation.navigate('PostDetail', {
-                        ownerUserId: item.userId,
-                        postId: item.postId,
-                      })
-                    }
-                  />
-                );
-              };
-              if (addSwiping) {
-                return (
-                  <SwipeCard
-                    type={isDonesView ? 'like' : 'done'}
-                    isLeftAlreadyDone={
-                      isDonesView ? isLikeActive : isDoneActive
-                    }
-                    leftAction={
-                      isDonesView
-                        ? () =>
-                            this.props.toggleLikePost(
-                              false,
-                              item.postId,
-                              item.userId,
-                              this.props.authUserId,
-                            )
-                        : () =>
-                            this.props.toggleDones(
-                              'dones',
-                              false,
-                              item.postId,
-                              item.userId,
-                              this.props.authUserId,
-                              isAddActive,
-                            )
-                    }
-                    isRightAlreadyDone={
-                      isDonesView ? !isDoneActive : !isAddActive
-                    }
-                    rightAction={
-                      isDonesView
-                        ? () =>
-                            this.props.toggleDones(
-                              'dones',
-                              true,
-                              item.postId,
-                              item.userId,
-                              this.props.authUserId,
-                              isAddActive,
-                            )
-                        : () =>
-                            this.props.toggleAdds(
-                              'adds',
-                              true,
-                              item.postId,
-                              item.userId,
-                              this.props.authUserId,
-                              isDoneActive,
-                            )
-                    }
-                  >
-                    {renderPostCard()}
-                  </SwipeCard>
-                );
-              }
-              return renderPostCard();
-            }}
-            onEndReached={() =>
-              this.props.loadUsersPosts(
-                this.props.ownerUserId,
-                this.state.activeView,
-                { userId: this.props.ownerUserId },
-                false,
-                this.props.usersPostsData[
-                  this.addUserIdToView(this.state.activeView)
-                ].isLoading,
-                this.props.usersPostsData[
-                  this.addUserIdToView(this.state.activeView)
-                ].lastItem,
-              )
-            }
-            onRefresh={() =>
-              this.props.loadUsersPosts(
-                this.props.ownerUserId,
-                this.state.activeView,
-                { userId: this.props.ownerUserId },
-                true,
-                this.props.usersPostsData[
-                  this.addUserIdToView(this.state.activeView)
-                ].isLoading,
-                this.props.usersPostsData[
-                  this.addUserIdToView(this.state.activeView)
-                ].lastItem,
-              )
-            }
-            refreshing={
-              this.props.usersPostsData[
-                this.addUserIdToView(this.state.activeView)
-              ].isRefreshing
-            }
-            isLoading={
-              this.props.usersPostsData[
-                this.addUserIdToView(this.state.activeView)
-              ].isLoading
-            }
-            isLoadedAll={
-              this.props.usersPostsData[
-                this.addUserIdToView(this.state.activeView)
-              ].isLoadedAll
-            }
-          />
-        ) : (
-          <View style={styles.container}>
-            <ActivityIndicator size='large' color={Colors.BLACK} />
-          </View>
-        )}
+        <List
+          data={this.props.usersPostsListsData[this.state.activeView]}
+          renderItem={this.renderItem}
+          onEndReached={this.paginateList}
+          onRefresh={this.refreshList}
+          isLoading={isListLoading}
+          isRefreshing={
+            isListLoading
+              ? undefined
+              : this.props.usersPostsListsMeta[this.state.activeView]
+                  .isRefreshing
+          }
+          isPaginating={
+            isListLoading
+              ? undefined
+              : this.props.usersPostsListsMeta[this.state.activeView].isLoading
+          }
+          isLoadedAll={
+            isListLoading
+              ? undefined
+              : this.props.usersPostsListsMeta[this.state.activeView]
+                  .isLoadedAll
+          }
+        />
       </View>
     );
   }
@@ -526,4 +624,10 @@ class MyList extends Component<Props, State> {
 export default connect(
   mapStateToProps,
   mapDispatchToProps,
+  undefined,
+  {
+    areStatePropsEqual: (next: any, prev: any) => {
+      return _.isEqual(next, prev);
+    }
+  }
 )(MyList);

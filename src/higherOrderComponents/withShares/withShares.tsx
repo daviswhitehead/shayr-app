@@ -1,65 +1,76 @@
+import { User, UsersPosts } from '@daviswhitehead/shayr-resources';
 import _ from 'lodash';
-import * as React from 'react';
+import React, { SFC } from 'react';
 import { View } from 'react-native';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import ShareModal from '../../components/ShareModal';
-import { queries } from '../../lib/FirebaseQueries';
+import { queryTypes } from '../../lib/FirebaseQueries';
 import { selectAuthUserId } from '../../redux/auth/selectors';
+import { selectDocumentFromId } from '../../redux/documents/selectors';
+import { generateListKey } from '../../redux/lists/helpers';
+import { selectListItems } from '../../redux/lists/selectors';
+import { State } from '../../redux/Reducers';
 import { selectUsersFromList } from '../../redux/users/selectors';
 
-const mapStateToProps = (state: any) => {
-  const authUserId = selectAuthUserId(state);
+interface StateProps {
+  authUserId: string;
+  friends: {
+    [userId: string]: User;
+  };
+}
+
+interface OwnProps {
+  ownerUserId: string;
+  postId: string;
+  url: string;
+  usersPostsId: string;
+  usersPostsShares: Array<string>;
+}
+
+type Props = OwnProps & StateProps;
+
+const mapStateToProps = (state: State) => {
   return {
-    authUserId,
-    authShares: _.get(
+    authUserId: selectAuthUserId(state),
+    friends: selectUsersFromList(
       state,
-      ['sharesLists', `${authUserId}_${queries.USER_SHARES.type}`, 'items'],
-      []
-    ),
-    friends: selectUsersFromList(state, `${authUserId}_Friends`)
+      `${selectAuthUserId(state)}_Friends`,
+      true
+    )
   };
 };
 
-const mapDispatchToProps = (dispatch: any) => {
-  return {};
-};
-
-const withShares = (WrappedComponent: React.SFC) => (props: any) => {
+const withShares = (WrappedComponent: SFC) => (props: Props) => {
   const {
     authUserId,
-    authShares,
     friends,
-    usersPost,
     ownerUserId,
-    noTouching,
+    postId,
+    url,
+    usersPostsId,
+    usersPostsShares,
     ...passThroughProps
   } = props;
 
-  const isSharesActive = _.includes(authShares, usersPost.postId);
-  const modalRef = React.useRef(null);
-
-  // console.log(authUserId);
+  const isSharesActive = _.includes(usersPostsShares, authUserId);
+  const modalRef = React.useRef();
 
   return (
     <View>
       <WrappedComponent
         isActive={isSharesActive}
-        onPress={
-          modalRef && !noTouching ? () => modalRef.current.toggleModal() : null
-        }
+        onPress={modalRef ? () => modalRef.current.toggleModal() : null}
         {...passThroughProps}
       />
       <ShareModal
         ref={modalRef}
         authUserId={authUserId}
         ownerUserId={ownerUserId}
-        payload={usersPost.url}
-        url={usersPost.url}
-        post={usersPost}
-        postId={usersPost.postId}
+        payload={url}
+        usersPostsId={usersPostsId}
+        postId={postId}
         users={friends}
-        // navigateToLogin={() => navigateToLogin()}
       />
     </View>
   );
@@ -68,7 +79,17 @@ const withShares = (WrappedComponent: React.SFC) => (props: any) => {
 export default compose(
   connect(
     mapStateToProps,
-    mapDispatchToProps
+    undefined,
+    undefined,
+    {
+      areStatesEqual: (next, prev) => {
+        return (
+          selectAuthUserId(next) === selectAuthUserId(prev) &&
+          selectUsersFromList(next, `${selectAuthUserId(next)}_Friends`) ===
+            selectUsersFromList(prev, `${selectAuthUserId(prev)}_Friends`)
+        );
+      }
+    }
   ),
   withShares
 );
