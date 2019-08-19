@@ -21,7 +21,7 @@ const Header: SFC<Props> = ({
   title,
   shadow = false,
   back,
-  statusBarTranslucent = true,
+  statusBarTranslucent = false,
   statusBarHidden = false
 }) => {
   const shadowStyle = shadow ? createShadow(4) : {};
