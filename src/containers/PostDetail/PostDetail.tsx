@@ -80,11 +80,13 @@ const mapStateToProps = (
   state: any,
   { navigation }: NavigationScreenProps<NavigationState, NavigationParams>
 ) => {
+  const ownerUserId = navigation.state.params.ownerUserId;
+  const postId = navigation.state.params.postId;
   const authUserId = selectAuthUserId(state);
   const authUser = selectUserFromId(state, authUserId, true);
   const commentsListKey = generateListKey(
-    authUserId,
-    navigation.state.params.postId,
+    ownerUserId,
+    postId,
     queryTypes.USERS_POSTS_COMMENTS
   );
 
@@ -99,13 +101,9 @@ const mapStateToProps = (
       'createdAt'
     ),
     commentsMeta: selectListMeta(state, 'commentsLists', commentsListKey),
-    ownerUserId: navigation.state.params.ownerUserId,
-    postId: navigation.state.params.postId,
-    post: selectDocumentFromId(
-      state,
-      'usersPosts',
-      `${navigation.state.params.ownerUserId}_${navigation.state.params.postId}`
-    ),
+    ownerUserId,
+    postId,
+    post: selectDocumentFromId(state, 'usersPosts', `${ownerUserId}_${postId}`),
     users: {
       [authUserId]: authUser,
       ...selectUsersFromList(state, `${authUserId}_Friends`, true)
@@ -197,7 +195,7 @@ class PostDetail extends Component<Props, OwnState> {
     const featuredUser = _.get(featuredUsers, [featuredUserIds[0]], {});
     const featuredUserName = _.isEmpty(featuredUser)
       ? ''
-      : `${featuredUser.firstName} ${featuredUser.lastName.charAt(0)}`;
+      : featuredUser.shortName;
     let featuredString = '';
     if (featuredUserIds.length === 1) {
       if (type === 'adds') {

@@ -15,14 +15,6 @@ const ShayrStatusBar: SFC<Props> = ({
   translucent,
   hidden
 }) => {
-  console.log('ShayrStatusBar');
-  console.log({
-    barStyle,
-    backgroundColor,
-    translucent,
-    hidden
-  });
-  
   return (
     <View
       style={{
@@ -34,6 +26,7 @@ const ShayrStatusBar: SFC<Props> = ({
         barStyle={barStyle}
         translucent={translucent}
         hidden={hidden}
+        backgroundColor={backgroundColor}
       />
     </View>
   );

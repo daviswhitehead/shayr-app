@@ -46,7 +46,7 @@ export const types = {
 export const authSubscription = () => {
   return (dispatch: Dispatch) => {
     dispatch({ type: types.AUTH_LISTENER_START });
-    return firebase.auth().onAuthStateChanged(user => {
+    return firebase.auth().onAuthStateChanged((user) => {
       if (user) {
         dispatch({
           type: types.AUTH_STATUS,
@@ -85,7 +85,7 @@ const saveUser = async (user, data, FBProfile) => {
     .doc(user.uid);
   return ref
     .get()
-    .then(doc => {
+    .then((doc) => {
       if (!doc.exists) {
         ref.set({
           createdAt: ts,
@@ -111,7 +111,7 @@ const saveUser = async (user, data, FBProfile) => {
       }
       return true;
     })
-    .catch(error => {
+    .catch((error) => {
       console.error(error);
       return false;
     });
@@ -167,7 +167,7 @@ export function facebookAuth(error, result) {
 // SIGN OUT
 export const startSignOut = () => (dispatch: Dispatch) => {
   dispatch({ type: types.SIGN_OUT_START, isSigningOut: true });
-  navigate('Login');
+  navigate('Login', {});
 };
 
 // SIGN OUT
