@@ -95,9 +95,8 @@ class Share extends Component<Props, OwnState> {
 
       userAnalytics(authUserId);
 
-      // const { type, value } = await ShareExtension.data();
-      const value =
-        'https://medium.com/@khreniak/cloud-firestore-security-rules-basics-fac6b6bea18e';
+      const { type, value } = await ShareExtension.data();
+      // const value = 'https://medium.com/@khreniak/cloud-firestore-security-rules-basics-fac6b6bea18e';
 
       this.setState({ authUserId, payload: value });
 
@@ -162,7 +161,7 @@ class Share extends Component<Props, OwnState> {
         ownerUserId={this.state.authUserId}
         users={this.state.friends}
         navigateToLogin={this.navigateToLogin}
-        // onModalWillHide={() => ShareExtension.close()}
+        onModalWillHide={() => ShareExtension.close()}
         hideBackdrop
         isLoading={this.state.isLoading}
       />

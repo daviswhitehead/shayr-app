@@ -353,10 +353,7 @@ class PostDetail extends Component<Props, OwnState> {
     return (
       <UserTextDate
         isLoading={this.state.isCommentsLoading}
-        userName={this.state.isCommentsLoading ? undefined : user.shortName}
-        profilePhoto={
-          this.state.isCommentsLoading ? undefined : user.facebookProfilePhoto
-        }
+        user={this.state.isCommentsLoading ? undefined : user}
         text={item.text}
         createdAt={
           this.state.isCommentsLoading ? undefined : item.createdAt.toDate()
@@ -448,6 +445,9 @@ class PostDetail extends Component<Props, OwnState> {
           authUser={this.props.authUser}
           ownerUserId={this.props.authUserId}
           usersPostsId={this.state.isLoading ? undefined : this.props.post._id}
+          usersPostsShares={
+            this.state.isLoading ? undefined : this.props.post.shares
+          }
           postId={this.state.isLoading ? undefined : this.props.post.postId}
           url={this.state.isLoading ? undefined : this.props.post.url}
         />

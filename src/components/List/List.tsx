@@ -89,7 +89,7 @@ class List extends Component<Props, OwnState> {
       ...passThroughProps
     } = this.props;
 
-    const tempData = isLoading ? [this.loadingData[0]] : [data[0]];
+    // const tempData = isLoading ? [this.loadingData[0]] : [data[0]];
 
     return (
       <FlatList

@@ -19,6 +19,7 @@ export interface Props extends UserAtom {
   noTouching?: boolean;
   isSelected?: boolean;
   isLoading?: boolean;
+  style?: any;
 }
 
 const UserAvatar: SFC<Props> = ({
@@ -31,11 +32,13 @@ const UserAvatar: SFC<Props> = ({
   onPress,
   noTouching,
   isSelected = false,
-  isLoading = false
+  isLoading = false,
+  style = {}
 }: Props) => {
   const _containerStyle = [
     styles.container,
-    { flexDirection: isVertical ? 'column' : 'row' }
+    { flexDirection: isVertical ? 'column' : 'row' },
+    style
   ];
 
   if (isLoading) {

@@ -15,51 +15,45 @@ import { selectUsersFromList } from '../../redux/users/selectors';
 
 interface StateProps {
   authUserId: string;
-  authShares: Array<string>;
   friends: {
     [userId: string]: User;
   };
-  usersPosts: UsersPosts;
 }
 
 interface OwnProps {
   ownerUserId: string;
-  usersPostsId: string;
   postId: string;
   url: string;
+  usersPostsId: string;
+  usersPostsShares: Array<string>;
 }
 
 type Props = OwnProps & StateProps;
 
-const mapStateToProps = (state: State, props: OwnProps) => {
+const mapStateToProps = (state: State) => {
   return {
     authUserId: selectAuthUserId(state),
     friends: selectUsersFromList(
       state,
       `${selectAuthUserId(state)}_Friends`,
       true
-    ),
-    usersPosts: selectDocumentFromId(state, 'usersPosts', props.usersPostsId)
+    )
   };
 };
 
 const withShares = (WrappedComponent: SFC) => (props: Props) => {
   const {
     authUserId,
-    authShares,
     friends,
     ownerUserId,
-    usersPosts,
-    usersPostsId,
     postId,
     url,
+    usersPostsId,
+    usersPostsShares,
     ...passThroughProps
   } = props;
 
-  const isSharesActive = _.includes(
-    _.get(usersPosts, ['shares'], []),
-    authUserId
-  );
+  const isSharesActive = _.includes(usersPostsShares, authUserId);
   const modalRef = React.useRef();
 
   return (
@@ -89,40 +83,12 @@ export default compose(
     undefined,
     {
       areStatesEqual: (next, prev) => {
-        // console.log('next');
-        // console.log(next);
-        // console.log('prev');
-        // console.log(prev);
-        // console.log('_.isEqual(next, prev)');
-        // console.log(_.isEqual(next, prev));
-        return _.isEqual(next, prev);
-      },
-      areStatePropsEqual: (next, prev) => {
-        // console.log('next');
-        // console.log(next);
-        // console.log('prev');
-        // console.log(prev);
-        // console.log('_.isEqual(next, prev)');
-        // console.log(_.isEqual(next, prev));
-        return _.isEqual(next, prev);
+        return (
+          selectAuthUserId(next) === selectAuthUserId(prev) &&
+          selectUsersFromList(next, `${selectAuthUserId(next)}_Friends`) ===
+            selectUsersFromList(prev, `${selectAuthUserId(prev)}_Friends`)
+        );
       }
-      // areStatesEqual: (next, prev) => {
-      //   return (
-      //     selectAuthUserId(next) === selectAuthUserId(prev) &&
-      //     selectListItems(
-      //       next,
-      //       'sharesLists',
-      //       generateListKey(selectAuthUserId(next), queryTypes.USER_SHARES)
-      //     ) ===
-      //       selectListItems(
-      //         prev,
-      //         'sharesLists',
-      //         generateListKey(selectAuthUserId(prev), queryTypes.USER_SHARES)
-      //       ) &&
-      //     selectUsersFromList(next, `${selectAuthUserId(next)}_Friends`) ===
-      //       selectUsersFromList(prev, `${selectAuthUserId(prev)}_Friends`)
-      //   );
-      // }
     }
   ),
   withShares

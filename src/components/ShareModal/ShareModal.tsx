@@ -32,8 +32,6 @@ import PostCard from '../PostCard';
 import UserAvatar from '../UserAvatar';
 import styles from './styles';
 
-let RENDER_COUNT = 0;
-
 interface Users {
   [userId: string]: User;
 }
@@ -111,7 +109,6 @@ class ShareModal extends React.Component<Props, OwnState> {
 
   constructor(props: Props) {
     super(props);
-    this.RENDER_COUNT = 0;
 
     this.initialState = {
       shareId: '',
@@ -432,14 +429,6 @@ class ShareModal extends React.Component<Props, OwnState> {
   };
 
   render() {
-    console.log(`ShareModal - Render Count: ${this.RENDER_COUNT}`);
-    // console.log('this.props');
-    // console.log(this.props);
-    // console.log('this.state');
-    // console.log(this.state);
-    RENDER_COUNT += 1;
-    this.RENDER_COUNT += 1;
-
     const { post } = this.state;
 
     return (
@@ -504,13 +493,6 @@ export default connect(
   {
     forwardRef: true,
     areStatePropsEqual: (next, prev) => {
-      // console.log('next');
-      // console.log(next);
-      // console.log('prev');
-      // console.log(prev);
-      // console.log('_.isEqual(next, prev)');
-      // console.log(_.isEqual(next, prev));
-
       return _.isEqual(next, prev);
     }
   }

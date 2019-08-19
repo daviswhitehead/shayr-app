@@ -58,6 +58,7 @@ export default StyleSheet.create({
     marginBottom: Layout.SPACING_MEDIUM
   },
   subtitleBox: {
+    flexWrap: 'wrap',
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignContent: 'center'

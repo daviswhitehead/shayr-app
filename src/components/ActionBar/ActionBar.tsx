@@ -14,20 +14,22 @@ import styles from './styles';
 
 export interface Props {
   authUser: User;
+  isLoading?: boolean;
   ownerUserId: string;
   postId: string;
-  usersPostsId: string;
-  isLoading?: boolean;
   url: string;
+  usersPostsId: string;
+  usersPostsShares: Array<string>;
 }
 
 const ActionBar: SFC<Props> = ({
   authUser,
   ownerUserId,
-  usersPostsId,
   postId,
   isLoading,
-  url
+  url,
+  usersPostsId,
+  usersPostsShares
 }) => {
   if (isLoading) {
     return (
@@ -60,6 +62,7 @@ const ActionBar: SFC<Props> = ({
             style={styles.action}
             ownerUserId={ownerUserId}
             usersPostsId={usersPostsId}
+            usersPostsShares={usersPostsShares}
             postId={postId}
             url={url}
           />

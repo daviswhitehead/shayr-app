@@ -1,33 +1,31 @@
+import { User } from '@daviswhitehead/shayr-resources';
 import _ from 'lodash';
 import moment from 'moment';
 import React, { memo, SFC } from 'react';
 import { Text, View } from 'react-native';
 import Skeleton from '../Skeleton';
+import SmartUserAvatar from '../SmartUserAvatar';
 import TouchableWrapper from '../TouchableWrapper';
 import UserImage from '../UserImage';
 import styles from './styles';
 
 export interface Props {
-  profilePhoto: string;
+  user: User;
   text: string;
   createdAt: Date;
-  userName?: string;
   title?: string;
   onPressContainer?: () => void | undefined;
-  onPressAvatar?: () => void | undefined;
   onPressTitle?: () => void | undefined;
   noTouching?: boolean;
   isLoading?: boolean;
 }
 
-const UserAvatar: SFC<Props> = ({
-  userName,
-  profilePhoto,
+const UserTextDate: SFC<Props> = ({
   text,
   createdAt,
   title,
   onPressContainer,
-  onPressAvatar,
+  user,
   onPressTitle,
   noTouching = false,
   isLoading = false
@@ -43,23 +41,25 @@ const UserAvatar: SFC<Props> = ({
       </View>
     );
   }
-  const parsedText = userName ? _.replace(text, userName, '') : text;
+  const parsedText = user.shortName
+    ? _.replace(text, user.shortName, '')
+    : text;
 
   return (
     <TouchableWrapper
       style={styles.container}
       onPress={noTouching ? undefined : onPressContainer}
     >
-      <UserImage
+      <SmartUserAvatar
+        {...user}
+        shouldHideName
+        userId={user._id}
         style={styles.userImageSpacing}
-        uri={profilePhoto}
-        size='small'
-        onPress={onPressAvatar}
       />
       <View style={styles.textContainer}>
         <Text>
-          {userName ? (
-            <Text style={styles.boldText}>{`${userName} `}</Text>
+          {user.shortName ? (
+            <Text style={styles.boldText}>{`${user.shortName} `}</Text>
           ) : null}
           <Text style={styles.text}>{_.trim(parsedText)}</Text>
           {title ? (
@@ -74,4 +74,4 @@ const UserAvatar: SFC<Props> = ({
   );
 };
 
-export default memo(UserAvatar);
+export default memo(UserTextDate);

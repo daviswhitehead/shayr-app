@@ -144,6 +144,7 @@ class PostCard extends Component<Props> {
                   name={names.SHARE}
                   ownerUserId={post.userId}
                   usersPostsId={post._id}
+                  usersPostsShares={post.shares}
                   postId={post.postId}
                   noTouching={noTouching}
                   url={post.url}
