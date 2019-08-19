@@ -35,8 +35,6 @@ import Colors from '../../styles/Colors';
 import { actionTypeActivityFeature } from '../../styles/Copy';
 import styles from './styles';
 
-const RENDER_COUNT = 0;
-
 interface StateProps {
   authUser: User;
   authUserId: string;

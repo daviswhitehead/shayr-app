@@ -34,8 +34,6 @@ import { loadUsersPosts } from '../../redux/usersPosts/actions';
 import Colors from '../../styles/Colors';
 import styles from './styles';
 
-let RENDER_COUNT = 0;
-
 interface StateProps {
   authAdds: Array<string>;
   authDones: Array<string>;
@@ -268,20 +266,12 @@ class MyList extends Component<Props, OwnState> {
   }
 
   componentDidMount() {
-    console.log(`MyList - componentDidMount`);
-    console.log('this.props');
-    console.log(this.props);
-    console.log('this.state');
-    console.log(this.state);
-
     // check loading status
-    console.log('check loading status');
     this.checkProfileLoading();
     this.checkSegmentedControlLoading();
     this.checkUsersPostsListsLoaded();
 
     // get owner user if not already loaded
-    console.log('get owner user if not already loaded');
     !this.props.ownerUser && this.props.getUser(this.props.ownerUserId);
 
     // get owner friends if not already loaded
@@ -292,9 +282,6 @@ class MyList extends Component<Props, OwnState> {
 
     // SOMEDAY: load list data in the right order and/or in advance
     // if (adds, shares, dones, likes) list doesnt exist yet, load initial posts
-    console.log(
-      'if (adds, shares, dones, likes) list doesnt exist yet, load initial posts'
-    );
     if (
       !_.get(
         this.props,
@@ -306,7 +293,6 @@ class MyList extends Component<Props, OwnState> {
         undefined
       )
     ) {
-      console.log('loadUsersPosts: Adds');
       this.props.loadUsersPosts(
         this.props.usersPostsListsViews.adds,
         this.props.usersPostsListsQueries[this.props.usersPostsListsViews.adds]
@@ -323,7 +309,6 @@ class MyList extends Component<Props, OwnState> {
         undefined
       )
     ) {
-      console.log('loadUsersPosts: Shares');
       this.props.loadUsersPosts(
         this.props.usersPostsListsViews.shares,
         this.props.usersPostsListsQueries[
@@ -342,7 +327,6 @@ class MyList extends Component<Props, OwnState> {
         undefined
       )
     ) {
-      console.log('loadUsersPosts: Dones');
       this.props.loadUsersPosts(
         this.props.usersPostsListsViews.dones,
         this.props.usersPostsListsQueries[this.props.usersPostsListsViews.dones]
@@ -359,7 +343,6 @@ class MyList extends Component<Props, OwnState> {
         undefined
       )
     ) {
-      console.log('loadUsersPosts: Likes');
       this.props.loadUsersPosts(
         this.props.usersPostsListsViews.likes,
         this.props.usersPostsListsQueries[this.props.usersPostsListsViews.likes]
@@ -572,13 +555,6 @@ class MyList extends Component<Props, OwnState> {
   };
 
   render() {
-    console.log(`MyList - Render Count: ${RENDER_COUNT}`);
-    // console.log('this.props');
-    // console.log(this.props);
-    // console.log('this.state');
-    // console.log(this.state);
-    RENDER_COUNT += 1;
-
     const isListLoading = !this.state.isUsersPostsListsLoaded[
       this.state.activeView
     ];

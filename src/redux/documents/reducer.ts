@@ -11,16 +11,12 @@ const initialState: State = {};
 function reducer(state = initialState, action: Actions) {
   switch (action.type) {
     case types.GET_DOCUMENTS_SUCCESS: {
-      // console.log('GET_DOCUMENTS_SUCCESS');
       return _.reduce(
         action.documents,
         (result, value, key) => {
           if (_.isEqual(result.key, value)) {
-            // console.log('EQUAL --> RETURN STATE');
-
             return result;
           }
-          // console.log('NEW --> RETURN STATE + NEW');
           return {
             ...result,
             [key]: value

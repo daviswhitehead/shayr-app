@@ -5,34 +5,72 @@
     
     
       
-      <testcase classname="fastlane.lanes" name="0: Verifying fastlane version" time="0.003623">
+      <testcase classname="fastlane.lanes" name="00: Verifying fastlane version" time="0.003099">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="1: gradle" time="2.92805">
+      <testcase classname="fastlane.lanes" name="01: Switch to ios development_certificates lane" time="0.003175">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="2: increment_version_code" time="0.009502">
+      <testcase classname="fastlane.lanes" name="02: register_devices" time="3.858405">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="3: gradle" time="122.359945">
+      <testcase classname="fastlane.lanes" name="03: match" time="23.144601">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="4: crashlytics" time="8.774937">
+      <testcase classname="fastlane.lanes" name="04: Switch to ios update_bundle_ids lane" time="0.00282">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="5: upload_to_play_store" time="18.473834">
+      <testcase classname="fastlane.lanes" name="05: update_app_identifier" time="0.29966">
         
-          <failure message="/Users/daviswhitehead/.fastlane/bin/bundle/lib/ruby/gems/2.2.0/gems/fastlane-2.120.0/fastlane/lib/fastlane/actions/actions_helper.rb:48:in `execute_action'&#10;/Users/daviswhitehead/.fastlane/bin/bundle/lib/ruby/gems/2.2.0/gems/fastlane-2.120.0/fastlane/lib/fastlane/runner.rb:235:in `block in execute_action'&#10;/Users/daviswhitehead/.fastlane/bin/bundle/lib/ruby/gems/2.2.0/gems/fastlane-2.120.0/fastlane/lib/fastlane/runner.rb:227:in `chdir'&#10;/Users/daviswhitehead/.fastlane/bin/bundle/lib/ruby/gems/2.2.0/gems/fastlane-2.120.0/fastlane/lib/fastlane/runner.rb:227:in `execute_action'&#10;/Users/daviswhitehead/.fastlane/bin/bundle/lib/ruby/gems/2.2.0/gems/fastlane-2.120.0/fastlane/lib/fastlane/runner.rb:157:in `trigger_action_by_name'&#10;/Users/daviswhitehead/.fastlane/bin/bundle/lib/ruby/gems/2.2.0/gems/fastlane-2.120.0/fastlane/lib/fastlane/fast_file.rb:154:in `method_missing'&#10;Fastfile:149:in `block (2 levels) in parsing_binding'&#10;/Users/daviswhitehead/.fastlane/bin/bundle/lib/ruby/gems/2.2.0/gems/fastlane-2.120.0/fastlane/lib/fastlane/lane.rb:33:in `call'&#10;/Users/daviswhitehead/.fastlane/bin/bundle/lib/ruby/gems/2.2.0/gems/fastlane-2.120.0/fastlane/lib/fastlane/lane.rb:33:in `call'&#10;/Users/daviswhitehead/.fastlane/bin/bundle/lib/ruby/gems/2.2.0/gems/fastlane-2.120.0/fastlane/lib/fastlane/runner.rb:49:in `block in execute'&#10;/Users/daviswhitehead/.fastlane/bin/bundle/lib/ruby/gems/2.2.0/gems/fastlane-2.120.0/fastlane/lib/fastlane/runner.rb:45:in `chdir'&#10;/Users/daviswhitehead/.fastlane/bin/bundle/lib/ruby/gems/2.2.0/gems/fastlane-2.120.0/fastlane/lib/fastlane/runner.rb:45:in `execute'&#10;/Users/daviswhitehead/.fastlane/bin/bundle/lib/ruby/gems/2.2.0/gems/fastlane-2.120.0/fastlane/lib/fastlane/lane_manager.rb:56:in `cruise_lane'&#10;/Users/daviswhitehead/.fastlane/bin/bundle/lib/ruby/gems/2.2.0/gems/fastlane-2.120.0/fastlane/lib/fastlane/command_line_handler.rb:36:in `handle'&#10;/Users/daviswhitehead/.fastlane/bin/bundle/lib/ruby/gems/2.2.0/gems/fastlane-2.120.0/fastlane/lib/fastlane/commands_generator.rb:108:in `block (2 levels) in run'&#10;/Users/daviswhitehead/.fastlane/bin/bundle/lib/ruby/gems/2.2.0/gems/commander-fastlane-4.4.6/lib/commander/command.rb:178:in `call'&#10;/Users/daviswhitehead/.fastlane/bin/bundle/lib/ruby/gems/2.2.0/gems/commander-fastlane-4.4.6/lib/commander/command.rb:178:in `call'&#10;/Users/daviswhitehead/.fastlane/bin/bundle/lib/ruby/gems/2.2.0/gems/commander-fastlane-4.4.6/lib/commander/command.rb:153:in `run'&#10;/Users/daviswhitehead/.fastlane/bin/bundle/lib/ruby/gems/2.2.0/gems/commander-fastlane-4.4.6/lib/commander/runner.rb:476:in `run_active_command'&#10;/Users/daviswhitehead/.fastlane/bin/bundle/lib/ruby/gems/2.2.0/gems/fastlane-2.120.0/fastlane_core/lib/fastlane_core/ui/fastlane_runner.rb:76:in `run!'&#10;/Users/daviswhitehead/.fastlane/bin/bundle/lib/ruby/gems/2.2.0/gems/commander-fastlane-4.4.6/lib/commander/delegates.rb:15:in `run!'&#10;/Users/daviswhitehead/.fastlane/bin/bundle/lib/ruby/gems/2.2.0/gems/fastlane-2.120.0/fastlane/lib/fastlane/commands_generator.rb:333:in `run'&#10;/Users/daviswhitehead/.fastlane/bin/bundle/lib/ruby/gems/2.2.0/gems/fastlane-2.120.0/fastlane/lib/fastlane/commands_generator.rb:41:in `start'&#10;/Users/daviswhitehead/.fastlane/bin/bundle/lib/ruby/gems/2.2.0/gems/fastlane-2.120.0/fastlane/lib/fastlane/cli_tools_distributor.rb:119:in `take_off'&#10;/Users/daviswhitehead/.fastlane/bin/bundle/lib/ruby/gems/2.2.0/gems/fastlane-2.120.0/bin/fastlane:23:in `&lt;top (required)&gt;'&#10;/Users/daviswhitehead/.fastlane/bin/bundle/bin/fastlane:22:in `load'&#10;/Users/daviswhitehead/.fastlane/bin/bundle/bin/fastlane:22:in `&lt;main&gt;'&#10;&#10;Google Api Error: releaseValidationErrorKeyApkNoUpgradePaths: You cannot rollout this release because it does not allow any existing users to upgrade to the newly added APKs." />
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="06: update_app_identifier" time="0.155241">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="07: Switch to ios build lane" time="0.002562">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="08: increment_build_number" time="1.640264">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="09: gym" time="643.660187">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="10: crashlytics" time="14.499348">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="11: Switch to ios update_codepush_builds lane" time="0.004817">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="12: pwd" time="0.010668">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="13: cd .. &amp;&amp; appcenter codepush release-react -a whitehead.davis/Shayr-iOS -d alpha" time="9.565019">
         
       </testcase>
     
