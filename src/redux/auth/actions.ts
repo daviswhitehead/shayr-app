@@ -93,7 +93,9 @@ const saveUser = async (user, data, FBProfile) => {
           firstName: data.first_name,
           lastName: data.last_name,
           email: data.email,
-          facebookProfilePhoto: FBProfile.picture.data.url
+          facebookProfilePhoto: `https://graph.facebook.com/${
+            FBProfile.id
+          }/picture?type=large`
         });
       } else {
         ref.set(
@@ -102,7 +104,9 @@ const saveUser = async (user, data, FBProfile) => {
             firstName: data.first_name,
             lastName: data.last_name,
             email: data.email,
-            facebookProfilePhoto: FBProfile.picture.data.url
+            facebookProfilePhoto: `https://graph.facebook.com/${
+              FBProfile.id
+            }/picture?type=large`
           },
           {
             merge: true
@@ -133,6 +137,8 @@ export function facebookAuth(error, result) {
       dispatch({ type: types.FACEBOOK_AUTH_SUCCESS });
 
       const FBProfile = await getFBProfile(currentAccessToken.accessToken);
+      console.log('FBProfile');
+      console.log(FBProfile);
 
       saveToken('accessToken', currentAccessToken.accessToken);
       dispatch({ type: types.ACCESS_TOKEN_SAVED, hasAccessToken: true });
