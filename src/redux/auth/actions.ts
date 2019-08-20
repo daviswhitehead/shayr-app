@@ -93,6 +93,7 @@ const saveUser = async (user, data, FBProfile) => {
           firstName: data.first_name,
           lastName: data.last_name,
           email: data.email,
+          facebookId: FBProfile.id,
           facebookProfilePhoto: `https://graph.facebook.com/${
             FBProfile.id
           }/picture?type=large`
@@ -104,6 +105,7 @@ const saveUser = async (user, data, FBProfile) => {
             firstName: data.first_name,
             lastName: data.last_name,
             email: data.email,
+            facebookId: FBProfile.id,
             facebookProfilePhoto: `https://graph.facebook.com/${
               FBProfile.id
             }/picture?type=large`
