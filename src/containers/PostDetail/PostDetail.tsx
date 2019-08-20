@@ -449,6 +449,9 @@ class PostDetail extends Component<Props, OwnState> {
           usersPostsShares={
             this.state.isLoading ? undefined : this.props.post.shares
           }
+          usersPostsComments={
+            this.state.isLoading ? undefined : this.props.post.comments
+          }
           postId={this.state.isLoading ? undefined : this.props.post.postId}
           url={this.state.isLoading ? undefined : this.props.post.url}
         />

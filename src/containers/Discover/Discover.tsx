@@ -217,11 +217,11 @@ class Discover extends PureComponent<Props, OwnState> {
     );
 
     // DEVELOPMENT HELPERS
-    // // this.props.navigation.navigate('FriendsTab', {});
-    this.props.navigation.navigate('PostDetail', {
-      ownerUserId: this.props.authUserId,
-      postId: '9JKOMIpbKdSCt4MRomPI'
-    });
+    // this.props.navigation.navigate('FriendsTab', {});
+    // this.props.navigation.navigate('PostDetail', {
+    //   ownerUserId: this.props.authUserId,
+    //   postId: '9JKOMIpbKdSCt4MRomPI'
+    // });
     // this.props.navigation.navigate('PostDetail', {
     //   ownerUserId: this.props.authUserId,
     //   postId: '48PKLyY71DHin1XuIPop'
