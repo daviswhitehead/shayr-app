@@ -35,8 +35,8 @@ const UserTextDate: SFC<Props> = ({
       <View style={styles.container}>
         <UserImage isLoading style={styles.userImageSpacing} />
         <View style={styles.textContainer}>
-          <Skeleton childStyle={styles.skeletonText} />
           <Skeleton childStyle={styles.skeletonDate} />
+          <Skeleton childStyle={styles.skeletonText} />
         </View>
       </View>
     );
@@ -57,10 +57,13 @@ const UserTextDate: SFC<Props> = ({
         style={styles.userImageSpacing}
       />
       <View style={styles.textContainer}>
+        <View style={styles.nameDateContainer}>
+          <Text style={styles.boldText}>
+            {user.firstName} {user.lastName}
+          </Text>
+          <Text style={styles.date}>{moment(createdAt).fromNow()}</Text>
+        </View>
         <Text>
-          {user.shortName ? (
-            <Text style={styles.boldText}>{`${user.shortName} `}</Text>
-          ) : null}
           <Text style={styles.text}>{_.trim(parsedText)}</Text>
           {title ? (
             <Text style={styles.boldText} onPress={onPressTitle}>
@@ -68,7 +71,6 @@ const UserTextDate: SFC<Props> = ({
             </Text>
           ) : null}
         </Text>
-        <Text style={styles.date}>{moment(createdAt).fromNow()}</Text>
       </View>
     </TouchableWrapper>
   );

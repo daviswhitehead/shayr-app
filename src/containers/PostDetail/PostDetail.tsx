@@ -38,6 +38,7 @@ import styles from './styles';
 interface StateProps {
   authUser: User;
   authUserId: string;
+  authFriends: Users;
   commentsData: Array<UsersPosts>;
   commentsMeta: any;
   ownerUserId: string;
@@ -89,6 +90,7 @@ const mapStateToProps = (
     postId,
     queryTypes.USERS_POSTS_COMMENTS
   );
+  const authFriends = selectUsersFromList(state, `${authUserId}_Friends`, true);
 
   return {
     authUserId,
@@ -101,12 +103,13 @@ const mapStateToProps = (
       'createdAt'
     ),
     commentsMeta: selectListMeta(state, 'commentsLists', commentsListKey),
+    authFriends,
     ownerUserId,
     postId,
     post: selectDocumentFromId(state, 'usersPosts', `${ownerUserId}_${postId}`),
     users: {
       [authUserId]: authUser,
-      ...selectUsersFromList(state, `${authUserId}_Friends`, true)
+      ...authFriends
     }
   };
 };
@@ -161,7 +164,7 @@ class PostDetail extends Component<Props, OwnState> {
     if (
       this.state.isLoading &&
       this.props.authUser &&
-      this.props.users &&
+      this.props.authFriends &&
       this.props.post
     ) {
       this.setState({ isLoading: false });
@@ -172,7 +175,7 @@ class PostDetail extends Component<Props, OwnState> {
     if (
       this.state.isCommentsLoading &&
       this.props.authUser &&
-      this.props.users &&
+      this.props.authFriends &&
       this.props.commentsMeta &&
       this.props.commentsMeta.isLoaded
     ) {
@@ -344,12 +347,14 @@ class PostDetail extends Component<Props, OwnState> {
 
   // TODO: add comment type definition
   renderItem = ({ item }: { item: any }) => {
-    const user = this.props.users[item.userId];
-
     return (
       <UserTextDate
         isLoading={this.state.isCommentsLoading}
-        user={this.state.isCommentsLoading ? undefined : user}
+        user={
+          this.state.isCommentsLoading
+            ? undefined
+            : this.props.users[item.userId]
+        }
         text={item.text}
         createdAt={
           this.state.isCommentsLoading ? undefined : item.createdAt.toDate()

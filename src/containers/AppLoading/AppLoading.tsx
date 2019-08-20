@@ -1,3 +1,4 @@
+import moment from 'moment';
 import React, { Component } from 'react';
 import { ActivityIndicator, AppState, Linking, View } from 'react-native';
 import firebase from 'react-native-firebase';
@@ -111,6 +112,25 @@ class AppLoading extends Component<Props> {
     if (deepLink) {
       this.props.handleURLRoute(deepLink);
     }
+
+    // setting up relative time strings
+    moment.updateLocale('en', {
+      relativeTime: {
+        future: 'in %s',
+        past: '%s ',
+        s: 's',
+        m: 'm',
+        mm: '%dm',
+        h: 'h',
+        hh: '%dh',
+        d: 'd',
+        dd: '%dd',
+        M: 'a mth',
+        MM: '%dmths',
+        y: 'y',
+        yy: '%dy'
+      }
+    });
 
     this.props.isAppReady(true);
   }
