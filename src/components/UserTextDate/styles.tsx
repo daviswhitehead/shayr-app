@@ -15,6 +15,11 @@ export default StyleSheet.create({
     justifyContent: 'flex-start',
     alignItems: 'stretch'
   },
+  nameDateContainer: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center'
+  },
   userImageSpacing: {
     paddingRight: Layout.SPACING_MEDIUM
   },
@@ -31,7 +36,8 @@ export default StyleSheet.create({
     marginBottom: Layout.SPACING_MEDIUM
   },
   date: {
-    ...fontSystem.DATE_TIMEAGO
+    ...fontSystem.DATE_TIMEAGO,
+    marginLeft: Layout.SPACING_MEDIUM
   },
   skeletonDate: {
     height: 12,
