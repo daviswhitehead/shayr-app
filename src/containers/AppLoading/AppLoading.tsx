@@ -1,4 +1,3 @@
-import moment from 'moment';
 import React, { Component } from 'react';
 import { ActivityIndicator, AppState, Linking, View } from 'react-native';
 import firebase from 'react-native-firebase';
@@ -8,6 +7,7 @@ import { applyFirestoreSettings } from '../../config/FirebaseConfig';
 import RootNavigator from '../../config/Routes';
 import { currentScreenAnalytics } from '../../lib/FirebaseAnalytics';
 import { dynamicLinkListener } from '../../lib/FirebaseDynamicLinks';
+import { initializeMoment } from '../../lib/MomentHelpers';
 import { notificationChannels } from '../../lib/NotificationChannels';
 import {
   notificationDisplayedListener,
@@ -113,24 +113,8 @@ class AppLoading extends Component<Props> {
       this.props.handleURLRoute(deepLink);
     }
 
-    // setting up relative time strings
-    moment.updateLocale('en', {
-      relativeTime: {
-        future: 'in %s',
-        past: '%s ',
-        s: 's',
-        m: 'm',
-        mm: '%dm',
-        h: 'h',
-        hh: '%dh',
-        d: 'd',
-        dd: '%dd',
-        M: 'a mth',
-        MM: '%dmths',
-        y: 'y',
-        yy: '%dy'
-      }
-    });
+    // apply moment date/time settings
+    initializeMoment();
 
     this.props.isAppReady(true);
   }
