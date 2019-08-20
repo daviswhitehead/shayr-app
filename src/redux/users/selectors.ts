@@ -60,6 +60,10 @@ export const selectUsersFromList = createCachedSelector(
       return;
     }
 
+    if (!usersList.items) {
+      return {};
+    }
+
     return usersList.items.reduce((result: any, userId: string) => {
       return {
         ...result,

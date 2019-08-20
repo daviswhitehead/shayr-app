@@ -11,6 +11,10 @@ const initialState: State = {};
 function reducer(state = initialState, action: Actions) {
   switch (action.type) {
     case types.GET_DOCUMENTS_SUCCESS: {
+      if (_.isEmpty(action.documents)) {
+        return state;
+      }
+
       return _.reduce(
         action.documents,
         (result, value, key) => {
@@ -24,15 +28,6 @@ function reducer(state = initialState, action: Actions) {
         },
         state
       );
-
-      // if (_.isEqual(state, action.documents)) {
-      //   return state;
-      // }
-
-      // return {
-      //   ...state,
-      //   ...action.documents
-      // };
     }
     case types.GET_DOCUMENTS_FAIL: {
       return {

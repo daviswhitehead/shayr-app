@@ -136,6 +136,7 @@ export function facebookAuth(error, result) {
     try {
       dispatch({ type: types.FACEBOOK_AUTH_START });
       const currentAccessToken = await getFBToken(error, result);
+      if (!currentAccessToken) throw new Error('undefined access token');
       dispatch({ type: types.FACEBOOK_AUTH_SUCCESS });
 
       const FBProfile = await getFBProfile(currentAccessToken.accessToken);
