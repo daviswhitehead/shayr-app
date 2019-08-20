@@ -9,9 +9,17 @@ import { Query } from 'react-native-firebase/firestore';
 import { Dispatch } from 'redux';
 import { logEvent } from '../../lib/FirebaseAnalytics';
 import { arrayUnion, ts } from '../../lib/FirebaseHelpers';
-import { composeQuery } from '../../lib/FirebaseQueries';
+import {
+  composeQuery,
+  queryTypes,
+  references,
+  referenceTypes
+} from '../../lib/FirebaseQueries';
 import { updateCounts } from '../../lib/FirebaseWrites';
 import { getFeedOfDocuments, LastItem } from '../FirebaseRedux';
+import { getDocument } from '../FirebaseRedux';
+import { toggleItem } from '../lists/actions';
+import { generateListKey } from '../lists/helpers';
 import { refreshUsersPostsDocuments } from '../usersPosts/actions';
 
 export const STATE_KEY = 'comments';
@@ -61,6 +69,8 @@ export const createComment = (
         console.error(error);
       });
 
+    if (!commentId) throw new Error('creating a new comment failed');
+
     updateCounts(batcher, true, 'comments', postId, ownerUserId, userId);
 
     if (!existingBatcher) {
@@ -68,6 +78,19 @@ export const createComment = (
     }
 
     dispatch(refreshUsersPostsDocuments(postId, 'cache'));
+    getDocument(
+      dispatch,
+      STATE_KEY,
+      references.get(referenceTypes.GET_DOCUMENT)(`comments/${commentId}`)
+    );
+    dispatch(
+      toggleItem(
+        'commentsLists',
+        generateListKey(ownerUserId, postId, queryTypes.USERS_POSTS_COMMENTS),
+        commentId,
+        true
+      )
+    );
 
     dispatch({
       type: types.CREATE_COMMENT_SUCCESS

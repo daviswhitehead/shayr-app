@@ -3,8 +3,8 @@ import _ from 'lodash';
 import React, { memo, SFC } from 'react';
 import { SafeAreaView, View } from 'react-native';
 import { IconWithAdds } from '../../higherOrderComponents/withAdds';
+import { IconWithComments } from '../../higherOrderComponents/withComments';
 import { IconWithDones } from '../../higherOrderComponents/withDones';
-import { IconWithLikes } from '../../higherOrderComponents/withLikes';
 import { IconWithShares } from '../../higherOrderComponents/withShares';
 import Icon from '../Icon';
 import { names } from '../Icon';
@@ -20,6 +20,7 @@ export interface Props {
   url: string;
   usersPostsId: string;
   usersPostsShares: Array<string>;
+  usersPostsComments: Array<string>;
 }
 
 const ActionBar: SFC<Props> = ({
@@ -29,7 +30,8 @@ const ActionBar: SFC<Props> = ({
   isLoading,
   url,
   usersPostsId,
-  usersPostsShares
+  usersPostsShares,
+  usersPostsComments
 }) => {
   if (isLoading) {
     return (
@@ -80,12 +82,12 @@ const ActionBar: SFC<Props> = ({
             usersPostsId={usersPostsId}
             postId={postId}
           />
-          <IconWithLikes
-            name={names.LIKE}
-            style={styles.action}
+          <IconWithComments
+            name={names.REACTION}
             ownerUserId={ownerUserId}
-            usersPostsId={usersPostsId}
             postId={postId}
+            style={styles.action}
+            usersPostsComments={usersPostsComments}
           />
         </View>
       </SafeAreaView>

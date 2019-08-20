@@ -2,7 +2,7 @@ import { User, UsersPosts } from '@daviswhitehead/shayr-resources';
 import _ from 'lodash';
 import React, { Component } from 'react';
 import { Image, Text, TouchableWithoutFeedback, View } from 'react-native';
-import { IconWithCountWithLikes } from '../../higherOrderComponents/withLikes';
+import { IconWithCountWithComments } from '../../higherOrderComponents/withComments';
 import { IconWithCountWithShares } from '../../higherOrderComponents/withShares';
 import { names } from '../Icon';
 import IconWithCount from '../IconWithCount';
@@ -150,13 +150,13 @@ class PostCard extends Component<Props> {
                   url={post.url}
                 />
                 <View style={styles.actionsSpacer} />
-                <IconWithCountWithLikes
-                  count={post.likesCount || 0}
-                  name={names.LIKE}
-                  ownerUserId={post.userId}
-                  usersPostsId={post._id}
-                  postId={post.postId}
+                <IconWithCountWithComments
+                  count={post.commentsCount || 0}
+                  name={names.REACTION}
                   noTouching={noTouching}
+                  ownerUserId={post.userId}
+                  postId={post.postId}
+                  usersPostsComments={post.comments}
                 />
               </View>
             </View>

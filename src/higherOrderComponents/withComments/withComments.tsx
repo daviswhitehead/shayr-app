@@ -4,14 +4,14 @@ import React, { SFC } from 'react';
 import { View } from 'react-native';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
-import ShareModal from '../../components/ShareModal';
+import CommentModal from '../../components/CommentModal';
 import { selectAuthUserId } from '../../redux/auth/selectors';
 import { State } from '../../redux/Reducers';
 import { selectUsersFromList } from '../../redux/users/selectors';
 
 interface StateProps {
   authUserId: string;
-  friends: {
+  friends?: {
     [userId: string]: User;
   };
 }
@@ -19,9 +19,7 @@ interface StateProps {
 interface OwnProps {
   ownerUserId: string;
   postId: string;
-  url: string;
-  usersPostsId: string;
-  usersPostsShares: Array<string>;
+  usersPostsComments: Array<string>;
 }
 
 type Props = OwnProps & StateProps;
@@ -37,36 +35,32 @@ const mapStateToProps = (state: State) => {
   };
 };
 
-const withShares = (WrappedComponent: SFC) => (props: Props) => {
+const withComments = (WrappedComponent: SFC) => (props: Props) => {
   const {
     authUserId,
-    friends,
+    friends = [],
     ownerUserId,
     postId,
-    url,
-    usersPostsId,
-    usersPostsShares,
+    usersPostsComments,
     ...passThroughProps
   } = props;
 
-  const isSharesActive = _.includes(usersPostsShares, authUserId);
+  const isActive = _.includes(usersPostsComments, authUserId);
   const modalRef = React.useRef();
 
   return (
     <View>
       <WrappedComponent
-        isActive={isSharesActive}
+        isActive={isActive}
         onPress={modalRef ? () => modalRef.current.toggleModal() : null}
         {...passThroughProps}
       />
-      <ShareModal
-        ref={modalRef}
+      <CommentModal
         authUserId={authUserId}
-        ownerUserId={ownerUserId}
-        payload={url}
-        usersPostsId={usersPostsId}
+        ownerUserId={authUserId}
         postId={postId}
-        users={friends}
+        ref={modalRef}
+        visibleToUserIds={[authUserId, ..._.keys(friends)]}
       />
     </View>
   );
@@ -87,5 +81,5 @@ export default compose(
       }
     }
   ),
-  withShares
+  withComments
 );
