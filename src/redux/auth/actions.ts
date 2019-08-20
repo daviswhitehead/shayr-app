@@ -136,11 +136,10 @@ export function facebookAuth(error, result) {
     try {
       dispatch({ type: types.FACEBOOK_AUTH_START });
       const currentAccessToken = await getFBToken(error, result);
+      if (!currentAccessToken) throw new Error('undefined access token');
       dispatch({ type: types.FACEBOOK_AUTH_SUCCESS });
 
       const FBProfile = await getFBProfile(currentAccessToken.accessToken);
-      console.log('FBProfile');
-      console.log(FBProfile);
 
       saveToken('accessToken', currentAccessToken.accessToken);
       dispatch({ type: types.ACCESS_TOKEN_SAVED, hasAccessToken: true });
