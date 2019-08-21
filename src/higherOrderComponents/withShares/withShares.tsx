@@ -22,7 +22,6 @@ interface OwnProps {
   url: string;
   usersPostsId: string;
   usersPostsShares: Array<string>;
-  ref?: undefined;
 }
 
 type Props = OwnProps & StateProps;
