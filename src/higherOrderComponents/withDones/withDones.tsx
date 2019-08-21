@@ -1,7 +1,9 @@
 import _ from 'lodash';
 import React, { SFC } from 'react';
+import { View } from 'react-native';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
+import DoneModal from '../../components/DoneModal';
 import { queryTypes } from '../../lib/FirebaseQueries';
 import { selectAuthUserId } from '../../redux/auth/selectors';
 import { toggleAddDonePost } from '../../redux/dones/actions';
@@ -46,37 +48,69 @@ const mapDispatchToProps = {
   toggleAddDonePost
 };
 
-const withDones = (WrappedComponent: SFC) => (props: Props) => {
-  const {
-    authUserId,
-    authAdds,
-    authDones,
-    toggleAddDonePost,
-    ownerUserId,
-    usersPostsId,
-    postId,
-    ...passThroughProps
-  } = props;
+const withDones = (WrappedComponent: SFC) => {
+  return class DoneEnabled extends React.Component<Props> {
+    modalRef: any;
 
-  const isAddsActive = _.includes(authAdds, usersPostsId);
-  const isDonesActive = _.includes(authDones, usersPostsId);
+    constructor(props: Props) {
+      super(props);
 
-  return (
-    <WrappedComponent
-      isActive={isDonesActive}
-      onPress={() =>
-        toggleAddDonePost(
-          'dones',
-          isDonesActive,
-          postId,
-          ownerUserId,
-          authUserId,
-          isAddsActive
-        )
-      }
-      {...passThroughProps}
-    />
-  );
+      this.modalRef = React.createRef();
+    }
+
+    render() {
+      const {
+        authUserId,
+        authAdds,
+        authDones,
+        toggleAddDonePost,
+        ownerUserId,
+        usersPostsId,
+        postId,
+        ...passThroughProps
+      } = this.props;
+
+      const isAddsActive = _.includes(authAdds, usersPostsId);
+      const isDonesActive = _.includes(authDones, usersPostsId);
+
+      return (
+        <View>
+          <WrappedComponent
+            isActive={isDonesActive}
+            onPress={() => {
+              if (isDonesActive) {
+                toggleAddDonePost(
+                  'dones',
+                  isDonesActive,
+                  postId,
+                  ownerUserId,
+                  authUserId,
+                  isAddsActive
+                );
+              } else {
+                this.modalRef.current.toggleModal();
+              }
+            }}
+            {...passThroughProps}
+          />
+          <DoneModal
+            ref={this.modalRef}
+            onModalHide={() =>
+              toggleAddDonePost(
+                'dones',
+                isDonesActive,
+                postId,
+                ownerUserId,
+                authUserId,
+                isAddsActive
+              )
+            }
+            {...this.props}
+          />
+        </View>
+      );
+    }
+  };
 };
 
 export default compose(

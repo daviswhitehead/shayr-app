@@ -15,6 +15,7 @@ import PostCard from '../../components/PostCard';
 import SegmentedControl from '../../components/SegmentedControl';
 import SwipeCard from '../../components/SwipeCard';
 import UserProfile from '../../components/UserProfile';
+import withDones from '../../higherOrderComponents/withDones';
 import { getQuery, queryTypes } from '../../lib/FirebaseQueries';
 import { toggleAddDonePost as toggleAdds } from '../../redux/adds/actions';
 import { selectAuthUserId } from '../../redux/auth/selectors';
@@ -251,6 +252,8 @@ class MyList extends Component<Props, OwnState> {
   static whyDidYouRender = true;
 
   subscriptions: Array<any>;
+  doneModal: any;
+  doneModalOnPress?: () => void;
   constructor(props: Props) {
     super(props);
     const startingIndex = this.props.authIsOwner ? 1 : 0;
@@ -263,7 +266,15 @@ class MyList extends Component<Props, OwnState> {
       activeView: this.mapIndexToView(startingIndex)
     };
     this.subscriptions = [];
+    this.doneModal = withDones(this.renderModal);
+    this.doneModalOnPress = undefined;
   }
+
+  renderModal = ({ onPress }: { onPress: () => void }) => {
+    this.doneModalOnPress = onPress;
+
+    return <View />;
+  };
 
   componentDidMount() {
     // check loading status
@@ -488,28 +499,12 @@ class MyList extends Component<Props, OwnState> {
                     item.userId,
                     this.props.authUserId
                   )
-              : () =>
-                  this.props.toggleDones(
-                    'dones',
-                    false,
-                    item.postId,
-                    item.userId,
-                    this.props.authUserId,
-                    isAddActive
-                  )
+              : () => this.doneModalOnPress()
           }
           isRightAlreadyDone={isDonesView ? !isDoneActive : !isAddActive}
           rightAction={
             isDonesView
-              ? () =>
-                  this.props.toggleDones(
-                    'dones',
-                    true,
-                    item.postId,
-                    item.userId,
-                    this.props.authUserId,
-                    isAddActive
-                  )
+              ? () => this.doneModalOnPress()
               : () =>
                   this.props.toggleAdds(
                     'adds',
@@ -521,11 +516,21 @@ class MyList extends Component<Props, OwnState> {
                   )
           }
         >
-          {this.renderPostCard(item, true)}
+          {this.renderPostCard(item)}
+          {this.doneModal && (
+            <this.doneModal
+              ownerUserId={item.userId}
+              postId={item.postId}
+              usersPostsComments={item.comments}
+              usersPostsId={item._id}
+              usersPostsShares={item.shares}
+              url={item.url}
+            />
+          )}
         </SwipeCard>
       );
     }
-    return this.renderPostCard(item, true);
+    return this.renderPostCard(item);
   };
 
   paginateList = () => {

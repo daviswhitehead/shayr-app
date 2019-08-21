@@ -61,6 +61,7 @@ const withComments = (WrappedComponent: SFC) => (props: Props) => {
         postId={postId}
         ref={modalRef}
         visibleToUserIds={[authUserId, ..._.keys(friends)]}
+        {...passThroughProps}
       />
     </View>
   );

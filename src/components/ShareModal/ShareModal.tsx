@@ -66,6 +66,7 @@ interface OwnProps {
   users?: Users;
   navigateToLogin?: () => void;
   onModalWillHide?: () => void;
+  onModalHide?: () => void;
   hideBackdrop?: boolean;
   isLoading?: boolean;
 }
@@ -171,6 +172,7 @@ class ShareModal extends React.Component<Props, OwnState> {
     if (this.props.onModalWillHide) {
       this.props.onModalWillHide();
     }
+    this.setState(this.initialState);
   };
 
   componentDidUpdate(prevProps: Props) {
@@ -428,6 +430,12 @@ class ShareModal extends React.Component<Props, OwnState> {
     );
   };
 
+  onModalHide = () => {
+    if (this.props.onModalHide) {
+      this.props.onModalHide();
+    }
+  };
+
   render() {
     const { post } = this.state;
 
@@ -444,7 +452,7 @@ class ShareModal extends React.Component<Props, OwnState> {
         propagateSwipe
         hideModalContentWhileAnimating
         backdropTransitionOutTiming={0}
-        onModalHide={() => this.setState(this.initialState)}
+        onModalHide={this.onModalHide}
       >
         <View style={styles.container}>
           <View

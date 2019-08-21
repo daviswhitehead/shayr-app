@@ -1,4 +1,3 @@
-import {} from '@daviswhitehead/shayr-resources';
 import _ from 'lodash';
 import * as React from 'react';
 import { TextInput, View } from 'react-native';
@@ -71,6 +70,7 @@ class CommentModal extends React.Component<Props, OwnState> {
     if (this.props.onModalWillHide) {
       this.props.onModalWillHide();
     }
+    this.setState(this.initialState);
   };
 
   componentDidUpdate(prevProps: Props) {}
@@ -93,9 +93,7 @@ class CommentModal extends React.Component<Props, OwnState> {
     this.setState({ isVisible: false });
   };
 
-  onModalHide = () => {
-    this.setState(this.initialState);
-  };
+  onModalHide = () => {};
 
   onChangeText = (text: string) => this.setState({ commentText: text });
 

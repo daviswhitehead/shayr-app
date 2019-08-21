@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { ActivityIndicator, Button, Text, View } from 'react-native';
 import { connect } from 'react-redux';
-import CommentModal from '../../components/CommentModal';
+import DoneModal from '../../components/DoneModal';
 import Header from '../../components/Header';
 import { startSignOut } from '../../redux/auth/actions';
 import { selectAuthUserId } from '../../redux/auth/selectors';
@@ -45,6 +45,7 @@ class Friends extends Component {
     )
   });
 
+  modalRef: any;
   constructor(props: Props) {
     super(props);
     this.modalRef = React.createRef();
@@ -65,15 +66,10 @@ class Friends extends Component {
           onPress={() => this.modalRef.current.toggleModal()}
           title='Toggle Modal'
         />
-        <CommentModal
-          authUserId={this.props.authUserId}
-          ownerUserId={this.props.authUserId}
-          postId={'9JKOMIpbKdSCt4MRomPI'}
+        <DoneModal
           ref={this.modalRef}
-          visibleToUserIds={_.keys({
-            [this.props.authUserId]: this.props.authUser,
-            ...this.props.friends
-          })}
+          shareProps={undefined}
+          commentProps={undefined}
         />
       </View>
     );

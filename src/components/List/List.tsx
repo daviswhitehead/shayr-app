@@ -106,6 +106,7 @@ class List extends Component<Props, OwnState> {
         refreshing={isLoading ? false : isRefreshing}
         ListEmptyComponent={this.renderEmptyComponent}
         ListFooterComponent={this.renderFooterComponent}
+        keyboardShouldPersistTaps='handled'
         {...passThroughProps}
       />
     );

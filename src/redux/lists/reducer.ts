@@ -66,7 +66,10 @@ function reducer(state: State = initialState, action: Actions) {
         ...state,
         [action.listKey]: {
           ..._.get(state, action.listKey, {}),
-          items: _.get(state, [action.listKey, 'items'], []),
+          items: action.isEmpty
+            ? []
+            : _.get(state, [action.listKey, 'items'], []),
+          isEmpty: !!action.isEmpty,
           isLoaded: true,
           isLoading: false,
           isRefreshing: false,

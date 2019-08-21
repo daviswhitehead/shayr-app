@@ -37,39 +37,51 @@ const mapStateToProps = (state: State) => {
   };
 };
 
-const withShares = (WrappedComponent: SFC) => (props: Props) => {
-  const {
-    authUserId,
-    friends,
-    ownerUserId,
-    postId,
-    url,
-    usersPostsId,
-    usersPostsShares,
-    ...passThroughProps
-  } = props;
+const withShares = (WrappedComponent: SFC) => {
+  return class ShareEnabled extends React.Component<Props> {
+    modalRef: any;
 
-  const isSharesActive = _.includes(usersPostsShares, authUserId);
-  const modalRef = React.useRef();
+    constructor(props: Props) {
+      super(props);
 
-  return (
-    <View>
-      <WrappedComponent
-        isActive={isSharesActive}
-        onPress={modalRef ? () => modalRef.current.toggleModal() : null}
-        {...passThroughProps}
-      />
-      <ShareModal
-        ref={modalRef}
-        authUserId={authUserId}
-        ownerUserId={ownerUserId}
-        payload={url}
-        usersPostsId={usersPostsId}
-        postId={postId}
-        users={friends}
-      />
-    </View>
-  );
+      this.modalRef = React.createRef();
+    }
+
+    render() {
+      const {
+        authUserId,
+        friends,
+        ownerUserId,
+        postId,
+        url,
+        usersPostsId,
+        usersPostsShares,
+        ...passThroughProps
+      } = this.props;
+
+      const isSharesActive = _.includes(usersPostsShares, authUserId);
+
+      return (
+        <View>
+          <WrappedComponent
+            isActive={isSharesActive}
+            onPress={() => this.modalRef.current.toggleModal()}
+            {...passThroughProps}
+          />
+          <ShareModal
+            ref={this.modalRef}
+            authUserId={authUserId}
+            ownerUserId={ownerUserId}
+            payload={url}
+            usersPostsId={usersPostsId}
+            postId={postId}
+            users={friends}
+            {...passThroughProps}
+          />
+        </View>
+      );
+    }
+  };
 };
 
 export default compose(
