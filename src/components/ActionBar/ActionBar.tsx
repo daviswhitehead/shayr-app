@@ -77,10 +77,13 @@ const ActionBar: SFC<Props> = ({
           />
           <IconWithDones
             name={names.DONE}
-            style={styles.action}
             ownerUserId={ownerUserId}
-            usersPostsId={usersPostsId}
             postId={postId}
+            style={styles.action}
+            usersPostsComments={usersPostsComments}
+            usersPostsId={usersPostsId}
+            usersPostsShares={usersPostsShares}
+            url={url}
           />
           <IconWithComments
             name={names.REACTION}

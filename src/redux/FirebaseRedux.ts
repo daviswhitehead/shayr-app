@@ -123,7 +123,7 @@ export const subscribeToAllDocuments = (
 
         dispatch(listLoaded(stateKeyList, listKey, querySnapshot.docs.pop()));
       } else {
-        dispatch(listLoaded(stateKeyList, listKey, 'DONE'));
+        dispatch(listLoaded(stateKeyList, listKey, 'DONE', true));
       }
     },
     (error: SnapshotError) => {

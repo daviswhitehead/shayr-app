@@ -1,6 +1,6 @@
 import { User } from '@daviswhitehead/shayr-resources';
 import _ from 'lodash';
-import React, { SFC } from 'react';
+import React, { forwardRef, SFC } from 'react';
 import { View } from 'react-native';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
@@ -38,52 +38,45 @@ const mapStateToProps = (state: State) => {
   };
 };
 
-const withShares = (WrappedComponent: SFC) => {
-  return class ShareEnabled extends React.Component<Props> {
-    modalRef: any;
+const withShares = (WrappedComponent: SFC) =>
+  forwardRef((props: Props, ref: any) => {
+    const {
+      authUserId,
+      friends,
+      ownerUserId,
+      postId,
+      url,
+      usersPostsId,
+      usersPostsShares,
+      ...passThroughProps
+    } = props;
 
-    constructor(props: Props) {
-      super(props);
+    const isSharesActive = _.includes(usersPostsShares, authUserId);
+    const modalRef = React.useRef(ref);
+    console.log('ref');
+    console.log(ref);
+    console.log('modalRef');
+    console.log(modalRef);
 
-      this.modalRef = React.createRef();
-    }
-
-    render() {
-      const {
-        authUserId,
-        friends,
-        ownerUserId,
-        postId,
-        url,
-        usersPostsId,
-        usersPostsShares,
-        ...passThroughProps
-      } = this.props;
-
-      const isSharesActive = _.includes(usersPostsShares, authUserId);
-
-      return (
-        <View>
-          <WrappedComponent
-            isActive={isSharesActive}
-            onPress={() => this.modalRef.current.toggleModal()}
-            {...passThroughProps}
-          />
-          <ShareModal
-            ref={this.modalRef}
-            authUserId={authUserId}
-            ownerUserId={ownerUserId}
-            payload={url}
-            usersPostsId={usersPostsId}
-            postId={postId}
-            users={friends}
-            {...passThroughProps}
-          />
-        </View>
-      );
-    }
-  };
-};
+    return (
+      <View>
+        <WrappedComponent
+          isActive={isSharesActive}
+          onPress={modalRef ? () => modalRef.current.toggleModal() : null}
+          {...passThroughProps}
+        />
+        <ShareModal
+          ref={modalRef}
+          authUserId={authUserId}
+          ownerUserId={ownerUserId}
+          payload={url}
+          usersPostsId={usersPostsId}
+          postId={postId}
+          users={friends}
+        />
+      </View>
+    );
+  });
 
 export default compose(
   connect(

@@ -146,7 +146,7 @@ PODS:
   - GTMSessionFetcher/Core (1.2.2)
   - JWT (3.0.0-beta.11):
     - Base64 (~> 1.1.2)
-  - leveldb-library (1.20)
+  - leveldb-library (1.22)
   - nanopb (0.3.901):
     - nanopb/decode (= 0.3.901)
     - nanopb/encode (= 0.3.901)
@@ -423,7 +423,7 @@ SPEC CHECKSUMS:
   gRPC-Core: 4028031ed2c5267cca0d846c876d8046b1ecb9b6
   GTMSessionFetcher: 61bb0f61a4cb560030f1222021178008a5727a23
   JWT: 05028b9624591bba9681bb57df2c5f95fa258bad
-  leveldb-library: 08cba283675b7ed2d99629a4bc5fd052cd2bb6a5
+  leveldb-library: 55d93ee664b4007aac644a782d11da33fba316f7
   nanopb: 2901f78ea1b7b4015c860c2fdd1ea2fee1a18d48
   Protobuf: 1097ca58584c8d9be81bfbf2c5ff5975648dd87a
   React: ff7ee2ae5ee1c1d9ae2183b4111045b25294bb01
