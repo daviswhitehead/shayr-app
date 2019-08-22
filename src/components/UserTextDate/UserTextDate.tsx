@@ -9,26 +9,24 @@ import TouchableWrapper from '../TouchableWrapper';
 import UserImage from '../UserImage';
 import styles from './styles';
 
-export interface Props {
+interface Props {
   user: User;
   text: string;
   createdAt: Date;
-  title?: string;
   onPressContainer?: () => void | undefined;
-  onPressTitle?: () => void | undefined;
   noTouching?: boolean;
   isLoading?: boolean;
+  isNotification?: boolean;
 }
 
 const UserTextDate: SFC<Props> = ({
   text,
   createdAt,
-  title,
   onPressContainer,
   user,
-  onPressTitle,
   noTouching = false,
-  isLoading = false
+  isLoading = false,
+  isNotification = false
 }: Props) => {
   if (isLoading) {
     return (
@@ -41,9 +39,12 @@ const UserTextDate: SFC<Props> = ({
       </View>
     );
   }
-  const parsedText = user.shortName
-    ? _.replace(text, user.shortName, '')
-    : text;
+
+  let parsedText = text;
+  if (isNotification) {
+    parsedText = _.replace(text, `${user.shortName} `, '');
+    parsedText = isNotification ? _.upperFirst(parsedText) : parsedText;
+  }
 
   return (
     <TouchableWrapper
@@ -63,14 +64,7 @@ const UserTextDate: SFC<Props> = ({
           </Text>
           <Text style={styles.date}>{moment(createdAt).fromNow()}</Text>
         </View>
-        <Text>
-          <Text style={styles.text}>{_.trim(parsedText)}</Text>
-          {title ? (
-            <Text style={styles.boldText} onPress={onPressTitle}>
-              {title}
-            </Text>
-          ) : null}
-        </Text>
+        <Text style={styles.text}>{_.trim(parsedText)}</Text>
       </View>
     </TouchableWrapper>
   );

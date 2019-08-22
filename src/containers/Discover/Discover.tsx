@@ -6,6 +6,7 @@ import { NavigationScreenProps } from 'react-navigation';
 import { connect } from 'react-redux';
 import { subscribe } from 'redux-subscriber';
 import Header from '../../components/Header';
+import Icon, { names } from '../../components/Icon';
 import List from '../../components/List';
 import PostCard from '../../components/PostCard';
 import SwipeCard from '../../components/SwipeCard';
@@ -217,6 +218,7 @@ class Discover extends PureComponent<Props, OwnState> {
     );
 
     // DEVELOPMENT HELPERS
+    // this.props.navigation.navigate('Notifications', {});
     // this.props.navigation.navigate('FriendsTab', {});
     // this.props.navigation.navigate('PostDetail', {
     //   ownerUserId: this.props.authUserId,
@@ -370,6 +372,16 @@ class Discover extends PureComponent<Props, OwnState> {
           statusBarStyle='dark-content'
           shadow
           title='Discover'
+          // TODO: add an unread notification count
+          rightIcons={
+            <Icon
+              name={names.BELL}
+              isActive={false}
+              onPress={() =>
+                this.props.navigation.navigate('Notifications', {})
+              }
+            />
+          }
         />
         <List
           data={

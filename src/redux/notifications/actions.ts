@@ -1,7 +1,12 @@
 import firebase from 'react-native-firebase';
+import { Query } from 'react-native-firebase/firestore';
 import { Dispatch } from 'redux';
 import { ts } from '../../lib/FirebaseHelpers';
+import { composeQuery } from '../../lib/FirebaseQueries';
 import { requestNotificationPermissions } from '../../lib/Notifications';
+import { getFeedOfDocuments, LastItem } from '../FirebaseRedux';
+
+export const STATE_KEY = 'notifications';
 
 export const types = {
   // PERMISSIONS
@@ -63,3 +68,28 @@ export const subscribeNotificationTokenRefresh = (userId: string) =>
         saveNotificationToken(userId, notificationToken)
       );
   };
+
+// LOAD NOTIFICATIONS
+const requestLimiter = 10;
+export const loadNotifications = (
+  listKey: string,
+  query: Query,
+  shouldRefresh?: boolean,
+  isLoading?: boolean,
+  lastItem?: LastItem
+) => (dispatch: Dispatch) => {
+  const composedQuery: Query = composeQuery(
+    query,
+    requestLimiter,
+    shouldRefresh ? undefined : lastItem
+  );
+  getFeedOfDocuments(
+    dispatch,
+    STATE_KEY,
+    listKey,
+    composedQuery,
+    shouldRefresh,
+    isLoading,
+    lastItem
+  );
+};

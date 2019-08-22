@@ -23,6 +23,7 @@ import { generateListKey } from './lists/helpers';
 
 export type StateKey =
   | 'users'
+  | 'notifications'
   | 'usersPosts'
   | 'adds'
   | 'dones'
@@ -33,6 +34,7 @@ export type StateKey =
 
 export type StateKeyLists =
   | 'usersPostsLists'
+  | 'notificationsLists'
   | 'addsLists'
   | 'donesLists'
   | 'sharesLists'

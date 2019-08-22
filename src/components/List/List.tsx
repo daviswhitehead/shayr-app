@@ -94,6 +94,7 @@ class List extends Component<Props, OwnState> {
     return (
       <FlatList
         style={styles.container}
+        // data={this.loadingData}
         // data={tempData}
         data={isLoading ? this.loadingData : data}
         renderItem={renderItem}
