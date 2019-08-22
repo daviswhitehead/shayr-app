@@ -1,9 +1,10 @@
 import { Notification, User } from '@daviswhitehead/shayr-resources';
 import _ from 'lodash';
 import React, { Component } from 'react';
-import { ActivityIndicator, Linking, View } from 'react-native';
+import { Linking, View } from 'react-native';
 import { Query } from 'react-native-firebase/firestore';
 import { NavigationScreenProps } from 'react-navigation';
+import { withNavigationFocus } from 'react-navigation';
 import { connect } from 'react-redux';
 import Header from '../../components/Header';
 import List from '../../components/List';
@@ -13,7 +14,12 @@ import { selectAuthUserId } from '../../redux/auth/selectors';
 import { selectFlatListReadyDocuments } from '../../redux/documents/selectors';
 import { generateListKey } from '../../redux/lists/helpers';
 import { selectListItems, selectListMeta } from '../../redux/lists/selectors';
-import { loadNotifications } from '../../redux/notifications/actions';
+import {
+  loadNotifications,
+  markNotificationAsPressed,
+  markNotificationsAsRead
+} from '../../redux/notifications/actions';
+import { State } from '../../redux/Reducers';
 import {
   selectAllUsers,
   selectUserFromId,
@@ -21,8 +27,6 @@ import {
 } from '../../redux/users/selectors';
 import colors from '../../styles/Colors';
 import styles from './styles';
-
-const RENDER_COUNT = 0;
 
 interface StateProps {
   authUser?: User;
@@ -43,9 +47,13 @@ interface StateProps {
 
 interface DispatchProps {
   loadNotifications: typeof loadNotifications;
+  markNotificationAsPressed: typeof markNotificationAsPressed;
+  markNotificationsAsRead: typeof markNotificationsAsRead;
 }
 
-interface OwnProps {}
+interface OwnProps {
+  isFocused: boolean;
+}
 
 interface OwnState {
   isLoading: boolean;
@@ -59,746 +67,7 @@ type Props = OwnProps &
   DispatchProps &
   NavigationScreenProps<NavigationParams>;
 
-const SAMPLE = {
-  fromId: 'm592UXpes3azls6LnhN2VOf2PyT2',
-  isRead: false,
-  updatedAt: '2019-08-05T19:05:25.509Z',
-  message: {
-    android: {
-      priority: 'high'
-    },
-    apns: {
-      payload: {
-        aps: {
-          badge: 1,
-          alert: {
-            body:
-              'Bob S wants you to check out "After House rejects ‘stupid’ impeachment, Trump fuels rally crowd chant of ‘send her back!’ at Omar"',
-            title: 'New shayr from Bob S'
-          }
-        }
-      },
-      headers: {
-        apnspriority: '10'
-      }
-    },
-    data: {
-      channelId: 'General',
-      title: 'New shayr from Bob S',
-      body:
-        'Bob S wants you to check out "After House rejects ‘stupid’ impeachment, Trump fuels rally crowd chant of ‘send her back!’ at Omar"',
-      appLink:
-        'shayr://shayr/PostDetail?ownerUserId=m592UXpes3azls6LnhN2VOf2PyT2&postId=5TqHobu4sRdlJQlbxrsO'
-    },
-    token:
-      'drbw9yITvP8:APA91bG765Jse67z7IunwCmx-OI4PUZd4FPE2lZbyl4YsB_X09D8LGbc-r1rU_9SNmXy_gC1DKObG5tx-CYAv14-x57uSfrs903zcJj5hpwHhRjQFd9GQyctbPrEDYN29xYPdgQEpxr9',
-    notification: {
-      body:
-        'Bob S wants you to check out "After House rejects ‘stupid’ impeachment, Trump fuels rally crowd chant of ‘send her back!’ at Omar"',
-      title: 'New shayr from Bob S'
-    }
-  },
-  isPressed: false,
-  pressedAt: null,
-  receivingUserId: '96sTGJfd7RP24MhHslRVryAEkQ72',
-  readAt: null,
-  createdAt: '2019-08-05T19:05:25.509Z'
-};
-
-const SAMPLES = [
-  {
-    _id: '0',
-    fromId: 'm592UXpes3azls6LnhN2VOf2PyT2',
-    isRead: false,
-    updatedAt: '2019-08-05T19:05:25.509Z',
-    message: {
-      android: {
-        priority: 'high'
-      },
-      apns: {
-        payload: {
-          aps: {
-            badge: 1,
-            alert: {
-              body:
-                'Bob S wants you to check out "After House rejects ‘stupid’ impeachment, Trump fuels rally crowd chant of ‘send her back!’ at Omar"',
-              title: 'New shayr from Bob S'
-            }
-          }
-        },
-        headers: {
-          apnspriority: '10'
-        }
-      },
-      data: {
-        channelId: 'General',
-        title: 'New shayr from Bob S',
-        body:
-          'Bob S wants you to check out "After House rejects ‘stupid’ impeachment, Trump fuels rally crowd chant of ‘send her back!’ at Omar"',
-        appLink:
-          'shayr://shayr/PostDetail?ownerUserId=m592UXpes3azls6LnhN2VOf2PyT2&postId=5TqHobu4sRdlJQlbxrsO'
-      },
-      token:
-        'drbw9yITvP8:APA91bG765Jse67z7IunwCmx-OI4PUZd4FPE2lZbyl4YsB_X09D8LGbc-r1rU_9SNmXy_gC1DKObG5tx-CYAv14-x57uSfrs903zcJj5hpwHhRjQFd9GQyctbPrEDYN29xYPdgQEpxr9',
-      notification: {
-        body:
-          'Bob S wants you to check out "After House rejects ‘stupid’ impeachment, Trump fuels rally crowd chant of ‘send her back!’ at Omar"',
-        title: 'New shayr from Bob S'
-      }
-    },
-    isPressed: false,
-    pressedAt: null,
-    receivingUserId: '96sTGJfd7RP24MhHslRVryAEkQ72',
-    readAt: null,
-    createdAt: '2019-08-05T19:05:25.509Z'
-  },
-  {
-    _id: '1',
-    fromId: 'm592UXpes3azls6LnhN2VOf2PyT2',
-    isRead: true,
-    updatedAt: '2019-08-05T19:05:25.509Z',
-    message: {
-      android: {
-        priority: 'high'
-      },
-      apns: {
-        payload: {
-          aps: {
-            badge: 1,
-            alert: {
-              body:
-                'Bob S wants you to check out "After House rejects ‘stupid’ impeachment, Trump fuels rally crowd chant of ‘send her back!’ at Omar"',
-              title: 'New shayr from Bob S'
-            }
-          }
-        },
-        headers: {
-          apnspriority: '10'
-        }
-      },
-      data: {
-        channelId: 'General',
-        title: 'New shayr from Bob S',
-        body:
-          'Bob S wants you to check out "After House rejects ‘stupid’ impeachment, Trump fuels rally crowd chant of ‘send her back!’ at Omar"',
-        appLink:
-          'shayr://shayr/PostDetail?ownerUserId=m592UXpes3azls6LnhN2VOf2PyT2&postId=5TqHobu4sRdlJQlbxrsO'
-      },
-      token:
-        'drbw9yITvP8:APA91bG765Jse67z7IunwCmx-OI4PUZd4FPE2lZbyl4YsB_X09D8LGbc-r1rU_9SNmXy_gC1DKObG5tx-CYAv14-x57uSfrs903zcJj5hpwHhRjQFd9GQyctbPrEDYN29xYPdgQEpxr9',
-      notification: {
-        body:
-          'Bob S wants you to check out "After House rejects ‘stupid’ impeachment, Trump fuels rally crowd chant of ‘send her back!’ at Omar"',
-        title: 'New shayr from Bob S'
-      }
-    },
-    isPressed: false,
-    pressedAt: null,
-    receivingUserId: '96sTGJfd7RP24MhHslRVryAEkQ72',
-    readAt: '2019-08-05T19:05:25.509Z',
-    createdAt: '2019-08-05T19:05:25.509Z'
-  },
-  {
-    _id: '2',
-    fromId: 'm592UXpes3azls6LnhN2VOf2PyT2',
-    isRead: true,
-    updatedAt: '2019-08-05T19:05:25.509Z',
-    message: {
-      android: {
-        priority: 'high'
-      },
-      apns: {
-        payload: {
-          aps: {
-            badge: 1,
-            alert: {
-              body:
-                'Bob S wants you to check out "After House rejects ‘stupid’ impeachment, Trump fuels rally crowd chant of ‘send her back!’ at Omar"',
-              title: 'New shayr from Bob S'
-            }
-          }
-        },
-        headers: {
-          apnspriority: '10'
-        }
-      },
-      data: {
-        channelId: 'General',
-        title: 'New shayr from Bob S',
-        body:
-          'Bob S wants you to check out "After House rejects ‘stupid’ impeachment, Trump fuels rally crowd chant of ‘send her back!’ at Omar"',
-        appLink:
-          'shayr://shayr/PostDetail?ownerUserId=m592UXpes3azls6LnhN2VOf2PyT2&postId=5TqHobu4sRdlJQlbxrsO'
-      },
-      token:
-        'drbw9yITvP8:APA91bG765Jse67z7IunwCmx-OI4PUZd4FPE2lZbyl4YsB_X09D8LGbc-r1rU_9SNmXy_gC1DKObG5tx-CYAv14-x57uSfrs903zcJj5hpwHhRjQFd9GQyctbPrEDYN29xYPdgQEpxr9',
-      notification: {
-        body:
-          'Bob S wants you to check out "After House rejects ‘stupid’ impeachment, Trump fuels rally crowd chant of ‘send her back!’ at Omar"',
-        title: 'New shayr from Bob S'
-      }
-    },
-    isPressed: false,
-    pressedAt: null,
-    receivingUserId: '96sTGJfd7RP24MhHslRVryAEkQ72',
-    readAt: '2019-08-05T19:05:25.509Z',
-    createdAt: '2019-08-05T19:05:25.509Z'
-  },
-  {
-    _id: '3',
-    fromId: 'm592UXpes3azls6LnhN2VOf2PyT2',
-    isRead: false,
-    updatedAt: '2019-08-05T19:05:25.509Z',
-    message: {
-      android: {
-        priority: 'high'
-      },
-      apns: {
-        payload: {
-          aps: {
-            badge: 1,
-            alert: {
-              body:
-                'Bob S wants you to check out "After House rejects ‘stupid’ impeachment, Trump fuels rally crowd chant of ‘send her back!’ at Omar"',
-              title: 'New shayr from Bob S'
-            }
-          }
-        },
-        headers: {
-          apnspriority: '10'
-        }
-      },
-      data: {
-        channelId: 'General',
-        title: 'New shayr from Bob S',
-        body:
-          'Bob S wants you to check out "After House rejects ‘stupid’ impeachment, Trump fuels rally crowd chant of ‘send her back!’ at Omar"',
-        appLink:
-          'shayr://shayr/PostDetail?ownerUserId=m592UXpes3azls6LnhN2VOf2PyT2&postId=5TqHobu4sRdlJQlbxrsO'
-      },
-      token:
-        'drbw9yITvP8:APA91bG765Jse67z7IunwCmx-OI4PUZd4FPE2lZbyl4YsB_X09D8LGbc-r1rU_9SNmXy_gC1DKObG5tx-CYAv14-x57uSfrs903zcJj5hpwHhRjQFd9GQyctbPrEDYN29xYPdgQEpxr9',
-      notification: {
-        body:
-          'Bob S wants you to check out "After House rejects ‘stupid’ impeachment, Trump fuels rally crowd chant of ‘send her back!’ at Omar"',
-        title: 'New shayr from Bob S'
-      }
-    },
-    isPressed: false,
-    pressedAt: null,
-    receivingUserId: '96sTGJfd7RP24MhHslRVryAEkQ72',
-    readAt: null,
-    createdAt: '2019-08-05T19:05:25.509Z'
-  },
-  {
-    _id: '4',
-    fromId: 'm592UXpes3azls6LnhN2VOf2PyT2',
-    isRead: true,
-    updatedAt: '2019-08-05T19:05:25.509Z',
-    message: {
-      android: {
-        priority: 'high'
-      },
-      apns: {
-        payload: {
-          aps: {
-            badge: 1,
-            alert: {
-              body:
-                'Bob S wants you to check out "After House rejects ‘stupid’ impeachment, Trump fuels rally crowd chant of ‘send her back!’ at Omar"',
-              title: 'New shayr from Bob S'
-            }
-          }
-        },
-        headers: {
-          apnspriority: '10'
-        }
-      },
-      data: {
-        channelId: 'General',
-        title: 'New shayr from Bob S',
-        body:
-          'Bob S wants you to check out "After House rejects ‘stupid’ impeachment, Trump fuels rally crowd chant of ‘send her back!’ at Omar"',
-        appLink:
-          'shayr://shayr/PostDetail?ownerUserId=m592UXpes3azls6LnhN2VOf2PyT2&postId=5TqHobu4sRdlJQlbxrsO'
-      },
-      token:
-        'drbw9yITvP8:APA91bG765Jse67z7IunwCmx-OI4PUZd4FPE2lZbyl4YsB_X09D8LGbc-r1rU_9SNmXy_gC1DKObG5tx-CYAv14-x57uSfrs903zcJj5hpwHhRjQFd9GQyctbPrEDYN29xYPdgQEpxr9',
-      notification: {
-        body:
-          'Bob S wants you to check out "After House rejects ‘stupid’ impeachment, Trump fuels rally crowd chant of ‘send her back!’ at Omar"',
-        title: 'New shayr from Bob S'
-      }
-    },
-    isPressed: false,
-    pressedAt: null,
-    receivingUserId: '96sTGJfd7RP24MhHslRVryAEkQ72',
-    readAt: '2019-08-05T19:05:25.509Z',
-    createdAt: '2019-08-05T19:05:25.509Z'
-  },
-  {
-    _id: '5',
-    fromId: 'm592UXpes3azls6LnhN2VOf2PyT2',
-    isRead: true,
-    updatedAt: '2019-08-05T19:05:25.509Z',
-    message: {
-      android: {
-        priority: 'high'
-      },
-      apns: {
-        payload: {
-          aps: {
-            badge: 1,
-            alert: {
-              body:
-                'Bob S wants you to check out "After House rejects ‘stupid’ impeachment, Trump fuels rally crowd chant of ‘send her back!’ at Omar"',
-              title: 'New shayr from Bob S'
-            }
-          }
-        },
-        headers: {
-          apnspriority: '10'
-        }
-      },
-      data: {
-        channelId: 'General',
-        title: 'New shayr from Bob S',
-        body:
-          'Bob S wants you to check out "After House rejects ‘stupid’ impeachment, Trump fuels rally crowd chant of ‘send her back!’ at Omar"',
-        appLink:
-          'shayr://shayr/PostDetail?ownerUserId=m592UXpes3azls6LnhN2VOf2PyT2&postId=5TqHobu4sRdlJQlbxrsO'
-      },
-      token:
-        'drbw9yITvP8:APA91bG765Jse67z7IunwCmx-OI4PUZd4FPE2lZbyl4YsB_X09D8LGbc-r1rU_9SNmXy_gC1DKObG5tx-CYAv14-x57uSfrs903zcJj5hpwHhRjQFd9GQyctbPrEDYN29xYPdgQEpxr9',
-      notification: {
-        body:
-          'Bob S wants you to check out "After House rejects ‘stupid’ impeachment, Trump fuels rally crowd chant of ‘send her back!’ at Omar"',
-        title: 'New shayr from Bob S'
-      }
-    },
-    isPressed: false,
-    pressedAt: null,
-    receivingUserId: '96sTGJfd7RP24MhHslRVryAEkQ72',
-    readAt: '2019-08-05T19:05:25.509Z',
-    createdAt: '2019-08-05T19:05:25.509Z'
-  },
-  {
-    _id: '6',
-    fromId: 'm592UXpes3azls6LnhN2VOf2PyT2',
-    isRead: false,
-    updatedAt: '2019-08-05T19:05:25.509Z',
-    message: {
-      android: {
-        priority: 'high'
-      },
-      apns: {
-        payload: {
-          aps: {
-            badge: 1,
-            alert: {
-              body:
-                'Bob S wants you to check out "After House rejects ‘stupid’ impeachment, Trump fuels rally crowd chant of ‘send her back!’ at Omar"',
-              title: 'New shayr from Bob S'
-            }
-          }
-        },
-        headers: {
-          apnspriority: '10'
-        }
-      },
-      data: {
-        channelId: 'General',
-        title: 'New shayr from Bob S',
-        body:
-          'Bob S wants you to check out "After House rejects ‘stupid’ impeachment, Trump fuels rally crowd chant of ‘send her back!’ at Omar"',
-        appLink:
-          'shayr://shayr/PostDetail?ownerUserId=m592UXpes3azls6LnhN2VOf2PyT2&postId=5TqHobu4sRdlJQlbxrsO'
-      },
-      token:
-        'drbw9yITvP8:APA91bG765Jse67z7IunwCmx-OI4PUZd4FPE2lZbyl4YsB_X09D8LGbc-r1rU_9SNmXy_gC1DKObG5tx-CYAv14-x57uSfrs903zcJj5hpwHhRjQFd9GQyctbPrEDYN29xYPdgQEpxr9',
-      notification: {
-        body:
-          'Bob S wants you to check out "After House rejects ‘stupid’ impeachment, Trump fuels rally crowd chant of ‘send her back!’ at Omar"',
-        title: 'New shayr from Bob S'
-      }
-    },
-    isPressed: false,
-    pressedAt: null,
-    receivingUserId: '96sTGJfd7RP24MhHslRVryAEkQ72',
-    readAt: null,
-    createdAt: '2019-08-05T19:05:25.509Z'
-  },
-  {
-    _id: '7',
-    fromId: 'm592UXpes3azls6LnhN2VOf2PyT2',
-    isRead: true,
-    updatedAt: '2019-08-05T19:05:25.509Z',
-    message: {
-      android: {
-        priority: 'high'
-      },
-      apns: {
-        payload: {
-          aps: {
-            badge: 1,
-            alert: {
-              body:
-                'Bob S wants you to check out "After House rejects ‘stupid’ impeachment, Trump fuels rally crowd chant of ‘send her back!’ at Omar"',
-              title: 'New shayr from Bob S'
-            }
-          }
-        },
-        headers: {
-          apnspriority: '10'
-        }
-      },
-      data: {
-        channelId: 'General',
-        title: 'New shayr from Bob S',
-        body:
-          'Bob S wants you to check out "After House rejects ‘stupid’ impeachment, Trump fuels rally crowd chant of ‘send her back!’ at Omar"',
-        appLink:
-          'shayr://shayr/PostDetail?ownerUserId=m592UXpes3azls6LnhN2VOf2PyT2&postId=5TqHobu4sRdlJQlbxrsO'
-      },
-      token:
-        'drbw9yITvP8:APA91bG765Jse67z7IunwCmx-OI4PUZd4FPE2lZbyl4YsB_X09D8LGbc-r1rU_9SNmXy_gC1DKObG5tx-CYAv14-x57uSfrs903zcJj5hpwHhRjQFd9GQyctbPrEDYN29xYPdgQEpxr9',
-      notification: {
-        body:
-          'Bob S wants you to check out "After House rejects ‘stupid’ impeachment, Trump fuels rally crowd chant of ‘send her back!’ at Omar"',
-        title: 'New shayr from Bob S'
-      }
-    },
-    isPressed: false,
-    pressedAt: null,
-    receivingUserId: '96sTGJfd7RP24MhHslRVryAEkQ72',
-    readAt: '2019-08-05T19:05:25.509Z',
-    createdAt: '2019-08-05T19:05:25.509Z'
-  },
-  {
-    _id: '8',
-    fromId: 'm592UXpes3azls6LnhN2VOf2PyT2',
-    isRead: true,
-    updatedAt: '2019-08-05T19:05:25.509Z',
-    message: {
-      android: {
-        priority: 'high'
-      },
-      apns: {
-        payload: {
-          aps: {
-            badge: 1,
-            alert: {
-              body:
-                'Bob S wants you to check out "After House rejects ‘stupid’ impeachment, Trump fuels rally crowd chant of ‘send her back!’ at Omar"',
-              title: 'New shayr from Bob S'
-            }
-          }
-        },
-        headers: {
-          apnspriority: '10'
-        }
-      },
-      data: {
-        channelId: 'General',
-        title: 'New shayr from Bob S',
-        body:
-          'Bob S wants you to check out "After House rejects ‘stupid’ impeachment, Trump fuels rally crowd chant of ‘send her back!’ at Omar"',
-        appLink:
-          'shayr://shayr/PostDetail?ownerUserId=m592UXpes3azls6LnhN2VOf2PyT2&postId=5TqHobu4sRdlJQlbxrsO'
-      },
-      token:
-        'drbw9yITvP8:APA91bG765Jse67z7IunwCmx-OI4PUZd4FPE2lZbyl4YsB_X09D8LGbc-r1rU_9SNmXy_gC1DKObG5tx-CYAv14-x57uSfrs903zcJj5hpwHhRjQFd9GQyctbPrEDYN29xYPdgQEpxr9',
-      notification: {
-        body:
-          'Bob S wants you to check out "After House rejects ‘stupid’ impeachment, Trump fuels rally crowd chant of ‘send her back!’ at Omar"',
-        title: 'New shayr from Bob S'
-      }
-    },
-    isPressed: false,
-    pressedAt: null,
-    receivingUserId: '96sTGJfd7RP24MhHslRVryAEkQ72',
-    readAt: '2019-08-05T19:05:25.509Z',
-    createdAt: '2019-08-05T19:05:25.509Z'
-  },
-  {
-    _id: '9',
-    fromId: 'm592UXpes3azls6LnhN2VOf2PyT2',
-    isRead: false,
-    updatedAt: '2019-08-05T19:05:25.509Z',
-    message: {
-      android: {
-        priority: 'high'
-      },
-      apns: {
-        payload: {
-          aps: {
-            badge: 1,
-            alert: {
-              body:
-                'Bob S wants you to check out "After House rejects ‘stupid’ impeachment, Trump fuels rally crowd chant of ‘send her back!’ at Omar"',
-              title: 'New shayr from Bob S'
-            }
-          }
-        },
-        headers: {
-          apnspriority: '10'
-        }
-      },
-      data: {
-        channelId: 'General',
-        title: 'New shayr from Bob S',
-        body:
-          'Bob S wants you to check out "After House rejects ‘stupid’ impeachment, Trump fuels rally crowd chant of ‘send her back!’ at Omar"',
-        appLink:
-          'shayr://shayr/PostDetail?ownerUserId=m592UXpes3azls6LnhN2VOf2PyT2&postId=5TqHobu4sRdlJQlbxrsO'
-      },
-      token:
-        'drbw9yITvP8:APA91bG765Jse67z7IunwCmx-OI4PUZd4FPE2lZbyl4YsB_X09D8LGbc-r1rU_9SNmXy_gC1DKObG5tx-CYAv14-x57uSfrs903zcJj5hpwHhRjQFd9GQyctbPrEDYN29xYPdgQEpxr9',
-      notification: {
-        body:
-          'Bob S wants you to check out "After House rejects ‘stupid’ impeachment, Trump fuels rally crowd chant of ‘send her back!’ at Omar"',
-        title: 'New shayr from Bob S'
-      }
-    },
-    isPressed: false,
-    pressedAt: null,
-    receivingUserId: '96sTGJfd7RP24MhHslRVryAEkQ72',
-    readAt: null,
-    createdAt: '2019-08-05T19:05:25.509Z'
-  },
-  {
-    _id: '10',
-    fromId: 'm592UXpes3azls6LnhN2VOf2PyT2',
-    isRead: true,
-    updatedAt: '2019-08-05T19:05:25.509Z',
-    message: {
-      android: {
-        priority: 'high'
-      },
-      apns: {
-        payload: {
-          aps: {
-            badge: 1,
-            alert: {
-              body:
-                'Bob S wants you to check out "After House rejects ‘stupid’ impeachment, Trump fuels rally crowd chant of ‘send her back!’ at Omar"',
-              title: 'New shayr from Bob S'
-            }
-          }
-        },
-        headers: {
-          apnspriority: '10'
-        }
-      },
-      data: {
-        channelId: 'General',
-        title: 'New shayr from Bob S',
-        body:
-          'Bob S wants you to check out "After House rejects ‘stupid’ impeachment, Trump fuels rally crowd chant of ‘send her back!’ at Omar"',
-        appLink:
-          'shayr://shayr/PostDetail?ownerUserId=m592UXpes3azls6LnhN2VOf2PyT2&postId=5TqHobu4sRdlJQlbxrsO'
-      },
-      token:
-        'drbw9yITvP8:APA91bG765Jse67z7IunwCmx-OI4PUZd4FPE2lZbyl4YsB_X09D8LGbc-r1rU_9SNmXy_gC1DKObG5tx-CYAv14-x57uSfrs903zcJj5hpwHhRjQFd9GQyctbPrEDYN29xYPdgQEpxr9',
-      notification: {
-        body:
-          'Bob S wants you to check out "After House rejects ‘stupid’ impeachment, Trump fuels rally crowd chant of ‘send her back!’ at Omar"',
-        title: 'New shayr from Bob S'
-      }
-    },
-    isPressed: false,
-    pressedAt: null,
-    receivingUserId: '96sTGJfd7RP24MhHslRVryAEkQ72',
-    readAt: '2019-08-05T19:05:25.509Z',
-    createdAt: '2019-08-05T19:05:25.509Z'
-  },
-  {
-    _id: '11',
-    fromId: 'm592UXpes3azls6LnhN2VOf2PyT2',
-    isRead: true,
-    updatedAt: '2019-08-05T19:05:25.509Z',
-    message: {
-      android: {
-        priority: 'high'
-      },
-      apns: {
-        payload: {
-          aps: {
-            badge: 1,
-            alert: {
-              body:
-                'Bob S wants you to check out "After House rejects ‘stupid’ impeachment, Trump fuels rally crowd chant of ‘send her back!’ at Omar"',
-              title: 'New shayr from Bob S'
-            }
-          }
-        },
-        headers: {
-          apnspriority: '10'
-        }
-      },
-      data: {
-        channelId: 'General',
-        title: 'New shayr from Bob S',
-        body:
-          'Bob S wants you to check out "After House rejects ‘stupid’ impeachment, Trump fuels rally crowd chant of ‘send her back!’ at Omar"',
-        appLink:
-          'shayr://shayr/PostDetail?ownerUserId=m592UXpes3azls6LnhN2VOf2PyT2&postId=5TqHobu4sRdlJQlbxrsO'
-      },
-      token:
-        'drbw9yITvP8:APA91bG765Jse67z7IunwCmx-OI4PUZd4FPE2lZbyl4YsB_X09D8LGbc-r1rU_9SNmXy_gC1DKObG5tx-CYAv14-x57uSfrs903zcJj5hpwHhRjQFd9GQyctbPrEDYN29xYPdgQEpxr9',
-      notification: {
-        body:
-          'Bob S wants you to check out "After House rejects ‘stupid’ impeachment, Trump fuels rally crowd chant of ‘send her back!’ at Omar"',
-        title: 'New shayr from Bob S'
-      }
-    },
-    isPressed: false,
-    pressedAt: null,
-    receivingUserId: '96sTGJfd7RP24MhHslRVryAEkQ72',
-    readAt: '2019-08-05T19:05:25.509Z',
-    createdAt: '2019-08-05T19:05:25.509Z'
-  },
-  {
-    _id: '12',
-    fromId: 'm592UXpes3azls6LnhN2VOf2PyT2',
-    isRead: false,
-    updatedAt: '2019-08-05T19:05:25.509Z',
-    message: {
-      android: {
-        priority: 'high'
-      },
-      apns: {
-        payload: {
-          aps: {
-            badge: 1,
-            alert: {
-              body:
-                'Bob S wants you to check out "After House rejects ‘stupid’ impeachment, Trump fuels rally crowd chant of ‘send her back!’ at Omar"',
-              title: 'New shayr from Bob S'
-            }
-          }
-        },
-        headers: {
-          apnspriority: '10'
-        }
-      },
-      data: {
-        channelId: 'General',
-        title: 'New shayr from Bob S',
-        body:
-          'Bob S wants you to check out "After House rejects ‘stupid’ impeachment, Trump fuels rally crowd chant of ‘send her back!’ at Omar"',
-        appLink:
-          'shayr://shayr/PostDetail?ownerUserId=m592UXpes3azls6LnhN2VOf2PyT2&postId=5TqHobu4sRdlJQlbxrsO'
-      },
-      token:
-        'drbw9yITvP8:APA91bG765Jse67z7IunwCmx-OI4PUZd4FPE2lZbyl4YsB_X09D8LGbc-r1rU_9SNmXy_gC1DKObG5tx-CYAv14-x57uSfrs903zcJj5hpwHhRjQFd9GQyctbPrEDYN29xYPdgQEpxr9',
-      notification: {
-        body:
-          'Bob S wants you to check out "After House rejects ‘stupid’ impeachment, Trump fuels rally crowd chant of ‘send her back!’ at Omar"',
-        title: 'New shayr from Bob S'
-      }
-    },
-    isPressed: false,
-    pressedAt: null,
-    receivingUserId: '96sTGJfd7RP24MhHslRVryAEkQ72',
-    readAt: null,
-    createdAt: '2019-08-05T19:05:25.509Z'
-  },
-  {
-    _id: '13',
-    fromId: 'm592UXpes3azls6LnhN2VOf2PyT2',
-    isRead: true,
-    updatedAt: '2019-08-05T19:05:25.509Z',
-    message: {
-      android: {
-        priority: 'high'
-      },
-      apns: {
-        payload: {
-          aps: {
-            badge: 1,
-            alert: {
-              body:
-                'Bob S wants you to check out "After House rejects ‘stupid’ impeachment, Trump fuels rally crowd chant of ‘send her back!’ at Omar"',
-              title: 'New shayr from Bob S'
-            }
-          }
-        },
-        headers: {
-          apnspriority: '10'
-        }
-      },
-      data: {
-        channelId: 'General',
-        title: 'New shayr from Bob S',
-        body:
-          'Bob S wants you to check out "After House rejects ‘stupid’ impeachment, Trump fuels rally crowd chant of ‘send her back!’ at Omar"',
-        appLink:
-          'shayr://shayr/PostDetail?ownerUserId=m592UXpes3azls6LnhN2VOf2PyT2&postId=5TqHobu4sRdlJQlbxrsO'
-      },
-      token:
-        'drbw9yITvP8:APA91bG765Jse67z7IunwCmx-OI4PUZd4FPE2lZbyl4YsB_X09D8LGbc-r1rU_9SNmXy_gC1DKObG5tx-CYAv14-x57uSfrs903zcJj5hpwHhRjQFd9GQyctbPrEDYN29xYPdgQEpxr9',
-      notification: {
-        body:
-          'Bob S wants you to check out "After House rejects ‘stupid’ impeachment, Trump fuels rally crowd chant of ‘send her back!’ at Omar"',
-        title: 'New shayr from Bob S'
-      }
-    },
-    isPressed: false,
-    pressedAt: null,
-    receivingUserId: '96sTGJfd7RP24MhHslRVryAEkQ72',
-    readAt: '2019-08-05T19:05:25.509Z',
-    createdAt: '2019-08-05T19:05:25.509Z'
-  },
-  {
-    _id: '14',
-    fromId: 'm592UXpes3azls6LnhN2VOf2PyT2',
-    isRead: true,
-    updatedAt: '2019-08-05T19:05:25.509Z',
-    message: {
-      android: {
-        priority: 'high'
-      },
-      apns: {
-        payload: {
-          aps: {
-            badge: 1,
-            alert: {
-              body:
-                'Bob S wants you to check out "After House rejects ‘stupid’ impeachment, Trump fuels rally crowd chant of ‘send her back!’ at Omar"',
-              title: 'New shayr from Bob S'
-            }
-          }
-        },
-        headers: {
-          apnspriority: '10'
-        }
-      },
-      data: {
-        channelId: 'General',
-        title: 'New shayr from Bob S',
-        body:
-          'Bob S wants you to check out "After House rejects ‘stupid’ impeachment, Trump fuels rally crowd chant of ‘send her back!’ at Omar"',
-        appLink:
-          'shayr://shayr/PostDetail?ownerUserId=m592UXpes3azls6LnhN2VOf2PyT2&postId=5TqHobu4sRdlJQlbxrsO'
-      },
-      token:
-        'drbw9yITvP8:APA91bG765Jse67z7IunwCmx-OI4PUZd4FPE2lZbyl4YsB_X09D8LGbc-r1rU_9SNmXy_gC1DKObG5tx-CYAv14-x57uSfrs903zcJj5hpwHhRjQFd9GQyctbPrEDYN29xYPdgQEpxr9',
-      notification: {
-        body:
-          'Bob S wants you to check out "After House rejects ‘stupid’ impeachment, Trump fuels rally crowd chant of ‘send her back!’ at Omar"',
-        title: 'New shayr from Bob S'
-      }
-    },
-    isPressed: false,
-    pressedAt: null,
-    receivingUserId: '96sTGJfd7RP24MhHslRVryAEkQ72',
-    readAt: '2019-08-05T19:05:25.509Z',
-    createdAt: '2019-08-05T19:05:25.509Z'
-  }
-];
-
-const mapStateToProps = (state) => {
+const mapStateToProps = (state: State) => {
   const authUserId = selectAuthUserId(state);
   const authUser = selectUserFromId(state, authUserId, true);
   const authFriends = selectUsersFromList(state, `${authUserId}_Friends`, true);
@@ -830,32 +99,49 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = {
-  loadNotifications
+  loadNotifications,
+  markNotificationAsPressed,
+  markNotificationsAsRead
 };
 
 class Notifications extends Component<Props, OwnState> {
+  static whyDidYouRender = true;
+
+  subscriptions: Array<any>;
   constructor(props: Props) {
     super(props);
     this.state = {
       isLoading: true,
       didView: []
     };
+    this.subscriptions = [];
   }
 
   componentDidMount() {
     this.checkLoading();
-    this.props.loadNotifications(
-      this.props.notificationsListKey,
-      this.props.notificationsQuery
+    this.subscriptions.push(
+      this.props.loadNotifications(
+        this.props.notificationsListKey,
+        this.props.notificationsQuery
+      )
     );
   }
 
   componentDidUpdate(prevProps: Props) {
     this.checkLoading();
+    if (
+      this.props.isFocused === false &&
+      prevProps.isFocused === true &&
+      !_.isEmpty(this.state.didView)
+    ) {
+      this.props.markNotificationsAsRead(this.state.didView);
+    }
   }
 
   componentWillUnmount() {
-    // TODO: mark notifications as read!
+    Object.values(this.subscriptions).forEach((unsubscribe) => {
+      unsubscribe();
+    });
   }
 
   checkLoading = () => {
@@ -901,7 +187,7 @@ class Notifications extends Component<Props, OwnState> {
   };
 
   onItemPress = (item: Notification) => {
-    // TODO: mark notification as pressed
+    this.props.markNotificationAsPressed(item._id);
     Linking.openURL(item.message.data.appLink);
   };
 
@@ -930,12 +216,14 @@ class Notifications extends Component<Props, OwnState> {
     if (!this.props.notificationsMeta) {
       return;
     }
-    return this.props.loadNotifications(
-      this.props.notificationsListKey,
-      this.props.notificationsQuery,
-      false,
-      this.props.notificationsMeta.isLoading,
-      this.props.notificationsMeta.lastItem
+    this.subscriptions.push(
+      this.props.loadNotifications(
+        this.props.notificationsListKey,
+        this.props.notificationsQuery,
+        false,
+        this.props.notificationsMeta.isLoading,
+        this.props.notificationsMeta.lastItem
+      )
     );
   };
 
@@ -943,23 +231,18 @@ class Notifications extends Component<Props, OwnState> {
     if (!this.props.notificationsMeta) {
       return;
     }
-    return this.props.loadNotifications(
-      this.props.notificationsListKey,
-      this.props.notificationsQuery,
-      true,
-      this.props.notificationsMeta.isLoading,
-      this.props.notificationsMeta.lastItem
+    this.subscriptions.push(
+      this.props.loadNotifications(
+        this.props.notificationsListKey,
+        this.props.notificationsQuery,
+        true,
+        this.props.notificationsMeta.isLoading,
+        this.props.notificationsMeta.lastItem
+      )
     );
   };
 
   render() {
-    console.log(`Notifications - Render ${RENDER_COUNT}`);
-    console.log('this.props');
-    console.log(this.props);
-    console.log('this.state');
-    console.log(this.state);
-    // RENDER_COUNT += 1;
-
     return (
       <View style={styles.screen}>
         <Header
@@ -997,13 +280,15 @@ class Notifications extends Component<Props, OwnState> {
   }
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-  undefined,
-  {
-    areStatePropsEqual: (next: any, prev: any) => {
-      return _.isEqual(next, prev);
+export default withNavigationFocus(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps,
+    undefined,
+    {
+      areStatePropsEqual: (next: any, prev: any) => {
+        return _.isEqual(next, prev);
+      }
     }
-  }
-)(Notifications);
+  )(Notifications)
+);
