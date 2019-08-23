@@ -9,7 +9,7 @@ import {
   references,
   referenceTypes
 } from '../../lib/FirebaseQueries';
-import { requestNotificationPermissions } from '../../lib/Notifications';
+import { requestNotificationPermissions } from '../../lib/NotificationHelpers';
 import {
   getDocument,
   LastItem,

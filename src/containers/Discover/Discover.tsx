@@ -37,7 +37,8 @@ import {
 import { subscribeToUser } from '../../redux/users/actions';
 import {
   selectUserFromId,
-  selectUsersFromList
+  selectUsersFromList,
+  selectUserUnreadNotificationsCountFromId
 } from '../../redux/users/selectors';
 import { loadUsersPosts } from '../../redux/usersPosts/actions';
 import colors from '../../styles/Colors';
@@ -52,6 +53,7 @@ interface StateProps {
   likesCount?: number;
   routing?: any; // routing state
   sharesCount?: number;
+  unreadNotificationsCount?: number;
   usersPostsListsMeta?: {
     [listKey: string]: any; // listKey and meta state
   };
@@ -95,6 +97,8 @@ const mapStateToProps = (state: State) => {
     return {};
   }
 
+  const authUserId = selectAuthUserId(state);
+
   return {
     addsCount: selectListCount(
       state,
@@ -123,6 +127,10 @@ const mapStateToProps = (state: State) => {
       state,
       'sharesLists',
       `${selectAuthUserId(state)}_USER_SHARES`
+    ),
+    unreadNotificationsCount: selectUserUnreadNotificationsCountFromId(
+      state,
+      authUserId
     ),
     usersPostsListsMeta: {
       [generateListKey(
@@ -372,11 +380,14 @@ class Discover extends PureComponent<Props, OwnState> {
           statusBarStyle='dark-content'
           shadow
           title='Discover'
-          // TODO: add an unread notification count
           rightIcons={
             <Icon
-              name={names.BELL}
-              isActive={false}
+              name={
+                this.props.unreadNotificationsCount > 0
+                  ? names.BELL_ACTIVE
+                  : names.BELL
+              }
+              hasBadge={this.props.unreadNotificationsCount > 0}
               onPress={() =>
                 this.props.navigation.navigate('Notifications', {})
               }

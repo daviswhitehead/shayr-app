@@ -2,6 +2,7 @@ import { Notification, User } from '@daviswhitehead/shayr-resources';
 import _ from 'lodash';
 import React, { Component } from 'react';
 import { Linking, View } from 'react-native';
+import firebase from 'react-native-firebase';
 import { Query } from 'react-native-firebase/firestore';
 import { NavigationScreenProps } from 'react-navigation';
 import { withNavigationFocus } from 'react-navigation';
@@ -118,6 +119,10 @@ class Notifications extends Component<Props, OwnState> {
   }
 
   componentDidMount() {
+    // clear notifications and badge
+    firebase.notifications().removeAllDeliveredNotifications();
+    firebase.notifications().setBadge(0);
+
     this.checkLoading();
     this.subscriptions.push(
       this.props.loadNotifications(
@@ -140,7 +145,9 @@ class Notifications extends Component<Props, OwnState> {
 
   componentWillUnmount() {
     Object.values(this.subscriptions).forEach((unsubscribe) => {
-      unsubscribe();
+      if (unsubscribe) {
+        unsubscribe();
+      }
     });
   }
 

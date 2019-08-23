@@ -70,6 +70,7 @@ interface Props extends ComponentProps<typeof TouchableWrapper> {
   isActive?: boolean;
   iconStyle?: any;
   isLoading?: boolean;
+  hasBadge?: boolean;
 }
 
 const Icon: SFC<Props> = ({
@@ -79,11 +80,16 @@ const Icon: SFC<Props> = ({
   isLoading,
   style,
   onPress,
-  noTouching
+  noTouching,
+  hasBadge = false
 }: Props) => {
   const color: string = isActive ? Colors.YELLOW : Colors.BLACK;
   const _containerStyle = [styles.container, style];
-  const _iconStyle = [styles.image, { tintColor: color }, iconStyle];
+  const _iconStyle = [
+    styles.image,
+    hasBadge ? {} : { tintColor: color },
+    iconStyle
+  ];
 
   if (isLoading) {
     return (
@@ -100,6 +106,7 @@ const Icon: SFC<Props> = ({
       noTouching={noTouching}
     >
       <Image source={iconMap[name]} style={_iconStyle} />
+      {hasBadge && <View style={styles.badge} />}
     </TouchableWrapper>
   );
 };
