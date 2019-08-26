@@ -20,7 +20,8 @@ export enum queryTypes {
   FRIENDSHIPS_ALL = 'FRIENDSHIPS_ALL',
   FRIENDS_ALL = 'FRIENDS_ALL',
   USERS_POSTS_COMMENTS = 'USERS_POSTS_COMMENTS',
-  USERS_ALL = 'USERS_ALL'
+  USERS_ALL = 'USERS_ALL',
+  NOTIFICATIONS = 'NOTIFICATIONS'
 }
 
 export enum referenceTypes {
@@ -165,6 +166,16 @@ export const queries: Map<queryTypes, (...args: string[]) => Query> = new Map([
         .collection('comments')
         .where('postId', '==', `${postId}`)
         .where('visibleToUserIds', 'array-contains', `${userId}`)
+        .orderBy('createdAt', 'desc');
+    }
+  ],
+  [
+    queryTypes.NOTIFICATIONS,
+    (userId: string) => {
+      return firebase
+        .firestore()
+        .collection('notifications')
+        .where('receivingUserId', '==', `${userId}`)
         .orderBy('createdAt', 'desc');
     }
   ]

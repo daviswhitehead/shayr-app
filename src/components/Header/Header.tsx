@@ -13,6 +13,7 @@ interface Props {
   back?: () => void;
   statusBarTranslucent?: boolean;
   statusBarHidden?: boolean;
+  rightIcons?: JSX.Element[] | JSX.Element;
 }
 
 const Header: SFC<Props> = ({
@@ -22,7 +23,8 @@ const Header: SFC<Props> = ({
   shadow = false,
   back,
   statusBarTranslucent = true,
-  statusBarHidden = false
+  statusBarHidden = false,
+  rightIcons
 }) => {
   const shadowStyle = shadow ? createShadow(4) : {};
 
@@ -52,7 +54,7 @@ const Header: SFC<Props> = ({
               {back ? <Icon name={names.BACK} onPress={back} /> : <View />}
             </View>
             <Text style={styles.text}>{title}</Text>
-            <View style={styles.bookendsBox} />
+            <View style={styles.bookendsBox}>{!!rightIcons && rightIcons}</View>
           </View>
         </View>
       </SafeAreaView>

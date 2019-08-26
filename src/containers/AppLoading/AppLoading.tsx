@@ -8,7 +8,7 @@ import RootNavigator from '../../config/Routes';
 import { currentScreenAnalytics } from '../../lib/FirebaseAnalytics';
 import { dynamicLinkListener } from '../../lib/FirebaseDynamicLinks';
 import { initializeMoment } from '../../lib/MomentHelpers';
-import { notificationChannels } from '../../lib/NotificationChannels';
+import { notificationChannels } from '../../lib/NotificationHelpers';
 import {
   notificationDisplayedListener,
   notificationListener,
@@ -132,10 +132,6 @@ class AppLoading extends Component<Props> {
     // https://facebook.github.io/react-native/docs/appstate
     if (nextAppState === 'active') {
       firebase.analytics().logEvent('APP_STATE_ACTIVE');
-
-      // clear notifications and badge
-      firebase.notifications().removeAllDeliveredNotifications();
-      firebase.notifications().setBadge(0);
     } else if (nextAppState === 'background') {
       firebase.analytics().logEvent('APP_STATE_BACKGROUND');
     }

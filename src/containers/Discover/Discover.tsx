@@ -6,6 +6,7 @@ import { NavigationScreenProps } from 'react-navigation';
 import { connect } from 'react-redux';
 import { subscribe } from 'redux-subscriber';
 import Header from '../../components/Header';
+import Icon, { names } from '../../components/Icon';
 import List from '../../components/List';
 import PostCard from '../../components/PostCard';
 import SwipeCard from '../../components/SwipeCard';
@@ -36,7 +37,8 @@ import {
 import { subscribeToUser } from '../../redux/users/actions';
 import {
   selectUserFromId,
-  selectUsersFromList
+  selectUsersFromList,
+  selectUserUnreadNotificationsCountFromId
 } from '../../redux/users/selectors';
 import { loadUsersPosts } from '../../redux/usersPosts/actions';
 import colors from '../../styles/Colors';
@@ -51,6 +53,7 @@ interface StateProps {
   likesCount?: number;
   routing?: any; // routing state
   sharesCount?: number;
+  unreadNotificationsCount?: number;
   usersPostsListsMeta?: {
     [listKey: string]: any; // listKey and meta state
   };
@@ -94,6 +97,8 @@ const mapStateToProps = (state: State) => {
     return {};
   }
 
+  const authUserId = selectAuthUserId(state);
+
   return {
     addsCount: selectListCount(
       state,
@@ -122,6 +127,10 @@ const mapStateToProps = (state: State) => {
       state,
       'sharesLists',
       `${selectAuthUserId(state)}_USER_SHARES`
+    ),
+    unreadNotificationsCount: selectUserUnreadNotificationsCountFromId(
+      state,
+      authUserId
     ),
     usersPostsListsMeta: {
       [generateListKey(
@@ -217,6 +226,7 @@ class Discover extends PureComponent<Props, OwnState> {
     );
 
     // DEVELOPMENT HELPERS
+    // this.props.navigation.navigate('Notifications', {});
     // this.props.navigation.navigate('FriendsTab', {});
     // this.props.navigation.navigate('PostDetail', {
     //   ownerUserId: this.props.authUserId,
@@ -370,6 +380,19 @@ class Discover extends PureComponent<Props, OwnState> {
           statusBarStyle='dark-content'
           shadow
           title='Discover'
+          rightIcons={
+            <Icon
+              name={
+                this.props.unreadNotificationsCount > 0
+                  ? names.BELL_ACTIVE
+                  : names.BELL
+              }
+              hasBadge={this.props.unreadNotificationsCount > 0}
+              onPress={() =>
+                this.props.navigation.navigate('Notifications', {})
+              }
+            />
+          }
         />
         <List
           data={

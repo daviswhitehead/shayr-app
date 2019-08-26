@@ -20,6 +20,8 @@ export interface State {
   donesLists: ListsState;
   likes: DocumentsState;
   likesLists: ListsState;
+  notifications: DocumentsState;
+  notificationsLists: ListsState;
   posts: DocumentsState;
   routing: RoutingState;
   shares: DocumentsState;
@@ -43,6 +45,11 @@ export const makeRootReducer = () =>
     friendshipsLists: friendshipsListsReducer,
     likes: createNamedWrapperReducer(documentsReducer, 'likes'),
     likesLists: createNamedWrapperReducer(listsReducer, 'likesLists'),
+    notifications: createNamedWrapperReducer(documentsReducer, 'notifications'),
+    notificationsLists: createNamedWrapperReducer(
+      listsReducer,
+      'notificationsLists'
+    ),
     posts: createNamedWrapperReducer(documentsReducer, 'posts'),
     routing: routingReducer,
     shares: createNamedWrapperReducer(documentsReducer, 'shares'),
