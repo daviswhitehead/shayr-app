@@ -141,7 +141,7 @@ android {
         applicationIdSuffix project.env.get("APP_ID_SUFFIX_ANDROID")
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 13
+        versionCode 16
         versionName "3.2.1"
         ndk {
             abiFilters "armeabi-v7a", "x86"
@@ -236,8 +236,8 @@ dependencies {
     implementation 'com.facebook.android:facebook-android-sdk:[5,6)'
 
     // // Firebase Core
-    implementation 'com.google.firebase:firebase-core:17.0.1'
-    implementation "com.google.android.gms:play-services-base:17.0.0"
+    implementation 'com.google.firebase:firebase-core:16.0.9'
+    implementation "com.google.android.gms:play-services-base:16.1.0"
 
     // // Firebase Modules
     // // // Analytics
@@ -255,7 +255,7 @@ dependencies {
     // // // Cloud Firestore
     implementation "com.google.firebase:firebase-firestore:19.0.0"
     // // // Cloud Messaging / FCM
-    implementation "com.google.firebase:firebase-messaging:19.0.0"
+    implementation "com.google.firebase:firebase-messaging:18.0.0"
     implementation 'me.leolin:ShortcutBadger:1.1.21@aar'
     // // // Crashlytics
     implementation('com.crashlytics.sdk.android:crashlytics:2.9.9@aar') {
