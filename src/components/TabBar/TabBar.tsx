@@ -21,12 +21,12 @@ interface Props {
 }
 
 const INACTIVE_ROUTE_ICON_MAP = {
-  [tabRoutes.DISCOVER_TAB]: names.SEARCH,
+  [tabRoutes.DISCOVER_TAB]: names.DISCOVER,
   [tabRoutes.MYLIST_TAB]: names.LIST,
   [tabRoutes.FRIENDS_TAB]: names.FRIENDS
 };
 const ACTIVE_ROUTE_ICON_MAP = {
-  [tabRoutes.DISCOVER_TAB]: names.SEARCH_ACTIVE,
+  [tabRoutes.DISCOVER_TAB]: names.DISCOVER_ACTIVE,
   [tabRoutes.MYLIST_TAB]: names.LIST_ACTIVE,
   [tabRoutes.FRIENDS_TAB]: names.FRIENDS_ACTIVE
 };
