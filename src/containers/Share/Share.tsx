@@ -3,7 +3,7 @@ import _ from 'lodash';
 import React, { Component } from 'react';
 import { Linking, Platform, Text, View } from 'react-native';
 import firebase from 'react-native-firebase';
-import ShareExtension from 'react-native-share-extension';
+// import ShareExtension from 'react-native-share-extension';
 import { connect } from 'react-redux';
 import { State } from 'src/src/redux/Reducers';
 import ShareModal from '../../components/ShareModal';
@@ -95,8 +95,9 @@ class Share extends Component<Props, OwnState> {
 
       userAnalytics(authUserId);
 
-      const { type, value } = await ShareExtension.data();
-      // const value = 'https://medium.com/@khreniak/cloud-firestore-security-rules-basics-fac6b6bea18e';
+      // const { type, value } = await ShareExtension.data();
+      const value =
+        'https://medium.com/@khreniak/cloud-firestore-security-rules-basics-fac6b6bea18e';
 
       this.setState({ authUserId, payload: value });
 
@@ -141,16 +142,16 @@ class Share extends Component<Props, OwnState> {
     });
   }
 
-  navigateToLogin = async () => {
-    const url = buildAppLink('shayr', 'shayr', 'Login', {});
-    try {
-      (await Platform.OS) === 'ios'
-        ? ShareExtension.openURL(url)
-        : Linking.openURL(url);
-    } catch (error) {
-      console.error('An error occurred:', error);
-    }
-  };
+  // navigateToLogin = async () => {
+  //   const url = buildAppLink('shayr', 'shayr', 'Login', {});
+  //   try {
+  //     (await Platform.OS) === 'ios'
+  //       ? ShareExtension.openURL(url)
+  //       : Linking.openURL(url);
+  //   } catch (error) {
+  //     console.error('An error occurred:', error);
+  //   }
+  // };
 
   render() {
     return (
@@ -160,8 +161,8 @@ class Share extends Component<Props, OwnState> {
         authUserId={this.state.authUserId}
         ownerUserId={this.state.authUserId}
         users={this.state.friends}
-        navigateToLogin={this.navigateToLogin}
-        onModalWillHide={() => ShareExtension.close()}
+        // navigateToLogin={this.navigateToLogin}
+        // onModalWillHide={() => ShareExtension.close()}
         hideBackdrop
         isLoading={this.state.isLoading}
       />
