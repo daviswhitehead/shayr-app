@@ -7,6 +7,11 @@ PODS:
   - BoringSSL-GRPC/Implementation (0.0.3):
     - BoringSSL-GRPC/Interface (= 0.0.3)
   - BoringSSL-GRPC/Interface (0.0.3)
+  - BugsnagReactNative (2.23.0):
+    - BugsnagReactNative/Core (= 2.23.0)
+    - React
+  - BugsnagReactNative/Core (2.23.0):
+    - React
   - CodePush (5.6.0):
     - Base64 (~> 1.1)
     - JWT (~> 3.0.0-beta.7)
@@ -261,6 +266,7 @@ PODS:
   - yoga (0.60.4.React)
 
 DEPENDENCIES:
+  - BugsnagReactNative (from `../node_modules/bugsnag-react-native`)
   - CodePush (from `../node_modules/react-native-code-push`)
   - Crashlytics (~> 3.12.0)
   - DoubleConversion (from `../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec`)
@@ -334,6 +340,8 @@ SPEC REPOS:
     - SSZipArchive
 
 EXTERNAL SOURCES:
+  BugsnagReactNative:
+    :path: "../node_modules/bugsnag-react-native"
   CodePush:
     :path: "../node_modules/react-native-code-push"
   DoubleConversion:
@@ -399,6 +407,7 @@ SPEC CHECKSUMS:
   Base64: cecfb41a004124895a7bcee567a89bae5a89d49b
   boost-for-react-native: 39c7adb57c4e60d6c5479dd8623128eb5b3f0f2c
   BoringSSL-GRPC: db8764df3204ccea016e1c8dd15d9a9ad63ff318
+  BugsnagReactNative: a469858d1040621a04247bb4ec15ca18dceabfd6
   CodePush: 300e90b3481fa82569090406165b83745de3613a
   Crashlytics: 07fb167b1694128c1c9a5a5cc319b0e9c3ca0933
   DoubleConversion: 5805e889d232975c086db112ece9ed034df7a0b2
@@ -455,6 +464,6 @@ SPEC CHECKSUMS:
   SSZipArchive: fa16b8cc4cdeceb698e5e5d9f67e9558532fbf23
   yoga: c2c050f6ae6e222534760cc82f559b89214b67e2
 
-PODFILE CHECKSUM: f64cac898ffbf652248c04298a90cc03442b7e51
+PODFILE CHECKSUM: 08036fe9eaa5a40e67241b15a2d0acf22db215c9
 
 COCOAPODS: 1.6.1

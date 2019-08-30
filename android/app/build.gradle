@@ -1,5 +1,7 @@
 apply plugin: "com.android.application"
 apply plugin: 'io.fabric'
+// Bugsnag https://docs.bugsnag.com/platforms/android/
+apply plugin: 'com.bugsnag.android.gradle'
 apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"
 
 import com.android.build.OutputFile
@@ -208,6 +210,7 @@ android {
 }
 
 dependencies {
+    implementation project(':bugsnag-react-native')
     implementation project(':react-native-screens')
     implementation project(':react-native-reanimated')
     implementation project(':react-native-firebase')
@@ -261,6 +264,9 @@ dependencies {
     implementation('com.crashlytics.sdk.android:crashlytics:2.9.9@aar') {
         transitive = true
     }
+
+    // Bugsnag https://docs.bugsnag.com/platforms/android/
+    implementation 'com.bugsnag:bugsnag-android:4.+'
 
 }
 

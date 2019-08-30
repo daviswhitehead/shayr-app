@@ -7,6 +7,7 @@ import com.facebook.react.PackageList;
 import com.facebook.hermes.reactexecutor.HermesExecutorFactory;
 import com.facebook.react.bridge.JavaScriptExecutorFactory;
 import com.facebook.react.ReactApplication;
+import com.bugsnag.BugsnagReactNative;
 import com.swmansion.rnscreens.RNScreensPackage;
 import com.swmansion.reanimated.ReanimatedPackage;
 import com.facebook.react.ReactNativeHost;
@@ -117,6 +118,7 @@ public class MainApplication extends Application implements ReactApplication {
   @Override
   public void onCreate() {
     super.onCreate();
+    BugsnagReactNative.start(this);
     Fabric.with(this, new Crashlytics());
     AppEventsLogger.activateApp(this);
     SoLoader.init(this, /* native exopackage */ false);

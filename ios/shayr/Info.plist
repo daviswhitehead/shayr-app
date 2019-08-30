@@ -67,6 +67,8 @@
 			</dict>
 		</array>
 	</dict>
+	<key>BugsnagAPIKey</key>
+	<string>__RN_CONFIG_BUGSNAG_KEY</string>
 	<key>FacebookAppID</key>
 	<string>__RN_CONFIG_FACEBOOK_APP_ID</string>
 	<key>FacebookDisplayName</key>

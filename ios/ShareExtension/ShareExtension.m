@@ -16,6 +16,7 @@
 #import <Crashlytics/Crashlytics.h>
 #import "ReactNativeConfig.h"
 #import <CodePush/CodePush.h>
+#import <BugsnagReactNative/BugsnagReactNative.h>
 
 @interface ShareExtension : ReactNativeShareExtension
 @end
@@ -27,6 +28,10 @@ RCT_EXPORT_MODULE();
 - (UIView*) shareView {
   [FIRApp configure];
   [Fabric with:@[[Crashlytics class]]];
+
+  // Bugsnag https://docs.bugsnag.com/platforms/react-native/react-native/enhanced-native-integration/
+  // [BugsnagReactNative start];
+  // [BugsnagReactNative leaveBreadcrumbWithMessage:@"iOS Share Extension"];
   
   // JavaScript Code Location
   NSURL *jsCodeLocation;

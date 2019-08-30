@@ -38,6 +38,7 @@ def shared_pods
   pod 'react-native-splash-screen', :path => '../node_modules/react-native-splash-screen'
   pod 'RNGestureHandler', :path => '../node_modules/react-native-gesture-handler'
   pod 'RNReanimated', :path => '../node_modules/react-native-reanimated'
+  pod 'BugsnagReactNative', :path => '../node_modules/bugsnag-react-native'
   
   # manually linking react-native-config due to share extension issues with pods
   # pod 'react-native-config', :path => '../node_modules/react-native-config'
@@ -60,15 +61,17 @@ end
 
 target 'shayr' do
   shared_pods
-
+  
   # Facebook
   pod 'FBSDKCoreKit', '~> 5.3.0'
   pod 'FBSDKLoginKit', '~> 5.3.0'
   pod 'FBSDKShareKit', '~> 5.3.0'
+  
+  # App Only
+  pod 'RNScreens', :path => '../node_modules/react-native-screens'
+  
 
   use_native_modules!
-  pod 'RNScreens', :path => '../node_modules/react-native-screens'
-
 end
 
 target 'ShareExtension' do

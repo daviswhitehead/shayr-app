@@ -18,7 +18,7 @@
 #import "RNFirebaseLinks.h"
 #import <React/RCTLinkingManager.h>
 #import <CodePush/CodePush.h>
-
+#import <BugsnagReactNative/BugsnagReactNative.h>
 
 @implementation AppDelegate
 
@@ -40,6 +40,9 @@
   
   // Fabric
   [Fabric with:@[[Crashlytics class]]];
+
+  // Bugsnag https://docs.bugsnag.com/platforms/react-native/react-native/enhanced-native-integration/
+  [BugsnagReactNative start];
   
   // JavaScript Code Location
   NSURL *jsCodeLocation;
