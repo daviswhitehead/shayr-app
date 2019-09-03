@@ -12,8 +12,6 @@
 #import <React/RCTRootView.h>
 #import <React/RCTLog.h>
 #import <Firebase.h>
-#import <Fabric/Fabric.h>
-#import <Crashlytics/Crashlytics.h>
 #import "ReactNativeConfig.h"
 #import <CodePush/CodePush.h>
 
@@ -25,8 +23,11 @@
 RCT_EXPORT_MODULE();
 
 - (UIView*) shareView {
+  
   [FIRApp configure];
-  [Fabric with:@[[Crashlytics class]]];
+//  if(![FIRApp defaultApp]){
+//    [FIRApp configure];
+//  }
   
   // JavaScript Code Location
   NSURL *jsCodeLocation;
