@@ -67,6 +67,8 @@
 			</dict>
 		</array>
 	</dict>
+	<key>GADApplicationIdentifier</key>
+	<string>__RN_CONFIG_ADMOB_APP_ID_IOS</string>
 	<key>BugsnagAPIKey</key>
 	<string>__RN_CONFIG_BUGSNAG_KEY</string>
 	<key>FacebookAppID</key>

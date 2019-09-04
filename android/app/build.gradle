@@ -1,7 +1,10 @@
 apply plugin: "com.android.application"
+apply plugin: "com.google.firebase.firebase-perf"
 apply plugin: 'io.fabric'
+
 // Bugsnag https://docs.bugsnag.com/platforms/android/
 apply plugin: 'com.bugsnag.android.gradle'
+
 apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"
 
 import com.android.build.OutputFile
@@ -208,6 +211,7 @@ android {
 }
 
 dependencies {
+    implementation project(':react-native-firebase')
     
     // Required
     implementation fileTree(dir: "libs", include: ["*.jar"])
@@ -229,7 +233,6 @@ dependencies {
     implementation project(':react-native-splash-screen')
     implementation project(':react-native-gesture-handler')
     implementation project(':react-native-code-push')
-    implementation project(':react-native-firebase')
     implementation project(':bugsnag-react-native')
     implementation project(':react-native-screens')
     implementation project(':react-native-reanimated')
@@ -243,11 +246,11 @@ dependencies {
 
     // // Firebase Modules
     // // // Analytics
-    implementation "com.google.firebase:firebase-analytics:16.0.4"
+    implementation "com.google.firebase:firebase-analytics:16.5.0"
     // // // Authentication
     implementation "com.google.firebase:firebase-auth:17.0.0"
     // // // Performance Monitoring
-    // implementation "com.google.firebase:firebase-perf:16.2.0"
+    implementation "com.google.firebase:firebase-perf:17.0.0"
     // // // Remote Config
     // implementation "com.google.firebase:firebase-config:16.1.0"
     // // // Cloud Storage
@@ -255,7 +258,7 @@ dependencies {
     // // // Dynamic Links
     implementation "com.google.firebase:firebase-dynamic-links:17.0.0"
     // // // Cloud Firestore
-    implementation "com.google.firebase:firebase-firestore:19.0.0"
+    implementation "com.google.firebase:firebase-firestore:19.0.2"
     // // // Cloud Messaging / FCM
     implementation "com.google.firebase:firebase-messaging:18.0.0"
     implementation 'me.leolin:ShortcutBadger:1.1.21@aar'

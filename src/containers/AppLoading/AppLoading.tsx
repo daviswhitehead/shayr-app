@@ -3,7 +3,6 @@ import { ActivityIndicator, AppState, Linking, View } from 'react-native';
 import firebase from 'react-native-firebase';
 // import { useScreens } from 'react-native-screens';
 import { connect } from 'react-redux';
-import { applyFirestoreSettings } from '../../config/FirebaseConfig';
 import RootNavigator from '../../config/Routes';
 import { currentScreenAnalytics } from '../../lib/FirebaseAnalytics';
 import { dynamicLinkListener } from '../../lib/FirebaseDynamicLinks';
@@ -65,9 +64,6 @@ class AppLoading extends Component<Props> {
     // enabling screens support before navigator
     // https://github.com/kmagiera/react-native-screens
     // useScreens();
-
-    // apply firestore settings before any other firestore calls
-    applyFirestoreSettings();
 
     // check authentication and listen for updates
     this.subscriptions.push(this.props.authSubscription());
