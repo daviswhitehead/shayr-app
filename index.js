@@ -21,10 +21,6 @@ if (Config.ENV_NAME !== 'prod') {
     }
   };
 }
-// AppRegistry.registerComponent(
-//   'shayr',
-//   () => require('./src/containers/ShareApp').default
-// );
 AppRegistry.registerComponent(
   'shayr',
   () => require('./src/containers/App').default

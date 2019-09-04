@@ -8,6 +8,7 @@ import { connect } from 'react-redux';
 import { State } from 'src/src/redux/Reducers';
 import ShareModal from '../../components/ShareModal';
 import { retrieveToken } from '../../lib/AppGroupTokens';
+import { setUser } from '../../lib/Bugsnag';
 import { userAnalytics } from '../../lib/FirebaseAnalytics';
 import { getCurrentUser, getFBAuthCredential } from '../../lib/FirebaseLogin';
 import { subscribeToFriendships } from '../../redux/friendships/actions';
@@ -94,6 +95,7 @@ class Share extends Component<Props, OwnState> {
       const authUserId = _.get(currentUser, ['user', 'uid'], '');
 
       userAnalytics(authUserId);
+      setUser(authUserId);
 
       const { type, value } = await ShareExtension.data();
       // const value =

@@ -1,5 +1,7 @@
 apply plugin: "com.android.application"
 apply plugin: 'io.fabric'
+// Bugsnag https://docs.bugsnag.com/platforms/android/
+apply plugin: 'com.bugsnag.android.gradle'
 apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"
 
 import com.android.build.OutputFile
@@ -125,7 +127,7 @@ def enableHermes = project.ext.react.get("enableHermes", false);
 android {
     // because of firestore
     dexOptions {
-        javaMaxHeapSize "4g"
+        javaMaxHeapSize "3g"
     }
 
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -141,12 +143,10 @@ android {
         applicationIdSuffix project.env.get("APP_ID_SUFFIX_ANDROID")
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 16
+        versionCode 72
         versionName "3.2.1"
-        ndk {
-            abiFilters "armeabi-v7a", "x86"
-        }
-        // because of firestore
+        
+        // because of firestore https://developer.android.com/studio/build/multidex#mdex-gradle
         multiDexEnabled true
 
         // for build variants
@@ -208,9 +208,7 @@ android {
 }
 
 dependencies {
-    implementation project(':react-native-screens')
-    implementation project(':react-native-reanimated')
-    implementation project(':react-native-firebase')
+    
     // Required
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "com.facebook.react:react-native:+"  // From node_modules
@@ -231,6 +229,10 @@ dependencies {
     implementation project(':react-native-splash-screen')
     implementation project(':react-native-gesture-handler')
     implementation project(':react-native-code-push')
+    implementation project(':react-native-firebase')
+    implementation project(':bugsnag-react-native')
+    implementation project(':react-native-screens')
+    implementation project(':react-native-reanimated')
     
     // // FBSDK
     implementation 'com.facebook.android:facebook-android-sdk:[5,6)'
@@ -261,6 +263,12 @@ dependencies {
     implementation('com.crashlytics.sdk.android:crashlytics:2.9.9@aar') {
         transitive = true
     }
+
+    // Bugsnag https://docs.bugsnag.com/platforms/android/
+    implementation 'com.bugsnag:bugsnag-android:4.+'
+
+    // MultiDex
+    implementation 'com.android.support:multidex:1.0.3'
 
 }
 
