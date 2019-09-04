@@ -11,8 +11,6 @@ export const notificationDisplayedListener = () =>
 
 export const notificationListener = () =>
   firebase.notifications().onNotification((notification) => {
-    console.log(notification);
-
     // const groupNotificationId = 'test'
     // const body = 'Chats list'
     // const smallIcon = 'ic_launcher'

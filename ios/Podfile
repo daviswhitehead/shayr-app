@@ -44,11 +44,13 @@ def shared_pods
   # pod 'react-native-config', :path => '../node_modules/react-native-config'
 
   # Firebase
-  pod 'Firebase/Auth', '~> 6.2.0'
-  pod 'Firebase/Core', '~> 6.2.0'
-  pod 'Firebase/DynamicLinks', '~> 6.2.0'
-  pod 'Firebase/Firestore', '~> 6.2.0'
-  pod 'Firebase/Messaging', '~> 6.2.0'
+  pod 'Firebase/Auth', '~> 6.5.0'
+  pod 'Firebase/Core', '~> 6.5.0'
+  pod 'Firebase/DynamicLinks', '~> 6.5.0'
+  pod 'Firebase/Firestore', '~> 6.5.0'
+  pod 'Firebase/Messaging', '~> 6.5.0'
+  pod 'Firebase/RemoteConfig', '~> 6.5.0'
+  pod 'Firebase/Storage', '~> 6.5.0'
   
   # Crashlytics
   pod 'Fabric', '~> 1.9.0'
@@ -62,14 +64,17 @@ end
 target 'shayr' do
   shared_pods
   
+  # Firebase
+  # pod 'Firebase/AdMob', '~> 6.5.0'
+  pod 'Firebase/Performance', '~> 6.5.0'
+  
   # Facebook
   pod 'FBSDKCoreKit', '~> 5.3.0'
   pod 'FBSDKLoginKit', '~> 5.3.0'
   pod 'FBSDKShareKit', '~> 5.3.0'
   
-  # App Only
+  # React Native
   pod 'RNScreens', :path => '../node_modules/react-native-screens'
-  
 
   use_native_modules!
 end
@@ -125,7 +130,6 @@ post_install do |installer|
   # https://github.com/luggit/react-native-config/issues/187#issuecomment-514857871
   installer.pods_project.targets.each do |target|
     targets_to_ignore = %w(React)
-    # targets_to_ignore = %w(React yoga)
 
     # React is manually linked
     if targets_to_ignore.include? target.name
