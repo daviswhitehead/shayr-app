@@ -7,8 +7,6 @@ import { bugsnag } from '../../lib/Bugsnag';
 import createStore from '../../redux/CreateStore';
 import AppLoading from '../AppLoading';
 
-bugsnag.notify(new Error('Main App Test Error error'));
-
 const store = createStore();
 
 class App extends React.Component<{}> {

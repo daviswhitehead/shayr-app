@@ -5,8 +5,6 @@ import { bugsnag } from '../../lib/Bugsnag';
 import createStore from '../../redux/CreateStore';
 import Share from '../Share';
 
-bugsnag.notify(new Error('Share Extension Test Error'));
-
 const store = createStore();
 
 class ShareApp extends React.Component<{}> {

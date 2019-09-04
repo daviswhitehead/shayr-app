@@ -19,6 +19,7 @@ buildscript {
         classpath 'com.google.gms:google-services:4.2.0'
         classpath 'com.google.firebase:firebase-plugins:1.1.5'
         classpath 'io.fabric.tools:gradle:1.28.1'
+        
         // Bugsnag https://docs.bugsnag.com/platforms/android/
         classpath 'com.bugsnag:bugsnag-android-gradle-plugin:4.+'
 
