@@ -1,19 +1,9 @@
-//
-//  ShareExtension.m
-//  ShareExtension
-//
-//  Created by Alex Trahey on 1/28/18.
-//  Copyright © 2018 Facebook. All rights reserved.
-//
-
 #import <Foundation/Foundation.h>
 #import "ReactNativeShareExtension.h"
 #import <React/RCTBundleURLProvider.h>
 #import <React/RCTRootView.h>
 #import <React/RCTLog.h>
 #import <Firebase.h>
-#import <Fabric/Fabric.h>
-#import <Crashlytics/Crashlytics.h>
 #import "ReactNativeConfig.h"
 #import <CodePush/CodePush.h>
 #import <BugsnagReactNative/BugsnagReactNative.h>
@@ -26,12 +16,14 @@
 RCT_EXPORT_MODULE();
 
 - (UIView*) shareView {
-  [FIRApp configure];
-  [Fabric with:@[[Crashlytics class]]];
+  
+  if(![FIRApp defaultApp]){
+   [FIRApp configure];
+ }
 
+  
   // Bugsnag https://docs.bugsnag.com/platforms/react-native/react-native/enhanced-native-integration/
-  // [BugsnagReactNative start];
-  // [BugsnagReactNative leaveBreadcrumbWithMessage:@"iOS Share Extension"];
+  [BugsnagReactNative start];
   
   // JavaScript Code Location
   NSURL *jsCodeLocation;

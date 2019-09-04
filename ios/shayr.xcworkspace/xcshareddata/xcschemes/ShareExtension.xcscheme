@@ -4,8 +4,17 @@
    wasCreatedForAppExtension = "YES"
    version = "2.0">
    <BuildAction
-      parallelizeBuildables = "YES"
+      parallelizeBuildables = "NO"
       buildImplicitDependencies = "YES">
+      <PreActions>
+         <ExecutionAction
+            ActionType = "Xcode.IDEStandardExecutionActionsCore.ExecutionActionType.ShellScriptAction">
+            <ActionContent
+               title = "Run Script"
+               scriptText = "echo &quot;environments/alpha/.env.alpha&quot; &gt; /tmp/envfile&#10;">
+            </ActionContent>
+         </ExecutionAction>
+      </PreActions>
       <BuildActionEntries>
          <BuildActionEntry
             buildForTesting = "YES"
@@ -68,7 +77,7 @@
       allowLocationSimulation = "YES"
       launchAutomaticallySubstyle = "2">
       <RemoteRunnable
-         runnableDebuggingMode = "0"
+         runnableDebuggingMode = "1"
          BundleIdentifier = "com.apple.mobilesafari"
          RemotePath = "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/Library/CoreSimulator/Profiles/Runtimes/iOS.simruntime/Contents/Resources/RuntimeRoot/Applications/MobileSafari.app">
       </RemoteRunnable>

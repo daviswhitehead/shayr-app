@@ -1,6 +1,7 @@
 import firebase from 'react-native-firebase';
 import { Dispatch } from 'redux';
 import { retrieveToken, saveToken } from '../../lib/AppGroupTokens';
+import { setUser } from '../../lib/Bugsnag';
 import { getFBProfile, getFBToken, logoutFB } from '../../lib/FacebookRequests';
 import { userAnalytics } from '../../lib/FirebaseAnalytics';
 import { ts } from '../../lib/FirebaseHelpers';
@@ -56,6 +57,7 @@ export const authSubscription = () => {
 
         // identify user in analytics events
         userAnalytics(user.uid);
+        setUser(user.uid);
       } else {
         dispatch({
           type: types.AUTH_STATUS,

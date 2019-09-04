@@ -77,7 +77,7 @@ end
 target 'ShareExtension' do
   shared_pods
 
-  # use_native_modules!
+  use_native_modules!
 end
 
 post_install do |installer|
