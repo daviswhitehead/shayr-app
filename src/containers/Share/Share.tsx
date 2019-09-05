@@ -8,9 +8,9 @@ import { connect } from 'react-redux';
 import { State } from 'src/src/redux/Reducers';
 import ShareModal from '../../components/ShareModal';
 import { retrieveToken } from '../../lib/AppGroupTokens';
-import { setUser } from '../../lib/Bugsnag';
-import { userAnalytics } from '../../lib/FirebaseAnalytics';
 import { getCurrentUser, getFBAuthCredential } from '../../lib/FirebaseLogin';
+import { authSubscription } from '../../redux/auth/actions';
+import { selectAuthUserId } from '../../redux/auth/selectors';
 import { subscribeToFriendships } from '../../redux/friendships/actions';
 import { selectUsersFromList } from '../../redux/users/selectors';
 
@@ -23,26 +23,21 @@ import { selectUsersFromList } from '../../redux/users/selectors';
 // // Comment any calls to react-native-share-extension
 
 interface StateProps {
-  users: {
+  authUserId: string;
+  friends: {
     [userId: string]: User;
-  };
-  usersLists: {
-    [listKey: string]: any; // TODO: meta type
   };
 }
 
 interface DispatchProps {
   subscribeToFriendships: typeof subscribeToFriendships;
+  authSubscription: typeof authSubscription;
 }
 
 interface OwnProps {}
 
 interface OwnState {
-  authUserId: string;
   payload: string;
-  friends: {
-    [userId: string]: User;
-  };
   isLoading: boolean;
 }
 
@@ -56,13 +51,14 @@ const mapStateToProps = (state: State) => {
   const authUserId = selectAuthUserId(state);
 
   return {
-    users: state.users,
-    usersLists: state.usersLists
+    authUserId,
+    friends: selectUsersFromList(state, `${authUserId}_Friends`, true)
   };
 };
 
 const mapDispatchToProps = {
-  subscribeToFriendships
+  subscribeToFriendships,
+  authSubscription
 };
 
 class Share extends Component<Props, OwnState> {
@@ -71,9 +67,7 @@ class Share extends Component<Props, OwnState> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      authUserId: '',
       payload: '',
-      friends: {},
       isLoading: true
     };
     firebase.analytics().logEvent('SHARE_EXTENSION_LAUNCH');
@@ -83,66 +77,55 @@ class Share extends Component<Props, OwnState> {
   }
 
   async componentDidMount() {
+    this.checkLoading();
     firebase.analytics().setCurrentScreen('Share');
-
-    this.subscriptions.push(
-      firebase.auth().onAuthStateChanged((user) => {
-        this.setState((previousState) => ({
-          ...previousState,
-          user
-        }));
-      })
-    );
-    firebase.analytics().logEvent('SHARE_EXTENSION_AUTH_SUBSCRIPTION');
+    this.subscriptions.push(this.props.authSubscription());
+    firebase.analytics().logEvent('SHARE_EXTENSION__AUTH_SUBSCRIPTION');
 
     try {
       const token = await retrieveToken('accessToken');
-      const credential = getFBAuthCredential(token);
-      const currentUser = await getCurrentUser(credential);
-      const authUserId = _.get(currentUser, ['user', 'uid'], '');
+      firebase.analytics().logEvent('SHARE_EXTENSION__TOKEN');
 
-      userAnalytics(authUserId);
-      setUser(authUserId);
+      const credential = getFBAuthCredential(token);
+      firebase.analytics().logEvent('SHARE_EXTENSION__CREDENTIAL');
+
+      const currentUser = await getCurrentUser(credential);
+      firebase.analytics().logEvent('SHARE_EXTENSION__CURRENT_USER');
 
       const { type, value } = await ShareExtension.data();
+      firebase.analytics().logEvent('SHARE_EXTENSION__VALUE');
       // const value =
       //   'https://medium.com/@khreniak/cloud-firestore-security-rules-basics-fac6b6bea18e';
 
-      this.setState({ authUserId, payload: value });
+      this.setState({ payload: value });
+
+      if (this.props.authUserId) {
+        this.subscriptions.push(
+          this.props.subscribeToFriendships(this.props.authUserId)
+        );
+      }
+      firebase
+        .analytics()
+        .logEvent('SHARE_EXTENSION__SUBSCRIBE_TO_FRIENDSHIPS');
 
       this.modalRef.current.toggleModal();
-
-      this.subscriptions.push(
-        await this.props.subscribeToFriendships(authUserId)
-      );
+      firebase.analytics().logEvent('SHARE_EXTENSION__TOGGLE_MODAL');
     } catch (error) {
       console.error(error);
+      firebase.analytics().logEvent('SHARE_EXTENSION__ERROR');
     }
   }
 
   componentDidUpdate(prevProps: Props) {
-    if (
-      this.state.authUserId &&
-      _.get(
-        this.props,
-        ['usersLists', `${this.state.authUserId}_Friends`, 'isLoaded'],
-        false
-      ) &&
-      !_.get(
-        prevProps,
-        ['usersLists', `${this.state.authUserId}_Friends`, 'isLoaded'],
-        false
-      )
-    ) {
-      this.setState({
-        friends: selectUsersFromList(
-          this.props,
-          `${this.state.authUserId}_Friends`,
-          true
-        ),
-        isLoading: false
-      });
+    // subscribe to friendships
+    if (this.props.authUserId && !prevProps.authUserId) {
+      this.subscriptions.push(
+        this.props.subscribeToFriendships(this.props.authUserId)
+      );
     }
+    firebase.analytics().logEvent('SHARE_EXTENSION__SUBSCRIBE_TO_FRIENDSHIPS');
+
+    this.checkLoading();
   }
 
   componentWillUnmount() {
@@ -153,12 +136,9 @@ class Share extends Component<Props, OwnState> {
 
   checkLoading = () => {
     if (
-      this.state.authUserId &&
-      _.get(
-        this.props,
-        ['usersLists', `${this.state.authUserId}_Friends`, 'isLoaded'],
-        false
-      )
+      this.state.isLoading &&
+      this.props.authUserId &&
+      !_.isEmpty(this.props.friends)
     ) {
       this.setState({ isLoading: false });
     }
@@ -178,13 +158,12 @@ class Share extends Component<Props, OwnState> {
   render() {
     return (
       <ShareModal
-        // key={}
         ref={this.modalRef}
         isLoading={this.state.isLoading}
         payload={this.state.payload}
-        authUserId={this.state.authUserId}
-        ownerUserId={this.state.authUserId}
-        users={this.state.friends}
+        authUserId={this.props.authUserId}
+        ownerUserId={this.props.authUserId}
+        users={this.props.friends}
         navigateToLogin={this.navigateToLogin}
         onModalWillHide={() => ShareExtension.close()}
         hideBackdrop
