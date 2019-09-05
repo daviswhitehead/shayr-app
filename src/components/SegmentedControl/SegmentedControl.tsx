@@ -11,7 +11,8 @@ export interface Props {
   sharesCount?: number;
   addsCount?: number;
   donesCount?: number;
-  likesCount?: number;
+  commentsCount?: number;
+  // likesCount?: number;
   isLoading?: boolean;
 }
 
@@ -100,12 +101,28 @@ export default class SegmentedControl extends PureComponent<Props, State> {
           <View style={styles.iconContainer}>
             <IconWithCount
               isLoading={this.props.isLoading}
+              name={names.REACTION}
+              count={this.props.commentsCount || 0}
+              isActive={false}
+            />
+          </View>
+        </TouchableOpacity>
+        {/* <TouchableOpacity
+          style={[
+            styles.segment,
+            this.state.selectedIndex === 3 ? styles.activeSegment : {}
+          ]}
+          onPress={() => this.handleIndexChange(3)}
+        >
+          <View style={styles.iconContainer}>
+            <IconWithCount
+              isLoading={this.props.isLoading}
               name={names.LIKE}
               count={this.props.likesCount || 0}
               isActive={false}
             />
           </View>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
     );
   }

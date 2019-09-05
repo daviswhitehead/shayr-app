@@ -49,6 +49,12 @@ interface OwnState {
 type Props = OwnProps & StateProps & DispatchProps;
 
 const mapStateToProps = (state: State) => {
+  if (!selectAuthUserId(state)) {
+    return {};
+  }
+
+  const authUserId = selectAuthUserId(state);
+
   return {
     users: state.users,
     usersLists: state.usersLists
@@ -87,6 +93,7 @@ class Share extends Component<Props, OwnState> {
         }));
       })
     );
+    firebase.analytics().logEvent('SHARE_EXTENSION_AUTH_SUBSCRIPTION');
 
     try {
       const token = await retrieveToken('accessToken');
@@ -144,10 +151,23 @@ class Share extends Component<Props, OwnState> {
     });
   }
 
-  navigateToLogin = async () => {
+  checkLoading = () => {
+    if (
+      this.state.authUserId &&
+      _.get(
+        this.props,
+        ['usersLists', `${this.state.authUserId}_Friends`, 'isLoaded'],
+        false
+      )
+    ) {
+      this.setState({ isLoading: false });
+    }
+  };
+
+  navigateToLogin = () => {
     const url = buildAppLink('shayr', 'shayr', 'Login', {});
     try {
-      (await Platform.OS) === 'ios'
+      Platform.OS === 'ios'
         ? ShareExtension.openURL(url)
         : Linking.openURL(url);
     } catch (error) {
@@ -158,7 +178,9 @@ class Share extends Component<Props, OwnState> {
   render() {
     return (
       <ShareModal
+        // key={}
         ref={this.modalRef}
+        isLoading={this.state.isLoading}
         payload={this.state.payload}
         authUserId={this.state.authUserId}
         ownerUserId={this.state.authUserId}
@@ -166,7 +188,6 @@ class Share extends Component<Props, OwnState> {
         navigateToLogin={this.navigateToLogin}
         onModalWillHide={() => ShareExtension.close()}
         hideBackdrop
-        isLoading={this.state.isLoading}
       />
     );
   }

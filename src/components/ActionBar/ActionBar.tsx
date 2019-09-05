@@ -19,8 +19,10 @@ export interface Props {
   postId: string;
   url: string;
   usersPostsId: string;
-  usersPostsShares: Array<string>;
+  usersPostsAdds: Array<string>;
   usersPostsComments: Array<string>;
+  usersPostsDones: Array<string>;
+  usersPostsShares: Array<string>;
 }
 
 const ActionBar: SFC<Props> = ({
@@ -30,8 +32,10 @@ const ActionBar: SFC<Props> = ({
   isLoading,
   url,
   usersPostsId,
-  usersPostsShares,
-  usersPostsComments
+  usersPostsAdds,
+  usersPostsComments,
+  usersPostsDones,
+  usersPostsShares
 }) => {
   if (isLoading) {
     return (
@@ -63,33 +67,40 @@ const ActionBar: SFC<Props> = ({
             name={names.SHARE}
             style={styles.action}
             ownerUserId={ownerUserId}
+            postId={postId}
             usersPostsId={usersPostsId}
             usersPostsShares={usersPostsShares}
-            postId={postId}
             url={url}
           />
           <IconWithAdds
             name={names.ADD}
             style={styles.action}
             ownerUserId={ownerUserId}
-            usersPostsId={usersPostsId}
             postId={postId}
+            usersPostsAdds={usersPostsAdds}
+            usersPostsDones={usersPostsDones}
           />
           <IconWithDones
+            // icon props
             name={names.DONE}
+            style={styles.action}
+            // done props
             ownerUserId={ownerUserId}
             postId={postId}
-            style={styles.action}
+            usersPostsAdds={usersPostsAdds}
+            usersPostsDones={usersPostsDones}
+            // comment props
             usersPostsComments={usersPostsComments}
+            // share props
             usersPostsId={usersPostsId}
             usersPostsShares={usersPostsShares}
             url={url}
           />
           <IconWithComments
             name={names.REACTION}
+            style={styles.action}
             ownerUserId={ownerUserId}
             postId={postId}
-            style={styles.action}
             usersPostsComments={usersPostsComments}
           />
         </View>

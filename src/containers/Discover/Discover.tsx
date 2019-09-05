@@ -10,6 +10,7 @@ import Icon, { names } from '../../components/Icon';
 import List from '../../components/List';
 import PostCard from '../../components/PostCard';
 import SwipeCard from '../../components/SwipeCard';
+import withAdds from '../../higherOrderComponents/withAdds';
 import { getQuery, queryTypes } from '../../lib/FirebaseQueries';
 import {
   subscribeToAdds,
@@ -337,22 +338,22 @@ class Discover extends PureComponent<Props, OwnState> {
   };
 
   renderItem = ({ item }: { item: UsersPosts }) => {
+    const actionProps = {
+      // add/done props
+      ownerUserId: item.userId,
+      postId: item.postId,
+      usersPostsAdds: item.adds,
+      usersPostsDones: item.dones
+    };
+
     return (
       <SwipeCard
         key={item._id}
         noSwiping={this.state.isLoading}
-        type={'add'}
+        type={'adds'}
         isLeftAlreadyDone={_.includes(item.adds || [], this.props.authUserId)}
-        leftAction={() =>
-          this.props.toggleAddDonePost(
-            'adds',
-            false,
-            item.postId,
-            this.props.authUserId,
-            this.props.authUserId,
-            _.includes(item.dones || [], this.props.authUserId)
-          )
-        }
+        leftAction={withAdds}
+        leftActionProps={{ side: 'left', ...actionProps }}
       >
         <PostCard
           key={item._id}

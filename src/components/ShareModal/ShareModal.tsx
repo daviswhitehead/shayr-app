@@ -159,7 +159,7 @@ class ShareModal extends React.Component<Props, OwnState> {
 
     // trigger an error in 15 sec if there's no post
     setTimeout(() => {
-      if (!this.state.shareId || !this.state.post) {
+      if ((!this.state.shareId || !this.state.post) && this.state.isVisible) {
         this.setState({ isError: true });
       }
     }, 15000);

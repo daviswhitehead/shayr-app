@@ -31,7 +31,8 @@ export const toggleAddDonePost = (
   postId: documentId,
   ownerUserId: documentId,
   userId: documentId,
-  isOtherActive: boolean
+  isOtherActive: boolean,
+  visibleToUserIds: Array<string> = []
 ) => async (dispatch: Dispatch) => {
   dispatch({
     type: types.TOGGLE_ADD_DONE_POST_START
@@ -68,7 +69,16 @@ export const toggleAddDonePost = (
       }
     );
 
-    updateCounts(batcher, !isActive, collection, postId, ownerUserId, userId);
+    updateCounts(
+      batcher,
+      !isActive,
+      collection,
+      postId,
+      ownerUserId,
+      userId,
+      undefined,
+      visibleToUserIds
+    );
 
     if (!isActive && isOtherActive) {
       // {otherCollection}/{ownerUserId}_{postId}
@@ -93,7 +103,9 @@ export const toggleAddDonePost = (
         otherCollection,
         postId,
         ownerUserId,
-        userId
+        userId,
+        undefined,
+        visibleToUserIds
       );
     }
 

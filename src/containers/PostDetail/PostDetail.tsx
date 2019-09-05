@@ -75,7 +75,7 @@ interface Users {
   [userId: string]: User;
 }
 
-type ActionType = 'shares' | 'adds' | 'dones' | 'likes';
+type ActionType = 'shares' | 'adds' | 'dones' | 'comments';
 
 const mapStateToProps = (
   state: any,
@@ -88,7 +88,7 @@ const mapStateToProps = (
   const commentsListKey = generateListKey(
     ownerUserId,
     postId,
-    queryTypes.USERS_POSTS_COMMENTS
+    queryTypes.COMMENTS_FOR_USERS_POSTS
   );
   const authFriends = selectUsersFromList(state, `${authUserId}_Friends`, true);
 
@@ -143,9 +143,9 @@ class PostDetail extends Component<Props, OwnState> {
         generateListKey(
           this.props.ownerUserId,
           this.props.postId,
-          queryTypes.USERS_POSTS_COMMENTS
+          queryTypes.COMMENTS_FOR_USERS_POSTS
         ),
-        getQuery(queryTypes.USERS_POSTS_COMMENTS)!(
+        getQuery(queryTypes.COMMENTS_FOR_USERS_POSTS)!(
           this.props.ownerUserId,
           this.props.postId
         )
@@ -240,8 +240,8 @@ class PostDetail extends Component<Props, OwnState> {
       this.props.post,
       this.props.users
     );
-    const likeFeatured = this.getFeaturedUsers(
-      'likes',
+    const commentFeatured = this.getFeaturedUsers(
+      'comments',
       this.props.post,
       this.props.users
     );
@@ -309,18 +309,20 @@ class PostDetail extends Component<Props, OwnState> {
                   <UserAvatarsScrollView users={doneFeatured.featuredUsers} />
                 </View>
               ) : null}
-              {!_.isEmpty(likeFeatured) ? (
+              {!_.isEmpty(commentFeatured) ? (
                 <View>
                   <View style={styles.activityHeader}>
-                    <Icon name={names.LIKE} />
+                    <Icon name={names.REACTION} />
                     <Text style={styles.boldBody}>
-                      {likeFeatured.featuredUserName}
+                      {commentFeatured.featuredUserName}
                     </Text>
                     <Text style={styles.body}>
-                      {` ${likeFeatured.featuredString}`}
+                      {` ${commentFeatured.featuredString}`}
                     </Text>
                   </View>
-                  <UserAvatarsScrollView users={likeFeatured.featuredUsers} />
+                  <UserAvatarsScrollView
+                    users={commentFeatured.featuredUsers}
+                  />
                 </View>
               ) : null}
             </View>
@@ -330,7 +332,7 @@ class PostDetail extends Component<Props, OwnState> {
                 !_.isEmpty(shareFeatured) ||
                 !_.isEmpty(addFeatured) ||
                 !_.isEmpty(doneFeatured) ||
-                !_.isEmpty(likeFeatured)
+                !_.isEmpty(commentFeatured)
                   ? styles.commentsMargin
                   : {}
               ]}
@@ -371,9 +373,9 @@ class PostDetail extends Component<Props, OwnState> {
       generateListKey(
         this.props.ownerUserId,
         this.props.postId,
-        queryTypes.USERS_POSTS_COMMENTS
+        queryTypes.COMMENTS_FOR_USERS_POSTS
       ),
-      getQuery(queryTypes.USERS_POSTS_COMMENTS)!(
+      getQuery(queryTypes.COMMENTS_FOR_USERS_POSTS)!(
         this.props.ownerUserId,
         this.props.postId
       ),
@@ -391,9 +393,9 @@ class PostDetail extends Component<Props, OwnState> {
       generateListKey(
         this.props.ownerUserId,
         this.props.postId,
-        queryTypes.USERS_POSTS_COMMENTS
+        queryTypes.COMMENTS_FOR_USERS_POSTS
       ),
-      getQuery(queryTypes.USERS_POSTS_COMMENTS)!(
+      getQuery(queryTypes.COMMENTS_FOR_USERS_POSTS)!(
         this.props.ownerUserId,
         this.props.postId
       ),
@@ -446,11 +448,17 @@ class PostDetail extends Component<Props, OwnState> {
           authUser={this.props.authUser}
           ownerUserId={this.props.ownerUserId}
           usersPostsId={this.state.isLoading ? undefined : this.props.post._id}
-          usersPostsShares={
-            this.state.isLoading ? undefined : this.props.post.shares
+          usersPostsAdds={
+            this.state.isLoading ? undefined : this.props.post.adds
           }
           usersPostsComments={
             this.state.isLoading ? undefined : this.props.post.comments
+          }
+          usersPostsDones={
+            this.state.isLoading ? undefined : this.props.post.dones
+          }
+          usersPostsShares={
+            this.state.isLoading ? undefined : this.props.post.shares
           }
           postId={this.state.isLoading ? undefined : this.props.post.postId}
           url={this.state.isLoading ? undefined : this.props.post.url}

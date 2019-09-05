@@ -7,6 +7,7 @@ import _ from 'lodash';
 import firebase from 'react-native-firebase';
 import { Query } from 'react-native-firebase/firestore';
 import { Dispatch } from 'redux';
+import { Toaster } from '../../components/Toaster';
 import { logEvent } from '../../lib/FirebaseAnalytics';
 import { arrayUnion, ts } from '../../lib/FirebaseHelpers';
 import {
@@ -16,6 +17,7 @@ import {
   referenceTypes
 } from '../../lib/FirebaseQueries';
 import { updateCounts } from '../../lib/FirebaseWrites';
+import { actionTypeActiveToasts } from '../../styles/Copy';
 import { getFeedOfDocuments, LastItem } from '../FirebaseRedux';
 import { getDocument } from '../FirebaseRedux';
 import { toggleItem } from '../lists/actions';
@@ -47,6 +49,9 @@ export const createComment = (
 
   try {
     const batcher = existingBatcher || new Batcher(firebase.firestore());
+
+    // toast
+    Toaster(actionTypeActiveToasts.comments);
 
     // create new comment
     const commentId = await firebase
@@ -95,7 +100,11 @@ export const createComment = (
     dispatch(
       toggleItem(
         'commentsLists',
-        generateListKey(ownerUserId, postId, queryTypes.USERS_POSTS_COMMENTS),
+        generateListKey(
+          ownerUserId,
+          postId,
+          queryTypes.COMMENTS_FOR_USERS_POSTS
+        ),
         commentId,
         true
       )

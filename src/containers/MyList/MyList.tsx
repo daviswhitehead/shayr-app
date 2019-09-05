@@ -15,14 +15,14 @@ import PostCard from '../../components/PostCard';
 import SegmentedControl from '../../components/SegmentedControl';
 import SwipeCard from '../../components/SwipeCard';
 import UserProfile from '../../components/UserProfile';
+import withAdds from '../../higherOrderComponents/withAdds';
+import withComments from '../../higherOrderComponents/withComments';
 import withDones from '../../higherOrderComponents/withDones';
+import withShares from '../../higherOrderComponents/withShares';
 import { getQuery, queryTypes } from '../../lib/FirebaseQueries';
-import { toggleAddDonePost as toggleAdds } from '../../redux/adds/actions';
 import { selectAuthUserId } from '../../redux/auth/selectors';
 import { selectFlatListReadyDocuments } from '../../redux/documents/selectors';
-import { toggleAddDonePost as toggleDones } from '../../redux/dones/actions';
 import { subscribeToFriendships } from '../../redux/friendships/actions';
-import { toggleLikePost } from '../../redux/likes/actions';
 import { generateListKey } from '../../redux/lists/helpers';
 import { selectListItems, selectListMeta } from '../../redux/lists/selectors';
 import { getUser } from '../../redux/users/actions';
@@ -36,18 +36,14 @@ import Colors from '../../styles/Colors';
 import styles from './styles';
 
 interface StateProps {
-  authAdds: Array<string>;
-  authDones: Array<string>;
   authIsOwner?: boolean;
-  authLikes: Array<string>;
-  authShares: Array<string>;
   authUser?: User;
   authUserId: string;
   authFriends?: Array<User>;
   ownerAddsCount?: number;
+  ownerCommentsCount?: number;
   ownerDonesCount?: number;
   ownerFriends?: Array<User>;
-  ownerLikesCount?: number;
   ownerSharesCount?: number;
   ownerUser?: User;
   ownerUserId: string;
@@ -63,7 +59,7 @@ interface StateProps {
   usersPostsListsViews: {
     adds: string;
     dones: string;
-    likes: string;
+    comments: string;
     shares: string;
   };
 }
@@ -72,9 +68,6 @@ interface DispatchProps {
   getUser: typeof getUser;
   subscribeToFriendships: typeof subscribeToFriendships;
   loadUsersPosts: typeof loadUsersPosts;
-  toggleAdds: typeof toggleAdds;
-  toggleDones: typeof toggleDones;
-  toggleLikePost: typeof toggleLikePost;
 }
 
 interface NavigationParams {
@@ -113,32 +106,12 @@ const mapStateToProps = (state: any, props: any) => {
   const usersPostsListsViews = {
     adds: generateListKey(ownerUserId, queryTypes.USERS_POSTS_ADDS),
     dones: generateListKey(ownerUserId, queryTypes.USERS_POSTS_DONES),
-    likes: generateListKey(ownerUserId, queryTypes.USERS_POSTS_LIKES),
+    comments: generateListKey(ownerUserId, queryTypes.USERS_POSTS_COMMENTS),
     shares: generateListKey(ownerUserId, queryTypes.USERS_POSTS_SHARES)
   };
 
   return {
-    authAdds: selectListItems(
-      state,
-      'addsLists',
-      generateListKey(authUserId, queryTypes.USER_ADDS)
-    ),
-    authDones: selectListItems(
-      state,
-      'donesLists',
-      generateListKey(authUserId, queryTypes.USER_DONES)
-    ),
     authIsOwner: authUserId === ownerUserId,
-    authLikes: selectListItems(
-      state,
-      'likesLists',
-      generateListKey(authUserId, queryTypes.USER_LIKES)
-    ),
-    authShares: selectListItems(
-      state,
-      'sharesLists',
-      generateListKey(authUserId, queryTypes.USER_SHARES)
-    ),
     authUser: selectUserFromId(state, authUserId, true),
     authUserId,
     authFriends: selectUsersFromList(state, `${authUserId}_Friends`, true),
@@ -155,11 +128,11 @@ const mapStateToProps = (state: any, props: any) => {
       'donesCount'
     ),
     ownerFriends: selectUsersFromList(state, `${ownerUserId}_Friends`, true),
-    ownerLikesCount: selectUserActionCounts(
+    ownerCommentsCount: selectUserActionCounts(
       state,
       ownerUserId,
       false,
-      'likesCount'
+      'commentsCount'
     ),
     ownerSharesCount: selectUserActionCounts(
       state,
@@ -184,11 +157,15 @@ const mapStateToProps = (state: any, props: any) => {
         usersPostsListsViews.dones,
         'updatedAt'
       ),
-      [usersPostsListsViews.likes]: selectFlatListReadyDocuments(
+      [usersPostsListsViews.comments]: selectFlatListReadyDocuments(
         state,
         'usersPosts',
-        selectListItems(state, 'usersPostsLists', usersPostsListsViews.likes),
-        usersPostsListsViews.likes,
+        selectListItems(
+          state,
+          'usersPostsLists',
+          usersPostsListsViews.comments
+        ),
+        usersPostsListsViews.comments,
         'updatedAt'
       ),
       [usersPostsListsViews.shares]: selectFlatListReadyDocuments(
@@ -210,10 +187,10 @@ const mapStateToProps = (state: any, props: any) => {
         'usersPostsLists',
         usersPostsListsViews.dones
       ),
-      [usersPostsListsViews.likes]: selectListMeta(
+      [usersPostsListsViews.comments]: selectListMeta(
         state,
         'usersPostsLists',
-        usersPostsListsViews.likes
+        usersPostsListsViews.comments
       ),
       [usersPostsListsViews.shares]: selectListMeta(
         state,
@@ -228,9 +205,9 @@ const mapStateToProps = (state: any, props: any) => {
       [usersPostsListsViews.dones]: getQuery(queryTypes.USERS_POSTS_DONES)(
         ownerUserId
       ),
-      [usersPostsListsViews.likes]: getQuery(queryTypes.USERS_POSTS_LIKES)(
-        ownerUserId
-      ),
+      [usersPostsListsViews.comments]: getQuery(
+        queryTypes.USERS_POSTS_COMMENTS
+      )(ownerUserId),
       [usersPostsListsViews.shares]: getQuery(queryTypes.USERS_POSTS_SHARES)(
         ownerUserId
       )!
@@ -242,18 +219,13 @@ const mapStateToProps = (state: any, props: any) => {
 const mapDispatchToProps = {
   getUser,
   subscribeToFriendships,
-  loadUsersPosts,
-  toggleAdds,
-  toggleDones,
-  toggleLikePost
+  loadUsersPosts
 };
 
 class MyList extends Component<Props, OwnState> {
   static whyDidYouRender = true;
 
   subscriptions: Array<any>;
-  doneModal: any;
-  doneModalOnPress?: () => void;
   constructor(props: Props) {
     super(props);
     const startingIndex = this.props.authIsOwner ? 1 : 0;
@@ -266,15 +238,7 @@ class MyList extends Component<Props, OwnState> {
       activeView: this.mapIndexToView(startingIndex)
     };
     this.subscriptions = [];
-    this.doneModal = withDones(this.renderModal);
-    this.doneModalOnPress = undefined;
   }
-
-  renderModal = ({ onPress }: { onPress: () => void }) => {
-    this.doneModalOnPress = onPress;
-
-    return <View />;
-  };
 
   componentDidMount() {
     // check loading status
@@ -292,7 +256,7 @@ class MyList extends Component<Props, OwnState> {
       );
 
     // SOMEDAY: load list data in the right order and/or in advance
-    // if (adds, shares, dones, likes) list doesnt exist yet, load initial posts
+    // if (adds, shares, dones, comments) list doesnt exist yet, load initial posts
     if (
       !_.get(
         this.props,
@@ -348,15 +312,17 @@ class MyList extends Component<Props, OwnState> {
         this.props,
         [
           'usersPostsListsMeta',
-          this.props.usersPostsListsViews.likes,
+          this.props.usersPostsListsViews.comments,
           'isLoaded'
         ],
         undefined
       )
     ) {
       this.props.loadUsersPosts(
-        this.props.usersPostsListsViews.likes,
-        this.props.usersPostsListsQueries[this.props.usersPostsListsViews.likes]
+        this.props.usersPostsListsViews.comments,
+        this.props.usersPostsListsQueries[
+          this.props.usersPostsListsViews.comments
+        ]
       );
     }
   }
@@ -385,7 +351,7 @@ class MyList extends Component<Props, OwnState> {
       this.state.isSegmentedControlLoading &&
       typeof this.props.ownerAddsCount === 'number' &&
       typeof this.props.ownerDonesCount === 'number' &&
-      typeof this.props.ownerLikesCount === 'number' &&
+      typeof this.props.ownerCommentsCount === 'number' &&
       typeof this.props.ownerSharesCount === 'number'
     ) {
       this.setState({ isSegmentedControlLoading: false });
@@ -420,9 +386,13 @@ class MyList extends Component<Props, OwnState> {
       this.props.usersPostsListsViews.shares,
       this.props.usersPostsListsViews.adds,
       this.props.usersPostsListsViews.dones,
-      this.props.usersPostsListsViews.likes
+      this.props.usersPostsListsViews.comments
     ];
     return map[index];
+  };
+
+  mapViewToAction = (view: string) => {
+    return _.invert(this.props.usersPostsListsViews)[view];
   };
 
   onSegmentedControlChange = (index: number) => {
@@ -472,65 +442,55 @@ class MyList extends Component<Props, OwnState> {
   };
 
   renderItem = ({ item }: { item: UsersPosts }) => {
-    const addSwiping = _.includes(
-      [
-        this.props.usersPostsListsViews.adds,
-        this.props.usersPostsListsViews.dones
-      ],
-      this.state.activeView
-    );
-    const isDonesView =
-      this.state.activeView === this.props.usersPostsListsViews.dones;
-    const isAddActive = _.includes(this.props.authAdds, item._id);
-    const isDoneActive = _.includes(this.props.authDones, item._id);
-    const isLikeActive = _.includes(this.props.authLikes, item._id);
+    const action = this.mapViewToAction(this.state.activeView);
+    const actionTypeMap = {
+      adds: 'dones',
+      comments: 'comments',
+      dones: 'adds',
+      shares: 'shares'
+    };
+    const leftAction = {
+      adds: withDones,
+      comments: withComments,
+      dones: withAdds,
+      shares: withShares
+    };
+    const rightAction = {
+      adds: withAdds,
+      comments: undefined,
+      dones: withDones,
+      shares: undefined
+    };
+    const actionProps = {
+      // add/done props
+      ownerUserId: item.userId,
+      postId: item.postId,
+      usersPostsAdds: item.adds,
+      usersPostsDones: item.dones,
+      // comment props
+      usersPostsComments: item.comments,
+      // share props
+      usersPostsId: item._id,
+      usersPostsShares: item.shares,
+      url: item.url
+    };
 
-    if (addSwiping) {
-      return (
-        <SwipeCard
-          type={isDonesView ? 'like' : 'done'}
-          isLeftAlreadyDone={isDonesView ? isLikeActive : isDoneActive}
-          leftAction={
-            isDonesView
-              ? () =>
-                  this.props.toggleLikePost(
-                    false,
-                    item.postId,
-                    item.userId,
-                    this.props.authUserId
-                  )
-              : () => this.doneModalOnPress()
-          }
-          isRightAlreadyDone={isDonesView ? !isDoneActive : !isAddActive}
-          rightAction={
-            isDonesView
-              ? () => this.doneModalOnPress()
-              : () =>
-                  this.props.toggleAdds(
-                    'adds',
-                    true,
-                    item.postId,
-                    item.userId,
-                    this.props.authUserId,
-                    isDoneActive
-                  )
-          }
-        >
-          {this.renderPostCard(item)}
-          {this.doneModal && (
-            <this.doneModal
-              ownerUserId={item.userId}
-              postId={item.postId}
-              usersPostsComments={item.comments}
-              usersPostsId={item._id}
-              usersPostsShares={item.shares}
-              url={item.url}
-            />
-          )}
-        </SwipeCard>
-      );
-    }
-    return this.renderPostCard(item);
+    return (
+      <SwipeCard
+        key={`${item._id}-${action}`}
+        type={actionTypeMap[action]}
+        noSwiping={
+          !this.state.isUsersPostsListsLoaded[this.state.activeView] ||
+          !this.props.authIsOwner
+        }
+        leftAction={leftAction[action]}
+        leftActionProps={{ side: 'left', ...actionProps }}
+        rightAction={rightAction[action]}
+        rightActionProps={{ side: 'right', ...actionProps }}
+      >
+        {this.renderPostCard(item)}
+      </SwipeCard>
+    );
   };
 
   paginateList = () => {
@@ -595,7 +555,7 @@ class MyList extends Component<Props, OwnState> {
           sharesCount={this.props.ownerSharesCount}
           addsCount={this.props.ownerAddsCount}
           donesCount={this.props.ownerDonesCount}
-          likesCount={this.props.ownerLikesCount}
+          commentsCount={this.props.ownerCommentsCount}
         />
         <List
           data={this.props.usersPostsListsData[this.state.activeView]}

@@ -1,8 +1,7 @@
 import _ from 'lodash';
-import * as React from 'react';
+import React, { PureComponent } from 'react';
 import { TextInput, View } from 'react-native';
 import Modal from 'react-native-modal';
-import { connect } from 'react-redux';
 import Colors from '../../styles/Colors';
 import Layout from '../../styles/Layout';
 import Icon, { names } from '../Icon';
@@ -23,7 +22,7 @@ interface State {
   textInputHeight: number;
 }
 
-class CommentModal extends React.Component<Props, State> {
+export default class CommentModal extends PureComponent<Props, State> {
   textInputRef: any;
   initialState: State;
   maxTextInputHeight: number;
@@ -164,5 +163,3 @@ class CommentModal extends React.Component<Props, State> {
     );
   }
 }
-
-export default CommentModal;

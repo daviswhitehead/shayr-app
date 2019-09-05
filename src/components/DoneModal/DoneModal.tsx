@@ -23,6 +23,7 @@ type Props = OwnProps & StateProps & DispatchProps;
 
 interface OwnState {
   isVisible: boolean;
+  didCancel: boolean;
 }
 
 const mapDispatchToProps = {};
@@ -42,7 +43,8 @@ class DoneModal extends React.Component<Props, OwnState> {
     super(props);
 
     this.initialState = {
-      isVisible: false
+      isVisible: false,
+      didCancel: false
     };
     this.state = {
       ...this.initialState
@@ -96,13 +98,14 @@ class DoneModal extends React.Component<Props, OwnState> {
   };
 
   onBackdropPress = () => {
-    this.setState({ isVisible: false });
+    this.setState({ isVisible: false, didCancel: true });
   };
 
   onModalHide = () => {
-    if (this.props.onModalHide) {
+    if (this.props.onModalHide && !this.state.didCancel) {
       this.props.onModalHide();
     }
+    this.setState(this.initialState);
   };
 
   render() {
