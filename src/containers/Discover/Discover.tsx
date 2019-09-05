@@ -12,29 +12,14 @@ import PostCard from '../../components/PostCard';
 import SwipeCard from '../../components/SwipeCard';
 import withAdds from '../../higherOrderComponents/withAdds';
 import { getQuery, queryTypes } from '../../lib/FirebaseQueries';
-import {
-  subscribeToAdds,
-  toggleAddDonePost,
-  updateUserAdds
-} from '../../redux/adds/actions';
 import { selectAuthUserId } from '../../redux/auth/selectors';
 import { selectFlatListReadyDocuments } from '../../redux/documents/selectors';
-import { subscribeToDones, updateUserDones } from '../../redux/dones/actions';
 import { subscribeToFriendships } from '../../redux/friendships/actions';
-import { subscribeToLikes, updateUserLikes } from '../../redux/likes/actions';
 import { generateListKey } from '../../redux/lists/helpers';
-import {
-  selectListCount,
-  selectListItems,
-  selectListMeta
-} from '../../redux/lists/selectors';
+import { selectListItems, selectListMeta } from '../../redux/lists/selectors';
 import { subscribeNotificationTokenRefresh } from '../../redux/notifications/actions';
 import { State } from '../../redux/Reducers';
 import { navigateToRoute } from '../../redux/routing/actions';
-import {
-  subscribeToShares,
-  updateUserShares
-} from '../../redux/shares/actions';
 import { subscribeToUser } from '../../redux/users/actions';
 import {
   selectUserFromId,
@@ -46,14 +31,10 @@ import colors from '../../styles/Colors';
 import styles from './styles';
 
 interface StateProps {
-  addsCount?: number;
   authUser?: User;
   authUserId: string;
-  donesCount?: number;
   friends?: Array<User>;
-  likesCount?: number;
   routing?: any; // routing state
-  sharesCount?: number;
   unreadNotificationsCount?: number;
   usersPostsListsMeta?: {
     [listKey: string]: any; // listKey and meta state
@@ -67,17 +48,8 @@ interface DispatchProps {
   navigateToRoute: typeof navigateToRoute;
   loadUsersPosts: typeof loadUsersPosts;
   subscribeToUser: typeof subscribeToUser;
-  subscribeToAdds: typeof subscribeToAdds;
-  updateUserAdds: typeof updateUserAdds;
-  subscribeToDones: typeof subscribeToDones;
-  updateUserDones: typeof updateUserDones;
-  subscribeToLikes: typeof subscribeToLikes;
-  updateUserLikes: typeof updateUserLikes;
-  subscribeToShares: typeof subscribeToShares;
-  updateUserShares: typeof updateUserShares;
   subscribeToFriendships: typeof subscribeToFriendships;
   subscribeNotificationTokenRefresh: typeof subscribeNotificationTokenRefresh;
-  toggleAddDonePost: typeof toggleAddDonePost;
 }
 
 interface OwnProps {}
@@ -101,34 +73,14 @@ const mapStateToProps = (state: State) => {
   const authUserId = selectAuthUserId(state);
 
   return {
-    addsCount: selectListCount(
-      state,
-      'addsLists',
-      `${selectAuthUserId(state)}_USER_ADDS`
-    ),
     authUserId: selectAuthUserId(state),
     authUser: selectUserFromId(state, selectAuthUserId(state), true),
-    donesCount: selectListCount(
-      state,
-      'donesLists',
-      `${selectAuthUserId(state)}_USER_DONES`
-    ),
     friends: selectUsersFromList(
       state,
       `${selectAuthUserId(state)}_Friends`,
       true
     ),
-    likesCount: selectListCount(
-      state,
-      'likesLists',
-      `${selectAuthUserId(state)}_USER_LIKES`
-    ),
     routing: state.routing,
-    sharesCount: selectListCount(
-      state,
-      'sharesLists',
-      `${selectAuthUserId(state)}_USER_SHARES`
-    ),
     unreadNotificationsCount: selectUserUnreadNotificationsCountFromId(
       state,
       authUserId
@@ -166,17 +118,8 @@ const mapDispatchToProps = {
   navigateToRoute,
   loadUsersPosts,
   subscribeToUser,
-  subscribeToAdds,
-  updateUserAdds,
-  subscribeToDones,
-  updateUserDones,
-  subscribeToLikes,
-  updateUserLikes,
-  subscribeToShares,
-  updateUserShares,
   subscribeToFriendships,
-  subscribeNotificationTokenRefresh,
-  toggleAddDonePost
+  subscribeNotificationTokenRefresh
 };
 
 class Discover extends PureComponent<Props, OwnState> {
@@ -198,11 +141,7 @@ class Discover extends PureComponent<Props, OwnState> {
     this.subscriptions.push(
       this.props.subscribeToUser(this.props.authUserId),
       this.props.subscribeToFriendships(this.props.authUserId),
-      this.props.subscribeNotificationTokenRefresh(this.props.authUserId),
-      this.props.subscribeToAdds(this.props.authUserId),
-      this.props.subscribeToDones(this.props.authUserId),
-      this.props.subscribeToLikes(this.props.authUserId),
-      this.props.subscribeToShares(this.props.authUserId)
+      this.props.subscribeNotificationTokenRefresh(this.props.authUserId)
     );
 
     // respond to initial route
@@ -249,21 +188,6 @@ class Discover extends PureComponent<Props, OwnState> {
 
   componentDidUpdate(prevProps: Props) {
     this.checkLoading();
-    if (this.props.addsCount && !prevProps.addsCount) {
-      this.props.updateUserAdds(this.props.authUserId, this.props.addsCount);
-    }
-    if (this.props.donesCount && !prevProps.donesCount) {
-      this.props.updateUserDones(this.props.authUserId, this.props.donesCount);
-    }
-    if (this.props.likesCount && !prevProps.likesCount) {
-      this.props.updateUserLikes(this.props.authUserId, this.props.likesCount);
-    }
-    if (this.props.sharesCount && !prevProps.sharesCount) {
-      this.props.updateUserShares(
-        this.props.authUserId,
-        this.props.sharesCount
-      );
-    }
   }
 
   componentWillUnmount() {
