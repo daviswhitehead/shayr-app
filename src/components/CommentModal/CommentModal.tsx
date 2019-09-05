@@ -3,44 +3,29 @@ import * as React from 'react';
 import { TextInput, View } from 'react-native';
 import Modal from 'react-native-modal';
 import { connect } from 'react-redux';
-import { createComment } from '../../redux/comments/actions';
 import Colors from '../../styles/Colors';
 import Layout from '../../styles/Layout';
 import Icon, { names } from '../Icon';
 import styles from './styles';
 
-interface StateProps {}
-
-interface DispatchProps {
-  createComment: typeof createComment;
-}
-
-interface OwnProps {
-  authUserId: string;
+interface Props {
   hideBackdrop?: boolean;
   onModalWillHide?: () => void;
-  ownerUserId: string;
-  postId: string;
+  onModalHide?: () => void;
+  onSubmit: (comment: string) => void;
   ref: any;
-  visibleToUserIds: Array<string>;
 }
 
-type Props = OwnProps & StateProps & DispatchProps;
-
-interface OwnState {
+interface State {
   isVisible: boolean;
   isCommenting: boolean;
   commentText: string;
   textInputHeight: number;
 }
 
-const mapDispatchToProps = {
-  createComment
-};
-
-class CommentModal extends React.Component<Props, OwnState> {
+class CommentModal extends React.Component<Props, State> {
   textInputRef: any;
-  initialState: OwnState;
+  initialState: State;
   maxTextInputHeight: number;
   placeholderText: string;
 
@@ -93,7 +78,11 @@ class CommentModal extends React.Component<Props, OwnState> {
     this.setState({ isVisible: false });
   };
 
-  onModalHide = () => {};
+  onModalHide = () => {
+    if (this.props.onModalHide) {
+      this.props.onModalHide();
+    }
+  };
 
   onChangeText = (text: string) => this.setState({ commentText: text });
 
@@ -113,15 +102,7 @@ class CommentModal extends React.Component<Props, OwnState> {
   onSubmit = () => {
     if (!!this.state.commentText) {
       this.toggleModal();
-      this.props.createComment(
-        this.props.postId,
-        this.state.commentText,
-        this.props.authUserId,
-        this.props.ownerUserId,
-        undefined,
-        this.props.visibleToUserIds,
-        undefined
-      );
+      this.props.onSubmit(this.state.commentText);
     }
     return;
   };
@@ -184,14 +165,4 @@ class CommentModal extends React.Component<Props, OwnState> {
   }
 }
 
-export default connect(
-  undefined,
-  mapDispatchToProps,
-  undefined,
-  {
-    forwardRef: true,
-    areStatePropsEqual: (next, prev) => {
-      return _.isEqual(next, prev);
-    }
-  }
-)(CommentModal);
+export default CommentModal;

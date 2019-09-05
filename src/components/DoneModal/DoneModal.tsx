@@ -130,14 +130,14 @@ class DoneModal extends React.Component<Props, OwnState> {
             <this.share
               {...this.props}
               type='share'
-              onModalWillHide={this.toggleModal}
+              onModalHide={this.toggleModal}
             />
           )}
           {this.comment && (
             <this.comment
               {...this.props}
               type='comment'
-              onModalWillHide={this.toggleModal}
+              onModalHide={this.toggleModal}
             />
           )}
           {this.cancel && (

@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import { compose } from 'redux';
 import CommentModal from '../../components/CommentModal';
 import { selectAuthUserId } from '../../redux/auth/selectors';
+import { createComment } from '../../redux/comments/actions';
 import { State } from '../../redux/Reducers';
 import { selectUsersFromList } from '../../redux/users/selectors';
 
@@ -16,13 +17,17 @@ interface StateProps {
   };
 }
 
+interface DispatchProps {
+  createComment: typeof createComment;
+}
+
 interface OwnProps {
   ownerUserId: string;
   postId: string;
   usersPostsComments: Array<string>;
 }
 
-type Props = OwnProps & StateProps;
+type Props = OwnProps & StateProps & DispatchProps;
 
 const mapStateToProps = (state: State) => {
   return {
@@ -35,42 +40,66 @@ const mapStateToProps = (state: State) => {
   };
 };
 
-const withComments = (WrappedComponent: SFC) => (props: Props) => {
-  const {
-    authUserId,
-    friends = [],
-    ownerUserId,
-    postId,
-    usersPostsComments,
-    ...passThroughProps
-  } = props;
+const mapDispatchToProps = {
+  createComment
+};
 
-  const isActive = _.includes(usersPostsComments, authUserId);
-  const modalRef = React.useRef();
+const withComments = (WrappedComponent: SFC) => {
+  return class CommentEnabled extends React.Component<Props> {
+    modalRef: any;
 
-  return (
-    <View>
-      <WrappedComponent
-        isActive={isActive}
-        onPress={modalRef ? () => modalRef.current.toggleModal() : null}
-        {...passThroughProps}
-      />
-      <CommentModal
-        authUserId={authUserId}
-        ownerUserId={authUserId}
-        postId={postId}
-        ref={modalRef}
-        visibleToUserIds={[authUserId, ..._.keys(friends)]}
-        {...passThroughProps}
-      />
-    </View>
-  );
+    constructor(props: Props) {
+      super(props);
+
+      this.modalRef = React.createRef();
+    }
+
+    onSubmit = (comment: string) => {
+      this.props.createComment(
+        this.props.postId,
+        comment,
+        this.props.authUserId,
+        this.props.ownerUserId,
+        undefined,
+        _.keys(this.props.friends),
+        undefined
+      );
+    };
+
+    render() {
+      const {
+        authUserId,
+        friends = [],
+        ownerUserId,
+        postId,
+        usersPostsComments,
+        ...passThroughProps
+      } = this.props;
+
+      const isActive = _.includes(usersPostsComments, authUserId);
+
+      return (
+        <View>
+          <WrappedComponent
+            isActive={isActive}
+            onPress={() => this.modalRef.current.toggleModal()}
+            {...passThroughProps}
+          />
+          <CommentModal
+            ref={this.modalRef}
+            onSubmit={this.onSubmit}
+            {...passThroughProps}
+          />
+        </View>
+      );
+    }
+  };
 };
 
 export default compose(
   connect(
     mapStateToProps,
-    undefined,
+    mapDispatchToProps,
     undefined,
     {
       areStatesEqual: (next, prev) => {
@@ -84,3 +113,52 @@ export default compose(
   ),
   withComments
 );
+// const withComments = (WrappedComponent: SFC) => (props: Props) => {
+//   const {
+//     authUserId,
+//     friends = [],
+//     ownerUserId,
+//     postId,
+//     usersPostsComments,
+//     ...passThroughProps
+//   } = props;
+
+//   const isActive = _.includes(usersPostsComments, authUserId);
+//   const modalRef = React.useRef();
+
+//   return (
+//     <View>
+//       <WrappedComponent
+//         isActive={isActive}
+//         onPress={modalRef ? () => modalRef.current.toggleModal() : null}
+//         {...passThroughProps}
+//       />
+//       <CommentModal
+//         authUserId={authUserId}
+//         ownerUserId={authUserId}
+//         postId={postId}
+//         ref={modalRef}
+//         visibleToUserIds={[authUserId, ..._.keys(friends)]}
+//         {...passThroughProps}
+//       />
+//     </View>
+//   );
+// };
+
+// export default compose(
+//   connect(
+//     mapStateToProps,
+//     undefined,
+//     undefined,
+//     {
+//       areStatesEqual: (next, prev) => {
+//         return (
+//           selectAuthUserId(next) === selectAuthUserId(prev) &&
+//           selectUsersFromList(next, `${selectAuthUserId(next)}_Friends`) ===
+//             selectUsersFromList(prev, `${selectAuthUserId(prev)}_Friends`)
+//         );
+//       }
+//     }
+//   ),
+//   withComments
+// );

@@ -169,6 +169,7 @@ class ShareModal extends React.Component<Props, OwnState> {
     Object.values(this.subscriptions).forEach((unsubscribe) => {
       unsubscribe();
     });
+
     if (this.props.onModalWillHide) {
       this.props.onModalWillHide();
     }

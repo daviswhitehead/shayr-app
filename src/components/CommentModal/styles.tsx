@@ -19,9 +19,9 @@ export default StyleSheet.create({
     borderTopRightRadius: Layout.BORDER_RADIUS_LARGE,
     borderTopLeftRadius: Layout.BORDER_RADIUS_LARGE,
     backgroundColor: Colors.WHITE,
-    paddingHorizontal: Layout.SPACING_EXTRA_LONG,
+    paddingHorizontal: Layout.SPACING_LONG,
     paddingTop: Layout.SPACING_LONG,
-    paddingBottom: Layout.WINDOW_BOTTOM_SAFE_AREA,
+    paddingBottom: Layout.WINDOW_BOTTOM_SAFE_AREA + Layout.SPACING_LONG,
     ...containerShadow
   },
   rowContainer: {

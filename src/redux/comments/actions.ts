@@ -71,7 +71,16 @@ export const createComment = (
 
     if (!commentId) throw new Error('creating a new comment failed');
 
-    updateCounts(batcher, true, 'comments', postId, ownerUserId, userId);
+    updateCounts(
+      batcher,
+      true,
+      'comments',
+      postId,
+      ownerUserId,
+      userId,
+      undefined,
+      visibleToUserIds
+    );
 
     if (!existingBatcher) {
       batcher.write();

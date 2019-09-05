@@ -444,7 +444,7 @@ class PostDetail extends Component<Props, OwnState> {
         <ActionBar
           isLoading={this.state.isLoading}
           authUser={this.props.authUser}
-          ownerUserId={this.props.authUserId}
+          ownerUserId={this.props.ownerUserId}
           usersPostsId={this.state.isLoading ? undefined : this.props.post._id}
           usersPostsShares={
             this.state.isLoading ? undefined : this.props.post.shares

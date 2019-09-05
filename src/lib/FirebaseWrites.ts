@@ -3,11 +3,6 @@ import _ from 'lodash';
 import firebase from 'react-native-firebase';
 import { arrayRemove, arrayUnion, increment, ts } from './FirebaseHelpers';
 
-export const wrapAnalytics = (label: string, func: (...args: any[]) => any) => {
-  firebase.analytics().logEvent(`${label}`.toUpperCase());
-  func();
-};
-
 export type countActions =
   | 'adds'
   | 'comments'
@@ -101,6 +96,10 @@ export const updateCounts = (
   users: Array<documentId> = [],
   friends: Array<documentId> = []
 ) => {
+  // update user
+  // update users posts
+  // update post
+
   updatePostCounts(batcher, isIncremental, action, postId);
 
   updateUsersPostsCounts(
