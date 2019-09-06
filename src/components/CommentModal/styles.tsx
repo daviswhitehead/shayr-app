@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native';
+import { Platform, StyleSheet } from 'react-native';
 import Colors from '../../styles/Colors';
 import { fontSystem } from '../../styles/Fonts';
 import Layout from '../../styles/Layout';
@@ -34,6 +34,7 @@ export default StyleSheet.create({
     ...fontSystem.BODY
   },
   iconContainer: {
-    marginLeft: Layout.SPACING_MEDIUM
+    marginLeft: Layout.SPACING_MEDIUM,
+    marginBottom: Platform.OS === 'ios' ? 0 : Layout.SPACING_MEDIUM
   }
 });

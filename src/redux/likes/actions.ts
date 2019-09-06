@@ -66,9 +66,10 @@ export const toggleLikePost = (
 
     updateCounts(batcher, !isActive, 'likes', postId, ownerUserId, userId);
 
-    batcher.write();
+    await batcher.write();
 
-    dispatch(refreshUsersPostsDocuments(postId, 'cache'));
+    dispatch(refreshUsersPostsDocuments(postId, 'server'));
+    // dispatch(refreshUsersPostsDocuments(postId, 'cache'));
     dispatch(
       toggleItem(
         'usersPostsLists',
@@ -102,7 +103,7 @@ export const subscribeToLikes = (userId: string) => {
   };
 };
 
-export const updateUserLikes = (userId: string, value: number) => (
+export const updateUserLikes = (userId: string, value: number) => async (
   dispatch: Dispatch
 ) => {
   dispatch({ type: types.UPDATE_USER_LIKES_START });
@@ -111,7 +112,7 @@ export const updateUserLikes = (userId: string, value: number) => (
 
   overwriteUserCounts(batcher, 'likes', userId, value);
 
-  batcher.write();
+  await batcher.write();
 
   dispatch({ type: types.UPDATE_USER_LIKES_SUCCESS });
 };

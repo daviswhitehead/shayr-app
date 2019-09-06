@@ -113,7 +113,7 @@ export const loadNotifications = (
 };
 
 // MARK NOTIFICATIONS
-export const markNotificationAsPressed = (notificationId: string) => (
+export const markNotificationAsPressed = (notificationId: string) => async (
   dispatch: Dispatch
 ) => {
   dispatch({
@@ -143,7 +143,7 @@ export const markNotificationAsPressed = (notificationId: string) => (
       }
     );
 
-    batcher.write();
+    await batcher.write();
 
     // getDocument(
     //   dispatch,
@@ -165,9 +165,9 @@ export const markNotificationAsPressed = (notificationId: string) => (
   }
 };
 
-export const markNotificationsAsRead = (notificationIds: Array<string>) => (
-  dispatch: Dispatch
-) => {
+export const markNotificationsAsRead = (
+  notificationIds: Array<string>
+) => async (dispatch: Dispatch) => {
   dispatch({
     type: types.MARK_NOTIFICATION_AS_READ_START
   });
@@ -195,7 +195,7 @@ export const markNotificationsAsRead = (notificationIds: Array<string>) => (
       );
     });
 
-    batcher.write();
+    await batcher.write();
 
     // getDocument(
     //   dispatch,

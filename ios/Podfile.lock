@@ -57,7 +57,7 @@ PODS:
   - Firebase/Storage (6.5.0):
     - Firebase/CoreOnly
     - FirebaseStorage (~> 3.4.0)
-  - FirebaseABTesting (3.1.0):
+  - FirebaseABTesting (3.1.1):
     - FirebaseAnalyticsInterop (~> 1.3)
     - FirebaseCore (~> 6.1)
     - Protobuf (~> 3.8)
@@ -99,7 +99,7 @@ PODS:
     - leveldb-library (~> 1.20)
     - nanopb (~> 0.3.901)
     - Protobuf (~> 3.1)
-  - FirebaseInstanceID (4.2.3):
+  - FirebaseInstanceID (4.2.4):
     - FirebaseCore (~> 6.0)
     - GoogleUtilities/Environment (~> 6.0)
     - GoogleUtilities/UserDefaults (~> 6.0)
@@ -465,7 +465,7 @@ SPEC CHECKSUMS:
   FBSDKLoginKit: bc0329e10045789e8d40b12d4f15ddbd07a898e2
   FBSDKShareKit: f61d03f36ce4f1b379c7de7dbfe173662e68be44
   Firebase: dedc9e48ea3f3649ad5f6b982f8a0c73508a14b5
-  FirebaseABTesting: a0622113a60c4dce068765e16a77e20c3331c44a
+  FirebaseABTesting: 662e8de812ceb5d57ad66381f6402f4d28dc5c91
   FirebaseAnalytics: 3fb375bc9d13779add4039716f868d233a473fad
   FirebaseAnalyticsInterop: d48b6ab67bcf016a05e55b71fc39c61c0cb6b7f3
   FirebaseAuth: a06ad63e9bf4c86165b54cceb1c14d4f4c38d419
@@ -473,7 +473,7 @@ SPEC CHECKSUMS:
   FirebaseCore: aecf02fb2274ec361b9bebeac112f5daa18273bd
   FirebaseDynamicLinks: 2ba929800a256ecbf6ee28b2af9d73edf46e8914
   FirebaseFirestore: 41a035642eb017fc7206318985501626993840bd
-  FirebaseInstanceID: 8b42755db950682e7de0d167bc6fb26a57b244af
+  FirebaseInstanceID: 88932a31aba5a56cfd3a7541706436c71f7f4598
   FirebaseMessaging: 6bb0bdaf64c55fef7a219b7bb1e94e94a0855ced
   FirebasePerformance: bd3666700af4d43caf2a13b93718f3b532b8a5ff
   FirebaseRemoteConfig: ed74d16d7e5b19e77a4c3e3eee4fe363039b0834

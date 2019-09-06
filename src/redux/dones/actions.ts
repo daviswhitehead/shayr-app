@@ -109,9 +109,10 @@ export const toggleAddDonePost = (
       );
     }
 
-    batcher.write();
+    await batcher.write();
 
-    dispatch(refreshUsersPostsDocuments(postId, 'cache'));
+    dispatch(refreshUsersPostsDocuments(postId, 'server'));
+    // dispatch(refreshUsersPostsDocuments(postId, 'cache'));
 
     dispatch(
       toggleItem(
@@ -156,7 +157,7 @@ export const subscribeToDones = (userId: string) => {
   };
 };
 
-export const updateUserDones = (userId: string, value: number) => (
+export const updateUserDones = (userId: string, value: number) => async (
   dispatch: Dispatch
 ) => {
   dispatch({ type: types.UPDATE_USER_DONES_START });
@@ -165,7 +166,7 @@ export const updateUserDones = (userId: string, value: number) => (
 
   overwriteUserCounts(batcher, 'dones', userId, value);
 
-  batcher.write();
+  await batcher.write();
 
   dispatch({ type: types.UPDATE_USER_DONES_SUCCESS });
 };

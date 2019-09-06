@@ -55,10 +55,11 @@ export const createMention = (
     updateCounts(batcher, true, 'mentions', postId, ownerUserId, userId, users);
 
     if (!existingBatcher) {
-      batcher.write();
+      await batcher.write();
     }
 
-    dispatch(refreshUsersPostsDocuments(postId, 'cache'));
+    dispatch(refreshUsersPostsDocuments(postId, 'server'));
+    // dispatch(refreshUsersPostsDocuments(postId, 'cache'));
 
     dispatch({
       type: types.CREATE_MENTION_SUCCESS

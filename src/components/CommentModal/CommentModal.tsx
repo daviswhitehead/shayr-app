@@ -35,7 +35,7 @@ export default class CommentModal extends PureComponent<Props, State> {
       isVisible: false,
       isCommenting: false,
       commentText: '',
-      textInputHeight: 0
+      textInputHeight: 500
     };
     this.state = {
       ...this.initialState

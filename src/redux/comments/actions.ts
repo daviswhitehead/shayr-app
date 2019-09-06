@@ -88,10 +88,11 @@ export const createComment = (
     );
 
     if (!existingBatcher) {
-      batcher.write();
+      await batcher.write();
     }
 
-    dispatch(refreshUsersPostsDocuments(postId, 'cache'));
+    dispatch(refreshUsersPostsDocuments(postId, 'server'));
+    // dispatch(refreshUsersPostsDocuments(postId, 'cache'));
     getDocument(
       dispatch,
       STATE_KEY,
