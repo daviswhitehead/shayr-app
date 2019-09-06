@@ -3,7 +3,7 @@ const BLUE = '#57B8FF';
 const colors = {
   BLACK: '#000000',
   BLUE,
-  BLUE10: `${BLUE}10`,
+  BLUE20: `${BLUE}20`,
   DARK_GRAY: '#7E7E7E',
   DIVIDER: '#E8E8E8',
   GREEN: '#27AE60',

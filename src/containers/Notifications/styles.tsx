@@ -1,7 +1,5 @@
 import { StyleSheet } from 'react-native';
 import Colors from '../../styles/Colors';
-import { fontSystem } from '../../styles/Fonts';
-import Layout from '../../styles/Layout';
 
 export default StyleSheet.create({
   screen: {
@@ -11,6 +9,6 @@ export default StyleSheet.create({
     justifyContent: 'flex-start'
   },
   unreadNotification: {
-    backgroundColor: Colors.BLUE10
+    backgroundColor: Colors.BLUE20
   }
 });

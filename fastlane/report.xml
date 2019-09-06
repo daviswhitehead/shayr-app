@@ -5,57 +5,27 @@
     
     
       
-      <testcase classname="fastlane.lanes" name="00: Verifying fastlane version" time="0.013795">
+      <testcase classname="fastlane.lanes" name="0: Verifying fastlane version" time="0.003569">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="01: gradle" time="25.148258">
+      <testcase classname="fastlane.lanes" name="1: Switch to android refresh_dsyms lane" time="0.003484">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="02: increment_version_code" time="0.036382">
+      <testcase classname="fastlane.lanes" name="2: pwd" time="0.010879">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="03: gradle" time="170.934014">
+      <testcase classname="fastlane.lanes" name="3: cd .. &amp;&amp; react-native bundle --platform android --dev false --entry-file index.js --bundle-output android-release.bundle --sourcemap-output android-release.bundle.map" time="4.622675">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="04: crashlytics" time="10.143193">
-        
-      </testcase>
-    
-      
-      <testcase classname="fastlane.lanes" name="05: upload_to_play_store" time="15.057771">
-        
-      </testcase>
-    
-      
-      <testcase classname="fastlane.lanes" name="06: Switch to android update_codepush_builds lane" time="0.002817">
-        
-      </testcase>
-    
-      
-      <testcase classname="fastlane.lanes" name="07: pwd" time="0.011982">
-        
-      </testcase>
-    
-      
-      <testcase classname="fastlane.lanes" name="08: cd .. &amp;&amp; appcenter codepush release-react -a whitehead.davis/Shayr-Android -d alpha" time="10.123326">
-        
-      </testcase>
-    
-      
-      <testcase classname="fastlane.lanes" name="09: upload_symbols_to_bugsnag" time="5.343654">
-        
-      </testcase>
-    
-      
-      <testcase classname="fastlane.lanes" name="10: send_build_to_bugsnag" time="0.337448">
+      <testcase classname="fastlane.lanes" name="4: cd .. &amp;&amp; curl https://upload.bugsnag.com/react-native-source-map -F apiKey=4549281efb1464f4641fdb9d86bfae84  -F appVersion=3.3.0 -F dev=false -F platform=android -F sourceMap=@android-release.bundle.map -F bundle=@android-release.bundle -F projectRoot=`pwd`" time="22.09577">
         
       </testcase>
     

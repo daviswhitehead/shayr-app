@@ -14,11 +14,14 @@ fastlane_require 'dotenv/load'
 
 platform :ios do
 
-  desc 'ensure bugsnag has most up to date symbols'
+  desc 'IOS - ensure bugsnag has most up to date symbols'
   lane :refresh_dsyms do
-    download_dsyms
-    upload_symbols_to_bugsnag(api_key: ENV['BUGSNAG_KEY'])
-    clean_build_artifacts
+    # download_dsyms
+    # upload_symbols_to_bugsnag(api_key: ENV['BUGSNAG_KEY'])
+    # clean_build_artifacts
+    sh("pwd")
+    sh("cd .. && react-native bundle --platform ios --dev false --entry-file index.js --bundle-output ios-release.bundle --sourcemap-output ios-release.bundle.map")
+    sh("cd .. && curl https://upload.bugsnag.com/react-native-source-map -F apiKey=#{ENV['BUGSNAG_KEY']}  -F appVersion=#{ENV['IOS_APP_VERSION']} -F dev=false -F platform=ios -F sourceMap=@ios-release.bundle.map -F bundle=@ios-release.bundle -F projectRoot=`pwd`")
   end
 
   desc 'release certificates and provisioning profiles'
@@ -95,7 +98,7 @@ platform :ios do
     
     # bugsnag ios
     refresh_dsyms
-    send_build_to_bugsnag(api_key: ENV['BUGSNAG_KEY'])
+    # send_build_to_bugsnag(api_key: ENV['BUGSNAG_KEY'])
 
     # commit_version_bump(
     #   message: 'bump build',
@@ -120,7 +123,7 @@ platform :ios do
     
     # bugsnag ios
     refresh_dsyms
-    send_build_to_bugsnag(api_key: ENV['BUGSNAG_KEY'])
+    # send_build_to_bugsnag(api_key: ENV['BUGSNAG_KEY'])
 
 
     # commit_version_bump(
@@ -132,6 +135,13 @@ platform :ios do
 end
 
 platform :android do
+
+  desc 'ANDROID - ensure bugsnag has most up to date symbols'
+  lane :refresh_dsyms do
+    sh("pwd")
+    sh("cd .. && react-native bundle --platform android --dev false --entry-file index.js --bundle-output android-release.bundle --sourcemap-output android-release.bundle.map")
+    sh("cd .. && curl https://upload.bugsnag.com/react-native-source-map -F apiKey=#{ENV['BUGSNAG_KEY']}  -F appVersion=#{ENV['ANDROID_APP_VERSION']} -F dev=false -F platform=android -F sourceMap=@android-release.bundle.map -F bundle=@android-release.bundle -F projectRoot=`pwd`")
+  end
 
   desc 'update codepush builds'
   lane :update_codepush_builds do
@@ -175,8 +185,9 @@ platform :android do
     update_codepush_builds
 
     # bugsnag android
-    upload_symbols_to_bugsnag(api_key: ENV['BUGSNAG_KEY'])
-    send_build_to_bugsnag(api_key: ENV['BUGSNAG_KEY'])
+    refresh_dsyms
+    # upload_symbols_to_bugsnag(api_key: ENV['BUGSNAG_KEY'])
+    # send_build_to_bugsnag(api_key: ENV['BUGSNAG_KEY'])
 
   end
 end
