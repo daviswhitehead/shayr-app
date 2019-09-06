@@ -31,7 +31,8 @@ export const toggleAddDonePost = (
   postId: documentId,
   ownerUserId: documentId,
   userId: documentId,
-  isOtherActive: boolean
+  isOtherActive: boolean,
+  visibleToUserIds: Array<string> = []
 ) => async (dispatch: Dispatch) => {
   dispatch({
     type: types.TOGGLE_ADD_DONE_POST_START
@@ -66,7 +67,16 @@ export const toggleAddDonePost = (
       }
     );
 
-    updateCounts(batcher, !isActive, 'adds', postId, ownerUserId, userId);
+    updateCounts(
+      batcher,
+      !isActive,
+      'adds',
+      postId,
+      ownerUserId,
+      userId,
+      undefined,
+      visibleToUserIds
+    );
 
     if (!isActive && isOtherActive) {
       // {otherCollection}/{userId}_{postId}
@@ -91,13 +101,16 @@ export const toggleAddDonePost = (
         'dones',
         postId,
         ownerUserId,
-        userId
+        userId,
+        undefined,
+        visibleToUserIds
       );
     }
 
-    batcher.write();
+    await batcher.write();
 
-    dispatch(refreshUsersPostsDocuments(postId, 'cache'));
+    dispatch(refreshUsersPostsDocuments(postId, 'server'));
+    // dispatch(refreshUsersPostsDocuments(postId, 'cache'));
     dispatch(
       toggleItem(
         'usersPostsLists',
@@ -141,7 +154,7 @@ export const subscribeToAdds = (userId: string) => {
   };
 };
 
-export const updateUserAdds = (userId: string, value: number) => (
+export const updateUserAdds = (userId: string, value: number) => async (
   dispatch: Dispatch
 ) => {
   dispatch({ type: types.UPDATE_USER_ADDS_START });
@@ -150,7 +163,7 @@ export const updateUserAdds = (userId: string, value: number) => (
 
   overwriteUserCounts(batcher, 'adds', userId, value);
 
-  batcher.write();
+  await batcher.write();
 
   dispatch({ type: types.UPDATE_USER_ADDS_SUCCESS });
 };

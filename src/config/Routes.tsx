@@ -9,6 +9,7 @@ import Discover from '../containers/Discover';
 import Friends from '../containers/Friends';
 import Login from '../containers/Login';
 import MyList from '../containers/MyList';
+import Notifications from '../containers/Notifications';
 import PostDetail from '../containers/PostDetail';
 
 const DiscoverStack = createStackNavigator(
@@ -27,6 +28,12 @@ const DiscoverStack = createStackNavigator(
     },
     MyList: {
       screen: MyList,
+      navigationOptions: () => ({
+        header: null
+      })
+    },
+    Notifications: {
+      screen: Notifications,
       navigationOptions: () => ({
         header: null
       })

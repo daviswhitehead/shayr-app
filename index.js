@@ -21,11 +21,14 @@ if (Config.ENV_NAME !== 'prod') {
     }
   };
 }
-
 AppRegistry.registerComponent(
   'shayr',
   () => require('./src/containers/App').default
 );
+// AppRegistry.registerComponent(
+//   'shayr',
+//   () => require('./src/containers/ShareApp').default
+// );
 AppRegistry.registerComponent(
   'ShareExtension',
   () => require('./src/containers/ShareApp').default

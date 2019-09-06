@@ -38,6 +38,7 @@ import styles from './styles';
 interface StateProps {
   authUser: User;
   authUserId: string;
+  authFriends: Users;
   commentsData: Array<UsersPosts>;
   commentsMeta: any;
   ownerUserId: string;
@@ -74,7 +75,7 @@ interface Users {
   [userId: string]: User;
 }
 
-type ActionType = 'shares' | 'adds' | 'dones' | 'likes';
+type ActionType = 'shares' | 'adds' | 'dones' | 'comments';
 
 const mapStateToProps = (
   state: any,
@@ -87,8 +88,9 @@ const mapStateToProps = (
   const commentsListKey = generateListKey(
     ownerUserId,
     postId,
-    queryTypes.USERS_POSTS_COMMENTS
+    queryTypes.COMMENTS_FOR_USERS_POSTS
   );
+  const authFriends = selectUsersFromList(state, `${authUserId}_Friends`, true);
 
   return {
     authUserId,
@@ -101,12 +103,13 @@ const mapStateToProps = (
       'createdAt'
     ),
     commentsMeta: selectListMeta(state, 'commentsLists', commentsListKey),
+    authFriends,
     ownerUserId,
     postId,
     post: selectDocumentFromId(state, 'usersPosts', `${ownerUserId}_${postId}`),
     users: {
       [authUserId]: authUser,
-      ...selectUsersFromList(state, `${authUserId}_Friends`, true)
+      ...authFriends
     }
   };
 };
@@ -140,9 +143,9 @@ class PostDetail extends Component<Props, OwnState> {
         generateListKey(
           this.props.ownerUserId,
           this.props.postId,
-          queryTypes.USERS_POSTS_COMMENTS
+          queryTypes.COMMENTS_FOR_USERS_POSTS
         ),
-        getQuery(queryTypes.USERS_POSTS_COMMENTS)!(
+        getQuery(queryTypes.COMMENTS_FOR_USERS_POSTS)!(
           this.props.ownerUserId,
           this.props.postId
         )
@@ -161,7 +164,7 @@ class PostDetail extends Component<Props, OwnState> {
     if (
       this.state.isLoading &&
       this.props.authUser &&
-      this.props.users &&
+      this.props.authFriends &&
       this.props.post
     ) {
       this.setState({ isLoading: false });
@@ -172,7 +175,7 @@ class PostDetail extends Component<Props, OwnState> {
     if (
       this.state.isCommentsLoading &&
       this.props.authUser &&
-      this.props.users &&
+      this.props.authFriends &&
       this.props.commentsMeta &&
       this.props.commentsMeta.isLoaded
     ) {
@@ -237,8 +240,8 @@ class PostDetail extends Component<Props, OwnState> {
       this.props.post,
       this.props.users
     );
-    const likeFeatured = this.getFeaturedUsers(
-      'likes',
+    const commentFeatured = this.getFeaturedUsers(
+      'comments',
       this.props.post,
       this.props.users
     );
@@ -306,18 +309,20 @@ class PostDetail extends Component<Props, OwnState> {
                   <UserAvatarsScrollView users={doneFeatured.featuredUsers} />
                 </View>
               ) : null}
-              {!_.isEmpty(likeFeatured) ? (
+              {!_.isEmpty(commentFeatured) ? (
                 <View>
                   <View style={styles.activityHeader}>
-                    <Icon name={names.LIKE} />
+                    <Icon name={names.REACTION} />
                     <Text style={styles.boldBody}>
-                      {likeFeatured.featuredUserName}
+                      {commentFeatured.featuredUserName}
                     </Text>
                     <Text style={styles.body}>
-                      {` ${likeFeatured.featuredString}`}
+                      {` ${commentFeatured.featuredString}`}
                     </Text>
                   </View>
-                  <UserAvatarsScrollView users={likeFeatured.featuredUsers} />
+                  <UserAvatarsScrollView
+                    users={commentFeatured.featuredUsers}
+                  />
                 </View>
               ) : null}
             </View>
@@ -327,7 +332,7 @@ class PostDetail extends Component<Props, OwnState> {
                 !_.isEmpty(shareFeatured) ||
                 !_.isEmpty(addFeatured) ||
                 !_.isEmpty(doneFeatured) ||
-                !_.isEmpty(likeFeatured)
+                !_.isEmpty(commentFeatured)
                   ? styles.commentsMargin
                   : {}
               ]}
@@ -344,12 +349,14 @@ class PostDetail extends Component<Props, OwnState> {
 
   // TODO: add comment type definition
   renderItem = ({ item }: { item: any }) => {
-    const user = this.props.users[item.userId];
-
     return (
       <UserTextDate
         isLoading={this.state.isCommentsLoading}
-        user={this.state.isCommentsLoading ? undefined : user}
+        user={
+          this.state.isCommentsLoading
+            ? undefined
+            : this.props.users[item.userId]
+        }
         text={item.text}
         createdAt={
           this.state.isCommentsLoading ? undefined : item.createdAt.toDate()
@@ -366,9 +373,9 @@ class PostDetail extends Component<Props, OwnState> {
       generateListKey(
         this.props.ownerUserId,
         this.props.postId,
-        queryTypes.USERS_POSTS_COMMENTS
+        queryTypes.COMMENTS_FOR_USERS_POSTS
       ),
-      getQuery(queryTypes.USERS_POSTS_COMMENTS)!(
+      getQuery(queryTypes.COMMENTS_FOR_USERS_POSTS)!(
         this.props.ownerUserId,
         this.props.postId
       ),
@@ -386,9 +393,9 @@ class PostDetail extends Component<Props, OwnState> {
       generateListKey(
         this.props.ownerUserId,
         this.props.postId,
-        queryTypes.USERS_POSTS_COMMENTS
+        queryTypes.COMMENTS_FOR_USERS_POSTS
       ),
-      getQuery(queryTypes.USERS_POSTS_COMMENTS)!(
+      getQuery(queryTypes.COMMENTS_FOR_USERS_POSTS)!(
         this.props.ownerUserId,
         this.props.postId
       ),
@@ -439,8 +446,17 @@ class PostDetail extends Component<Props, OwnState> {
         <ActionBar
           isLoading={this.state.isLoading}
           authUser={this.props.authUser}
-          ownerUserId={this.props.authUserId}
+          ownerUserId={this.props.ownerUserId}
           usersPostsId={this.state.isLoading ? undefined : this.props.post._id}
+          usersPostsAdds={
+            this.state.isLoading ? undefined : this.props.post.adds
+          }
+          usersPostsComments={
+            this.state.isLoading ? undefined : this.props.post.comments
+          }
+          usersPostsDones={
+            this.state.isLoading ? undefined : this.props.post.dones
+          }
           usersPostsShares={
             this.state.isLoading ? undefined : this.props.post.shares
           }

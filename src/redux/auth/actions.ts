@@ -1,6 +1,7 @@
 import firebase from 'react-native-firebase';
 import { Dispatch } from 'redux';
 import { retrieveToken, saveToken } from '../../lib/AppGroupTokens';
+import { setUser } from '../../lib/Bugsnag';
 import { getFBProfile, getFBToken, logoutFB } from '../../lib/FacebookRequests';
 import { userAnalytics } from '../../lib/FirebaseAnalytics';
 import { ts } from '../../lib/FirebaseHelpers';
@@ -16,6 +17,7 @@ export const types = {
   // AUTHENTICATION LISTENER
   AUTH_LISTENER_START: 'AUTH_LISTENER_START',
   AUTH_STATUS: 'AUTH_STATUS',
+  AUTH_FAIL: 'AUTH_FAIL',
 
   // TOKEN
   ACCESS_TOKEN_STATUS: 'ACCESS_TOKEN_STATUS',
@@ -56,6 +58,7 @@ export const authSubscription = () => {
 
         // identify user in analytics events
         userAnalytics(user.uid);
+        setUser(user.uid);
       } else {
         dispatch({
           type: types.AUTH_STATUS,
@@ -93,7 +96,10 @@ const saveUser = async (user, data, FBProfile) => {
           firstName: data.first_name,
           lastName: data.last_name,
           email: data.email,
-          facebookProfilePhoto: FBProfile.picture.data.url
+          facebookId: FBProfile.id,
+          facebookProfilePhoto: `https://graph.facebook.com/${
+            FBProfile.id
+          }/picture?type=large`
         });
       } else {
         ref.set(
@@ -102,7 +108,10 @@ const saveUser = async (user, data, FBProfile) => {
             firstName: data.first_name,
             lastName: data.last_name,
             email: data.email,
-            facebookProfilePhoto: FBProfile.picture.data.url
+            facebookId: FBProfile.id,
+            facebookProfilePhoto: `https://graph.facebook.com/${
+              FBProfile.id
+            }/picture?type=large`
           },
           {
             merge: true
@@ -130,6 +139,7 @@ export function facebookAuth(error, result) {
     try {
       dispatch({ type: types.FACEBOOK_AUTH_START });
       const currentAccessToken = await getFBToken(error, result);
+      if (!currentAccessToken) throw new Error('undefined access token');
       dispatch({ type: types.FACEBOOK_AUTH_SUCCESS });
 
       const FBProfile = await getFBProfile(currentAccessToken.accessToken);

@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { ActivityIndicator, Button, Text, View } from 'react-native';
 import { connect } from 'react-redux';
+import DoneModal from '../../components/DoneModal';
 import Header from '../../components/Header';
 import { startSignOut } from '../../redux/auth/actions';
 import { selectAuthUserId } from '../../redux/auth/selectors';
@@ -44,8 +45,10 @@ class Friends extends Component {
     )
   });
 
+  modalRef: any;
   constructor(props: Props) {
     super(props);
+    this.modalRef = React.createRef();
   }
 
   componentDidMount() {}
@@ -59,6 +62,15 @@ class Friends extends Component {
       <View style={styles.container}>
         <Text>COMING SOON</Text>
         <Button onPress={this.props.startSignOut} title='Log Out' />
+        <Button
+          onPress={() => this.modalRef.current.toggleModal()}
+          title='Toggle Modal'
+        />
+        <DoneModal
+          ref={this.modalRef}
+          shareProps={undefined}
+          commentProps={undefined}
+        />
       </View>
     );
   }

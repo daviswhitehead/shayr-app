@@ -1,17 +1,19 @@
+import { User } from '@daviswhitehead/shayr-resources';
 import _ from 'lodash';
 import React, { SFC } from 'react';
+import { View } from 'react-native';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
-import { queryTypes } from '../../lib/FirebaseQueries';
+import DoneModal from '../../components/DoneModal';
 import { selectAuthUserId } from '../../redux/auth/selectors';
 import { toggleAddDonePost } from '../../redux/dones/actions';
-import { generateListKey } from '../../redux/lists/helpers';
-import { selectListItems } from '../../redux/lists/selectors';
+import { selectUsersFromList } from '../../redux/users/selectors';
 
 interface StateProps {
   authUserId: string;
-  authAdds: Array<string>;
-  authDones: Array<string>;
+  friends?: {
+    [userId: string]: User;
+  };
 }
 
 interface DispatchProps {
@@ -20,8 +22,9 @@ interface DispatchProps {
 
 interface OwnProps {
   ownerUserId: string;
-  usersPostsId: string;
   postId: string;
+  usersPostsAdds: Array<string>;
+  usersPostsDones: Array<string>;
 }
 
 type Props = OwnProps & StateProps & DispatchProps;
@@ -29,15 +32,10 @@ type Props = OwnProps & StateProps & DispatchProps;
 const mapStateToProps = (state: any) => {
   return {
     authUserId: selectAuthUserId(state),
-    authAdds: selectListItems(
+    friends: selectUsersFromList(
       state,
-      'addsLists',
-      generateListKey(selectAuthUserId(state), queryTypes.USER_ADDS)
-    ),
-    authDones: selectListItems(
-      state,
-      'donesLists',
-      generateListKey(selectAuthUserId(state), queryTypes.USER_DONES)
+      `${selectAuthUserId(state)}_Friends`,
+      true
     )
   };
 };
@@ -46,37 +44,71 @@ const mapDispatchToProps = {
   toggleAddDonePost
 };
 
-const withDones = (WrappedComponent: SFC) => (props: Props) => {
-  const {
-    authUserId,
-    authAdds,
-    authDones,
-    toggleAddDonePost,
-    ownerUserId,
-    usersPostsId,
-    postId,
-    ...passThroughProps
-  } = props;
+const withDones = (WrappedComponent: SFC) => {
+  return class DoneEnabled extends React.Component<Props> {
+    modalRef: any;
 
-  const isAddsActive = _.includes(authAdds, usersPostsId);
-  const isDonesActive = _.includes(authDones, usersPostsId);
+    constructor(props: Props) {
+      super(props);
 
-  return (
-    <WrappedComponent
-      isActive={isDonesActive}
-      onPress={() =>
-        toggleAddDonePost(
-          'dones',
-          isDonesActive,
-          postId,
-          ownerUserId,
-          authUserId,
-          isAddsActive
-        )
-      }
-      {...passThroughProps}
-    />
-  );
+      this.modalRef = React.createRef();
+    }
+
+    render() {
+      const {
+        authUserId,
+        usersPostsAdds,
+        usersPostsDones,
+        friends = [],
+        toggleAddDonePost,
+        ownerUserId,
+        postId,
+        ...passThroughProps
+      } = this.props;
+
+      const isAddsActive = _.includes(usersPostsAdds, authUserId);
+      const isDonesActive = _.includes(usersPostsDones, authUserId);
+
+      return (
+        <View>
+          <WrappedComponent
+            isActive={isDonesActive}
+            onPress={() => {
+              if (isDonesActive) {
+                toggleAddDonePost(
+                  'dones',
+                  isDonesActive,
+                  postId,
+                  ownerUserId,
+                  authUserId,
+                  isAddsActive,
+                  _.keys(friends)
+                );
+              } else {
+                this.modalRef.current.toggleModal();
+              }
+            }}
+            {...passThroughProps}
+          />
+          <DoneModal
+            ref={this.modalRef}
+            onModalHide={() =>
+              toggleAddDonePost(
+                'dones',
+                isDonesActive,
+                postId,
+                ownerUserId,
+                authUserId,
+                isAddsActive,
+                _.keys(friends)
+              )
+            }
+            {...this.props}
+          />
+        </View>
+      );
+    }
+  };
 };
 
 export default compose(
@@ -88,26 +120,8 @@ export default compose(
       areStatesEqual: (next, prev) => {
         return (
           selectAuthUserId(next) === selectAuthUserId(prev) &&
-          selectListItems(
-            next,
-            'addsLists',
-            generateListKey(selectAuthUserId(next), queryTypes.USER_ADDS)
-          ) ===
-            selectListItems(
-              prev,
-              'addsLists',
-              generateListKey(selectAuthUserId(prev), queryTypes.USER_ADDS)
-            ) &&
-          selectListItems(
-            next,
-            'donesLists',
-            generateListKey(selectAuthUserId(next), queryTypes.USER_DONES)
-          ) ===
-            selectListItems(
-              prev,
-              'donesLists',
-              generateListKey(selectAuthUserId(prev), queryTypes.USER_DONES)
-            )
+          selectUsersFromList(next, `${selectAuthUserId(next)}_Friends`) ===
+            selectUsersFromList(prev, `${selectAuthUserId(prev)}_Friends`)
         );
       }
     }

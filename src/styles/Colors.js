@@ -1,14 +1,18 @@
+const BLUE = '#57B8FF';
+
 const colors = {
-  YELLOW: '#F2C94C',
-  SKELETON: '#DADADA',
   BLACK: '#000000',
-  SHADOW: '#000',
-  GREEN: '#27AE60',
-  RED: '#F5402F',
+  BLUE,
+  BLUE20: `${BLUE}20`,
   DARK_GRAY: '#7E7E7E',
+  DIVIDER: '#E8E8E8',
+  GREEN: '#27AE60',
   LIGHT_GRAY: '#DADADA',
+  RED: '#F5402F',
+  SHADOW: '#000',
+  SKELETON: '#DADADA',
   WHITE: '#FFFFFF',
-  DIVIDER: '#E8E8E8'
+  YELLOW: '#F2C94C'
 };
 
 export default colors;

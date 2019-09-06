@@ -13,11 +13,13 @@ import styles from './styles';
 
 interface Props {
   children: JSX.Element[] | JSX.Element;
-  type: 'add' | 'done' | 'like';
+  type: 'adds' | 'dones' | 'likes' | 'shares' | 'comments';
   isLeftAlreadyDone?: boolean;
-  leftAction?: () => void;
+  leftAction?: (renderFunction: any) => void;
+  leftActionProps?: any;
   isRightAlreadyDone?: boolean;
-  rightAction?: () => void;
+  rightAction?: (renderFunction: any) => void;
+  rightActionProps?: any;
   noSwiping?: boolean;
 }
 
@@ -37,6 +39,10 @@ class SwipeCard extends PureComponent<Props, State> {
   leftActionActivationDistance: number;
   rightActionActivationDistance: number;
   typeNameMap: any;
+  leftAction: any;
+  leftActionFunction: any;
+  rightAction: any;
+  rightActionFunction: any;
 
   constructor(props: Props) {
     super(props);
@@ -54,11 +60,38 @@ class SwipeCard extends PureComponent<Props, State> {
     this.leftActionActivationDistance = 100;
     this.rightActionActivationDistance = 100;
     this.typeNameMap = {
-      add: names.ADD,
-      done: names.DONE,
-      like: names.LIKE
+      adds: names.ADD,
+      dones: names.DONE,
+      likes: names.LIKE,
+      shares: names.SHARE,
+      comments: names.REACTION
     };
+
+    this.leftAction = this.props.leftAction
+      ? this.props.leftAction(this.renderAction)
+      : undefined;
+    this.leftActionFunction = undefined;
+    this.rightAction = this.props.rightAction
+      ? this.props.rightAction(this.renderAction)
+      : undefined;
+    this.rightActionFunction = undefined;
   }
+
+  renderAction = ({
+    side,
+    onPress
+  }: {
+    side: 'left' | 'right';
+    onPress: () => void;
+  }) => {
+    if (side === 'left') {
+      this.leftActionFunction = onPress;
+    } else if (side === 'right') {
+      this.rightActionFunction = onPress;
+    }
+
+    return <View />;
+  };
 
   renderLeftContent = (leftDragDistance, isLeftActive, triggeredLeftAction) => {
     return (
@@ -85,6 +118,7 @@ class SwipeCard extends PureComponent<Props, State> {
             leftDragDistance > 0 ? {} : { tintColor: 'transparent' }
           ]}
         />
+        {this.leftAction && <this.leftAction {...this.props.leftActionProps} />}
       </View>
     );
   };
@@ -120,6 +154,9 @@ class SwipeCard extends PureComponent<Props, State> {
             rightDragDistance > 0 ? {} : { tintColor: 'transparent' }
           ]}
         />
+        {this.rightAction && (
+          <this.rightAction {...this.props.rightActionProps} />
+        )}
       </View>
     );
   };
@@ -127,9 +164,9 @@ class SwipeCard extends PureComponent<Props, State> {
   handleLeftRelease = () => {
     if (this.state.isLeftActive) {
       if (this.props.isLeftAlreadyDone) {
-        Toaster(actionTypeActiveToasts[`${this.props.type}s`]);
+        Toaster(actionTypeActiveToasts[this.props.type]);
       } else {
-        this.props.leftAction();
+        this.leftActionFunction && this.leftActionFunction();
       }
       this.setState({ triggeredLeftAction: true });
     }
@@ -138,9 +175,9 @@ class SwipeCard extends PureComponent<Props, State> {
   handleRightRelease = () => {
     if (this.state.isRightActive) {
       if (this.props.isRightAlreadyDone) {
-        Toaster(actionTypeInactiveToasts[`${this.props.type}s`]);
+        Toaster(actionTypeInactiveToasts[this.props.type]);
       } else {
-        this.props.rightAction();
+        this.rightActionFunction && this.rightActionFunction();
       }
       this.setState({ triggeredRightAction: true });
     }
@@ -174,6 +211,20 @@ class SwipeCard extends PureComponent<Props, State> {
   // }
 
   render() {
+    // console.log(`SwipeCard - Render`);
+    // console.log('this.props');
+    // console.log(this.props);
+    // console.log('this.state');
+    // console.log(this.state);
+    // console.log('this.leftAction');
+    // console.log(this.leftAction);
+    // console.log('this.leftActionFunction');
+    // console.log(this.leftActionFunction);
+    // console.log('this.rightAction');
+    // console.log(this.rightAction);
+    // console.log('this.rightActionFunction');
+    // console.log(this.rightActionFunction);
+
     const {
       isLeftActive,
       leftDragDistance,

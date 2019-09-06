@@ -23,6 +23,7 @@ import { generateListKey } from './lists/helpers';
 
 export type StateKey =
   | 'users'
+  | 'notifications'
   | 'usersPosts'
   | 'adds'
   | 'dones'
@@ -33,6 +34,7 @@ export type StateKey =
 
 export type StateKeyLists =
   | 'usersPostsLists'
+  | 'notificationsLists'
   | 'addsLists'
   | 'donesLists'
   | 'sharesLists'
@@ -94,6 +96,54 @@ export const getFeedOfDocuments = (
     });
 };
 
+export const subscribeToFeedOfDocuments = (
+  dispatch: Dispatch,
+  stateKey: StateKey,
+  listKey: string,
+  query: Query,
+  shouldRefresh?: boolean,
+  isLoading?: boolean,
+  lastItem?: DocumentSnapshot | 'DONE'
+) => {
+  // prevent loading more items when the end is reached or data is loading
+  if (!shouldRefresh && (lastItem === 'DONE' || isLoading)) {
+    return;
+  }
+
+  const stateKeyList = generateStateKeyList(stateKey);
+
+  if (shouldRefresh) {
+    dispatch(listRefreshing(stateKeyList, listKey));
+  } else {
+    dispatch(listLoading(stateKeyList, listKey));
+  }
+
+  dispatch(getDocumentsStart(stateKey));
+
+  return query.onSnapshot(
+    (querySnapshot: QuerySnapshot) => {
+      if (!querySnapshot.empty) {
+        const documents = {};
+        querySnapshot.forEach((document: DocumentSnapshot) => {
+          documents[document.id] = formatDocumentSnapshot(document);
+        });
+
+        dispatch(getDocumentsSuccess(stateKey, documents));
+
+        dispatch(listAdd(stateKeyList, listKey, _.keys(documents)));
+
+        dispatch(listLoaded(stateKeyList, listKey, querySnapshot.docs.pop()));
+      } else {
+        dispatch(listLoaded(stateKeyList, listKey, 'DONE'));
+      }
+    },
+    (error: SnapshotError) => {
+      console.error(error);
+      dispatch(getDocumentsFail(stateKey, error));
+    }
+  );
+};
+
 export const subscribeToAllDocuments = (
   dispatch: Dispatch,
   stateKey: StateKey,
@@ -123,7 +173,7 @@ export const subscribeToAllDocuments = (
 
         dispatch(listLoaded(stateKeyList, listKey, querySnapshot.docs.pop()));
       } else {
-        dispatch(listLoaded(stateKeyList, listKey, 'DONE'));
+        dispatch(listLoaded(stateKeyList, listKey, 'DONE', true));
       }
     },
     (error: SnapshotError) => {

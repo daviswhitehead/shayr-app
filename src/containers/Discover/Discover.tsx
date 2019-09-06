@@ -6,51 +6,36 @@ import { NavigationScreenProps } from 'react-navigation';
 import { connect } from 'react-redux';
 import { subscribe } from 'redux-subscriber';
 import Header from '../../components/Header';
+import Icon, { names } from '../../components/Icon';
 import List from '../../components/List';
 import PostCard from '../../components/PostCard';
 import SwipeCard from '../../components/SwipeCard';
+import withAdds from '../../higherOrderComponents/withAdds';
 import { getQuery, queryTypes } from '../../lib/FirebaseQueries';
-import {
-  subscribeToAdds,
-  toggleAddDonePost,
-  updateUserAdds
-} from '../../redux/adds/actions';
 import { selectAuthUserId } from '../../redux/auth/selectors';
 import { selectFlatListReadyDocuments } from '../../redux/documents/selectors';
-import { subscribeToDones, updateUserDones } from '../../redux/dones/actions';
 import { subscribeToFriendships } from '../../redux/friendships/actions';
-import { subscribeToLikes, updateUserLikes } from '../../redux/likes/actions';
 import { generateListKey } from '../../redux/lists/helpers';
-import {
-  selectListCount,
-  selectListItems,
-  selectListMeta
-} from '../../redux/lists/selectors';
+import { selectListItems, selectListMeta } from '../../redux/lists/selectors';
 import { subscribeNotificationTokenRefresh } from '../../redux/notifications/actions';
 import { State } from '../../redux/Reducers';
 import { navigateToRoute } from '../../redux/routing/actions';
-import {
-  subscribeToShares,
-  updateUserShares
-} from '../../redux/shares/actions';
 import { subscribeToUser } from '../../redux/users/actions';
 import {
   selectUserFromId,
-  selectUsersFromList
+  selectUsersFromList,
+  selectUserUnreadNotificationsCountFromId
 } from '../../redux/users/selectors';
 import { loadUsersPosts } from '../../redux/usersPosts/actions';
 import colors from '../../styles/Colors';
 import styles from './styles';
 
 interface StateProps {
-  addsCount?: number;
   authUser?: User;
   authUserId: string;
-  donesCount?: number;
   friends?: Array<User>;
-  likesCount?: number;
   routing?: any; // routing state
-  sharesCount?: number;
+  unreadNotificationsCount?: number;
   usersPostsListsMeta?: {
     [listKey: string]: any; // listKey and meta state
   };
@@ -63,17 +48,8 @@ interface DispatchProps {
   navigateToRoute: typeof navigateToRoute;
   loadUsersPosts: typeof loadUsersPosts;
   subscribeToUser: typeof subscribeToUser;
-  subscribeToAdds: typeof subscribeToAdds;
-  updateUserAdds: typeof updateUserAdds;
-  subscribeToDones: typeof subscribeToDones;
-  updateUserDones: typeof updateUserDones;
-  subscribeToLikes: typeof subscribeToLikes;
-  updateUserLikes: typeof updateUserLikes;
-  subscribeToShares: typeof subscribeToShares;
-  updateUserShares: typeof updateUserShares;
   subscribeToFriendships: typeof subscribeToFriendships;
   subscribeNotificationTokenRefresh: typeof subscribeNotificationTokenRefresh;
-  toggleAddDonePost: typeof toggleAddDonePost;
 }
 
 interface OwnProps {}
@@ -94,34 +70,20 @@ const mapStateToProps = (state: State) => {
     return {};
   }
 
+  const authUserId = selectAuthUserId(state);
+
   return {
-    addsCount: selectListCount(
-      state,
-      'addsLists',
-      `${selectAuthUserId(state)}_USER_ADDS`
-    ),
     authUserId: selectAuthUserId(state),
     authUser: selectUserFromId(state, selectAuthUserId(state), true),
-    donesCount: selectListCount(
-      state,
-      'donesLists',
-      `${selectAuthUserId(state)}_USER_DONES`
-    ),
     friends: selectUsersFromList(
       state,
       `${selectAuthUserId(state)}_Friends`,
       true
     ),
-    likesCount: selectListCount(
-      state,
-      'likesLists',
-      `${selectAuthUserId(state)}_USER_LIKES`
-    ),
     routing: state.routing,
-    sharesCount: selectListCount(
+    unreadNotificationsCount: selectUserUnreadNotificationsCountFromId(
       state,
-      'sharesLists',
-      `${selectAuthUserId(state)}_USER_SHARES`
+      authUserId
     ),
     usersPostsListsMeta: {
       [generateListKey(
@@ -156,17 +118,8 @@ const mapDispatchToProps = {
   navigateToRoute,
   loadUsersPosts,
   subscribeToUser,
-  subscribeToAdds,
-  updateUserAdds,
-  subscribeToDones,
-  updateUserDones,
-  subscribeToLikes,
-  updateUserLikes,
-  subscribeToShares,
-  updateUserShares,
   subscribeToFriendships,
-  subscribeNotificationTokenRefresh,
-  toggleAddDonePost
+  subscribeNotificationTokenRefresh
 };
 
 class Discover extends PureComponent<Props, OwnState> {
@@ -188,11 +141,7 @@ class Discover extends PureComponent<Props, OwnState> {
     this.subscriptions.push(
       this.props.subscribeToUser(this.props.authUserId),
       this.props.subscribeToFriendships(this.props.authUserId),
-      this.props.subscribeNotificationTokenRefresh(this.props.authUserId),
-      this.props.subscribeToAdds(this.props.authUserId),
-      this.props.subscribeToDones(this.props.authUserId),
-      this.props.subscribeToLikes(this.props.authUserId),
-      this.props.subscribeToShares(this.props.authUserId)
+      this.props.subscribeNotificationTokenRefresh(this.props.authUserId)
     );
 
     // respond to initial route
@@ -217,7 +166,12 @@ class Discover extends PureComponent<Props, OwnState> {
     );
 
     // DEVELOPMENT HELPERS
-    // // this.props.navigation.navigate('FriendsTab', {});
+    // this.props.navigation.navigate('Notifications', {});
+    // this.props.navigation.navigate('FriendsTab', {});
+    // this.props.navigation.navigate('PostDetail', {
+    //   ownerUserId: this.props.authUserId,
+    //   postId: '9JKOMIpbKdSCt4MRomPI'
+    // });
     // this.props.navigation.navigate('PostDetail', {
     //   ownerUserId: this.props.authUserId,
     //   postId: '48PKLyY71DHin1XuIPop'
@@ -234,21 +188,6 @@ class Discover extends PureComponent<Props, OwnState> {
 
   componentDidUpdate(prevProps: Props) {
     this.checkLoading();
-    if (this.props.addsCount && !prevProps.addsCount) {
-      this.props.updateUserAdds(this.props.authUserId, this.props.addsCount);
-    }
-    if (this.props.donesCount && !prevProps.donesCount) {
-      this.props.updateUserDones(this.props.authUserId, this.props.donesCount);
-    }
-    if (this.props.likesCount && !prevProps.likesCount) {
-      this.props.updateUserLikes(this.props.authUserId, this.props.likesCount);
-    }
-    if (this.props.sharesCount && !prevProps.sharesCount) {
-      this.props.updateUserShares(
-        this.props.authUserId,
-        this.props.sharesCount
-      );
-    }
   }
 
   componentWillUnmount() {
@@ -323,22 +262,22 @@ class Discover extends PureComponent<Props, OwnState> {
   };
 
   renderItem = ({ item }: { item: UsersPosts }) => {
+    const actionProps = {
+      // add/done props
+      ownerUserId: item.userId,
+      postId: item.postId,
+      usersPostsAdds: item.adds,
+      usersPostsDones: item.dones
+    };
+
     return (
       <SwipeCard
         key={item._id}
         noSwiping={this.state.isLoading}
-        type={'add'}
+        type={'adds'}
         isLeftAlreadyDone={_.includes(item.adds || [], this.props.authUserId)}
-        leftAction={() =>
-          this.props.toggleAddDonePost(
-            'adds',
-            false,
-            item.postId,
-            this.props.authUserId,
-            this.props.authUserId,
-            _.includes(item.dones || [], this.props.authUserId)
-          )
-        }
+        leftAction={withAdds}
+        leftActionProps={{ side: 'left', ...actionProps }}
       >
         <PostCard
           key={item._id}
@@ -366,6 +305,19 @@ class Discover extends PureComponent<Props, OwnState> {
           statusBarStyle='dark-content'
           shadow
           title='Discover'
+          rightIcons={
+            <Icon
+              name={
+                this.props.unreadNotificationsCount > 0
+                  ? names.BELL_ACTIVE
+                  : names.BELL
+              }
+              hasBadge={this.props.unreadNotificationsCount > 0}
+              onPress={() =>
+                this.props.navigation.navigate('Notifications', {})
+              }
+            />
+          }
         />
         <List
           data={

@@ -11,6 +11,7 @@ export enum queryTypes {
   USERS_POSTS_ALL = 'USERS_POSTS_ALL',
   USERS_POSTS_SHARES = 'USERS_POSTS_SHARES',
   USERS_POSTS_ADDS = 'USERS_POSTS_ADDS',
+  USERS_POSTS_COMMENTS = 'USERS_POSTS_COMMENTS',
   USERS_POSTS_DONES = 'USERS_POSTS_DONES',
   USERS_POSTS_LIKES = 'USERS_POSTS_LIKES',
   USER_ADDS = 'USER_ADDS',
@@ -19,8 +20,9 @@ export enum queryTypes {
   USER_SHARES = 'USER_SHARES',
   FRIENDSHIPS_ALL = 'FRIENDSHIPS_ALL',
   FRIENDS_ALL = 'FRIENDS_ALL',
-  USERS_POSTS_COMMENTS = 'USERS_POSTS_COMMENTS',
-  USERS_ALL = 'USERS_ALL'
+  COMMENTS_FOR_USERS_POSTS = 'COMMENTS_FOR_USERS_POSTS',
+  USERS_ALL = 'USERS_ALL',
+  NOTIFICATIONS = 'NOTIFICATIONS'
 }
 
 export enum referenceTypes {
@@ -77,6 +79,17 @@ export const queries: Map<queryTypes, (...args: string[]) => Query> = new Map([
         .collection('users_posts')
         .where('userId', '==', userId)
         .where('adds', 'array-contains', userId)
+        .orderBy('updatedAt', 'desc');
+    }
+  ],
+  [
+    queryTypes.USERS_POSTS_COMMENTS,
+    (userId: string) => {
+      return firebase
+        .firestore()
+        .collection('users_posts')
+        .where('userId', '==', userId)
+        .where('comments', 'array-contains', userId)
         .orderBy('updatedAt', 'desc');
     }
   ],
@@ -158,13 +171,23 @@ export const queries: Map<queryTypes, (...args: string[]) => Query> = new Map([
     }
   ],
   [
-    queryTypes.USERS_POSTS_COMMENTS,
+    queryTypes.COMMENTS_FOR_USERS_POSTS,
     (userId: string, postId: string) => {
       return firebase
         .firestore()
         .collection('comments')
         .where('postId', '==', `${postId}`)
         .where('visibleToUserIds', 'array-contains', `${userId}`)
+        .orderBy('createdAt', 'desc');
+    }
+  ],
+  [
+    queryTypes.NOTIFICATIONS,
+    (userId: string) => {
+      return firebase
+        .firestore()
+        .collection('notifications')
+        .where('receivingUserId', '==', `${userId}`)
         .orderBy('createdAt', 'desc');
     }
   ]

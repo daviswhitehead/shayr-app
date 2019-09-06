@@ -64,7 +64,6 @@
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@mipmap/ic_notification" />
-            <!-- android:resource="@drawable/ic_notification" /> -->
         <!-- Set color used with incoming notification messages. This is used when no color is set for the incoming
             notification message. See README(https://goo.gl/6BKBk7) for more. -->
         <meta-data
@@ -93,6 +92,18 @@
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="c12e5c4bb8cd8ca855a8ada44fa3fde413006659" />
+
+        <!-- BUGSNAG https://docs.bugsnag.com/platforms/android/ -->
+        <meta-data
+            android:name="com.bugsnag.android.API_KEY"
+            android:value="@string/BUGSNAG_KEY" />
+        <meta-data 
+            android:name="com.bugsnag.android.DETECT_NDK_CRASHES"
+            android:value="true"
+        />
+        <meta-data
+            android:name="com.bugsnag.android.DETECT_ANRS"
+            android:value="true" />
         
         <!-- REACT-NATIVE-FIREBASE NOTIFICATIONS -->
         <service android:name="io.invertase.firebase.messaging.RNFirebaseMessagingService">
@@ -106,6 +117,9 @@
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
             </intent-filter>
         </service>
+
+        <!-- Background Messages -->
+        <service android:name="io.invertase.firebase.messaging.RNFirebaseBackgroundMessagingService" />
 
         <!-- SCHEDULED NOTIFICATIONS -->
         <receiver android:name="io.invertase.firebase.notifications.RNFirebaseNotificationReceiver"/>

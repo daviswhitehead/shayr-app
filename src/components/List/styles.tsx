@@ -7,7 +7,7 @@ export default StyleSheet.create({
     flex: 1
   },
   separator: {
-    height: 1,
+    height: StyleSheet.hairlineWidth,
     width: '100%',
     backgroundColor: Colors.DIVIDER
   },

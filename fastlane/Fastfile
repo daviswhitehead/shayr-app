@@ -14,6 +14,16 @@ fastlane_require 'dotenv/load'
 
 platform :ios do
 
+  desc 'IOS - ensure bugsnag has most up to date symbols'
+  lane :refresh_dsyms do
+    # download_dsyms
+    # upload_symbols_to_bugsnag(api_key: ENV['BUGSNAG_KEY'])
+    # clean_build_artifacts
+    sh("pwd")
+    sh("cd .. && react-native bundle --platform ios --dev false --entry-file index.js --bundle-output ios-release.bundle --sourcemap-output ios-release.bundle.map")
+    sh("cd .. && curl https://upload.bugsnag.com/react-native-source-map -F apiKey=#{ENV['BUGSNAG_KEY']}  -F appVersion=#{ENV['IOS_APP_VERSION']} -F dev=false -F platform=ios -F sourceMap=@ios-release.bundle.map -F bundle=@ios-release.bundle -F projectRoot=`pwd`")
+  end
+
   desc 'release certificates and provisioning profiles'
   lane :release_certificates do
     match(
@@ -85,6 +95,11 @@ platform :ios do
       build_secret: ENV['FABRIC_BUILD_SECRET']
     )
     update_codepush_builds
+    
+    # bugsnag ios
+    refresh_dsyms
+    # send_build_to_bugsnag(api_key: ENV['BUGSNAG_KEY'])
+
     # commit_version_bump(
     #   message: 'bump build',
     #   xcodeproj: './ios/shayr.xcodeproj'
@@ -105,6 +120,12 @@ platform :ios do
     )
     upload_to_app_store
     update_codepush_builds
+    
+    # bugsnag ios
+    refresh_dsyms
+    # send_build_to_bugsnag(api_key: ENV['BUGSNAG_KEY'])
+
+
     # commit_version_bump(
     #   message: 'bump build',
     #   xcodeproj: './ios/shayr.xcodeproj'
@@ -114,6 +135,13 @@ platform :ios do
 end
 
 platform :android do
+
+  desc 'ANDROID - ensure bugsnag has most up to date symbols'
+  lane :refresh_dsyms do
+    sh("pwd")
+    sh("cd .. && react-native bundle --platform android --dev false --entry-file index.js --bundle-output android-release.bundle --sourcemap-output android-release.bundle.map")
+    sh("cd .. && curl https://upload.bugsnag.com/react-native-source-map -F apiKey=#{ENV['BUGSNAG_KEY']}  -F appVersion=#{ENV['ANDROID_APP_VERSION']} -F dev=false -F platform=android -F sourceMap=@android-release.bundle.map -F bundle=@android-release.bundle -F projectRoot=`pwd`")
+  end
 
   desc 'update codepush builds'
   lane :update_codepush_builds do
@@ -132,7 +160,8 @@ platform :android do
         gradle_file_path: "./android/app/build.gradle",
         #ext_constant_name: "test"
         #app_folder_name:"app"
-  )
+    )
+
     gradle(
       task: 'assemble',
       build_type: 'Release',
@@ -141,15 +170,24 @@ platform :android do
         "ENVFILE": ENV['ENVFILE_LOCATION']
       }
     )
+
     # supply(track: "alpha", apk: "android/app/build/outputs/apk/app-release.apk")
     crashlytics(
       api_token: ENV['FABRIC_API_KEY'],
       build_secret: ENV['FABRIC_BUILD_SECRET']
     )
+
     upload_to_play_store(
       track: 'alpha',
       package_name: ENV['APP_ID_ANDROID'] + ENV['APP_ID_SUFFIX_ANDROID']
     )
+
     update_codepush_builds
+
+    # bugsnag android
+    refresh_dsyms
+    # upload_symbols_to_bugsnag(api_key: ENV['BUGSNAG_KEY'])
+    # send_build_to_bugsnag(api_key: ENV['BUGSNAG_KEY'])
+
   end
 end

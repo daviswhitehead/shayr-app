@@ -1,4 +1,5 @@
 import { parseAppLink, protocols } from '@daviswhitehead/shayr-resources';
+import _ from 'lodash';
 import { AnyAction, Dispatch } from 'redux';
 import { ThunkAction, ThunkDispatch } from 'redux-thunk';
 import { navigate } from '../../lib/ReactNavigationHelpers';
@@ -31,7 +32,7 @@ export const navigateToRoute = ({
   screen: string;
   params: any;
 }): NavigateToRouteAction => {
-  navigate(screen, params);
+  navigate(screen, params, _.get(params, 'key', undefined));
   return { type: types.ROUTE_REMOVED };
 };
 

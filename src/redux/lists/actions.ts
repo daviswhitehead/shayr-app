@@ -37,6 +37,7 @@ interface ListLoadedAction {
   stateKey: StateKeyLists;
   listKey: ListKey;
   lastItem: LastItem;
+  isEmpty?: boolean;
 }
 interface ToggleItemAction {
   type: types.TOGGLE_ITEM;
@@ -91,13 +92,15 @@ export const listLoading = (
 export const listLoaded = (
   stateKey: StateKeyLists,
   listKey: ListKey,
-  lastItem: LastItem
+  lastItem: LastItem,
+  isEmpty?: boolean
 ): ListLoadedAction => {
   return {
     type: types.LIST_LOADED,
     stateKey,
     listKey,
-    lastItem
+    lastItem,
+    isEmpty
   };
 };
 

@@ -1,13 +1,15 @@
 import { getUserShortName, User } from '@daviswhitehead/shayr-resources';
 import _ from 'lodash';
 import createCachedSelector from 're-reselect';
+import { State } from '../Reducers';
 // import { createSelector } from 'reselect';
 // https://github.com/toomuchdesign/re-reselect
 // https://github.com/reduxjs/reselect#sharing-selectors-with-props-across-multiple-component-instances
 
-const selectUsers = (state) => state.users;
-const selectUser = (state, userId) => state.users[userId];
-const selectUsersLists = (state, listKey) => state.usersLists[listKey];
+const selectUsers = (state: State) => state.users;
+const selectUser = (state: State, userId: string) => state.users[userId];
+const selectUsersLists = (state: State, listKey: string) =>
+  state.usersLists[listKey];
 
 const formatUserForClient = (user: User) => {
   return {
@@ -27,6 +29,28 @@ const formatUserForPresentation = (user: User) => {
   ]);
 };
 
+export const selectAllUsers = createCachedSelector(
+  selectUsers,
+  (state: State, isPresentational: boolean) => isPresentational,
+  (users, isPresentational) => {
+    if (_.isEmpty(users)) {
+      return;
+    }
+    return _.reduce(
+      users,
+      (result: any, value: any, key: string) => {
+        return {
+          ...result,
+          [key]: isPresentational
+            ? formatUserForPresentation(formatUserForClient(value))
+            : formatUserForClient(value)
+        };
+      },
+      {}
+    );
+  }
+)((state, isPresentational) => `users_${isPresentational}`);
+
 export const selectUserFromId = createCachedSelector(
   selectUser,
   (state, userId, isPresentational) => isPresentational,
@@ -39,6 +63,17 @@ export const selectUserFromId = createCachedSelector(
       : formatUserForClient(user);
   }
 )((state, userId, isPresentational) => `${userId}_${isPresentational}`);
+
+export const selectUserUnreadNotificationsCountFromId = createCachedSelector(
+  selectUser,
+  (state, userId) => userId,
+  (user, userId) => {
+    if (!user) {
+      return;
+    }
+    return _.get(user, 'unreadNotificationsCount', 0);
+  }
+)((state, userId) => `${userId}`);
 
 export const selectUserActionCounts = createCachedSelector(
   selectUserFromId,
@@ -58,6 +93,10 @@ export const selectUsersFromList = createCachedSelector(
   (users, usersList, isPresentational) => {
     if (!users || !_.get(usersList, 'isLoaded', false)) {
       return;
+    }
+
+    if (!usersList.items) {
+      return {};
     }
 
     return usersList.items.reduce((result: any, userId: string) => {

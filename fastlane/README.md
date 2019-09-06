@@ -16,6 +16,11 @@ or alternatively using `brew cask install fastlane`
 
 # Available Actions
 ## iOS
+### ios refresh_dsyms
+```
+fastlane ios refresh_dsyms
+```
+IOS - ensure bugsnag has most up to date symbols
 ### ios release_certificates
 ```
 fastlane ios release_certificates
@@ -50,6 +55,11 @@ ship a release
 ----
 
 ## Android
+### android refresh_dsyms
+```
+fastlane android refresh_dsyms
+```
+ANDROID - ensure bugsnag has most up to date symbols
 ### android update_codepush_builds
 ```
 fastlane android update_codepush_builds

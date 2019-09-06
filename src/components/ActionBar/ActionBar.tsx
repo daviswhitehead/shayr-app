@@ -3,8 +3,8 @@ import _ from 'lodash';
 import React, { memo, SFC } from 'react';
 import { SafeAreaView, View } from 'react-native';
 import { IconWithAdds } from '../../higherOrderComponents/withAdds';
+import { IconWithComments } from '../../higherOrderComponents/withComments';
 import { IconWithDones } from '../../higherOrderComponents/withDones';
-import { IconWithLikes } from '../../higherOrderComponents/withLikes';
 import { IconWithShares } from '../../higherOrderComponents/withShares';
 import Icon from '../Icon';
 import { names } from '../Icon';
@@ -19,6 +19,9 @@ export interface Props {
   postId: string;
   url: string;
   usersPostsId: string;
+  usersPostsAdds: Array<string>;
+  usersPostsComments: Array<string>;
+  usersPostsDones: Array<string>;
   usersPostsShares: Array<string>;
 }
 
@@ -29,6 +32,9 @@ const ActionBar: SFC<Props> = ({
   isLoading,
   url,
   usersPostsId,
+  usersPostsAdds,
+  usersPostsComments,
+  usersPostsDones,
   usersPostsShares
 }) => {
   if (isLoading) {
@@ -61,31 +67,41 @@ const ActionBar: SFC<Props> = ({
             name={names.SHARE}
             style={styles.action}
             ownerUserId={ownerUserId}
+            postId={postId}
             usersPostsId={usersPostsId}
             usersPostsShares={usersPostsShares}
-            postId={postId}
             url={url}
           />
           <IconWithAdds
             name={names.ADD}
             style={styles.action}
             ownerUserId={ownerUserId}
-            usersPostsId={usersPostsId}
             postId={postId}
+            usersPostsAdds={usersPostsAdds}
+            usersPostsDones={usersPostsDones}
           />
           <IconWithDones
+            // icon props
             name={names.DONE}
             style={styles.action}
+            // done props
             ownerUserId={ownerUserId}
-            usersPostsId={usersPostsId}
             postId={postId}
+            usersPostsAdds={usersPostsAdds}
+            usersPostsDones={usersPostsDones}
+            // comment props
+            usersPostsComments={usersPostsComments}
+            // share props
+            usersPostsId={usersPostsId}
+            usersPostsShares={usersPostsShares}
+            url={url}
           />
-          <IconWithLikes
-            name={names.LIKE}
+          <IconWithComments
+            name={names.REACTION}
             style={styles.action}
             ownerUserId={ownerUserId}
-            usersPostsId={usersPostsId}
             postId={postId}
+            usersPostsComments={usersPostsComments}
           />
         </View>
       </SafeAreaView>

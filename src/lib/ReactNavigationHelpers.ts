@@ -2,7 +2,7 @@ import { NavigationActions } from 'react-navigation';
 
 let _navigator;
 
-export const setTopLevelNavigator = navigatorRef => {
+export const setTopLevelNavigator = (navigatorRef) => {
   _navigator = navigatorRef;
 };
 
@@ -16,7 +16,7 @@ export const navigate = (routeName: string, params: any, key?: string) => {
   );
 };
 
-export const getActiveRouteName = navigationState => {
+export const getActiveRouteName = (navigationState) => {
   // gets the current screen from navigation state
 
   if (!navigationState) {

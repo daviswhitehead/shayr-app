@@ -7,11 +7,21 @@ import _ from 'lodash';
 import firebase from 'react-native-firebase';
 import { Query } from 'react-native-firebase/firestore';
 import { Dispatch } from 'redux';
+import { Toaster } from '../../components/Toaster';
 import { logEvent } from '../../lib/FirebaseAnalytics';
 import { arrayUnion, ts } from '../../lib/FirebaseHelpers';
-import { composeQuery } from '../../lib/FirebaseQueries';
+import {
+  composeQuery,
+  queryTypes,
+  references,
+  referenceTypes
+} from '../../lib/FirebaseQueries';
 import { updateCounts } from '../../lib/FirebaseWrites';
+import { actionTypeActiveToasts } from '../../styles/Copy';
 import { getFeedOfDocuments, LastItem } from '../FirebaseRedux';
+import { getDocument } from '../FirebaseRedux';
+import { toggleItem } from '../lists/actions';
+import { generateListKey } from '../lists/helpers';
 import { refreshUsersPostsDocuments } from '../usersPosts/actions';
 
 export const STATE_KEY = 'comments';
@@ -40,6 +50,9 @@ export const createComment = (
   try {
     const batcher = existingBatcher || new Batcher(firebase.firestore());
 
+    // toast
+    Toaster(actionTypeActiveToasts.comments);
+
     // create new comment
     const commentId = await firebase
       .firestore()
@@ -61,13 +74,42 @@ export const createComment = (
         console.error(error);
       });
 
-    updateCounts(batcher, true, 'comments', postId, ownerUserId, userId);
+    if (!commentId) throw new Error('creating a new comment failed');
+
+    updateCounts(
+      batcher,
+      true,
+      'comments',
+      postId,
+      ownerUserId,
+      userId,
+      undefined,
+      visibleToUserIds
+    );
 
     if (!existingBatcher) {
-      batcher.write();
+      await batcher.write();
     }
 
-    dispatch(refreshUsersPostsDocuments(postId, 'cache'));
+    dispatch(refreshUsersPostsDocuments(postId, 'server'));
+    // dispatch(refreshUsersPostsDocuments(postId, 'cache'));
+    getDocument(
+      dispatch,
+      STATE_KEY,
+      references.get(referenceTypes.GET_DOCUMENT)(`comments/${commentId}`)
+    );
+    dispatch(
+      toggleItem(
+        'commentsLists',
+        generateListKey(
+          ownerUserId,
+          postId,
+          queryTypes.COMMENTS_FOR_USERS_POSTS
+        ),
+        commentId,
+        true
+      )
+    );
 
     dispatch({
       type: types.CREATE_COMMENT_SUCCESS

@@ -3,11 +3,11 @@ import { ActivityIndicator, AppState, Linking, View } from 'react-native';
 import firebase from 'react-native-firebase';
 // import { useScreens } from 'react-native-screens';
 import { connect } from 'react-redux';
-import { applyFirestoreSettings } from '../../config/FirebaseConfig';
 import RootNavigator from '../../config/Routes';
 import { currentScreenAnalytics } from '../../lib/FirebaseAnalytics';
 import { dynamicLinkListener } from '../../lib/FirebaseDynamicLinks';
-import { notificationChannels } from '../../lib/NotificationChannels';
+import { initializeMoment } from '../../lib/MomentHelpers';
+import { notificationChannels } from '../../lib/NotificationHelpers';
 import {
   notificationDisplayedListener,
   notificationListener,
@@ -65,9 +65,6 @@ class AppLoading extends Component<Props> {
     // https://github.com/kmagiera/react-native-screens
     // useScreens();
 
-    // apply firestore settings before any other firestore calls
-    applyFirestoreSettings();
-
     // check authentication and listen for updates
     this.subscriptions.push(this.props.authSubscription());
     this.props.hasAccessToken();
@@ -112,6 +109,9 @@ class AppLoading extends Component<Props> {
       this.props.handleURLRoute(deepLink);
     }
 
+    // apply moment date/time settings
+    initializeMoment();
+
     this.props.isAppReady(true);
   }
 
@@ -128,10 +128,6 @@ class AppLoading extends Component<Props> {
     // https://facebook.github.io/react-native/docs/appstate
     if (nextAppState === 'active') {
       firebase.analytics().logEvent('APP_STATE_ACTIVE');
-
-      // clear notifications and badge
-      firebase.notifications().removeAllDeliveredNotifications();
-      firebase.notifications().setBadge(0);
     } else if (nextAppState === 'background') {
       firebase.analytics().logEvent('APP_STATE_BACKGROUND');
     }

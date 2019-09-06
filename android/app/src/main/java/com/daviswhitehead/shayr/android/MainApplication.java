@@ -7,6 +7,8 @@ import com.facebook.react.PackageList;
 import com.facebook.hermes.reactexecutor.HermesExecutorFactory;
 import com.facebook.react.bridge.JavaScriptExecutorFactory;
 import com.facebook.react.ReactApplication;
+import io.invertase.firebase.RNFirebasePackage;
+import com.bugsnag.BugsnagReactNative;
 import com.swmansion.rnscreens.RNScreensPackage;
 import com.swmansion.reanimated.ReanimatedPackage;
 import com.facebook.react.ReactNativeHost;
@@ -24,13 +26,12 @@ import org.devio.rn.splashscreen.SplashScreenReactPackage;
 
 // Firebase
 // // Core
-import io.invertase.firebase.RNFirebasePackage;
 // // Analytics
 import io.invertase.firebase.analytics.RNFirebaseAnalyticsPackage;
 // // Authentication
 import io.invertase.firebase.auth.RNFirebaseAuthPackage;
 // // Performance Monitoring
-// import io.invertase.firebase.perf.RNFirebasePerformancePackage;
+import io.invertase.firebase.perf.RNFirebasePerformancePackage;
 // // Remote Config
 // import io.invertase.firebase.config.RNFirebaseRemoteConfigPackage;
 // // Cloud Storage
@@ -99,6 +100,7 @@ public class MainApplication extends Application implements ReactApplication {
       packages.add(new RNFirebaseMessagingPackage());
       packages.add(new RNFirebaseNotificationsPackage());
       packages.add(new RNFirebaseLinksPackage());
+      packages.add(new RNFirebasePerformancePackage());
 
       return packages;
     }
@@ -117,6 +119,7 @@ public class MainApplication extends Application implements ReactApplication {
   @Override
   public void onCreate() {
     super.onCreate();
+    BugsnagReactNative.start(this);
     Fabric.with(this, new Crashlytics());
     AppEventsLogger.activateApp(this);
     SoLoader.init(this, /* native exopackage */ false);

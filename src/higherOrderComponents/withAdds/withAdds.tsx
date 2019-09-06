@@ -1,17 +1,17 @@
+import { User } from '@daviswhitehead/shayr-resources';
 import _ from 'lodash';
 import React, { SFC } from 'react';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
-import { queryTypes } from '../../lib/FirebaseQueries';
 import { toggleAddDonePost } from '../../redux/adds/actions';
 import { selectAuthUserId } from '../../redux/auth/selectors';
-import { generateListKey } from '../../redux/lists/helpers';
-import { selectListItems } from '../../redux/lists/selectors';
+import { selectUsersFromList } from '../../redux/users/selectors';
 
 interface StateProps {
   authUserId: string;
-  authAdds: Array<string>;
-  authDones: Array<string>;
+  friends?: {
+    [userId: string]: User;
+  };
 }
 
 interface DispatchProps {
@@ -20,8 +20,9 @@ interface DispatchProps {
 
 interface OwnProps {
   ownerUserId: string;
-  usersPostsId: string;
   postId: string;
+  usersPostsAdds: Array<string>;
+  usersPostsDones: Array<string>;
 }
 
 type Props = OwnProps & StateProps & DispatchProps;
@@ -29,15 +30,10 @@ type Props = OwnProps & StateProps & DispatchProps;
 const mapStateToProps = (state: any) => {
   return {
     authUserId: selectAuthUserId(state),
-    authAdds: selectListItems(
+    friends: selectUsersFromList(
       state,
-      'addsLists',
-      generateListKey(selectAuthUserId(state), queryTypes.USER_ADDS)
-    ),
-    authDones: selectListItems(
-      state,
-      'donesLists',
-      generateListKey(selectAuthUserId(state), queryTypes.USER_DONES)
+      `${selectAuthUserId(state)}_Friends`,
+      true
     )
   };
 };
@@ -48,18 +44,21 @@ const mapDispatchToProps = {
 
 const withAdds = (WrappedComponent: SFC) => (props: Props) => {
   const {
+    // state
     authUserId,
-    authAdds,
-    authDones,
+    friends = [],
+    // dispatch
     toggleAddDonePost,
+    // own
     ownerUserId,
-    usersPostsId,
     postId,
+    usersPostsAdds,
+    usersPostsDones,
     ...passThroughProps
   } = props;
 
-  const isAddsActive = _.includes(authAdds, usersPostsId);
-  const isDonesActive = _.includes(authDones, usersPostsId);
+  const isAddsActive = _.includes(usersPostsAdds, authUserId);
+  const isDonesActive = _.includes(usersPostsDones, authUserId);
 
   return (
     <WrappedComponent
@@ -71,7 +70,8 @@ const withAdds = (WrappedComponent: SFC) => (props: Props) => {
           postId,
           ownerUserId,
           authUserId,
-          isDonesActive
+          isDonesActive,
+          _.keys(friends)
         )
       }
       {...passThroughProps}
@@ -88,26 +88,8 @@ export default compose(
       areStatesEqual: (next, prev) => {
         return (
           selectAuthUserId(next) === selectAuthUserId(prev) &&
-          selectListItems(
-            next,
-            'addsLists',
-            generateListKey(selectAuthUserId(next), queryTypes.USER_ADDS)
-          ) ===
-            selectListItems(
-              prev,
-              'addsLists',
-              generateListKey(selectAuthUserId(prev), queryTypes.USER_ADDS)
-            ) &&
-          selectListItems(
-            next,
-            'donesLists',
-            generateListKey(selectAuthUserId(next), queryTypes.USER_DONES)
-          ) ===
-            selectListItems(
-              prev,
-              'donesLists',
-              generateListKey(selectAuthUserId(prev), queryTypes.USER_DONES)
-            )
+          selectUsersFromList(next, `${selectAuthUserId(next)}_Friends`) ===
+            selectUsersFromList(prev, `${selectAuthUserId(prev)}_Friends`)
         );
       }
     }

@@ -94,6 +94,7 @@ class List extends Component<Props, OwnState> {
     return (
       <FlatList
         style={styles.container}
+        // data={this.loadingData}
         // data={tempData}
         data={isLoading ? this.loadingData : data}
         renderItem={renderItem}
@@ -106,6 +107,7 @@ class List extends Component<Props, OwnState> {
         refreshing={isLoading ? false : isRefreshing}
         ListEmptyComponent={this.renderEmptyComponent}
         ListFooterComponent={this.renderFooterComponent}
+        keyboardShouldPersistTaps='handled'
         {...passThroughProps}
       />
     );

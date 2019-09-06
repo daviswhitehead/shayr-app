@@ -168,9 +168,10 @@ export const confirmShare = (
       friends
     );
 
-    batcher.write();
+    await batcher.write();
 
-    dispatch(refreshUsersPostsDocuments(postId, 'cache'));
+    dispatch(refreshUsersPostsDocuments(postId, 'server'));
+    // dispatch(refreshUsersPostsDocuments(postId, 'cache'));
     dispatch(
       toggleItem(
         'usersPostsLists',
@@ -216,7 +217,7 @@ export const subscribeToShares = (userId: string) => {
   };
 };
 
-export const updateUserShares = (userId: string, value: number) => (
+export const updateUserShares = (userId: string, value: number) => async (
   dispatch: Dispatch
 ) => {
   dispatch({ type: types.UPDATE_USER_SHARES_START });
@@ -225,7 +226,7 @@ export const updateUserShares = (userId: string, value: number) => (
 
   overwriteUserCounts(batcher, 'shares', userId, value);
 
-  batcher.write();
+  await batcher.write();
 
   dispatch({ type: types.UPDATE_USER_SHARES_SUCCESS });
 };
