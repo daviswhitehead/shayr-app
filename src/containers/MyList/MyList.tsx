@@ -541,18 +541,26 @@ class MyList extends Component<Props, OwnState> {
               : () => this.props.navigation.goBack(null)
           }
           rightIcons={
-            <Icon
-              name={names.SETTINGS}
-              onPress={() =>
-                Alert.alert('Log Out', 'Would you like to log out of Shayr?', [
-                  {
-                    text: 'Cancel',
-                    style: 'cancel'
-                  },
-                  { text: 'Yes', onPress: this.props.startSignOut }
-                ])
-              }
-            />
+            this.props.authIsOwner ? (
+              <Icon
+                name={names.SETTINGS}
+                onPress={() =>
+                  Alert.alert(
+                    'Log Out',
+                    'Would you like to log out of Shayr?',
+                    [
+                      {
+                        text: 'Cancel',
+                        style: 'cancel'
+                      },
+                      { text: 'Yes', onPress: this.props.startSignOut }
+                    ]
+                  )
+                }
+              />
+            ) : (
+              undefined
+            )
           }
         />
         <UserProfile
