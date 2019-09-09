@@ -1,7 +1,7 @@
 import { User, UsersPosts } from '@daviswhitehead/shayr-resources';
 import _ from 'lodash';
 import React, { Component } from 'react';
-import { View } from 'react-native';
+import { Alert, View } from 'react-native';
 import { Query } from 'react-native-firebase/database';
 import {
   NavigationScreenProp,
@@ -10,6 +10,7 @@ import {
 } from 'react-navigation';
 import { connect } from 'react-redux';
 import Header from '../../components/Header';
+import Icon, { names } from '../../components/Icon';
 import List from '../../components/List';
 import PostCard from '../../components/PostCard';
 import SegmentedControl from '../../components/SegmentedControl';
@@ -20,6 +21,7 @@ import withComments from '../../higherOrderComponents/withComments';
 import withDones from '../../higherOrderComponents/withDones';
 import withShares from '../../higherOrderComponents/withShares';
 import { getQuery, queryTypes } from '../../lib/FirebaseQueries';
+import { startSignOut } from '../../redux/auth/actions';
 import { selectAuthUserId } from '../../redux/auth/selectors';
 import { selectFlatListReadyDocuments } from '../../redux/documents/selectors';
 import { subscribeToFriendships } from '../../redux/friendships/actions';
@@ -68,6 +70,7 @@ interface DispatchProps {
   getUser: typeof getUser;
   subscribeToFriendships: typeof subscribeToFriendships;
   loadUsersPosts: typeof loadUsersPosts;
+  startSignOut: typeof startSignOut;
 }
 
 interface NavigationParams {
@@ -219,7 +222,8 @@ const mapStateToProps = (state: any, props: any) => {
 const mapDispatchToProps = {
   getUser,
   subscribeToFriendships,
-  loadUsersPosts
+  loadUsersPosts,
+  startSignOut
 };
 
 class MyList extends Component<Props, OwnState> {
@@ -531,11 +535,32 @@ class MyList extends Component<Props, OwnState> {
           statusBarStyle='dark-content'
           shadow
           title={this.props.authIsOwner ? 'My List' : 'Their List'}
-          // TODO: troubleshoot this
           back={
             this.props.navigation.state.key.slice(0, 3) === 'id-'
               ? undefined
               : () => this.props.navigation.goBack(null)
+          }
+          rightIcons={
+            this.props.authIsOwner ? (
+              <Icon
+                name={names.SETTINGS}
+                onPress={() =>
+                  Alert.alert(
+                    'Log Out',
+                    'Would you like to log out of Shayr?',
+                    [
+                      {
+                        text: 'Cancel',
+                        style: 'cancel'
+                      },
+                      { text: 'Yes', onPress: this.props.startSignOut }
+                    ]
+                  )
+                }
+              />
+            ) : (
+              undefined
+            )
           }
         />
         <UserProfile
