@@ -90,7 +90,11 @@ const mapStateToProps = (
     postId,
     queryTypes.COMMENTS_FOR_USERS_POSTS
   );
-  const authFriends = selectUsersFromList(state, `${authUserId}_Friends`, true);
+  const authFriends = selectUsersFromList(
+    state,
+    generateListKey(authUserId, queryTypes.USER_FRIENDS),
+    true
+  );
 
   return {
     authUserId,

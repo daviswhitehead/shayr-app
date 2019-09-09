@@ -20,7 +20,7 @@ import { selectListItems, selectListMeta } from '../../redux/lists/selectors';
 import { subscribeNotificationTokenRefresh } from '../../redux/notifications/actions';
 import { State } from '../../redux/Reducers';
 import { navigateToRoute } from '../../redux/routing/actions';
-import { subscribeToUser } from '../../redux/users/actions';
+import { subscribeToFriends, subscribeToUser } from '../../redux/users/actions';
 import {
   selectUserFromId,
   selectUsersFromList,
@@ -48,6 +48,7 @@ interface DispatchProps {
   navigateToRoute: typeof navigateToRoute;
   loadUsersPosts: typeof loadUsersPosts;
   subscribeToUser: typeof subscribeToUser;
+  subscribeToFriends: typeof subscribeToFriends;
   subscribeToFriendships: typeof subscribeToFriendships;
   subscribeNotificationTokenRefresh: typeof subscribeNotificationTokenRefresh;
 }
@@ -73,11 +74,11 @@ const mapStateToProps = (state: State) => {
   const authUserId = selectAuthUserId(state);
 
   return {
-    authUserId: selectAuthUserId(state),
-    authUser: selectUserFromId(state, selectAuthUserId(state), true),
+    authUserId,
+    authUser: selectUserFromId(state, authUserId, true),
     friends: selectUsersFromList(
       state,
-      `${selectAuthUserId(state)}_Friends`,
+      generateListKey(authUserId, queryTypes.USER_FRIENDS),
       true
     ),
     routing: state.routing,
@@ -86,18 +87,15 @@ const mapStateToProps = (state: State) => {
       authUserId
     ),
     usersPostsListsMeta: {
-      [generateListKey(
-        selectAuthUserId(state),
-        queryTypes.USERS_POSTS_ALL
-      )]: selectListMeta(
+      [generateListKey(authUserId, queryTypes.USERS_POSTS_ALL)]: selectListMeta(
         state,
         'usersPostsLists',
-        generateListKey(selectAuthUserId(state), queryTypes.USERS_POSTS_ALL)
+        generateListKey(authUserId, queryTypes.USERS_POSTS_ALL)
       )
     },
     usersPostsListsData: {
       [generateListKey(
-        selectAuthUserId(state),
+        authUserId,
         queryTypes.USERS_POSTS_ALL
       )]: selectFlatListReadyDocuments(
         state,
@@ -105,9 +103,9 @@ const mapStateToProps = (state: State) => {
         selectListItems(
           state,
           'usersPostsLists',
-          generateListKey(selectAuthUserId(state), queryTypes.USERS_POSTS_ALL)
+          generateListKey(authUserId, queryTypes.USERS_POSTS_ALL)
         ),
-        generateListKey(selectAuthUserId(state), queryTypes.USERS_POSTS_ALL),
+        generateListKey(authUserId, queryTypes.USERS_POSTS_ALL),
         'createdAt'
       )
     }
@@ -118,6 +116,7 @@ const mapDispatchToProps = {
   navigateToRoute,
   loadUsersPosts,
   subscribeToUser,
+  subscribeToFriends,
   subscribeToFriendships,
   subscribeNotificationTokenRefresh
 };
@@ -140,6 +139,7 @@ class Discover extends PureComponent<Props, OwnState> {
     // setup subscriptions
     this.subscriptions.push(
       this.props.subscribeToUser(this.props.authUserId),
+      this.props.subscribeToFriends(this.props.authUserId),
       this.props.subscribeToFriendships(this.props.authUserId),
       this.props.subscribeNotificationTokenRefresh(this.props.authUserId)
     );
@@ -298,6 +298,12 @@ class Discover extends PureComponent<Props, OwnState> {
   };
 
   render() {
+    console.log(`Discover - Render`);
+    console.log('this.props');
+    console.log(this.props);
+    console.log('this.state');
+    console.log(this.state);
+
     return (
       <View style={styles.screen}>
         <Header

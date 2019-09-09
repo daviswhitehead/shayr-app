@@ -22,6 +22,7 @@ import {
 import { generateListKey } from './lists/helpers';
 
 export type StateKey =
+  | 'friendships'
   | 'users'
   | 'notifications'
   | 'usersPosts'

@@ -71,7 +71,6 @@ type Props = OwnProps &
 const mapStateToProps = (state: State) => {
   const authUserId = selectAuthUserId(state);
   const authUser = selectUserFromId(state, authUserId, true);
-  const authFriends = selectUsersFromList(state, `${authUserId}_Friends`, true);
   const notificationsListKey = generateListKey(
     authUserId,
     queryTypes.NOTIFICATIONS
@@ -80,7 +79,11 @@ const mapStateToProps = (state: State) => {
   return {
     authUserId,
     authUser,
-    authFriends,
+    authFriends: selectUsersFromList(
+      state,
+      generateListKey(authUserId, queryTypes.USER_FRIENDS),
+      true
+    ),
     notificationsData: selectFlatListReadyDocuments(
       state,
       'notifications',

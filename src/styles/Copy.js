@@ -22,3 +22,11 @@ export const actionTypeInactiveToasts = {
   likes: 'like removed',
   comments: 'comment removed'
 };
+
+export const friending = {
+  pending: 'friend request sent',
+  accepted: 'friend request accepted',
+  rejected: 'friend request rejected',
+  deleted: 'friend request deleted',
+  removed: 'friend removed'
+};

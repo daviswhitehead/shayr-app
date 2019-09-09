@@ -117,7 +117,11 @@ const mapStateToProps = (state: any, props: any) => {
     authIsOwner: authUserId === ownerUserId,
     authUser: selectUserFromId(state, authUserId, true),
     authUserId,
-    authFriends: selectUsersFromList(state, `${authUserId}_Friends`, true),
+    authFriends: selectUsersFromList(
+      state,
+      generateListKey(authUserId, queryTypes.USER_FRIENDS),
+      true
+    ),
     ownerAddsCount: selectUserActionCounts(
       state,
       ownerUserId,
@@ -130,7 +134,11 @@ const mapStateToProps = (state: any, props: any) => {
       false,
       'donesCount'
     ),
-    ownerFriends: selectUsersFromList(state, `${ownerUserId}_Friends`, true),
+    ownerFriends: selectUsersFromList(
+      state,
+      generateListKey(ownerUserId, queryTypes.USER_FRIENDS),
+      true
+    ),
     ownerCommentsCount: selectUserActionCounts(
       state,
       ownerUserId,

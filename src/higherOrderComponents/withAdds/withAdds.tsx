@@ -3,8 +3,10 @@ import _ from 'lodash';
 import React, { SFC } from 'react';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
+import { queryTypes } from '../../lib/FirebaseQueries';
 import { toggleAddDonePost } from '../../redux/adds/actions';
 import { selectAuthUserId } from '../../redux/auth/selectors';
+import { generateListKey } from '../../redux/lists/helpers';
 import { selectUsersFromList } from '../../redux/users/selectors';
 
 interface StateProps {
@@ -28,11 +30,12 @@ interface OwnProps {
 type Props = OwnProps & StateProps & DispatchProps;
 
 const mapStateToProps = (state: any) => {
+  const authUserId = selectAuthUserId(state);
   return {
-    authUserId: selectAuthUserId(state),
+    authUserId,
     friends: selectUsersFromList(
       state,
-      `${selectAuthUserId(state)}_Friends`,
+      generateListKey(authUserId, queryTypes.USER_FRIENDS),
       true
     )
   };
@@ -86,10 +89,21 @@ export default compose(
     undefined,
     {
       areStatesEqual: (next, prev) => {
+        const prevAuthUserId = selectAuthUserId(prev);
+        const nextAuthUserId = selectAuthUserId(prev);
+
         return (
-          selectAuthUserId(next) === selectAuthUserId(prev) &&
-          selectUsersFromList(next, `${selectAuthUserId(next)}_Friends`) ===
-            selectUsersFromList(prev, `${selectAuthUserId(prev)}_Friends`)
+          nextAuthUserId === prevAuthUserId &&
+          selectUsersFromList(
+            next,
+            generateListKey(nextAuthUserId, queryTypes.USER_FRIENDS),
+            true
+          ) ===
+            selectUsersFromList(
+              prev,
+              generateListKey(prevAuthUserId, queryTypes.USER_FRIENDS),
+              true
+            )
         );
       }
     }

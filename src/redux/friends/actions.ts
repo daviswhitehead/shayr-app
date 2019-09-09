@@ -11,17 +11,9 @@ import firebase from 'react-native-firebase';
 import { Dispatch } from 'redux';
 import { Toaster } from '../../components/Toaster';
 import { logEvent } from '../../lib/FirebaseAnalytics';
-import { getQuery, queryTypes } from '../../lib/FirebaseQueries';
 import { friending } from '../../styles/Copy';
-import { subscribeToAllDocuments } from '../FirebaseRedux';
-
-export const STATE_KEY = 'friendships';
 
 export const types = {
-  // subscribe
-  SUBSCRIBE_FRIENDSHIPS_START: 'SUBSCRIBE_FRIENDSHIPS_START',
-  SUBSCRIBE_FRIENDSHIPS_SUCCESS: 'SUBSCRIBE_FRIENDSHIPS_SUCCESS',
-  SUBSCRIBE_FRIENDSHIPS_FAIL: 'SUBSCRIBE_FRIENDSHIPS_FAIL',
   // CREATE_FRIENDSHIP
   CREATE_FRIENDSHIP_START: 'CREATE_FRIENDSHIP_START',
   CREATE_FRIENDSHIP_SUCCESS: 'CREATE_FRIENDSHIP_SUCCESS',
@@ -163,17 +155,5 @@ export const createFriendship = (
         error
       });
     }
-  };
-};
-
-export const subscribeToFriendships = (userId: string) => {
-  return (dispatch: Dispatch) => {
-    return subscribeToAllDocuments(
-      dispatch,
-      STATE_KEY,
-      getQuery(queryTypes.USER_FRIENDSHIPS)(userId),
-      userId,
-      queryTypes.USER_FRIENDSHIPS
-    );
   };
 };

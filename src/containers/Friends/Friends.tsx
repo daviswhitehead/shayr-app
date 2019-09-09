@@ -1,76 +1,189 @@
+import { User } from '@daviswhitehead/shayr-resources';
 import _ from 'lodash';
-import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { ActivityIndicator, Button, Text, View } from 'react-native';
+import {
+  NavigationScreenProp,
+  NavigationScreenProps,
+  NavigationState
+} from 'react-navigation';
 import { connect } from 'react-redux';
-import DoneModal from '../../components/DoneModal';
 import Header from '../../components/Header';
-import { startSignOut } from '../../redux/auth/actions';
+import Icon, { names } from '../../components/Icon';
+import PotentialFriendRow from '../../components/PotentialFriendRow';
+import { queryTypes } from '../../lib/FirebaseQueries';
 import { selectAuthUserId } from '../../redux/auth/selectors';
+import {
+  createFriendship,
+  updateFriendship
+} from '../../redux/friendships/actions';
+import { selectPendingFriendshipUserIds } from '../../redux/friendships/selectors';
+import { generateListKey } from '../../redux/lists/helpers';
+import { State } from '../../redux/Reducers';
 import {
   selectUserFromId,
   selectUsersFromList
 } from '../../redux/users/selectors';
-import colors from '../../styles/Colors';
+import Colors from '../../styles/Colors';
 import styles from './styles';
 
-const mapStateToProps = (state) => {
+interface StateProps {
+  authIsOwner?: boolean;
+  authUser?: User;
+  authUserId: string;
+}
+
+interface DispatchProps {
+  createFriendship: typeof createFriendship;
+  updateFriendship: typeof updateFriendship;
+}
+
+interface NavigationParams {
+  ownerUserId?: string;
+}
+
+type Navigation = NavigationScreenProp<NavigationState, NavigationParams>;
+
+interface OwnProps {
+  navigation: Navigation;
+}
+
+interface OwnState {}
+
+type Props = OwnProps &
+  StateProps &
+  DispatchProps &
+  NavigationScreenProps<NavigationParams>;
+
+const mapStateToProps = (state: State) => {
   const authUserId = selectAuthUserId(state);
+  const ownerUserId = authUserId;
 
   return {
+    authIsOwner: authUserId === ownerUserId,
     authUserId,
     authUser: selectUserFromId(state, authUserId),
-    friends: selectUsersFromList(state, `${authUserId}_Friends`),
-    usersPosts: state.usersPosts
+    friends: selectUsersFromList(
+      state,
+      generateListKey(authUserId, queryTypes.USER_FRIENDS),
+      true
+    ),
+    pendingInitiatingFriendshipUserIds: selectPendingFriendshipUserIds(
+      state,
+      'initiating'
+    ),
+    pendingReceivingFriendshipUserIds: selectPendingFriendshipUserIds(
+      state,
+      'receiving'
+    )
   };
 };
 
-const mapDispatchToProps = (dispatch) => ({
-  startSignOut: () => dispatch(startSignOut())
-});
+const mapDispatchToProps = {
+  createFriendship,
+  updateFriendship
+};
 
-class Friends extends Component {
-  static propTypes = {
-    startSignOut: PropTypes.func.isRequired,
-    navigation: PropTypes.instanceOf(Object).isRequired
-  };
+class Friends extends PureComponent<Props, OwnState> {
+  static whyDidYouRender = true;
 
-  static navigationOptions = () => ({
-    header: (
-      <Header
-        backgroundColor={colors.WHITE}
-        statusBarStyle='dark-content'
-        title='Hello World'
-      />
-    )
-  });
-
-  modalRef: any;
   constructor(props: Props) {
     super(props);
-    this.modalRef = React.createRef();
   }
 
   componentDidMount() {}
 
   render() {
+    console.log(`Friends - Render`);
+    console.log('this.props');
+    console.log(this.props);
+    console.log('this.state');
+    console.log(this.state);
+
     if (!this.props.authUser) {
       return <ActivityIndicator />;
     }
 
     return (
-      <View style={styles.container}>
-        <Text>COMING SOON</Text>
-        <Button onPress={this.props.startSignOut} title='Log Out' />
-        <Button
-          onPress={() => this.modalRef.current.toggleModal()}
-          title='Toggle Modal'
+      <View style={styles.screen}>
+        <Header
+          backgroundColor={Colors.YELLOW}
+          statusBarStyle='dark-content'
+          shadow
+          title={this.props.authIsOwner ? 'My Friends' : 'Their Friends'}
+          back={
+            this.props.navigation.state.key.slice(0, 3) === 'id-'
+              ? undefined
+              : () => this.props.navigation.goBack(null)
+          }
+          rightIcons={
+            this.props.authIsOwner ? (
+              <Icon
+                name={names.ADD_FRIEND}
+                onPress={() => console.log('ADD_FRIEND pressed')}
+              />
+            ) : (
+              undefined
+            )
+          }
         />
-        <DoneModal
-          ref={this.modalRef}
-          shareProps={undefined}
-          commentProps={undefined}
-        />
+        <View style={styles.container}>
+          <Button
+            onPress={() =>
+              this.props.createFriendship(
+                this.props.authUserId,
+                'm592UXpes3azls6LnhN2VOf2PyT2'
+              )
+            }
+            title='Send Friend Request'
+          />
+          <Button
+            onPress={() =>
+              this.props.updateFriendship(
+                this.props.authUserId,
+                'm592UXpes3azls6LnhN2VOf2PyT2',
+                'accepted'
+              )
+            }
+            title='Accept Friend Request'
+          />
+          <Button
+            onPress={() =>
+              this.props.updateFriendship(
+                this.props.authUserId,
+                'm592UXpes3azls6LnhN2VOf2PyT2',
+                'rejected'
+              )
+            }
+            title='Reject Friend Request'
+          />
+          <Button
+            onPress={() =>
+              this.props.updateFriendship(
+                this.props.authUserId,
+                'm592UXpes3azls6LnhN2VOf2PyT2',
+                'deleted'
+              )
+            }
+            title='Delete Friend Request'
+          />
+          <Button
+            onPress={() =>
+              this.props.updateFriendship(
+                this.props.authUserId,
+                'm592UXpes3azls6LnhN2VOf2PyT2',
+                'removed'
+              )
+            }
+            title='Remove Friend'
+          />
+          <PotentialFriendRow
+            facebookProfilePhoto={''}
+            firstName={''}
+            lastName={''}
+            friendStatus={''}
+          />
+        </View>
       </View>
     );
   }

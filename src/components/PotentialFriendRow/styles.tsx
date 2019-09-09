@@ -3,18 +3,10 @@ import { fontSystem } from '../../styles/Fonts';
 import Layout from '../../styles/Layout';
 
 export default StyleSheet.create({
-  profileContainer: {
+  container: {
     flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'flex-start'
-  },
-  profileImage: {
-    marginVertical: Layout.SPACING_LONG,
-    marginHorizontal: Layout.SPACING_LONG
-  },
-  profileContent: {
-    flex: 1,
-    flexDirection: 'column'
+    justifyContent: 'space-between',
+    alignItems: 'center'
   },
   iconsContainer: {
     flexDirection: 'row',

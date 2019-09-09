@@ -9,9 +9,11 @@ import { State } from 'src/src/redux/Reducers';
 import ShareModal from '../../components/ShareModal';
 import { retrieveToken } from '../../lib/AppGroupTokens';
 import { getCurrentUser, getFBAuthCredential } from '../../lib/FirebaseLogin';
+import { queryTypes } from '../../lib/FirebaseQueries';
 import { authSubscription } from '../../redux/auth/actions';
 import { selectAuthUserId } from '../../redux/auth/selectors';
 import { subscribeToFriendships } from '../../redux/friendships/actions';
+import { generateListKey } from '../../redux/lists/helpers';
 import { selectUsersFromList } from '../../redux/users/selectors';
 
 // TESTING
@@ -52,7 +54,11 @@ const mapStateToProps = (state: State) => {
 
   return {
     authUserId,
-    friends: selectUsersFromList(state, `${authUserId}_Friends`, true)
+    friends: selectUsersFromList(
+      state,
+      generateListKey(authUserId, queryTypes.USER_FRIENDS),
+      true
+    )
   };
 };
 

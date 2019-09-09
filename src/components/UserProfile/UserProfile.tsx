@@ -1,6 +1,6 @@
 import React, { memo, SFC } from 'react';
 import { Text, View } from 'react-native';
-import { names } from '../Icon';
+import Icon, { names } from '../Icon';
 import IconWithCount from '../IconWithCount';
 import Skeleton from '../Skeleton';
 import UserImage from '../UserImage';
@@ -12,27 +12,46 @@ interface UserAtom {
   shortName: string;
   firstName: string;
   lastName: string;
+  friendsCount?: number;
 }
 
 export interface Props extends UserAtom {
+  isAuth?: boolean;
   onPress?: () => void | undefined;
   isLoading?: boolean;
+  friendStatus?: string;
+  onFriendStatusPress?: () => void;
 }
 
 const UserProfile: SFC<Props> = ({
   facebookProfilePhoto,
   firstName,
   lastName,
+  isAuth,
   onPress,
-  isLoading
+  isLoading,
+  friendsCount = 69,
+  friendStatus = '',
+  onFriendStatusPress = () => console.log('onFriendStatusPress')
 }: Props) => {
+  const friendStatusIconMap = {
+    SEND_REQUEST: names.ADD_FRIEND,
+    ACCEPT_REQUEST: names.ACCEPT_FRIEND,
+    AWAITING_REQUEST_ACCEPT: names.PENDING_FRIEND,
+    IS_FRIENDS: names.ACCEPT_FRIEND
+  };
+
   if (isLoading) {
     return (
       <View style={styles.profileContainer}>
         <UserImage isLoading size='large' style={styles.profileImage} />
         <View style={styles.profileContent}>
           <Skeleton childStyle={styles.skeletonProfileName} />
-          <IconWithCount isLoading />
+          <View style={styles.iconsContainer}>
+            <IconWithCount isLoading />
+            {isAuth && <View style={styles.actionsSpacer} />}
+            {isAuth && <Icon isLoading />}
+          </View>
         </View>
       </View>
     );
@@ -50,7 +69,15 @@ const UserProfile: SFC<Props> = ({
         <Text style={styles.profileName}>
           {firstName} {lastName}
         </Text>
-        <IconWithCount name={names.FRIENDS} count={69} isActive={false} />
+        <View style={styles.iconsContainer}>
+          <IconWithCount
+            name={names.FRIENDS}
+            count={friendsCount}
+            isActive={false}
+          />
+          <View style={styles.actionsSpacer} />
+          <Icon name={names.ADD_FRIEND} isActive={false} />
+        </View>
       </View>
     </View>
   );
