@@ -1,28 +1,22 @@
 import { StyleSheet } from 'react-native';
-import { fontSystem } from '../../styles/Fonts';
+import Colors from '../../styles/Colors';
 import Layout from '../../styles/Layout';
 
 export default StyleSheet.create({
   container: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center'
+    alignItems: 'center',
+    padding: Layout.SPACING_LONG,
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderColor: Colors.DIVIDER
   },
   iconsContainer: {
     flexDirection: 'row',
-    justifyContent: 'flex-start',
     alignItems: 'center'
-  },
-  profileName: {
-    ...fontSystem.H2,
-    marginVertical: Layout.SPACING_MEDIUM
   },
   actionsSpacer: {
     width: Layout.SPACING_LONG
-  },
-  skeletonProfileName: {
-    height: 24,
-    width: 24 * 8 + Layout.SPACING_LONG,
-    marginVertical: Layout.SPACING_MEDIUM
   }
 });

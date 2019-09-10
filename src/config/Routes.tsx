@@ -6,6 +6,7 @@ import {
 import { createBottomTabNavigator } from 'react-navigation-tabs';
 import TabBar from '../components/TabBar';
 import Discover from '../containers/Discover';
+import FindFriends from '../containers/FindFriends';
 import Friends from '../containers/Friends';
 import Login from '../containers/Login';
 import MyList from '../containers/MyList';
@@ -74,6 +75,12 @@ const FriendsStack = createStackNavigator(
   {
     Friends: {
       screen: Friends,
+      navigationOptions: () => ({
+        header: null
+      })
+    },
+    FindFriends: {
+      screen: FindFriends,
       navigationOptions: () => ({
         header: null
       })

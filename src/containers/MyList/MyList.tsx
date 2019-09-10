@@ -1,4 +1,4 @@
-import { User, UsersPosts } from '@daviswhitehead/shayr-resources';
+import { documentIds, User, UsersPosts } from '@daviswhitehead/shayr-resources';
 import _ from 'lodash';
 import React, { Component } from 'react';
 import { Alert, View } from 'react-native';
@@ -24,10 +24,9 @@ import { getQuery, queryTypes } from '../../lib/FirebaseQueries';
 import { startSignOut } from '../../redux/auth/actions';
 import { selectAuthUserId } from '../../redux/auth/selectors';
 import { selectFlatListReadyDocuments } from '../../redux/documents/selectors';
-import { subscribeToFriendships } from '../../redux/friendships/actions';
 import { generateListKey } from '../../redux/lists/helpers';
 import { selectListItems, selectListMeta } from '../../redux/lists/selectors';
-import { getUser } from '../../redux/users/actions';
+import { getUser, subscribeToFriends } from '../../redux/users/actions';
 import {
   selectUserActionCounts,
   selectUserFromId,
@@ -68,7 +67,7 @@ interface StateProps {
 
 interface DispatchProps {
   getUser: typeof getUser;
-  subscribeToFriendships: typeof subscribeToFriendships;
+  subscribeToFriends: typeof subscribeToFriends;
   loadUsersPosts: typeof loadUsersPosts;
   startSignOut: typeof startSignOut;
 }
@@ -113,15 +112,17 @@ const mapStateToProps = (state: any, props: any) => {
     shares: generateListKey(ownerUserId, queryTypes.USERS_POSTS_SHARES)
   };
 
+  const authFriends = selectUsersFromList(
+    state,
+    generateListKey(authUserId, queryTypes.USER_FRIENDS),
+    true
+  );
+
   return {
     authIsOwner: authUserId === ownerUserId,
     authUser: selectUserFromId(state, authUserId, true),
     authUserId,
-    authFriends: selectUsersFromList(
-      state,
-      generateListKey(authUserId, queryTypes.USER_FRIENDS),
-      true
-    ),
+    authFriends,
     ownerAddsCount: selectUserActionCounts(
       state,
       ownerUserId,
@@ -229,7 +230,7 @@ const mapStateToProps = (state: any, props: any) => {
 
 const mapDispatchToProps = {
   getUser,
-  subscribeToFriendships,
+  subscribeToFriends,
   loadUsersPosts,
   startSignOut
 };
@@ -264,7 +265,7 @@ class MyList extends Component<Props, OwnState> {
     // get owner friends if not already loaded
     _.isEmpty(this.props.ownerFriends) &&
       this.subscriptions.push(
-        this.props.subscribeToFriendships(this.props.ownerUserId)
+        this.props.subscribeToFriends(this.props.ownerUserId)
       );
 
     // SOMEDAY: load list data in the right order and/or in advance
@@ -580,6 +581,9 @@ class MyList extends Component<Props, OwnState> {
           )}
           firstName={_.get(this.props, ['ownerUser', 'firstName'], null)}
           lastName={_.get(this.props, ['ownerUser', 'lastName'], null)}
+          friendsCount={_.get(this.props, ['ownerUser', 'friendsCount'], -1)}
+          authIsOwner={this.props.authIsOwner}
+          ownerUserId={this.props.ownerUserId}
         />
         <SegmentedControl
           isLoading={this.state.isSegmentedControlLoading}

@@ -1,10 +1,7 @@
 import React, { memo, SFC } from 'react';
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
 import Icon, { names } from '../Icon';
-import IconWithCount from '../IconWithCount';
-import Skeleton from '../Skeleton';
 import UserAvatar from '../UserAvatar';
-import UserImage from '../UserImage';
 import styles from './styles';
 
 // TODO: combine disparate UserAtom definitions
@@ -15,11 +12,14 @@ interface UserAtom {
 }
 
 export interface Props extends UserAtom {
+  friendStatus:
+    | 'can-send-friend-request'
+    | 'needs-recipient-acceptance'
+    | 'can-accept-request';
   isLoading?: boolean;
-  friendStatus?: string;
 }
 
-const PotentialFriendRow: SFC<Props> = ({
+const FriendRequestRow: SFC<Props> = ({
   facebookProfilePhoto,
   firstName,
   lastName,
@@ -27,16 +27,20 @@ const PotentialFriendRow: SFC<Props> = ({
   friendStatus
 }: Props) => {
   const friendStatusIconMap = {
-    SEND_REQUEST: names.ADD_FRIEND,
-    ACCEPT_REQUEST: names.ACCEPT_FRIEND,
-    AWAITING_REQUEST_ACCEPT: names.PENDING_FRIEND,
-    IS_FRIENDS: names.ACCEPT_FRIEND
+    ['can-send-friend-request']: names.ADD_FRIEND,
+    ['needs-recipient-acceptance']: names.PENDING_FRIEND,
+    ['can-accept-request']: names.ACCEPT_FRIEND
   };
 
   if (isLoading) {
     return (
       <View style={styles.container}>
         <UserAvatar isLoading isVertical={false} />
+        <View style={styles.iconsContainer}>
+          <Icon isLoading />
+          <View style={styles.actionsSpacer} />
+          <Icon isLoading />
+        </View>
       </View>
     );
   }
@@ -49,9 +53,13 @@ const PotentialFriendRow: SFC<Props> = ({
         lastName={lastName}
         isVertical={false}
       />
-      <Text>{friendStatus}</Text>
+      <View style={styles.iconsContainer}>
+        <Icon name={friendStatusIconMap[friendStatus]} />
+        <View style={styles.actionsSpacer} />
+        <Icon name={names.X_EXIT} />
+      </View>
     </View>
   );
 };
 
-export default memo(PotentialFriendRow);
+export default memo(FriendRequestRow);

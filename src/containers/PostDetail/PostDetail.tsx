@@ -353,14 +353,18 @@ class PostDetail extends Component<Props, OwnState> {
 
   // TODO: add comment type definition
   renderItem = ({ item }: { item: any }) => {
+    const user = this.state.isCommentsLoading
+      ? undefined
+      : this.props.users[item.userId];
+
+    if (!user && !this.state.isCommentsLoading) {
+      return;
+    }
+
     return (
       <UserTextDate
         isLoading={this.state.isCommentsLoading}
-        user={
-          this.state.isCommentsLoading
-            ? undefined
-            : this.props.users[item.userId]
-        }
+        user={user}
         text={item.text}
         createdAt={
           this.state.isCommentsLoading ? undefined : item.createdAt.toDate()

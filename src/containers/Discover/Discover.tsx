@@ -166,6 +166,7 @@ class Discover extends PureComponent<Props, OwnState> {
     );
 
     // DEVELOPMENT HELPERS
+    this.props.navigation.navigate('FindFriends', {});
     // this.props.navigation.navigate('Notifications', {});
     // this.props.navigation.navigate('FriendsTab', {});
     // this.props.navigation.navigate('PostDetail', {
@@ -298,12 +299,6 @@ class Discover extends PureComponent<Props, OwnState> {
   };
 
   render() {
-    console.log(`Discover - Render`);
-    console.log('this.props');
-    console.log(this.props);
-    console.log('this.state');
-    console.log(this.state);
-
     return (
       <View style={styles.screen}>
         <Header

@@ -1,5 +1,6 @@
 import React, { memo, SFC } from 'react';
 import { Text, View } from 'react-native';
+import { IconWithFriendshipActions } from '../../higherOrderComponents/withFriendshipActions';
 import Icon, { names } from '../Icon';
 import IconWithCount from '../IconWithCount';
 import Skeleton from '../Skeleton';
@@ -16,31 +17,22 @@ interface UserAtom {
 }
 
 export interface Props extends UserAtom {
-  isAuth?: boolean;
   onPress?: () => void | undefined;
   isLoading?: boolean;
-  friendStatus?: string;
-  onFriendStatusPress?: () => void;
+  authIsOwner: boolean;
+  ownerUserId: string;
 }
 
 const UserProfile: SFC<Props> = ({
   facebookProfilePhoto,
   firstName,
   lastName,
-  isAuth,
   onPress,
   isLoading,
-  friendsCount = 69,
-  friendStatus = '',
-  onFriendStatusPress = () => console.log('onFriendStatusPress')
+  authIsOwner,
+  ownerUserId,
+  friendsCount = 69
 }: Props) => {
-  const friendStatusIconMap = {
-    SEND_REQUEST: names.ADD_FRIEND,
-    ACCEPT_REQUEST: names.ACCEPT_FRIEND,
-    AWAITING_REQUEST_ACCEPT: names.PENDING_FRIEND,
-    IS_FRIENDS: names.ACCEPT_FRIEND
-  };
-
   if (isLoading) {
     return (
       <View style={styles.profileContainer}>
@@ -49,8 +41,8 @@ const UserProfile: SFC<Props> = ({
           <Skeleton childStyle={styles.skeletonProfileName} />
           <View style={styles.iconsContainer}>
             <IconWithCount isLoading />
-            {isAuth && <View style={styles.actionsSpacer} />}
-            {isAuth && <Icon isLoading />}
+            {!authIsOwner && <View style={styles.actionsSpacer} />}
+            {!authIsOwner && <Icon isLoading />}
           </View>
         </View>
       </View>
@@ -75,8 +67,8 @@ const UserProfile: SFC<Props> = ({
             count={friendsCount}
             isActive={false}
           />
-          <View style={styles.actionsSpacer} />
-          <Icon name={names.ADD_FRIEND} isActive={false} />
+          {!authIsOwner && <View style={styles.actionsSpacer} />}
+          {!authIsOwner && <IconWithFriendshipActions userId={ownerUserId} />}
         </View>
       </View>
     </View>

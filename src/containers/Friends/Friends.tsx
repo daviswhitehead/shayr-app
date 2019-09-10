@@ -8,9 +8,9 @@ import {
   NavigationState
 } from 'react-navigation';
 import { connect } from 'react-redux';
+import FriendRequestRow from '../../components/FriendRequestRow';
 import Header from '../../components/Header';
 import Icon, { names } from '../../components/Icon';
-import PotentialFriendRow from '../../components/PotentialFriendRow';
 import { queryTypes } from '../../lib/FirebaseQueries';
 import { selectAuthUserId } from '../../redux/auth/selectors';
 import {
@@ -120,7 +120,9 @@ class Friends extends PureComponent<Props, OwnState> {
             this.props.authIsOwner ? (
               <Icon
                 name={names.ADD_FRIEND}
-                onPress={() => console.log('ADD_FRIEND pressed')}
+                onPress={() =>
+                  this.props.navigation.navigate('FindFriends', {})
+                }
               />
             ) : (
               undefined
@@ -132,7 +134,7 @@ class Friends extends PureComponent<Props, OwnState> {
             onPress={() =>
               this.props.createFriendship(
                 this.props.authUserId,
-                'm592UXpes3azls6LnhN2VOf2PyT2'
+                'lOnI91XOvdRnQe5Hmdrkf2TY5lH2'
               )
             }
             title='Send Friend Request'
@@ -141,7 +143,7 @@ class Friends extends PureComponent<Props, OwnState> {
             onPress={() =>
               this.props.updateFriendship(
                 this.props.authUserId,
-                'm592UXpes3azls6LnhN2VOf2PyT2',
+                'lOnI91XOvdRnQe5Hmdrkf2TY5lH2',
                 'accepted'
               )
             }
@@ -151,7 +153,7 @@ class Friends extends PureComponent<Props, OwnState> {
             onPress={() =>
               this.props.updateFriendship(
                 this.props.authUserId,
-                'm592UXpes3azls6LnhN2VOf2PyT2',
+                'lOnI91XOvdRnQe5Hmdrkf2TY5lH2',
                 'rejected'
               )
             }
@@ -161,7 +163,7 @@ class Friends extends PureComponent<Props, OwnState> {
             onPress={() =>
               this.props.updateFriendship(
                 this.props.authUserId,
-                'm592UXpes3azls6LnhN2VOf2PyT2',
+                'lOnI91XOvdRnQe5Hmdrkf2TY5lH2',
                 'deleted'
               )
             }
@@ -171,18 +173,68 @@ class Friends extends PureComponent<Props, OwnState> {
             onPress={() =>
               this.props.updateFriendship(
                 this.props.authUserId,
-                'm592UXpes3azls6LnhN2VOf2PyT2',
+                'lOnI91XOvdRnQe5Hmdrkf2TY5lH2',
                 'removed'
               )
             }
             title='Remove Friend'
           />
-          <PotentialFriendRow
-            facebookProfilePhoto={''}
-            firstName={''}
-            lastName={''}
-            friendStatus={''}
+          <FriendRequestRow
+            {..._.get(
+              this.props,
+              ['friends', 'lOnI91XOvdRnQe5Hmdrkf2TY5lH2'],
+              {}
+            )}
+            // facebookProfilePhoto={''}
+            // firstName={''}
+            // lastName={''}
+            friendStatus={
+              (_.includes(
+                this.props.pendingReceivingFriendshipUserIds,
+                _.get(
+                  this.props,
+                  ['friends', 'lOnI91XOvdRnQe5Hmdrkf2TY5lH2'],
+                  ''
+                )
+              ) &&
+                'can-accept-request') ||
+              (_.includes(
+                this.props.pendingInitiatingFriendshipUserIds,
+                _.get(
+                  this.props,
+                  ['friends', 'lOnI91XOvdRnQe5Hmdrkf2TY5lH2'],
+                  ''
+                )
+              ) &&
+                'needs-recipient-acceptance') ||
+              'can-send-friend-request'
+            }
           />
+          <FriendRequestRow
+            {..._.get(
+              this.props,
+              ['friends', 'lOnI91XOvdRnQe5Hmdrkf2TY5lH2'],
+              {}
+            )}
+            friendStatus={'can-accept-request'}
+          />
+          <FriendRequestRow
+            {..._.get(
+              this.props,
+              ['friends', 'lOnI91XOvdRnQe5Hmdrkf2TY5lH2'],
+              {}
+            )}
+            friendStatus={'needs-recipient-acceptance'}
+          />
+          <FriendRequestRow
+            {..._.get(
+              this.props,
+              ['friends', 'lOnI91XOvdRnQe5Hmdrkf2TY5lH2'],
+              {}
+            )}
+            friendStatus={'can-send-friend-request'}
+          />
+          <FriendRequestRow isLoading />
         </View>
       </View>
     );

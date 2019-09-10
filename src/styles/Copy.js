@@ -25,6 +25,7 @@ export const actionTypeInactiveToasts = {
 
 export const friending = {
   pending: 'friend request sent',
+  awaiting: 'friend request already sent',
   accepted: 'friend request accepted',
   rejected: 'friend request rejected',
   deleted: 'friend request deleted',
