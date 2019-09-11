@@ -8,7 +8,7 @@ import {
   NavigationState
 } from 'react-navigation';
 import { connect } from 'react-redux';
-import FriendRequestRow from '../../components/FriendRequestRow';
+import FriendSummaryRow from '../../components/FriendSummaryRow';
 import Header from '../../components/Header';
 import Icon, { names } from '../../components/Icon';
 import { queryTypes } from '../../lib/FirebaseQueries';
@@ -66,7 +66,7 @@ const mapStateToProps = (state: State) => {
     friends: selectUsersFromList(
       state,
       generateListKey(authUserId, queryTypes.USER_FRIENDS),
-      true
+      false
     ),
     pendingInitiatingFriendshipUserIds: selectPendingFriendshipUserIds(
       state,
@@ -85,7 +85,7 @@ const mapDispatchToProps = {
 };
 
 class Friends extends PureComponent<Props, OwnState> {
-  static whyDidYouRender = true;
+  // static whyDidYouRender = true;
 
   constructor(props: Props) {
     super(props);
@@ -94,11 +94,11 @@ class Friends extends PureComponent<Props, OwnState> {
   componentDidMount() {}
 
   render() {
-    console.log(`Friends - Render`);
-    console.log('this.props');
-    console.log(this.props);
-    console.log('this.state');
-    console.log(this.state);
+    // console.log(`Friends - Render`);
+    // console.log('this.props');
+    // console.log(this.props);
+    // console.log('this.state');
+    // console.log(this.state);
 
     if (!this.props.authUser) {
       return <ActivityIndicator />;
@@ -130,7 +130,15 @@ class Friends extends PureComponent<Props, OwnState> {
           }
         />
         <View style={styles.container}>
-          <Button
+          <FriendSummaryRow
+            {..._.get(
+              this.props,
+              ['friends', 'lOnI91XOvdRnQe5Hmdrkf2TY5lH2'],
+              {}
+            )}
+          />
+
+          {/* <Button
             onPress={() =>
               this.props.createFriendship(
                 this.props.authUserId,
@@ -178,63 +186,7 @@ class Friends extends PureComponent<Props, OwnState> {
               )
             }
             title='Remove Friend'
-          />
-          <FriendRequestRow
-            {..._.get(
-              this.props,
-              ['friends', 'lOnI91XOvdRnQe5Hmdrkf2TY5lH2'],
-              {}
-            )}
-            // facebookProfilePhoto={''}
-            // firstName={''}
-            // lastName={''}
-            friendStatus={
-              (_.includes(
-                this.props.pendingReceivingFriendshipUserIds,
-                _.get(
-                  this.props,
-                  ['friends', 'lOnI91XOvdRnQe5Hmdrkf2TY5lH2'],
-                  ''
-                )
-              ) &&
-                'can-accept-request') ||
-              (_.includes(
-                this.props.pendingInitiatingFriendshipUserIds,
-                _.get(
-                  this.props,
-                  ['friends', 'lOnI91XOvdRnQe5Hmdrkf2TY5lH2'],
-                  ''
-                )
-              ) &&
-                'needs-recipient-acceptance') ||
-              'can-send-friend-request'
-            }
-          />
-          <FriendRequestRow
-            {..._.get(
-              this.props,
-              ['friends', 'lOnI91XOvdRnQe5Hmdrkf2TY5lH2'],
-              {}
-            )}
-            friendStatus={'can-accept-request'}
-          />
-          <FriendRequestRow
-            {..._.get(
-              this.props,
-              ['friends', 'lOnI91XOvdRnQe5Hmdrkf2TY5lH2'],
-              {}
-            )}
-            friendStatus={'needs-recipient-acceptance'}
-          />
-          <FriendRequestRow
-            {..._.get(
-              this.props,
-              ['friends', 'lOnI91XOvdRnQe5Hmdrkf2TY5lH2'],
-              {}
-            )}
-            friendStatus={'can-send-friend-request'}
-          />
-          <FriendRequestRow isLoading />
+          /> */}
         </View>
       </View>
     );

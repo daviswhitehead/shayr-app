@@ -1,4 +1,7 @@
 import { StyleSheet } from 'react-native';
+import Colors from '../../styles/Colors';
+import { fontSystem } from '../../styles/Fonts';
+import Layout from '../../styles/Layout';
 
 export default StyleSheet.create({
   screen: {
@@ -7,10 +10,34 @@ export default StyleSheet.create({
     alignItems: 'stretch',
     justifyContent: 'flex-start'
   },
-  container: {
-    flex: 1,
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'stretch'
+  sectionHeader: {
+    ...fontSystem.H3,
+    marginHorizontal: Layout.SPACING_LONG,
+    marginBottom: Layout.SPACING_MEDIUM,
+    marginTop: Layout.SPACING_LONG
+  },
+  actionRow: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    padding: Layout.SPACING_LONG,
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderColor: Colors.DIVIDER
+  },
+  actionRowIcon: {
+    marginRight: Layout.SPACING_MEDIUM
+  },
+  actionRowIconSize: {
+    height: 32,
+    width: 32
+  },
+  actionRowCopy: {
+    ...fontSystem.BODY
+  },
+  emptySearchText: {
+    textAlign: 'center',
+    margin: Layout.SPACING_LONG,
+    ...fontSystem.BODY
   }
 });

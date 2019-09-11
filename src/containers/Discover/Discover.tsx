@@ -106,7 +106,10 @@ const mapStateToProps = (state: State) => {
           generateListKey(authUserId, queryTypes.USERS_POSTS_ALL)
         ),
         generateListKey(authUserId, queryTypes.USERS_POSTS_ALL),
-        'createdAt'
+        {
+          sortKeys: ['createdAt'],
+          sortDirection: ['desc']
+        }
       )
     }
   };
@@ -166,7 +169,7 @@ class Discover extends PureComponent<Props, OwnState> {
     );
 
     // DEVELOPMENT HELPERS
-    this.props.navigation.navigate('FindFriends', {});
+    this.props.navigation.navigate('Friends', {});
     // this.props.navigation.navigate('Notifications', {});
     // this.props.navigation.navigate('FriendsTab', {});
     // this.props.navigation.navigate('PostDetail', {

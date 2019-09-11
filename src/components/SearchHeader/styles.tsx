@@ -1,33 +1,16 @@
-import { StyleSheet, Platform } from 'react-native';
-import layout from '../../styles/Layout';
-import { fontSystem } from '../../styles/Fonts';
+import { StyleSheet } from 'react-native';
+import Colors from '../../styles/Colors';
+import Layout from '../../styles/Layout';
 
 export default StyleSheet.create({
-  container: {},
+  container: {
+    backgroundColor: Colors.WHITE
+  },
   header: {
-    height: Platform.OS === 'ios' ? 44 : 56
-  },
-  headerBox: {
-    flex: 1,
+    height: Layout.WINDOW_TOP_SAFE_AREA,
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-start',
     alignItems: 'center',
-    marginHorizontal: layout.SPACING_LONG
-  },
-  titleBox: {
-    textAlign: 'center'
-  },
-  title: {
-    ...fontSystem.TITLE
-  },
-  bookendsBox: {
-    height: 24,
-    width: 24
-  },
-  box: {
-    textAlign: 'center'
-  },
-  text: {
-    ...fontSystem.TITLE
+    paddingHorizontal: Layout.SPACING_LONG
   }
 });

@@ -104,7 +104,7 @@ const mapStateToProps = (
       'comments',
       selectListItems(state, 'commentsLists', commentsListKey),
       commentsListKey,
-      'createdAt'
+      { sortKeys: ['createdAt'], sortDirection: ['desc'] }
     ),
     commentsMeta: selectListMeta(state, 'commentsLists', commentsListKey),
     authFriends,

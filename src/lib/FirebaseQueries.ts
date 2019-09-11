@@ -21,7 +21,8 @@ export enum queryTypes {
   USER_SHARES = 'USER_SHARES',
   USER_FRIENDS = 'USER_FRIENDS',
   COMMENTS_FOR_USERS_POSTS = 'COMMENTS_FOR_USERS_POSTS',
-  NOTIFICATIONS = 'NOTIFICATIONS'
+  NOTIFICATIONS = 'NOTIFICATIONS',
+  ALL_USERS = 'ALL_USERS'
 }
 
 export enum referenceTypes {
@@ -207,6 +208,12 @@ export const queries: Map<queryTypes, (...args: string[]) => Query> = new Map([
         .collection('notifications')
         .where('receivingUserId', '==', `${userId}`)
         .orderBy('createdAt', 'desc');
+    }
+  ],
+  [
+    queryTypes.ALL_USERS,
+    () => {
+      return firebase.firestore().collection('users');
     }
   ]
 ]);

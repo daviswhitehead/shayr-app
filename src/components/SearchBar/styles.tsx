@@ -17,8 +17,12 @@ export default StyleSheet.create({
   searchIcon: {
     marginRight: Layout.SPACING_LONG
   },
+  clearIcon: {
+    marginLeft: Layout.SPACING_LONG
+  },
   textInput: {
     flex: 1,
+    height: 24,
     ...fontSystem.BODY
   }
 });

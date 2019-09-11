@@ -89,7 +89,7 @@ const mapStateToProps = (state: State) => {
       'notifications',
       selectListItems(state, 'notificationsLists', notificationsListKey),
       notificationsListKey,
-      'createdAt'
+      { sortKeys: ['createdAt'], sortDirection: ['desc'] }
     ),
     notificationsListKey,
     notificationsMeta: selectListMeta(

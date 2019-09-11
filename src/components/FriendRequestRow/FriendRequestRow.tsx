@@ -1,6 +1,9 @@
 import React, { memo, SFC } from 'react';
 import { View } from 'react-native';
+import { IconWithFriendRequestDenial } from '../../higherOrderComponents/withFriendRequestDenial';
+import { IconWithFriendshipActions } from '../../higherOrderComponents/withFriendshipActions';
 import Icon, { names } from '../Icon';
+import SmartUserAvatar from '../SmartUserAvatar';
 import UserAvatar from '../UserAvatar';
 import styles from './styles';
 
@@ -9,37 +12,33 @@ interface UserAtom {
   facebookProfilePhoto: string;
   firstName: string;
   lastName: string;
+  _id: string;
 }
 
-export interface Props extends UserAtom {
+interface Props extends UserAtom {
   friendStatus:
     | 'can-send-friend-request'
     | 'needs-recipient-acceptance'
     | 'can-accept-request';
   isLoading?: boolean;
+  shouldRenderX?: boolean;
 }
 
 const FriendRequestRow: SFC<Props> = ({
+  _id,
   facebookProfilePhoto,
   firstName,
   lastName,
   isLoading,
-  friendStatus
+  shouldRenderX = true
 }: Props) => {
-  const friendStatusIconMap = {
-    ['can-send-friend-request']: names.ADD_FRIEND,
-    ['needs-recipient-acceptance']: names.PENDING_FRIEND,
-    ['can-accept-request']: names.ACCEPT_FRIEND
-  };
-
   if (isLoading) {
     return (
       <View style={styles.container}>
         <UserAvatar isLoading isVertical={false} />
         <View style={styles.iconsContainer}>
-          <Icon isLoading />
-          <View style={styles.actionsSpacer} />
-          <Icon isLoading />
+          <Icon isLoading style={styles.actionsSpacer} />
+          {shouldRenderX && <Icon isLoading />}
         </View>
       </View>
     );
@@ -47,16 +46,18 @@ const FriendRequestRow: SFC<Props> = ({
 
   return (
     <View style={styles.container}>
-      <UserAvatar
+      <SmartUserAvatar
         facebookProfilePhoto={facebookProfilePhoto}
         firstName={firstName}
         lastName={lastName}
         isVertical={false}
+        userId={_id}
       />
       <View style={styles.iconsContainer}>
-        <Icon name={friendStatusIconMap[friendStatus]} />
-        <View style={styles.actionsSpacer} />
-        <Icon name={names.X_EXIT} />
+        <IconWithFriendshipActions userId={_id} style={styles.actionsSpacer} />
+        {shouldRenderX && (
+          <IconWithFriendRequestDenial userId={_id} name={names.X_EXIT} />
+        )}
       </View>
     </View>
   );

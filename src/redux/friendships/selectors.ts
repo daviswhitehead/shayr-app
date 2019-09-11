@@ -10,7 +10,7 @@ export const selectPendingFriendshipUserIds = createCachedSelector(
   (state: State, type: 'initiating' | 'receiving') => type,
   (friendships, type) => {
     if (_.isEmpty(friendships) || !type) {
-      return;
+      return [];
     }
 
     return _.reduce(

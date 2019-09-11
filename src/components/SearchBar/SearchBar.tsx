@@ -39,6 +39,9 @@ export default class SearchBar extends PureComponent<Props, State> {
         isEditing: false,
         text: ''
       });
+      if (this.props.onEdit) {
+        this.props.onEdit('');
+      }
     }
   };
 
@@ -52,6 +55,14 @@ export default class SearchBar extends PureComponent<Props, State> {
 
   handleFocus = () => {
     this.setState({ isEditing: true });
+  };
+
+  onClearPress = () => {
+    this.setState({ text: '', isEditing: false });
+    if (this.props.onEdit) {
+      this.props.onEdit('');
+    }
+    this.textInputRef.current.blur();
   };
 
   render() {
@@ -75,6 +86,15 @@ export default class SearchBar extends PureComponent<Props, State> {
           onBlur={this.handleBlur}
           onFocus={this.handleFocus}
         />
+        {this.state.isEditing ? (
+          <Icon
+            name={names.X_EXIT}
+            style={styles.clearIcon}
+            onPress={this.onClearPress}
+          />
+        ) : (
+          undefined
+        )}
       </TouchableOpacity>
     );
   }

@@ -17,12 +17,14 @@ interface StateProps {
   authUserId: string;
 }
 
-interface OwnProps {
-  userId: documentId;
+interface WithNavigationProps {
   navigation: Navigation;
 }
+interface OwnProps {
+  userId: documentId;
+}
 
-type Props = OwnProps & StateProps;
+type Props = OwnProps & StateProps & WithNavigationProps;
 
 const mapStateToProps = (state: any) => {
   return {

@@ -84,6 +84,12 @@ const FriendsStack = createStackNavigator(
       navigationOptions: () => ({
         header: null
       })
+    },
+    MyList: {
+      screen: MyList,
+      navigationOptions: () => ({
+        header: null
+      })
     }
   },
   {

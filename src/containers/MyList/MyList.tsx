@@ -160,14 +160,14 @@ const mapStateToProps = (state: any, props: any) => {
         'usersPosts',
         selectListItems(state, 'usersPostsLists', usersPostsListsViews.adds),
         usersPostsListsViews.adds,
-        'updatedAt'
+        { sortKeys: ['updatedAt'], sortDirection: ['desc'] }
       ),
       [usersPostsListsViews.dones]: selectFlatListReadyDocuments(
         state,
         'usersPosts',
         selectListItems(state, 'usersPostsLists', usersPostsListsViews.dones),
         usersPostsListsViews.dones,
-        'updatedAt'
+        { sortKeys: ['updatedAt'], sortDirection: ['desc'] }
       ),
       [usersPostsListsViews.comments]: selectFlatListReadyDocuments(
         state,
@@ -178,14 +178,14 @@ const mapStateToProps = (state: any, props: any) => {
           usersPostsListsViews.comments
         ),
         usersPostsListsViews.comments,
-        'updatedAt'
+        { sortKeys: ['updatedAt'], sortDirection: ['desc'] }
       ),
       [usersPostsListsViews.shares]: selectFlatListReadyDocuments(
         state,
         'usersPosts',
         selectListItems(state, 'usersPostsLists', usersPostsListsViews.shares),
         usersPostsListsViews.shares,
-        'updatedAt'
+        { sortKeys: ['updatedAt'], sortDirection: ['desc'] }
       )
     },
     usersPostsListsMeta: {

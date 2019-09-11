@@ -8,6 +8,7 @@ import {
 } from '../../lib/FirebaseQueries';
 import {
   getDocument,
+  getDocuments,
   subscribeToAllDocuments,
   subscribeToDocument
 } from '../FirebaseRedux';
@@ -43,5 +44,11 @@ export const getUser = (userId: documentId) => {
       STATE_KEY,
       references.get(referenceTypes.GET_DOCUMENT)(`users/${userId}`)
     );
+  };
+};
+
+export const getAllUsers = () => {
+  return (dispatch: Dispatch) => {
+    getDocuments(dispatch, STATE_KEY, getQuery(queryTypes.ALL_USERS)());
   };
 };

@@ -1,20 +1,12 @@
 import { documentIds } from '@daviswhitehead/shayr-resources';
 import _ from 'lodash';
 import React, { SFC } from 'react';
-import { Alert, View } from 'react-native';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { queryTypes } from '../../lib/FirebaseQueries';
 import { selectAuthUserId } from '../../redux/auth/selectors';
-import {
-  createFriendship,
-  updateFriendship
-} from '../../redux/friendships/actions';
-import {
-  awaitingRecipientAcceptance,
-  getFriendshipStatus
-} from '../../redux/friendships/helpers';
-import { friendshipStatusIconMap } from '../../redux/friendships/helpers';
+import { updateFriendship } from '../../redux/friendships/actions';
+import { getFriendshipStatus } from '../../redux/friendships/helpers';
 import { selectPendingFriendshipUserIds } from '../../redux/friendships/selectors';
 import { generateListKey } from '../../redux/lists/helpers';
 import { selectUsersFromList } from '../../redux/users/selectors';
@@ -27,7 +19,6 @@ interface StateProps {
 }
 
 interface DispatchProps {
-  createFriendship: typeof createFriendship;
   updateFriendship: typeof updateFriendship;
 }
 
@@ -59,11 +50,10 @@ const mapStateToProps = (state: any) => {
 };
 
 const mapDispatchToProps = {
-  createFriendship,
   updateFriendship
 };
 
-const withFriendshipActions = (WrappedComponent: SFC) => (props: Props) => {
+const withFriendRequestDenial = (WrappedComponent: SFC) => (props: Props) => {
   const {
     // state
     authUserId,
@@ -71,7 +61,6 @@ const withFriendshipActions = (WrappedComponent: SFC) => (props: Props) => {
     pendingInitiatingFriendshipUserIds = [],
     pendingReceivingFriendshipUserIds = [],
     // dispatch
-    createFriendship,
     updateFriendship,
     // own
     userId,
@@ -90,35 +79,21 @@ const withFriendshipActions = (WrappedComponent: SFC) => (props: Props) => {
     onFriendshipStatusPress = undefined;
   } else if (friendshipStatus === 'is-friends') {
     onFriendshipStatusPress = () =>
-      Alert.alert(
-        'Remove Friend',
-        'Would you like to remove this person from your friends list?',
-        [
-          {
-            text: 'Cancel',
-            style: 'cancel'
-          },
-          {
-            text: 'Yes',
-            onPress: () => updateFriendship(authUserId, userId, 'removed')
-          }
-        ]
-      );
+      updateFriendship(authUserId, userId, 'removed');
   } else if (friendshipStatus === 'can-accept-request') {
     onFriendshipStatusPress = () =>
-      updateFriendship(authUserId, userId, 'accepted');
+      updateFriendship(authUserId, userId, 'rejected');
   } else if (friendshipStatus === 'needs-recipient-acceptance') {
-    onFriendshipStatusPress = () => awaitingRecipientAcceptance();
+    onFriendshipStatusPress = () =>
+      updateFriendship(authUserId, userId, 'deleted');
   } else if (friendshipStatus === 'can-send-friend-request') {
-    onFriendshipStatusPress = () => createFriendship(authUserId, userId);
+    onFriendshipStatusPress = undefined;
   }
 
   return (
     <WrappedComponent
       friendshipStatus={friendshipStatus}
       onPress={onFriendshipStatusPress}
-      isActive={friendshipStatus === 'is-friends'}
-      name={friendshipStatusIconMap[friendshipStatus]}
       {...passThroughProps}
     />
   );
@@ -154,5 +129,5 @@ export default compose(
       }
     }
   ),
-  withFriendshipActions
+  withFriendRequestDenial
 );
