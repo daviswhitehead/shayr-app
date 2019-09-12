@@ -5,10 +5,10 @@ import { SafeAreaView, View } from 'react-native';
 import { IconWithAdds } from '../../higherOrderComponents/withAdds';
 import { IconWithComments } from '../../higherOrderComponents/withComments';
 import { IconWithDones } from '../../higherOrderComponents/withDones';
+import { UserAvatarWithNavigateToTheirList } from '../../higherOrderComponents/withNavigateToTheirList';
 import { IconWithShares } from '../../higherOrderComponents/withShares';
 import Icon from '../Icon';
 import { names } from '../Icon';
-import SmartUserAvatar from '../SmartUserAvatar';
 import UserImage from '../UserImage';
 import styles from './styles';
 
@@ -57,7 +57,7 @@ const ActionBar: SFC<Props> = ({
     <View style={styles.container}>
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.actionBar}>
-          <SmartUserAvatar
+          <UserAvatarWithNavigateToTheirList
             {...authUser}
             shouldHideName
             userId={authUser._id}

@@ -1,4 +1,4 @@
-import { User } from '@daviswhitehead/shayr-resources';
+import { documentIds, User } from '@daviswhitehead/shayr-resources';
 import _ from 'lodash';
 import React, { PureComponent } from 'react';
 import { ActivityIndicator, Button, Text, View } from 'react-native';
@@ -8,21 +8,26 @@ import {
   NavigationState
 } from 'react-navigation';
 import { connect } from 'react-redux';
+import ActionRow from '../../components/ActionRow';
 import FriendSummaryRow from '../../components/FriendSummaryRow';
 import Header from '../../components/Header';
 import Icon, { names } from '../../components/Icon';
+import List from '../../components/List';
 import { queryTypes } from '../../lib/FirebaseQueries';
 import { selectAuthUserId } from '../../redux/auth/selectors';
+import { selectFlatListReadyDocuments } from '../../redux/documents/selectors';
 import {
   createFriendship,
   updateFriendship
 } from '../../redux/friendships/actions';
 import { selectPendingFriendshipUserIds } from '../../redux/friendships/selectors';
 import { generateListKey } from '../../redux/lists/helpers';
+import { selectListItems } from '../../redux/lists/selectors';
 import { State } from '../../redux/Reducers';
 import {
-  selectUserFromId,
-  selectUsersFromList
+  formatUserForClient,
+  formatUserForProfile,
+  selectUserFromId
 } from '../../redux/users/selectors';
 import Colors from '../../styles/Colors';
 import styles from './styles';
@@ -31,6 +36,8 @@ interface StateProps {
   authIsOwner?: boolean;
   authUser?: User;
   authUserId: string;
+  pendingFriendshipUserIds: documentIds;
+  friends: Array<User>;
 }
 
 interface DispatchProps {
@@ -48,7 +55,9 @@ interface OwnProps {
   navigation: Navigation;
 }
 
-interface OwnState {}
+interface OwnState {
+  isLoading: boolean;
+}
 
 type Props = OwnProps &
   StateProps &
@@ -63,18 +72,27 @@ const mapStateToProps = (state: State) => {
     authIsOwner: authUserId === ownerUserId,
     authUserId,
     authUser: selectUserFromId(state, authUserId),
-    friends: selectUsersFromList(
+    friends: selectFlatListReadyDocuments(
       state,
-      generateListKey(authUserId, queryTypes.USER_FRIENDS),
-      false
+      'users',
+      selectListItems(
+        state,
+        'usersLists',
+        generateListKey(authUserId, queryTypes.USER_FRIENDS)
+      ),
+      'friends',
+      {
+        sortKeys: ['sharesCount'],
+        sortDirection: ['desc'],
+        formatting: (user: User) => {
+          return formatUserForProfile(formatUserForClient(user));
+        }
+      }
     ),
-    pendingInitiatingFriendshipUserIds: selectPendingFriendshipUserIds(
+    pendingFriendshipUserIds: selectPendingFriendshipUserIds(
       state,
-      'initiating'
-    ),
-    pendingReceivingFriendshipUserIds: selectPendingFriendshipUserIds(
-      state,
-      'receiving'
+      authUserId,
+      'all'
     )
   };
 };
@@ -85,24 +103,57 @@ const mapDispatchToProps = {
 };
 
 class Friends extends PureComponent<Props, OwnState> {
-  // static whyDidYouRender = true;
+  static whyDidYouRender = true;
 
   constructor(props: Props) {
     super(props);
+
+    this.state = {
+      isLoading: true
+    };
   }
 
-  componentDidMount() {}
+  componentDidMount() {
+    this.checkLoading();
+  }
+  componentDidUpdate() {
+    this.checkLoading();
+  }
+
+  checkLoading = () => {
+    if (
+      this.state.isLoading &&
+      this.props.authUser !== undefined &&
+      this.props.friends !== undefined
+    ) {
+      this.setState({ isLoading: false });
+    }
+  };
+
+  renderItem = ({ item }: { item: User }) => {
+    return <FriendSummaryRow isLoading={this.state.isLoading} {...item} />;
+  };
+
+  renderListHeader = () => {
+    return (
+      <ActionRow
+        onPress={() => this.props.navigation.navigate('FindFriends', {})}
+        iconName={names.ACCEPT_FRIEND}
+        copy={`View your ${
+          _.isEmpty(this.props.pendingFriendshipUserIds)
+            ? ''
+            : this.props.pendingFriendshipUserIds.length + ' '
+        }pending friend requests!`}
+      />
+    );
+  };
 
   render() {
-    // console.log(`Friends - Render`);
-    // console.log('this.props');
-    // console.log(this.props);
-    // console.log('this.state');
-    // console.log(this.state);
-
-    if (!this.props.authUser) {
-      return <ActivityIndicator />;
-    }
+    console.log(`Friends - Render`);
+    console.log('this.props');
+    console.log(this.props);
+    console.log('this.state');
+    console.log(this.state);
 
     return (
       <View style={styles.screen}>
@@ -129,65 +180,12 @@ class Friends extends PureComponent<Props, OwnState> {
             )
           }
         />
-        <View style={styles.container}>
-          <FriendSummaryRow
-            {..._.get(
-              this.props,
-              ['friends', 'lOnI91XOvdRnQe5Hmdrkf2TY5lH2'],
-              {}
-            )}
-          />
-
-          {/* <Button
-            onPress={() =>
-              this.props.createFriendship(
-                this.props.authUserId,
-                'lOnI91XOvdRnQe5Hmdrkf2TY5lH2'
-              )
-            }
-            title='Send Friend Request'
-          />
-          <Button
-            onPress={() =>
-              this.props.updateFriendship(
-                this.props.authUserId,
-                'lOnI91XOvdRnQe5Hmdrkf2TY5lH2',
-                'accepted'
-              )
-            }
-            title='Accept Friend Request'
-          />
-          <Button
-            onPress={() =>
-              this.props.updateFriendship(
-                this.props.authUserId,
-                'lOnI91XOvdRnQe5Hmdrkf2TY5lH2',
-                'rejected'
-              )
-            }
-            title='Reject Friend Request'
-          />
-          <Button
-            onPress={() =>
-              this.props.updateFriendship(
-                this.props.authUserId,
-                'lOnI91XOvdRnQe5Hmdrkf2TY5lH2',
-                'deleted'
-              )
-            }
-            title='Delete Friend Request'
-          />
-          <Button
-            onPress={() =>
-              this.props.updateFriendship(
-                this.props.authUserId,
-                'lOnI91XOvdRnQe5Hmdrkf2TY5lH2',
-                'removed'
-              )
-            }
-            title='Remove Friend'
-          /> */}
-        </View>
+        <List
+          isLoading={this.state.isLoading}
+          data={this.props.friends}
+          renderItem={this.renderItem}
+          ListHeaderComponent={() => this.renderListHeader()}
+        />
       </View>
     );
   }
@@ -195,5 +193,61 @@ class Friends extends PureComponent<Props, OwnState> {
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
+  undefined,
+  {
+    areStatePropsEqual: (next: any, prev: any) => {
+      return _.isEqual(next, prev);
+    }
+  }
 )(Friends);
+
+// {/* <Button
+//             onPress={() =>
+//               this.props.createFriendship(
+//                 this.props.authUserId,
+//                 'lOnI91XOvdRnQe5Hmdrkf2TY5lH2'
+//               )
+//             }
+//             title='Send Friend Request'
+//           />
+//           <Button
+//             onPress={() =>
+//               this.props.updateFriendship(
+//                 this.props.authUserId,
+//                 'lOnI91XOvdRnQe5Hmdrkf2TY5lH2',
+//                 'accepted'
+//               )
+//             }
+//             title='Accept Friend Request'
+//           />
+//           <Button
+//             onPress={() =>
+//               this.props.updateFriendship(
+//                 this.props.authUserId,
+//                 'lOnI91XOvdRnQe5Hmdrkf2TY5lH2',
+//                 'rejected'
+//               )
+//             }
+//             title='Reject Friend Request'
+//           />
+//           <Button
+//             onPress={() =>
+//               this.props.updateFriendship(
+//                 this.props.authUserId,
+//                 'lOnI91XOvdRnQe5Hmdrkf2TY5lH2',
+//                 'deleted'
+//               )
+//             }
+//             title='Delete Friend Request'
+//           />
+//           <Button
+//             onPress={() =>
+//               this.props.updateFriendship(
+//                 this.props.authUserId,
+//                 'lOnI91XOvdRnQe5Hmdrkf2TY5lH2',
+//                 'removed'
+//               )
+//             }
+//             title='Remove Friend'
+//           /> */}

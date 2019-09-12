@@ -40,10 +40,12 @@ const mapStateToProps = (state: any) => {
     existingFriendIds: _.keys(authFriends),
     pendingInitiatingFriendshipUserIds: selectPendingFriendshipUserIds(
       state,
+      authUserId,
       'initiating'
     ),
     pendingReceivingFriendshipUserIds: selectPendingFriendshipUserIds(
       state,
+      authUserId,
       'receiving'
     )
   };
@@ -121,10 +123,14 @@ export default compose(
               generateListKey(prevAuthUserId, queryTypes.USER_FRIENDS),
               true
             ) &&
-          selectPendingFriendshipUserIds(next, 'initiating') ===
-            selectPendingFriendshipUserIds(prev, 'initiating') &&
-          selectPendingFriendshipUserIds(next, 'receiving') ===
-            selectPendingFriendshipUserIds(prev, 'receiving')
+          selectPendingFriendshipUserIds(next, nextAuthUserId, 'initiating') ===
+            selectPendingFriendshipUserIds(
+              prev,
+              prevAuthUserId,
+              'initiating'
+            ) &&
+          selectPendingFriendshipUserIds(next, nextAuthUserId, 'receiving') ===
+            selectPendingFriendshipUserIds(prev, prevAuthUserId, 'receiving')
         );
       }
     }

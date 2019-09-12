@@ -3,15 +3,15 @@ import fuzzysort from 'fuzzysort';
 import _ from 'lodash';
 import React, { PureComponent } from 'react';
 import { SectionList, Text, View } from 'react-native';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 import {
   NavigationScreenProp,
   NavigationScreenProps,
   NavigationState
 } from 'react-navigation';
 import { connect } from 'react-redux';
+import ActionRow from '../../components/ActionRow';
 import FriendRequestRow from '../../components/FriendRequestRow';
-import Icon, { names } from '../../components/Icon';
+import { names } from '../../components/Icon';
 import SearchHeader from '../../components/SearchHeader';
 import { logEvent } from '../../lib/FirebaseAnalytics';
 import { queryTypes } from '../../lib/FirebaseQueries';
@@ -32,7 +32,7 @@ const INVITE_SECTION_DATA = [
   {
     _id: 'invite',
     type: 'action',
-    icon: names.INVITE,
+    iconName: names.INVITE,
     copy: 'Invite your friends to join you on Shayr!',
     onPress: () => logEvent('FIND_FRIENDS_INVITE_PRESSED')
   }
@@ -42,7 +42,7 @@ const SUGGESTED_FRIENDS_SECTION_DATA = [
   {
     _id: 'facebook-connect',
     type: 'action',
-    icon: names.FACEBOOK,
+    iconName: names.FACEBOOK,
     copy: 'Find friends from Facebook already on Shayr!',
     onPress: () => logEvent('FIND_FRIENDS_FACEBOOK_CONNECT_PRESSED')
   }
@@ -100,10 +100,12 @@ const mapStateToProps = (state: State) => {
   );
   const pendingInitiatingFriendshipUserIds = selectPendingFriendshipUserIds(
     state,
+    authUserId,
     'initiating'
   );
   const pendingReceivingFriendshipUserIds = selectPendingFriendshipUserIds(
     state,
+    authUserId,
     'receiving'
   );
   const friendRequestUserIds = _.pull(
@@ -269,17 +271,7 @@ class FindFriends extends PureComponent<Props, OwnState> {
 
   renderItem = ({ item }: { item: any }) => {
     if (item.type === 'action') {
-      return (
-        <TouchableOpacity style={styles.actionRow} onPress={item.onPress}>
-          <Icon
-            style={[styles.actionRowIcon, styles.actionRowIconSize]}
-            iconStyle={styles.actionRowIconSize}
-            name={item.icon}
-            size={styles.actionRowIconSize.height}
-          />
-          <Text style={styles.actionRowCopy}>{item.copy}</Text>
-        </TouchableOpacity>
-      );
+      return <ActionRow {...item} />;
     }
 
     return (

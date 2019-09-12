@@ -34,6 +34,7 @@ export type StateKey =
   | 'likes';
 
 export type StateKeyLists =
+  | 'usersLists'
   | 'usersPostsLists'
   | 'notificationsLists'
   | 'addsLists'

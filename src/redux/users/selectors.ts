@@ -1,4 +1,8 @@
-import { getUserShortName, User } from '@daviswhitehead/shayr-resources';
+import {
+  getUserFullName,
+  getUserShortName,
+  User
+} from '@daviswhitehead/shayr-resources';
 import _ from 'lodash';
 import createCachedSelector from 're-reselect';
 import { State } from '../Reducers';
@@ -11,21 +15,43 @@ const selectUser = (state: State, userId: string) => state.users[userId];
 const selectUsersLists = (state: State, listKey: string) =>
   state.usersLists[listKey];
 
-const formatUserForClient = (user: User) => {
+export const formatUserForClient = (user: User) => {
   return {
     ...user,
-    shortName: getUserShortName(user)
+    shortName: getUserShortName(user),
+    fullName: getUserFullName(user)
   };
 };
 
-const formatUserForPresentation = (user: User) => {
+export const formatUserForPresentation = (user: User) => {
   return _.pick(user, [
     '_id',
     '_reference',
     'firstName',
     'lastName',
     'shortName',
+    'fullName',
     'facebookProfilePhoto'
+  ]);
+};
+
+export const formatUserForProfile = (user: User) => {
+  return _.pick(user, [
+    '_id',
+    '_reference',
+    'addsCount',
+    'commentsCount',
+    'donesCount',
+    'facebookProfilePhoto',
+    'firstName',
+    'friendsCount',
+    'fullName',
+    'lastName',
+    'likesCount',
+    'mentionsCount',
+    'sharesCount',
+    'shortName',
+    'unreadNotificationsCount'
   ]);
 };
 

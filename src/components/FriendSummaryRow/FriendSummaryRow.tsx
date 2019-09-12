@@ -3,6 +3,7 @@ import { Text, View } from 'react-native';
 import { UserImageWithNavigateToTheirList } from '../../higherOrderComponents/withNavigateToTheirList';
 import { names } from '../Icon';
 import IconWithCount from '../IconWithCount';
+import Skeleton from '../Skeleton';
 import UserImage from '../UserImage';
 import styles from './styles';
 
@@ -36,7 +37,19 @@ const FriendSummaryRow: SFC<Props> = ({
   if (isLoading) {
     return (
       <View style={styles.container}>
-        <UserImage isLoading />
+        <UserImage isLoading size='medium' style={styles.userImage} />
+        <View style={styles.detailsContainer}>
+          <Skeleton childStyle={styles.userNameSkeleton} />
+          <View style={styles.iconsContainer}>
+            <IconWithCount isLoading />
+            <View style={styles.actionsSpacer} />
+            <IconWithCount isLoading />
+            <View style={styles.actionsSpacer} />
+            <IconWithCount isLoading />
+            <View style={styles.actionsSpacer} />
+            <IconWithCount isLoading />
+          </View>
+        </View>
       </View>
     );
   }

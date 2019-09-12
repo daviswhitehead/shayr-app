@@ -13,30 +13,18 @@ export default StyleSheet.create({
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderColor: Colors.DIVIDER
   },
-  userImage: {
-    marginRight: Layout.SPACING_LONG
+  icon: {
+    marginRight: Layout.SPACING_MEDIUM
   },
-  detailsContainer: {
-    flex: 1,
-    flexDirection: 'column',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start'
+  iconSize: {
+    height: 32,
+    width: 32
   },
-  iconsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
-    alignItems: 'center'
+  copy: {
+    ...fontSystem.BODY
   },
-  userName: {
-    ...fontSystem.H2,
-    marginBottom: Layout.SPACING_MEDIUM
-  },
-  userNameSkeleton: {
+  copySkeleton: {
     height: 24,
-    width: 24 * 8,
-    marginBottom: Layout.SPACING_MEDIUM
-  },
-  actionsSpacer: {
-    width: Layout.SPACING_LONG
+    width: 24 * 8
   }
 });

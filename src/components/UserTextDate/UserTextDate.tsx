@@ -3,8 +3,8 @@ import _ from 'lodash';
 import moment from 'moment';
 import React, { memo, SFC } from 'react';
 import { Text, View } from 'react-native';
+import { UserAvatarWithNavigateToTheirList } from '../../higherOrderComponents/withNavigateToTheirList';
 import Skeleton from '../Skeleton';
-import SmartUserAvatar from '../SmartUserAvatar';
 import TouchableWrapper from '../TouchableWrapper';
 import UserImage from '../UserImage';
 import styles from './styles';
@@ -51,7 +51,7 @@ const UserTextDate: SFC<Props> = ({
       style={styles.container}
       onPress={noTouching ? undefined : onPressContainer}
     >
-      <SmartUserAvatar
+      <UserAvatarWithNavigateToTheirList
         {...user}
         shouldHideName
         userId={user._id}
