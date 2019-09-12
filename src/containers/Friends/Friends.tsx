@@ -1,7 +1,7 @@
 import { documentIds, User } from '@daviswhitehead/shayr-resources';
 import _ from 'lodash';
 import React, { PureComponent } from 'react';
-import { ActivityIndicator, Button, Text, View } from 'react-native';
+import { View } from 'react-native';
 import {
   NavigationScreenProp,
   NavigationScreenProps,

@@ -33,7 +33,9 @@ import styles from './styles';
 interface StateProps {
   authUser?: User;
   authUserId: string;
-  friends?: Array<User>;
+  friends: {
+    [userId: string]: User;
+  };
   routing?: any; // routing state
   unreadNotificationsCount?: number;
   usersPostsListsMeta?: {
@@ -169,7 +171,7 @@ class Discover extends PureComponent<Props, OwnState> {
     );
 
     // DEVELOPMENT HELPERS
-    this.props.navigation.navigate('Friends', {});
+    // this.props.navigation.navigate('Friends', {});
     // this.props.navigation.navigate('Notifications', {});
     // this.props.navigation.navigate('FriendsTab', {});
     // this.props.navigation.navigate('PostDetail', {
