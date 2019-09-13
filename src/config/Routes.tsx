@@ -13,22 +13,32 @@ import MyList from '../containers/MyList';
 import Notifications from '../containers/Notifications';
 import PostDetail from '../containers/PostDetail';
 
+const sharedRoutes = {
+  PostDetail: {
+    screen: PostDetail,
+    navigationOptions: () => ({
+      header: null
+    })
+  },
+  MyList: {
+    screen: MyList,
+    navigationOptions: () => ({
+      header: null
+    })
+  },
+  Friends: {
+    screen: Friends,
+    navigationOptions: () => ({
+      header: null
+    })
+  }
+};
+
 const DiscoverStack = createStackNavigator(
   {
+    ...sharedRoutes,
     Discover: {
       screen: Discover,
-      navigationOptions: () => ({
-        header: null
-      })
-    },
-    PostDetail: {
-      screen: PostDetail,
-      navigationOptions: () => ({
-        header: null
-      })
-    },
-    MyList: {
-      screen: MyList,
       navigationOptions: () => ({
         header: null
       })
@@ -47,24 +57,7 @@ const DiscoverStack = createStackNavigator(
 
 const MyListStack = createStackNavigator(
   {
-    MyList: {
-      screen: MyList,
-      navigationOptions: () => ({
-        header: null
-      })
-    },
-    PostDetail: {
-      screen: PostDetail,
-      navigationOptions: () => ({
-        header: null
-      })
-    }
-    // Settings: {
-    //   screen: Settings,
-    //   navigationOptions: () => ({
-    //     header: null
-    //   })
-    // }
+    ...sharedRoutes
   },
   {
     initialRouteName: 'MyList'
@@ -73,20 +66,9 @@ const MyListStack = createStackNavigator(
 
 const FriendsStack = createStackNavigator(
   {
-    Friends: {
-      screen: Friends,
-      navigationOptions: () => ({
-        header: null
-      })
-    },
+    ...sharedRoutes,
     FindFriends: {
       screen: FindFriends,
-      navigationOptions: () => ({
-        header: null
-      })
-    },
-    MyList: {
-      screen: MyList,
       navigationOptions: () => ({
         header: null
       })

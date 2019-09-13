@@ -1,6 +1,6 @@
 import React, { memo, SFC } from 'react';
 import { Text, View } from 'react-native';
-import { UserImageWithNavigateToTheirList } from '../../higherOrderComponents/withNavigateToTheirList';
+import { UserImageWithMyListNavigation } from '../../higherOrderComponents/withConditionalNavigation';
 import { names } from '../Icon';
 import IconWithCount from '../IconWithCount';
 import Skeleton from '../Skeleton';
@@ -56,7 +56,7 @@ const FriendSummaryRow: SFC<Props> = ({
 
   return (
     <View style={styles.container}>
-      <UserImageWithNavigateToTheirList
+      <UserImageWithMyListNavigation
         uri={facebookProfilePhoto}
         size='medium'
         style={styles.userImage}

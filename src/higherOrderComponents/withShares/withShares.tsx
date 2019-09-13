@@ -35,7 +35,7 @@ const mapStateToProps = (state: State) => {
     friends: selectUsersFromList(
       state,
       generateListKey(authUserId, queryTypes.USER_FRIENDS),
-      true
+      'presentation'
     )
   };
 };
@@ -102,12 +102,12 @@ export default compose(
           selectUsersFromList(
             next,
             generateListKey(nextAuthUserId, queryTypes.USER_FRIENDS),
-            true
+            'presentation'
           ) ===
             selectUsersFromList(
               prev,
               generateListKey(prevAuthUserId, queryTypes.USER_FRIENDS),
-              true
+              'presentation'
             )
         );
       }

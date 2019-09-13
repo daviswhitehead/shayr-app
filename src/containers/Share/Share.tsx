@@ -57,7 +57,7 @@ const mapStateToProps = (state: State) => {
     friends: selectUsersFromList(
       state,
       generateListKey(authUserId, queryTypes.USER_FRIENDS),
-      true
+      'presentation'
     )
   };
 };

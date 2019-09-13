@@ -55,10 +55,22 @@ export const formatUserForProfile = (user: User) => {
   ]);
 };
 
+type FormatType = 'presentation' | 'profile';
+const handleFormatting = (user: User, formatType?: FormatType) => {
+  const formattedUser = formatUserForClient(user);
+  if (formatType === 'presentation') {
+    return formatUserForPresentation(formattedUser);
+  }
+  if (formatType === 'profile') {
+    return formatUserForProfile(formattedUser);
+  }
+  return formattedUser;
+};
+
 export const selectAllUsers = createCachedSelector(
   selectUsers,
-  (state: State, isPresentational: boolean) => isPresentational,
-  (users, isPresentational) => {
+  (state: State, formatType: FormatType) => formatType,
+  (users, formatType) => {
     if (_.isEmpty(users)) {
       return;
     }
@@ -67,56 +79,41 @@ export const selectAllUsers = createCachedSelector(
       (result: any, value: any, key: string) => {
         return {
           ...result,
-          [key]: isPresentational
-            ? formatUserForPresentation(formatUserForClient(value))
-            : formatUserForClient(value)
+          [key]: handleFormatting(value, formatType)
         };
       },
       {}
     );
   }
-)((state, isPresentational) => `users_${isPresentational}`);
+)((state, formatType) => `users_${formatType}`);
 
 export const selectUserFromId = createCachedSelector(
   selectUser,
-  (state, userId, isPresentational) => isPresentational,
-  (user, isPresentational) => {
+  (state, userId, formatType = 'client') => formatType,
+  (user, formatType) => {
     if (!user) {
       return;
     }
-    return isPresentational
-      ? formatUserForPresentation(formatUserForClient(user))
-      : formatUserForClient(user);
+    return handleFormatting(user, formatType);
   }
-)((state, userId, isPresentational) => `${userId}_${isPresentational}`);
+)((state, userId, formatType) => `${userId}_${formatType}`);
 
-export const selectUserUnreadNotificationsCountFromId = createCachedSelector(
-  selectUser,
-  (state, userId) => userId,
-  (user, userId) => {
-    if (!user) {
-      return;
-    }
-    return _.get(user, 'unreadNotificationsCount', 0);
-  }
-)((state, userId) => `${userId}`);
-
-export const selectUserActionCounts = createCachedSelector(
+export const selectUserActionCount = createCachedSelector(
   selectUserFromId,
-  (state, userId, isPresentational, action) => action,
-  (user, action) => {
-    if (!user || !action) {
+  (state, userId, formatType, actionCountKey) => actionCountKey,
+  (user, actionCountKey) => {
+    if (!user || !actionCountKey) {
       return;
     }
-    return user[action] || 0;
+    return user[actionCountKey] || 0;
   }
-)((state, userId, action) => `${userId}_${action}`);
+)((state, userId, actionCountKey) => `${userId}_${actionCountKey}`);
 
 export const selectUsersFromList = createCachedSelector(
   selectUsers,
   selectUsersLists,
-  (state, listKey, isPresentational) => isPresentational,
-  (users, usersList, isPresentational) => {
+  (state, listKey, formatType) => formatType,
+  (users, usersList, formatType) => {
     if (!users || !_.get(usersList, 'isLoaded', false)) {
       return;
     }
@@ -128,12 +125,8 @@ export const selectUsersFromList = createCachedSelector(
     return usersList.items.reduce((result: any, userId: string) => {
       return {
         ...result,
-        [userId]: isPresentational
-          ? formatUserForPresentation(
-              formatUserForClient(_.get(users, userId, {}))
-            )
-          : formatUserForClient(_.get(users, userId, {}))
+        [userId]: handleFormatting(_.get(users, userId, {}), formatType)
       };
     }, {});
   }
-)((state, listKey, isPresentational) => `${listKey}_${isPresentational}`);
+)((state, listKey, formatType) => `${listKey}_${formatType}`);

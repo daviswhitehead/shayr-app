@@ -1,5 +1,6 @@
 import React, { ComponentProps, memo, SFC } from 'react';
 import { SafeAreaView, Text, View } from 'react-native';
+import colors from '../../styles/Colors';
 import Icon, { names } from '../Icon';
 import SearchBar from '../SearchBar';
 import StatusBar from '../StatusBar';
@@ -12,7 +13,11 @@ interface Props extends ComponentProps<typeof SearchBar> {
 const SearchHeader: SFC<Props> = ({ back, ref, onEdit, onSubmit }) => {
   return (
     <View style={styles.container}>
-      <StatusBar barStyle={'dark-content'} />
+      <StatusBar
+        barStyle={'dark-content'}
+        translucent
+        backgroundColor={colors.WHITE}
+      />
       <SafeAreaView>
         <View style={styles.header}>
           <Icon name={names.BACK} onPress={back} />

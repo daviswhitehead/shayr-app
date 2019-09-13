@@ -4,8 +4,8 @@ import React, { memo, SFC } from 'react';
 import { SafeAreaView, View } from 'react-native';
 import { IconWithAdds } from '../../higherOrderComponents/withAdds';
 import { IconWithComments } from '../../higherOrderComponents/withComments';
+import { UserAvatarWithMyListNavigation } from '../../higherOrderComponents/withConditionalNavigation';
 import { IconWithDones } from '../../higherOrderComponents/withDones';
-import { UserAvatarWithNavigateToTheirList } from '../../higherOrderComponents/withNavigateToTheirList';
 import { IconWithShares } from '../../higherOrderComponents/withShares';
 import Icon from '../Icon';
 import { names } from '../Icon';
@@ -57,7 +57,7 @@ const ActionBar: SFC<Props> = ({
     <View style={styles.container}>
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.actionBar}>
-          <UserAvatarWithNavigateToTheirList
+          <UserAvatarWithMyListNavigation
             {...authUser}
             shouldHideName
             userId={authUser._id}

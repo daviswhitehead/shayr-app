@@ -22,9 +22,9 @@ import { State } from '../../redux/Reducers';
 import { navigateToRoute } from '../../redux/routing/actions';
 import { subscribeToFriends, subscribeToUser } from '../../redux/users/actions';
 import {
+  selectUserActionCount,
   selectUserFromId,
-  selectUsersFromList,
-  selectUserUnreadNotificationsCountFromId
+  selectUsersFromList
 } from '../../redux/users/selectors';
 import { loadUsersPosts } from '../../redux/usersPosts/actions';
 import colors from '../../styles/Colors';
@@ -77,16 +77,18 @@ const mapStateToProps = (state: State) => {
 
   return {
     authUserId,
-    authUser: selectUserFromId(state, authUserId, true),
+    authUser: selectUserFromId(state, authUserId, 'presentation'),
     friends: selectUsersFromList(
       state,
       generateListKey(authUserId, queryTypes.USER_FRIENDS),
-      true
+      'presentation'
     ),
     routing: state.routing,
-    unreadNotificationsCount: selectUserUnreadNotificationsCountFromId(
+    unreadNotificationsCount: selectUserActionCount(
       state,
-      authUserId
+      authUserId,
+      'profile',
+      'unreadNotificationsCount'
     ),
     usersPostsListsMeta: {
       [generateListKey(authUserId, queryTypes.USERS_POSTS_ALL)]: selectListMeta(
@@ -171,7 +173,8 @@ class Discover extends PureComponent<Props, OwnState> {
     );
 
     // DEVELOPMENT HELPERS
-    // this.props.navigation.navigate('Friends', {});
+    // this.props.navigation.navigate('FindFriends');
+    // this.props.navigation.navigate('FindFriends', {});
     // this.props.navigation.navigate('Notifications', {});
     // this.props.navigation.navigate('FriendsTab', {});
     // this.props.navigation.navigate('PostDetail', {

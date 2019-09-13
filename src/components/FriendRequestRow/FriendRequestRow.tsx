@@ -1,8 +1,8 @@
 import React, { memo, SFC } from 'react';
 import { View } from 'react-native';
+import { UserAvatarWithMyListNavigation } from '../../higherOrderComponents/withConditionalNavigation';
 import { IconWithFriendRequestDenial } from '../../higherOrderComponents/withFriendRequestDenial';
 import { IconWithFriendshipActions } from '../../higherOrderComponents/withFriendshipActions';
-import { UserAvatarWithNavigateToTheirList } from '../../higherOrderComponents/withNavigateToTheirList';
 import Icon, { names } from '../Icon';
 import UserAvatar from '../UserAvatar';
 import styles from './styles';
@@ -46,7 +46,7 @@ const FriendRequestRow: SFC<Props> = ({
 
   return (
     <View style={styles.container}>
-      <UserAvatarWithNavigateToTheirList
+      <UserAvatarWithMyListNavigation
         facebookProfilePhoto={facebookProfilePhoto}
         firstName={firstName}
         lastName={lastName}

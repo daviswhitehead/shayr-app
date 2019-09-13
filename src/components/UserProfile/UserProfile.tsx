@@ -1,5 +1,7 @@
+import { documentId } from '@daviswhitehead/shayr-resources';
 import React, { memo, SFC } from 'react';
 import { Text, View } from 'react-native';
+import { IconWithCountFriendsNavigation } from '../../higherOrderComponents/withConditionalNavigation';
 import { IconWithFriendshipActions } from '../../higherOrderComponents/withFriendshipActions';
 import Icon, { names } from '../Icon';
 import IconWithCount from '../IconWithCount';
@@ -62,7 +64,8 @@ const UserProfile: SFC<Props> = ({
           {firstName} {lastName}
         </Text>
         <View style={styles.iconsContainer}>
-          <IconWithCount
+          <IconWithCountFriendsNavigation
+            userId={ownerUserId}
             name={names.FRIENDS}
             count={friendsCount}
             isActive={false}

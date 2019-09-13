@@ -71,7 +71,7 @@ const mapStateToProps = (state: State) => {
   return {
     authIsOwner: authUserId === ownerUserId,
     authUserId,
-    authUser: selectUserFromId(state, authUserId),
+    authUser: selectUserFromId(state, authUserId, 'presentation'),
     friends: selectFlatListReadyDocuments(
       state,
       'users',
@@ -135,14 +135,12 @@ class Friends extends PureComponent<Props, OwnState> {
   };
 
   renderListHeader = () => {
-    return (
+    return _.isEmpty(this.props.pendingFriendshipUserIds) ? null : (
       <ActionRow
         onPress={() => this.props.navigation.navigate('FindFriends', {})}
         iconName={names.ACCEPT_FRIEND}
         copy={`View your ${
-          _.isEmpty(this.props.pendingFriendshipUserIds)
-            ? ''
-            : this.props.pendingFriendshipUserIds.length + ' '
+          this.props.pendingFriendshipUserIds.length
         }pending friend requests!`}
       />
     );

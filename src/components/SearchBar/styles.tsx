@@ -23,6 +23,10 @@ export default StyleSheet.create({
   textInput: {
     flex: 1,
     height: 24,
+    textAlign: 'left',
+    textAlignVertical: 'center',
+    paddingTop: 0,
+    paddingBottom: 0,
     ...fontSystem.BODY
   }
 });

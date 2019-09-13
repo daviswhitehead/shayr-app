@@ -42,7 +42,7 @@ const mapStateToProps = (state: any) => {
   const authFriends = selectUsersFromList(
     state,
     generateListKey(authUserId, queryTypes.USER_FRIENDS),
-    true
+    'presentation'
   );
   return {
     authUserId,
@@ -141,12 +141,12 @@ export default compose(
           selectUsersFromList(
             next,
             generateListKey(nextAuthUserId, queryTypes.USER_FRIENDS),
-            true
+            'presentation'
           ) ===
             selectUsersFromList(
               prev,
               generateListKey(prevAuthUserId, queryTypes.USER_FRIENDS),
-              true
+              'presentation'
             ) &&
           selectPendingFriendshipUserIds(next, nextAuthUserId, 'initiating') ===
             selectPendingFriendshipUserIds(

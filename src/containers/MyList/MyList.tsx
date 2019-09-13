@@ -28,7 +28,7 @@ import { generateListKey } from '../../redux/lists/helpers';
 import { selectListItems, selectListMeta } from '../../redux/lists/selectors';
 import { getUser, subscribeToFriends } from '../../redux/users/actions';
 import {
-  selectUserActionCounts,
+  selectUserActionCount,
   selectUserFromId,
   selectUsersFromList
 } from '../../redux/users/selectors';
@@ -115,44 +115,44 @@ const mapStateToProps = (state: any, props: any) => {
   const authFriends = selectUsersFromList(
     state,
     generateListKey(authUserId, queryTypes.USER_FRIENDS),
-    true
+    'presentation'
   );
 
   return {
     authIsOwner: authUserId === ownerUserId,
-    authUser: selectUserFromId(state, authUserId, true),
+    authUser: selectUserFromId(state, authUserId, 'presentation'),
     authUserId,
     authFriends,
-    ownerAddsCount: selectUserActionCounts(
+    ownerAddsCount: selectUserActionCount(
       state,
       ownerUserId,
-      false,
+      'profile',
       'addsCount'
     ),
-    ownerDonesCount: selectUserActionCounts(
+    ownerDonesCount: selectUserActionCount(
       state,
       ownerUserId,
-      false,
+      'profile',
       'donesCount'
     ),
     ownerFriends: selectUsersFromList(
       state,
       generateListKey(ownerUserId, queryTypes.USER_FRIENDS),
-      true
+      'presentation'
     ),
-    ownerCommentsCount: selectUserActionCounts(
+    ownerCommentsCount: selectUserActionCount(
       state,
       ownerUserId,
-      false,
+      'profile',
       'commentsCount'
     ),
-    ownerSharesCount: selectUserActionCounts(
+    ownerSharesCount: selectUserActionCount(
       state,
       ownerUserId,
-      false,
+      'profile',
       'sharesCount'
     ),
-    ownerUser: selectUserFromId(state, ownerUserId, true),
+    ownerUser: selectUserFromId(state, ownerUserId, 'profile'),
     ownerUserId,
     usersPostsListsData: {
       [usersPostsListsViews.adds]: selectFlatListReadyDocuments(
@@ -581,7 +581,7 @@ class MyList extends Component<Props, OwnState> {
           )}
           firstName={_.get(this.props, ['ownerUser', 'firstName'], null)}
           lastName={_.get(this.props, ['ownerUser', 'lastName'], null)}
-          friendsCount={_.get(this.props, ['ownerUser', 'friendsCount'], -1)}
+          friendsCount={_.get(this.props, ['ownerUser', 'friendsCount'], 0)}
           authIsOwner={this.props.authIsOwner}
           ownerUserId={this.props.ownerUserId}
         />

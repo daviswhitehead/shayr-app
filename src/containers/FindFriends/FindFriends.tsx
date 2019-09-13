@@ -50,7 +50,7 @@ const SUGGESTED_FRIENDS_SECTION_DATA = [
 
 interface StateProps {
   authIsOwner?: boolean;
-  authUser?: User;
+  // authUser?: User;
   authUserId: string;
   pendingInitiatingFriendshipUserIds: Array<documentIds>;
   pendingReceivingFriendshipUserIds: Array<documentIds>;
@@ -96,7 +96,7 @@ const mapStateToProps = (state: State) => {
   const friends = selectUsersFromList(
     state,
     generateListKey(authUserId, queryTypes.USER_FRIENDS),
-    true
+    'presentation'
   );
   const pendingInitiatingFriendshipUserIds = selectPendingFriendshipUserIds(
     state,
@@ -115,7 +115,7 @@ const mapStateToProps = (state: State) => {
     ]),
     authUserId
   );
-  const users = selectAllUsers(state, true);
+  const users = selectAllUsers(state, 'presentation');
   const allUserIds = _.pullAll(_.keys(users), [
     authUserId,
     ..._.keys(friends),
@@ -124,7 +124,7 @@ const mapStateToProps = (state: State) => {
 
   return {
     authUserId,
-    authUser: selectUserFromId(state, authUserId),
+    // authUser: selectUserFromId(state, authUserId, 'presentation'),
     pendingInitiatingFriendshipUserIds,
     pendingReceivingFriendshipUserIds,
     friendRequestUserIds,
@@ -354,6 +354,10 @@ class FindFriends extends PureComponent<Props, OwnState> {
               ['desc']
             )
           };
+    }
+
+    if (_.isEmpty(this.props.friendRequestData)) {
+      friendRequestsSection = undefined;
     }
 
     return _.filter(

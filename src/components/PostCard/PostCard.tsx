@@ -3,7 +3,7 @@ import _ from 'lodash';
 import React, { Component } from 'react';
 import { Image, Text, TouchableWithoutFeedback, View } from 'react-native';
 import { IconWithCountWithComments } from '../../higherOrderComponents/withComments';
-import { UserAvatarWithNavigateToTheirList } from '../../higherOrderComponents/withNavigateToTheirList';
+import { UserAvatarWithMyListNavigation } from '../../higherOrderComponents/withConditionalNavigation';
 import { IconWithCountWithShares } from '../../higherOrderComponents/withShares';
 import { names } from '../Icon';
 import IconWithCount from '../IconWithCount';
@@ -113,7 +113,7 @@ class PostCard extends Component<Props> {
             <View style={styles.emptyAvatar} />
           ) : (
             <View style={styles.avatar}>
-              <UserAvatarWithNavigateToTheirList
+              <UserAvatarWithMyListNavigation
                 {...featuredUser}
                 isVertical={false}
                 noTouching={noTouching}

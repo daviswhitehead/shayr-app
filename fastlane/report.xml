@@ -5,67 +5,67 @@
     
     
       
-      <testcase classname="fastlane.lanes" name="00: Verifying fastlane version" time="0.003425">
+      <testcase classname="fastlane.lanes" name="00: Verifying fastlane version" time="0.003434">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="01: gradle" time="11.788214">
+      <testcase classname="fastlane.lanes" name="01: gradle" time="25.693511">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="02: increment_version_code" time="0.006291">
+      <testcase classname="fastlane.lanes" name="02: increment_version_code" time="0.006904">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="03: gradle" time="113.456645">
+      <testcase classname="fastlane.lanes" name="03: gradle" time="186.983256">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="04: crashlytics" time="76.380855">
+      <testcase classname="fastlane.lanes" name="04: crashlytics" time="72.992723">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="05: upload_to_play_store" time="78.659988">
+      <testcase classname="fastlane.lanes" name="05: upload_to_play_store" time="80.911324">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="06: Switch to android update_codepush_builds lane" time="0.003386">
+      <testcase classname="fastlane.lanes" name="06: Switch to android update_codepush_builds lane" time="0.003289">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="07: pwd" time="0.011571">
+      <testcase classname="fastlane.lanes" name="07: pwd" time="0.010588">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="08: cd .. &amp;&amp; appcenter codepush release-react -a whitehead.davis/Shayr-Android -d prod" time="14.928367">
+      <testcase classname="fastlane.lanes" name="08: cd .. &amp;&amp; appcenter codepush release-react -a whitehead.davis/Shayr-Android -d alpha" time="12.806162">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="09: Switch to android refresh_dsyms lane" time="0.002849">
+      <testcase classname="fastlane.lanes" name="09: Switch to android refresh_dsyms lane" time="0.002892">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="10: pwd" time="0.01">
+      <testcase classname="fastlane.lanes" name="10: pwd" time="0.008886">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="11: cd .. &amp;&amp; react-native bundle --platform android --dev false --entry-file index.js --bundle-output android-release.bundle --sourcemap-output android-release.bundle.map" time="3.757588">
+      <testcase classname="fastlane.lanes" name="11: cd .. &amp;&amp; react-native bundle --platform android --dev false --entry-file index.js --bundle-output android-release.bundle --sourcemap-output android-release.bundle.map" time="4.014224">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="12: cd .. &amp;&amp; curl https://upload.bugsnag.com/react-native-source-map -F apiKey=e75830d4fa9917c3bb26b070ecd967b5  -F appVersion=3.3.0 -F dev=false -F platform=android -F sourceMap=@android-release.bundle.map -F bundle=@android-release.bundle -F projectRoot=`pwd`" time="22.879482">
+      <testcase classname="fastlane.lanes" name="12: cd .. &amp;&amp; curl https://upload.bugsnag.com/react-native-source-map -F apiKey=4549281efb1464f4641fdb9d86bfae84  -F appVersion=3.3.0 -F dev=false -F platform=android -F sourceMap=@android-release.bundle.map -F bundle=@android-release.bundle -F projectRoot=`pwd`" time="24.39122">
         
       </testcase>
     

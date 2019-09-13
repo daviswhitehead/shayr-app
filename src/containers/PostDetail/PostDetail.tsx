@@ -84,7 +84,7 @@ const mapStateToProps = (
   const ownerUserId = navigation.state.params.ownerUserId;
   const postId = navigation.state.params.postId;
   const authUserId = selectAuthUserId(state);
-  const authUser = selectUserFromId(state, authUserId, true);
+  const authUser = selectUserFromId(state, authUserId, 'presentation');
   const commentsListKey = generateListKey(
     ownerUserId,
     postId,
@@ -93,7 +93,7 @@ const mapStateToProps = (
   const authFriends = selectUsersFromList(
     state,
     generateListKey(authUserId, queryTypes.USER_FRIENDS),
-    true
+    'presentation'
   );
 
   return {

@@ -7,7 +7,7 @@ export default StyleSheet.create({
     backgroundColor: Colors.WHITE
   },
   header: {
-    height: Layout.WINDOW_TOP_SAFE_AREA,
+    height: Layout.HEADER_HEIGHT,
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',
