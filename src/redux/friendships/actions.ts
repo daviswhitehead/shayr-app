@@ -47,7 +47,7 @@ export const updateFriendship = (
       // toast
       Toaster(friending[status]);
 
-      // create new friendship
+      // update friendship
       batcher.set(
         firebase
           .firestore()
@@ -64,24 +64,6 @@ export const updateFriendship = (
       if (_.includes(['accepted', 'removed'], status)) {
         const isStatusAccepted = status === 'accepted';
 
-        // update initiating user
-        batcher.set(
-          firebase
-            .firestore()
-            .collection('users')
-            .doc(initiatingUserId),
-          {
-            friends: isStatusAccepted
-              ? arrayUnion(firebase.firestore, receivingUserId)
-              : arrayRemove(firebase.firestore, receivingUserId),
-            friendsCount: isStatusAccepted
-              ? increment(firebase.firestore, 1)
-              : increment(firebase.firestore, -1),
-            updatedAt: ts(firebase.firestore)
-          },
-          { merge: true }
-        );
-
         // update receiving user user
         batcher.set(
           firebase
@@ -92,6 +74,24 @@ export const updateFriendship = (
             friends: isStatusAccepted
               ? arrayUnion(firebase.firestore, initiatingUserId)
               : arrayRemove(firebase.firestore, initiatingUserId),
+            friendsCount: isStatusAccepted
+              ? increment(firebase.firestore, 1)
+              : increment(firebase.firestore, -1),
+            updatedAt: ts(firebase.firestore)
+          },
+          { merge: true }
+        );
+
+        // update initiating user
+        batcher.set(
+          firebase
+            .firestore()
+            .collection('users')
+            .doc(initiatingUserId),
+          {
+            friends: isStatusAccepted
+              ? arrayUnion(firebase.firestore, receivingUserId)
+              : arrayRemove(firebase.firestore, receivingUserId),
             friendsCount: isStatusAccepted
               ? increment(firebase.firestore, 1)
               : increment(firebase.firestore, -1),

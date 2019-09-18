@@ -12,9 +12,10 @@ import {
 } from '../../redux/friendships/actions';
 import {
   awaitingRecipientAcceptance,
+  friendshipStatusIconMap,
+  getFriendshipIdOrder,
   getFriendshipStatus
 } from '../../redux/friendships/helpers';
-import { friendshipStatusIconMap } from '../../redux/friendships/helpers';
 import { selectPendingFriendshipUserIds } from '../../redux/friendships/selectors';
 import { generateListKey } from '../../redux/lists/helpers';
 import { selectUsersFromList } from '../../redux/users/selectors';
@@ -87,6 +88,12 @@ const withFriendshipActions = (WrappedComponent: SFC) => (props: Props) => {
     userId
   );
 
+  const friendshipIdOrder = getFriendshipIdOrder(
+    pendingInitiatingFriendshipUserIds,
+    authUserId,
+    userId
+  );
+
   let onFriendshipStatusPress;
   if (authUserId === userId) {
     onFriendshipStatusPress = undefined;
@@ -102,17 +109,23 @@ const withFriendshipActions = (WrappedComponent: SFC) => (props: Props) => {
           },
           {
             text: 'Yes',
-            onPress: () => updateFriendship(authUserId, userId, 'removed')
+            onPress: () =>
+              updateFriendship(
+                friendshipIdOrder[0],
+                friendshipIdOrder[1],
+                'removed'
+              )
           }
         ]
       );
   } else if (friendshipStatus === 'can-accept-request') {
     onFriendshipStatusPress = () =>
-      updateFriendship(authUserId, userId, 'accepted');
+      updateFriendship(friendshipIdOrder[0], friendshipIdOrder[1], 'accepted');
   } else if (friendshipStatus === 'needs-recipient-acceptance') {
     onFriendshipStatusPress = () => awaitingRecipientAcceptance();
   } else if (friendshipStatus === 'can-send-friend-request') {
-    onFriendshipStatusPress = () => createFriendship(authUserId, userId);
+    onFriendshipStatusPress = () =>
+      createFriendship(friendshipIdOrder[0], friendshipIdOrder[1]);
   }
 
   return (

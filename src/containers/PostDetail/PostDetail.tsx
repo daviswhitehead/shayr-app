@@ -26,6 +26,7 @@ import {
 } from '../../redux/documents/selectors';
 import { generateListKey } from '../../redux/lists/helpers';
 import { selectListItems, selectListMeta } from '../../redux/lists/selectors';
+import { subscribeToFriends } from '../../redux/users/actions';
 import {
   selectUserFromId,
   selectUsersFromList
@@ -42,6 +43,7 @@ interface StateProps {
   commentsData: Array<UsersPosts>;
   commentsMeta: any;
   ownerUserId: string;
+  ownerFriends: Users;
   post: UsersPosts;
   postId: string;
   users: Users;
@@ -50,6 +52,7 @@ interface StateProps {
 interface DispatchProps {
   getUsersPostsDocument: typeof getUsersPostsDocument;
   loadCommentsForUsersPosts: typeof loadCommentsForUsersPosts;
+  subscribeToFriends: typeof subscribeToFriends;
 }
 
 interface OwnProps {
@@ -95,6 +98,11 @@ const mapStateToProps = (
     generateListKey(authUserId, queryTypes.USER_FRIENDS),
     'presentation'
   );
+  const ownerFriends = selectUsersFromList(
+    state,
+    generateListKey(ownerUserId, queryTypes.USER_FRIENDS),
+    'presentation'
+  );
 
   return {
     authUserId,
@@ -108,28 +116,37 @@ const mapStateToProps = (
     ),
     commentsMeta: selectListMeta(state, 'commentsLists', commentsListKey),
     authFriends,
+    ownerFriends,
     ownerUserId,
     postId,
     post: selectDocumentFromId(state, 'usersPosts', `${ownerUserId}_${postId}`),
     users: {
       [authUserId]: authUser,
-      ...authFriends
+      ...authFriends,
+      ...ownerFriends
     }
   };
 };
 
 const mapDispatchToProps = {
   getUsersPostsDocument,
-  loadCommentsForUsersPosts
+  loadCommentsForUsersPosts,
+  subscribeToFriends
 };
 
 class PostDetail extends Component<Props, OwnState> {
+  static whyDidYouRender = true;
+
+  subscriptions: Array<any>;
   constructor(props: Props) {
     super(props);
+
     this.state = {
       isLoading: true,
       isCommentsLoading: true
     };
+
+    this.subscriptions = [];
   }
 
   componentDidMount() {
@@ -142,6 +159,7 @@ class PostDetail extends Component<Props, OwnState> {
         this.props.postId
       );
     }
+
     if (this.state.isCommentsLoading) {
       this.props.loadCommentsForUsersPosts(
         generateListKey(
@@ -155,6 +173,11 @@ class PostDetail extends Component<Props, OwnState> {
         )
       );
     }
+    // get owner friends if not already loaded
+    _.isUndefined(this.props.ownerFriends) &&
+      this.subscriptions.push(
+        this.props.subscribeToFriends(this.props.ownerUserId)
+      );
   }
 
   componentDidUpdate(prevProps: Props) {
@@ -162,7 +185,11 @@ class PostDetail extends Component<Props, OwnState> {
     this.checkCommentsLoading();
   }
 
-  componentWillUnmount() {}
+  componentWillUnmount() {
+    Object.values(this.subscriptions).forEach((unsubscribe) => {
+      unsubscribe();
+    });
+  }
 
   checkScreenLoading = () => {
     if (

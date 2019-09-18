@@ -1,4 +1,3 @@
-import { documentId } from '@daviswhitehead/shayr-resources';
 import React, { memo, SFC } from 'react';
 import { Text, View } from 'react-native';
 import { IconWithCountFriendsNavigation } from '../../higherOrderComponents/withConditionalNavigation';

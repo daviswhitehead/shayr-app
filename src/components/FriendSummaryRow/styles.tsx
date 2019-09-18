@@ -1,17 +1,14 @@
 import { StyleSheet } from 'react-native';
-import Colors from '../../styles/Colors';
 import { fontSystem } from '../../styles/Fonts';
 import Layout from '../../styles/Layout';
+import Stylesheet from '../../styles/Stylesheet';
 
 export default StyleSheet.create({
   container: {
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',
-    padding: Layout.SPACING_LONG,
-    borderTopWidth: StyleSheet.hairlineWidth,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderColor: Colors.DIVIDER
+    ...Stylesheet.row
   },
   userImage: {
     marginRight: Layout.SPACING_LONG

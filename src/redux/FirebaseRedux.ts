@@ -159,6 +159,12 @@ export const subscribeToAllDocuments = (
     (querySnapshot: QuerySnapshot) => {
       const listKey = generateListKey(ownerUserId, listName);
 
+      // if a write isn't complete, don't do anything
+      // this can cause errors by pulling down incomplete data
+      if (querySnapshot.metadata.hasPendingWrites) {
+        return;
+      }
+
       dispatch(listRefreshing(stateKeyList, listKey));
 
       dispatch(getDocumentsStart(stateKey));

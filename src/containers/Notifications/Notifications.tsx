@@ -204,16 +204,34 @@ class Notifications extends Component<Props, OwnState> {
   renderItem = ({ item }: { item: Notification }) => {
     const isNotification = !_.isEmpty(item.message);
 
+    let user;
+    let text;
+    let createdAt;
+
+    if (!this.state.isLoading && isNotification) {
+      user = this.props.users[item.fromId];
+      text = `${item.message.notification.title}. ${
+        item.message.notification.body
+      }`;
+      createdAt = item.createdAt.toDate();
+    }
+
+    if (!user && !this.state.isLoading) {
+      return;
+    }
+
     return (
       <View
-        style={isNotification && !item.isRead ? styles.unreadNotification : {}}
+        style={[
+          styles.notificationRow,
+          isNotification && !item.isRead ? styles.unreadNotification : {}
+        ]}
       >
         <UserTextDate
           isLoading={this.state.isLoading}
-          user={isNotification ? this.props.users[item.fromId] : undefined}
-          text={isNotification ? item.message.notification.body : undefined}
-          createdAt={isNotification ? item.createdAt.toDate() : undefined}
-          isNotification={isNotification}
+          user={user}
+          text={text}
+          createdAt={createdAt}
           onPressContainer={
             isNotification ? () => this.onItemPress(item) : undefined
           }
@@ -263,6 +281,7 @@ class Notifications extends Component<Props, OwnState> {
           back={() => this.props.navigation.goBack(null)}
         />
         <List
+          noSeparator
           data={this.props.notificationsData}
           renderItem={this.renderItem}
           onViewableItemsChanged={this.onNewItems}

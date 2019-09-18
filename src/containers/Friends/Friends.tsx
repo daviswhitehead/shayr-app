@@ -1,7 +1,7 @@
 import { documentIds, User } from '@daviswhitehead/shayr-resources';
 import _ from 'lodash';
 import React, { PureComponent } from 'react';
-import { View } from 'react-native';
+import { Button, View } from 'react-native';
 import {
   NavigationScreenProp,
   NavigationScreenProps,
@@ -24,25 +24,25 @@ import { selectPendingFriendshipUserIds } from '../../redux/friendships/selector
 import { generateListKey } from '../../redux/lists/helpers';
 import { selectListItems } from '../../redux/lists/selectors';
 import { State } from '../../redux/Reducers';
+import { subscribeToFriends } from '../../redux/users/actions';
 import {
   formatUserForClient,
-  formatUserForProfile,
-  selectUserFromId
+  formatUserForProfile
 } from '../../redux/users/selectors';
 import Colors from '../../styles/Colors';
 import styles from './styles';
 
 interface StateProps {
-  authIsOwner?: boolean;
-  authUser?: User;
-  authUserId: string;
-  pendingFriendshipUserIds: documentIds;
-  friends: Array<User>;
+  authIsOwner: boolean;
+  friends?: Array<User>;
+  ownerUserId: string;
+  pendingFriendshipUserIds?: documentIds;
 }
 
 interface DispatchProps {
   createFriendship: typeof createFriendship;
   updateFriendship: typeof updateFriendship;
+  subscribeToFriends: typeof subscribeToFriends;
 }
 
 interface NavigationParams {
@@ -64,21 +64,22 @@ type Props = OwnProps &
   DispatchProps &
   NavigationScreenProps<NavigationParams>;
 
-const mapStateToProps = (state: State) => {
+const mapStateToProps = (state: State, props: OwnProps & Navigation) => {
   const authUserId = selectAuthUserId(state);
-  const ownerUserId = authUserId;
+  const ownerUserId =
+    _.get(props, ['navigation', 'state', 'params', 'ownerUserId'], undefined) ||
+    authUserId;
+  const authIsOwner = authUserId === ownerUserId;
 
   return {
-    authIsOwner: authUserId === ownerUserId,
-    authUserId,
-    authUser: selectUserFromId(state, authUserId, 'presentation'),
+    authIsOwner,
     friends: selectFlatListReadyDocuments(
       state,
       'users',
       selectListItems(
         state,
         'usersLists',
-        generateListKey(authUserId, queryTypes.USER_FRIENDS)
+        generateListKey(ownerUserId, queryTypes.USER_FRIENDS)
       ),
       'friends',
       {
@@ -89,9 +90,10 @@ const mapStateToProps = (state: State) => {
         }
       }
     ),
+    ownerUserId,
     pendingFriendshipUserIds: selectPendingFriendshipUserIds(
       state,
-      authUserId,
+      ownerUserId,
       'all'
     )
   };
@@ -99,33 +101,45 @@ const mapStateToProps = (state: State) => {
 
 const mapDispatchToProps = {
   createFriendship,
-  updateFriendship
+  updateFriendship,
+  subscribeToFriends
 };
 
 class Friends extends PureComponent<Props, OwnState> {
   static whyDidYouRender = true;
 
+  subscriptions: Array<any>;
   constructor(props: Props) {
     super(props);
 
     this.state = {
       isLoading: true
     };
+
+    this.subscriptions = [];
   }
 
   componentDidMount() {
     this.checkLoading();
+    // get owner friends if not already loaded
+    _.isUndefined(this.props.friends) &&
+      this.subscriptions.push(
+        this.props.subscribeToFriends(this.props.ownerUserId)
+      );
   }
+
   componentDidUpdate() {
     this.checkLoading();
   }
 
+  componentWillUnmount() {
+    Object.values(this.subscriptions).forEach((unsubscribe) => {
+      unsubscribe();
+    });
+  }
+
   checkLoading = () => {
-    if (
-      this.state.isLoading &&
-      this.props.authUser !== undefined &&
-      this.props.friends !== undefined
-    ) {
+    if (this.state.isLoading && this.props.friends !== undefined) {
       this.setState({ isLoading: false });
     }
   };
@@ -141,18 +155,12 @@ class Friends extends PureComponent<Props, OwnState> {
         iconName={names.ACCEPT_FRIEND}
         copy={`View your ${
           this.props.pendingFriendshipUserIds.length
-        }pending friend requests!`}
+        } pending friend requests!`}
       />
     );
   };
 
   render() {
-    console.log(`Friends - Render`);
-    console.log('this.props');
-    console.log(this.props);
-    console.log('this.state');
-    console.log(this.state);
-
     return (
       <View style={styles.screen}>
         <Header
@@ -178,11 +186,21 @@ class Friends extends PureComponent<Props, OwnState> {
             )
           }
         />
+        {/* <Button
+          onPress={() =>
+            this.props.createFriendship(
+              'lOnI91XOvdRnQe5Hmdrkf2TY5lH2',
+              '96sTGJfd7RP24MhHslRVryAEkQ72'
+            )
+          }
+          title='Send Friend Request'
+        /> */}
         <List
           isLoading={this.state.isLoading}
           data={this.props.friends}
           renderItem={this.renderItem}
           ListHeaderComponent={() => this.renderListHeader()}
+          noSeparator
         />
       </View>
     );

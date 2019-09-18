@@ -23,7 +23,6 @@ import { State } from '../../redux/Reducers';
 import { getAllUsers, getUser } from '../../redux/users/actions';
 import {
   selectAllUsers,
-  selectUserFromId,
   selectUsersFromList
 } from '../../redux/users/selectors';
 import styles from './styles';
@@ -50,7 +49,6 @@ const SUGGESTED_FRIENDS_SECTION_DATA = [
 
 interface StateProps {
   authIsOwner?: boolean;
-  // authUser?: User;
   authUserId: string;
   pendingInitiatingFriendshipUserIds: Array<documentIds>;
   pendingReceivingFriendshipUserIds: Array<documentIds>;
@@ -110,8 +108,12 @@ const mapStateToProps = (state: State) => {
   );
   const friendRequestUserIds = _.pull(
     _.uniq([
-      ...pendingInitiatingFriendshipUserIds,
-      ...pendingReceivingFriendshipUserIds
+      ...(pendingInitiatingFriendshipUserIds
+        ? pendingInitiatingFriendshipUserIds
+        : []),
+      ...(pendingReceivingFriendshipUserIds
+        ? pendingReceivingFriendshipUserIds
+        : [])
     ]),
     authUserId
   );
@@ -124,7 +126,6 @@ const mapStateToProps = (state: State) => {
 
   return {
     authUserId,
-    // authUser: selectUserFromId(state, authUserId, 'presentation'),
     pendingInitiatingFriendshipUserIds,
     pendingReceivingFriendshipUserIds,
     friendRequestUserIds,

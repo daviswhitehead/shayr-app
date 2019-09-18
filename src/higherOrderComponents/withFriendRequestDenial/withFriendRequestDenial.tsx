@@ -6,7 +6,10 @@ import { compose } from 'redux';
 import { queryTypes } from '../../lib/FirebaseQueries';
 import { selectAuthUserId } from '../../redux/auth/selectors';
 import { updateFriendship } from '../../redux/friendships/actions';
-import { getFriendshipStatus } from '../../redux/friendships/helpers';
+import {
+  getFriendshipIdOrder,
+  getFriendshipStatus
+} from '../../redux/friendships/helpers';
 import { selectPendingFriendshipUserIds } from '../../redux/friendships/selectors';
 import { generateListKey } from '../../redux/lists/helpers';
 import { selectUsersFromList } from '../../redux/users/selectors';
@@ -76,18 +79,24 @@ const withFriendRequestDenial = (WrappedComponent: SFC) => (props: Props) => {
     userId
   );
 
+  const friendshipIdOrder = getFriendshipIdOrder(
+    pendingInitiatingFriendshipUserIds,
+    authUserId,
+    userId
+  );
+
   let onFriendshipStatusPress;
   if (authUserId === userId) {
     onFriendshipStatusPress = undefined;
   } else if (friendshipStatus === 'is-friends') {
     onFriendshipStatusPress = () =>
-      updateFriendship(authUserId, userId, 'removed');
+      updateFriendship(friendshipIdOrder[0], friendshipIdOrder[1], 'removed');
   } else if (friendshipStatus === 'can-accept-request') {
     onFriendshipStatusPress = () =>
-      updateFriendship(authUserId, userId, 'rejected');
+      updateFriendship(friendshipIdOrder[0], friendshipIdOrder[1], 'rejected');
   } else if (friendshipStatus === 'needs-recipient-acceptance') {
     onFriendshipStatusPress = () =>
-      updateFriendship(authUserId, userId, 'deleted');
+      updateFriendship(friendshipIdOrder[0], friendshipIdOrder[1], 'deleted');
   } else if (friendshipStatus === 'can-send-friend-request') {
     onFriendshipStatusPress = undefined;
   }

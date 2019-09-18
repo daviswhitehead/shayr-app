@@ -36,3 +36,25 @@ export const getFriendshipStatus = (
     'can-send-friend-request'
   );
 };
+
+export const getFriendshipIdOrder = (
+  pendingInitiatingFriendshipUserIds: Array<documentIds>,
+  authUserId: documentId,
+  userId: documentId
+) => {
+  const initiatingUserId = _.includes(
+    pendingInitiatingFriendshipUserIds,
+    userId
+  )
+    ? userId
+    : authUserId;
+  const receivingUserId = initiatingUserId === authUserId ? userId : authUserId;
+  return [initiatingUserId, receivingUserId];
+};
+
+export const getFriendshipId = (
+  initiatingUserId: documentId,
+  receivingUserId: documentId
+) => {
+  return `${initiatingUserId}_${receivingUserId}`;
+};

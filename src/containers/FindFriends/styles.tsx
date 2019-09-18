@@ -16,15 +16,6 @@ export default StyleSheet.create({
     marginBottom: Layout.SPACING_MEDIUM,
     marginTop: Layout.SPACING_LONG
   },
-  actionRow: {
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    padding: Layout.SPACING_LONG,
-    borderTopWidth: StyleSheet.hairlineWidth,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderColor: Colors.DIVIDER
-  },
   actionRowIcon: {
     marginRight: Layout.SPACING_MEDIUM
   },

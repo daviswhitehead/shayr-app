@@ -26,7 +26,7 @@ import { selectAuthUserId } from '../../redux/auth/selectors';
 import { selectFlatListReadyDocuments } from '../../redux/documents/selectors';
 import { generateListKey } from '../../redux/lists/helpers';
 import { selectListItems, selectListMeta } from '../../redux/lists/selectors';
-import { getUser, subscribeToFriends } from '../../redux/users/actions';
+import { subscribeToFriends, subscribeToUser } from '../../redux/users/actions';
 import {
   selectUserActionCount,
   selectUserFromId,
@@ -66,7 +66,7 @@ interface StateProps {
 }
 
 interface DispatchProps {
-  getUser: typeof getUser;
+  subscribeToUser: typeof subscribeToUser;
   subscribeToFriends: typeof subscribeToFriends;
   loadUsersPosts: typeof loadUsersPosts;
   startSignOut: typeof startSignOut;
@@ -229,7 +229,7 @@ const mapStateToProps = (state: any, props: any) => {
 };
 
 const mapDispatchToProps = {
-  getUser,
+  subscribeToUser,
   subscribeToFriends,
   loadUsersPosts,
   startSignOut
@@ -260,10 +260,13 @@ class MyList extends Component<Props, OwnState> {
     this.checkUsersPostsListsLoaded();
 
     // get owner user if not already loaded
-    !this.props.ownerUser && this.props.getUser(this.props.ownerUserId);
+    _.isUndefined(this.props.ownerUser) &&
+      this.subscriptions.push(
+        this.props.subscribeToUser(this.props.ownerUserId)
+      );
 
     // get owner friends if not already loaded
-    _.isEmpty(this.props.ownerFriends) &&
+    _.isUndefined(this.props.ownerFriends) &&
       this.subscriptions.push(
         this.props.subscribeToFriends(this.props.ownerUserId)
       );
