@@ -26,6 +26,7 @@ import {
 } from '../../redux/documents/selectors';
 import { generateListKey } from '../../redux/lists/helpers';
 import { selectListItems, selectListMeta } from '../../redux/lists/selectors';
+import { subscribeToFriends } from '../../redux/users/actions';
 import {
   selectUserFromId,
   selectUsersFromList
@@ -42,6 +43,7 @@ interface StateProps {
   commentsData: Array<UsersPosts>;
   commentsMeta: any;
   ownerUserId: string;
+  ownerFriends: Users;
   post: UsersPosts;
   postId: string;
   users: Users;
@@ -50,6 +52,7 @@ interface StateProps {
 interface DispatchProps {
   getUsersPostsDocument: typeof getUsersPostsDocument;
   loadCommentsForUsersPosts: typeof loadCommentsForUsersPosts;
+  subscribeToFriends: typeof subscribeToFriends;
 }
 
 interface OwnProps {
@@ -84,13 +87,22 @@ const mapStateToProps = (
   const ownerUserId = navigation.state.params.ownerUserId;
   const postId = navigation.state.params.postId;
   const authUserId = selectAuthUserId(state);
-  const authUser = selectUserFromId(state, authUserId, true);
+  const authUser = selectUserFromId(state, authUserId, 'presentation');
   const commentsListKey = generateListKey(
     ownerUserId,
     postId,
     queryTypes.COMMENTS_FOR_USERS_POSTS
   );
-  const authFriends = selectUsersFromList(state, `${authUserId}_Friends`, true);
+  const authFriends = selectUsersFromList(
+    state,
+    generateListKey(authUserId, queryTypes.USER_FRIENDS),
+    'presentation'
+  );
+  const ownerFriends = selectUsersFromList(
+    state,
+    generateListKey(ownerUserId, queryTypes.USER_FRIENDS),
+    'presentation'
+  );
 
   return {
     authUserId,
@@ -100,32 +112,41 @@ const mapStateToProps = (
       'comments',
       selectListItems(state, 'commentsLists', commentsListKey),
       commentsListKey,
-      'createdAt'
+      { sortKeys: ['createdAt'], sortDirection: ['desc'] }
     ),
     commentsMeta: selectListMeta(state, 'commentsLists', commentsListKey),
     authFriends,
+    ownerFriends,
     ownerUserId,
     postId,
     post: selectDocumentFromId(state, 'usersPosts', `${ownerUserId}_${postId}`),
     users: {
       [authUserId]: authUser,
-      ...authFriends
+      ...authFriends,
+      ...ownerFriends
     }
   };
 };
 
 const mapDispatchToProps = {
   getUsersPostsDocument,
-  loadCommentsForUsersPosts
+  loadCommentsForUsersPosts,
+  subscribeToFriends
 };
 
 class PostDetail extends Component<Props, OwnState> {
+  static whyDidYouRender = true;
+
+  subscriptions: Array<any>;
   constructor(props: Props) {
     super(props);
+
     this.state = {
       isLoading: true,
       isCommentsLoading: true
     };
+
+    this.subscriptions = [];
   }
 
   componentDidMount() {
@@ -138,6 +159,7 @@ class PostDetail extends Component<Props, OwnState> {
         this.props.postId
       );
     }
+
     if (this.state.isCommentsLoading) {
       this.props.loadCommentsForUsersPosts(
         generateListKey(
@@ -151,6 +173,11 @@ class PostDetail extends Component<Props, OwnState> {
         )
       );
     }
+    // get owner friends if not already loaded
+    _.isUndefined(this.props.ownerFriends) &&
+      this.subscriptions.push(
+        this.props.subscribeToFriends(this.props.ownerUserId)
+      );
   }
 
   componentDidUpdate(prevProps: Props) {
@@ -158,7 +185,11 @@ class PostDetail extends Component<Props, OwnState> {
     this.checkCommentsLoading();
   }
 
-  componentWillUnmount() {}
+  componentWillUnmount() {
+    Object.values(this.subscriptions).forEach((unsubscribe) => {
+      unsubscribe();
+    });
+  }
 
   checkScreenLoading = () => {
     if (
@@ -349,14 +380,18 @@ class PostDetail extends Component<Props, OwnState> {
 
   // TODO: add comment type definition
   renderItem = ({ item }: { item: any }) => {
+    const user = this.state.isCommentsLoading
+      ? undefined
+      : this.props.users[item.userId];
+
+    if (!user && !this.state.isCommentsLoading) {
+      return;
+    }
+
     return (
       <UserTextDate
         isLoading={this.state.isCommentsLoading}
-        user={
-          this.state.isCommentsLoading
-            ? undefined
-            : this.props.users[item.userId]
-        }
+        user={user}
         text={item.text}
         createdAt={
           this.state.isCommentsLoading ? undefined : item.createdAt.toDate()

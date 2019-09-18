@@ -97,11 +97,15 @@ export const updateCounts = (
   friends: Array<documentId> = []
 ) => {
   // update user
+  if (_.isEmpty(users)) {
+    updateUserCounts(batcher, isIncremental, action, userId);
+  } else {
+    _.forEach(users, (userId) => {
+      updateUserCounts(batcher, isIncremental, action, userId);
+    });
+  }
+
   // update users posts
-  // update post
-
-  updatePostCounts(batcher, isIncremental, action, postId);
-
   updateUsersPostsCounts(
     batcher,
     isIncremental,
@@ -123,14 +127,6 @@ export const updateCounts = (
     );
   }
 
-  if (_.isEmpty(users)) {
-    updateUserCounts(batcher, isIncremental, action, userId);
-  } else {
-    _.forEach(users, (userId) => {
-      updateUserCounts(batcher, isIncremental, action, userId);
-    });
-  }
-
   if (!_.isEmpty(friends)) {
     _.forEach(friends, (friendUserId) => {
       updateUsersPostsCounts(
@@ -144,6 +140,9 @@ export const updateCounts = (
       );
     });
   }
+
+  // update post
+  updatePostCounts(batcher, isIncremental, action, postId);
 };
 
 export const overwriteUserCounts = (

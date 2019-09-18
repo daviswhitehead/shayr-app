@@ -22,6 +22,7 @@ import {
 import { generateListKey } from './lists/helpers';
 
 export type StateKey =
+  | 'friendships'
   | 'users'
   | 'notifications'
   | 'usersPosts'
@@ -33,6 +34,7 @@ export type StateKey =
   | 'likes';
 
 export type StateKeyLists =
+  | 'usersLists'
   | 'usersPostsLists'
   | 'notificationsLists'
   | 'addsLists'
@@ -156,6 +158,12 @@ export const subscribeToAllDocuments = (
   return query.onSnapshot(
     (querySnapshot: QuerySnapshot) => {
       const listKey = generateListKey(ownerUserId, listName);
+
+      // if a write isn't complete, don't do anything
+      // this can cause errors by pulling down incomplete data
+      if (querySnapshot.metadata.hasPendingWrites) {
+        return;
+      }
 
       dispatch(listRefreshing(stateKeyList, listKey));
 

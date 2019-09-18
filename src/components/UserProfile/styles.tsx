@@ -16,9 +16,17 @@ export default StyleSheet.create({
     flex: 1,
     flexDirection: 'column'
   },
+  iconsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center'
+  },
   profileName: {
     ...fontSystem.H2,
     marginVertical: Layout.SPACING_MEDIUM
+  },
+  actionsSpacer: {
+    width: Layout.SPACING_LONG
   },
   skeletonProfileName: {
     height: 24,

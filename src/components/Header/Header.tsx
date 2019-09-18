@@ -2,7 +2,7 @@ import React, { memo, SFC } from 'react';
 import { SafeAreaView, StatusBarStyle, Text, View } from 'react-native';
 import { createShadow } from '../../styles/Shadows';
 import Icon, { names } from '../Icon';
-import ShayrStatusBar from './ShayrStatusBar';
+import StatusBar from '../StatusBar';
 import styles from './styles';
 
 interface Props {
@@ -36,7 +36,7 @@ const Header: SFC<Props> = ({
         backgroundColor
       }}
     >
-      <ShayrStatusBar
+      <StatusBar
         translucent={statusBarTranslucent}
         hidden={statusBarHidden}
         barStyle={statusBarStyle}

@@ -1,4 +1,4 @@
-import { User, UsersPosts } from '@daviswhitehead/shayr-resources';
+import { documentIds, User, UsersPosts } from '@daviswhitehead/shayr-resources';
 import _ from 'lodash';
 import React, { Component } from 'react';
 import { Alert, View } from 'react-native';
@@ -24,12 +24,11 @@ import { getQuery, queryTypes } from '../../lib/FirebaseQueries';
 import { startSignOut } from '../../redux/auth/actions';
 import { selectAuthUserId } from '../../redux/auth/selectors';
 import { selectFlatListReadyDocuments } from '../../redux/documents/selectors';
-import { subscribeToFriendships } from '../../redux/friendships/actions';
 import { generateListKey } from '../../redux/lists/helpers';
 import { selectListItems, selectListMeta } from '../../redux/lists/selectors';
-import { getUser } from '../../redux/users/actions';
+import { subscribeToFriends, subscribeToUser } from '../../redux/users/actions';
 import {
-  selectUserActionCounts,
+  selectUserActionCount,
   selectUserFromId,
   selectUsersFromList
 } from '../../redux/users/selectors';
@@ -67,8 +66,8 @@ interface StateProps {
 }
 
 interface DispatchProps {
-  getUser: typeof getUser;
-  subscribeToFriendships: typeof subscribeToFriendships;
+  subscribeToUser: typeof subscribeToUser;
+  subscribeToFriends: typeof subscribeToFriends;
   loadUsersPosts: typeof loadUsersPosts;
   startSignOut: typeof startSignOut;
 }
@@ -113,37 +112,47 @@ const mapStateToProps = (state: any, props: any) => {
     shares: generateListKey(ownerUserId, queryTypes.USERS_POSTS_SHARES)
   };
 
+  const authFriends = selectUsersFromList(
+    state,
+    generateListKey(authUserId, queryTypes.USER_FRIENDS),
+    'presentation'
+  );
+
   return {
     authIsOwner: authUserId === ownerUserId,
-    authUser: selectUserFromId(state, authUserId, true),
+    authUser: selectUserFromId(state, authUserId, 'presentation'),
     authUserId,
-    authFriends: selectUsersFromList(state, `${authUserId}_Friends`, true),
-    ownerAddsCount: selectUserActionCounts(
+    authFriends,
+    ownerAddsCount: selectUserActionCount(
       state,
       ownerUserId,
-      false,
+      'profile',
       'addsCount'
     ),
-    ownerDonesCount: selectUserActionCounts(
+    ownerDonesCount: selectUserActionCount(
       state,
       ownerUserId,
-      false,
+      'profile',
       'donesCount'
     ),
-    ownerFriends: selectUsersFromList(state, `${ownerUserId}_Friends`, true),
-    ownerCommentsCount: selectUserActionCounts(
+    ownerFriends: selectUsersFromList(
+      state,
+      generateListKey(ownerUserId, queryTypes.USER_FRIENDS),
+      'presentation'
+    ),
+    ownerCommentsCount: selectUserActionCount(
       state,
       ownerUserId,
-      false,
+      'profile',
       'commentsCount'
     ),
-    ownerSharesCount: selectUserActionCounts(
+    ownerSharesCount: selectUserActionCount(
       state,
       ownerUserId,
-      false,
+      'profile',
       'sharesCount'
     ),
-    ownerUser: selectUserFromId(state, ownerUserId, true),
+    ownerUser: selectUserFromId(state, ownerUserId, 'profile'),
     ownerUserId,
     usersPostsListsData: {
       [usersPostsListsViews.adds]: selectFlatListReadyDocuments(
@@ -151,14 +160,14 @@ const mapStateToProps = (state: any, props: any) => {
         'usersPosts',
         selectListItems(state, 'usersPostsLists', usersPostsListsViews.adds),
         usersPostsListsViews.adds,
-        'updatedAt'
+        { sortKeys: ['updatedAt'], sortDirection: ['desc'] }
       ),
       [usersPostsListsViews.dones]: selectFlatListReadyDocuments(
         state,
         'usersPosts',
         selectListItems(state, 'usersPostsLists', usersPostsListsViews.dones),
         usersPostsListsViews.dones,
-        'updatedAt'
+        { sortKeys: ['updatedAt'], sortDirection: ['desc'] }
       ),
       [usersPostsListsViews.comments]: selectFlatListReadyDocuments(
         state,
@@ -169,14 +178,14 @@ const mapStateToProps = (state: any, props: any) => {
           usersPostsListsViews.comments
         ),
         usersPostsListsViews.comments,
-        'updatedAt'
+        { sortKeys: ['updatedAt'], sortDirection: ['desc'] }
       ),
       [usersPostsListsViews.shares]: selectFlatListReadyDocuments(
         state,
         'usersPosts',
         selectListItems(state, 'usersPostsLists', usersPostsListsViews.shares),
         usersPostsListsViews.shares,
-        'updatedAt'
+        { sortKeys: ['updatedAt'], sortDirection: ['desc'] }
       )
     },
     usersPostsListsMeta: {
@@ -220,8 +229,8 @@ const mapStateToProps = (state: any, props: any) => {
 };
 
 const mapDispatchToProps = {
-  getUser,
-  subscribeToFriendships,
+  subscribeToUser,
+  subscribeToFriends,
   loadUsersPosts,
   startSignOut
 };
@@ -251,12 +260,15 @@ class MyList extends Component<Props, OwnState> {
     this.checkUsersPostsListsLoaded();
 
     // get owner user if not already loaded
-    !this.props.ownerUser && this.props.getUser(this.props.ownerUserId);
+    _.isUndefined(this.props.ownerUser) &&
+      this.subscriptions.push(
+        this.props.subscribeToUser(this.props.ownerUserId)
+      );
 
     // get owner friends if not already loaded
-    _.isEmpty(this.props.ownerFriends) &&
+    _.isUndefined(this.props.ownerFriends) &&
       this.subscriptions.push(
-        this.props.subscribeToFriendships(this.props.ownerUserId)
+        this.props.subscribeToFriends(this.props.ownerUserId)
       );
 
     // SOMEDAY: load list data in the right order and/or in advance
@@ -572,6 +584,9 @@ class MyList extends Component<Props, OwnState> {
           )}
           firstName={_.get(this.props, ['ownerUser', 'firstName'], null)}
           lastName={_.get(this.props, ['ownerUser', 'lastName'], null)}
+          friendsCount={_.get(this.props, ['ownerUser', 'friendsCount'], 0)}
+          authIsOwner={this.props.authIsOwner}
+          ownerUserId={this.props.ownerUserId}
         />
         <SegmentedControl
           isLoading={this.state.isSegmentedControlLoading}

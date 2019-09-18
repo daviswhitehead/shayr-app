@@ -7,6 +7,7 @@ import { State } from '../Reducers';
 
 const selectListState = (state: State, stateKey: StateKeyLists) =>
   state[stateKey];
+
 const selectListKey = (
   state: State,
   stateKey: StateKeyLists,

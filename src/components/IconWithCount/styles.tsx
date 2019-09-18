@@ -27,7 +27,7 @@ export default StyleSheet.create({
   },
   skeleton: {
     height: 24,
-    width: 24 * 2 + Layout.SPACING_LONG,
+    width: 24 * 2,
     borderRadius: Layout.BORDER_RADIUS_MEDIUM
   }
 });

@@ -36,7 +36,9 @@ const TabBar: SFC<Props> = ({ onTabPress, onTabLongPress, navigation }) => {
 
   // visibility logic
   const currentRoute = getActiveRouteName(navigation.state);
-  const visible = !(['PostDetail', 'Settings'].indexOf(currentRoute) >= 0);
+  const visible = !(
+    ['PostDetail', 'Settings', 'FindFriends'].indexOf(currentRoute) >= 0
+  );
 
   return visible ? (
     <View style={styles.container}>

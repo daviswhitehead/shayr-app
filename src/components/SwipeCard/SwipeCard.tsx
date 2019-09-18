@@ -211,20 +211,6 @@ class SwipeCard extends PureComponent<Props, State> {
   // }
 
   render() {
-    // console.log(`SwipeCard - Render`);
-    // console.log('this.props');
-    // console.log(this.props);
-    // console.log('this.state');
-    // console.log(this.state);
-    // console.log('this.leftAction');
-    // console.log(this.leftAction);
-    // console.log('this.leftActionFunction');
-    // console.log(this.leftActionFunction);
-    // console.log('this.rightAction');
-    // console.log(this.rightAction);
-    // console.log('this.rightActionFunction');
-    // console.log(this.rightActionFunction);
-
     const {
       isLeftActive,
       leftDragDistance,

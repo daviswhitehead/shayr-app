@@ -2,13 +2,9 @@ import { combineReducers } from 'redux';
 import appReducer from './app/reducer';
 import authReducer, { State as AuthState } from './auth/reducer';
 import documentsReducer, { State as DocumentsState } from './documents/reducer';
-import friendshipsReducer from './friendships/reducer';
-import friendshipsListsReducer from './friendshipsLists/reducer';
 import listsReducer, { State as ListsState } from './lists/reducer';
 import { createNamedWrapperReducer } from './ReducerHelpers';
 import routingReducer, { State as RoutingState } from './routing/reducer';
-import usersReducer, { State as UsersState } from './users/reducer';
-import usersListsReducer from './usersLists/reducer';
 
 export interface State {
   adds: DocumentsState;
@@ -18,6 +14,8 @@ export interface State {
   commentsLists: ListsState;
   dones: DocumentsState;
   donesLists: ListsState;
+  friendships: DocumentsState;
+  friendshipsLists: ListsState;
   likes: DocumentsState;
   likesLists: ListsState;
   notifications: DocumentsState;
@@ -26,7 +24,8 @@ export interface State {
   routing: RoutingState;
   shares: DocumentsState;
   sharesLists: ListsState;
-  users: UsersState;
+  users: DocumentsState;
+  usersLists: ListsState;
   usersPosts: DocumentsState;
   usersPostsLists: ListsState;
 }
@@ -41,8 +40,11 @@ export const makeRootReducer = () =>
     commentsLists: createNamedWrapperReducer(listsReducer, 'commentsLists'),
     dones: createNamedWrapperReducer(documentsReducer, 'dones'),
     donesLists: createNamedWrapperReducer(listsReducer, 'donesLists'),
-    friendships: friendshipsReducer,
-    friendshipsLists: friendshipsListsReducer,
+    friendships: createNamedWrapperReducer(documentsReducer, 'friendships'),
+    friendshipsLists: createNamedWrapperReducer(
+      listsReducer,
+      'friendshipsLists'
+    ),
     likes: createNamedWrapperReducer(documentsReducer, 'likes'),
     likesLists: createNamedWrapperReducer(listsReducer, 'likesLists'),
     notifications: createNamedWrapperReducer(documentsReducer, 'notifications'),
@@ -54,8 +56,8 @@ export const makeRootReducer = () =>
     routing: routingReducer,
     shares: createNamedWrapperReducer(documentsReducer, 'shares'),
     sharesLists: createNamedWrapperReducer(listsReducer, 'sharesLists'),
-    users: usersReducer,
-    usersLists: usersListsReducer,
+    users: createNamedWrapperReducer(documentsReducer, 'users'),
+    usersLists: createNamedWrapperReducer(listsReducer, 'usersLists'),
     usersPosts: createNamedWrapperReducer(documentsReducer, 'usersPosts'),
     usersPostsLists: createNamedWrapperReducer(listsReducer, 'usersPostsLists')
   });
