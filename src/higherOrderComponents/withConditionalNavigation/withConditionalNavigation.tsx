@@ -17,12 +17,14 @@ interface StateProps {
   authUserId: string;
 }
 
-interface OwnProps {
-  userId: documentId;
+interface WithNavigationProps {
   navigation: Navigation;
 }
+interface OwnProps {
+  userId: documentId;
+}
 
-type Props = OwnProps & StateProps;
+type Props = OwnProps & StateProps & WithNavigationProps;
 
 const mapStateToProps = (state: any) => {
   return {
@@ -30,7 +32,10 @@ const mapStateToProps = (state: any) => {
   };
 };
 
-const withNavigateToTheirList = (WrappedComponent: SFC) => (props: Props) => {
+const withConditionalNavigation = (
+  WrappedComponent: SFC,
+  route: 'MyList' | 'Friends'
+) => (props: Props) => {
   const { userId, authUserId, navigation, ...passThroughProps } = props;
 
   const isTopLevelRoute =
@@ -42,26 +47,26 @@ const withNavigateToTheirList = (WrappedComponent: SFC) => (props: Props) => {
   if (userId) {
     navigateToTheirList = () =>
       navigation.navigate({
-        routeName: 'MyList',
+        routeName: `${route}`,
         params: {
           ownerUserId: userId
         },
-        key: `MyList:${userId}`
+        key: `${route}:${userId}`
       });
   }
   if (userId === authUserId) {
     navigateToTheirList = isTopLevelRoute
       ? () =>
-          navigation.navigate('MyListTab', {
+          navigation.navigate(`${route}Tab`, {
             ownerUserId: userId
           })
       : () =>
           navigation.navigate({
-            routeName: 'MyList',
+            routeName: `${route}`,
             params: {
               ownerUserId: userId
             },
-            key: `MyList:${userId}`
+            key: `${route}:${userId}`
           });
   }
 
@@ -82,5 +87,5 @@ export default compose(
     }
   ),
   withNavigation,
-  withNavigateToTheirList
+  withConditionalNavigation
 );

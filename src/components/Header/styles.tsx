@@ -1,18 +1,18 @@
-import { StyleSheet, Platform } from 'react-native';
-import layout from '../../styles/Layout';
+import { StyleSheet } from 'react-native';
 import { fontSystem } from '../../styles/Fonts';
+import Layout from '../../styles/Layout';
 
 export default StyleSheet.create({
   container: {},
   header: {
-    height: Platform.OS === 'ios' ? 44 : 56
+    height: Layout.HEADER_HEIGHT
   },
   headerBox: {
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginHorizontal: layout.SPACING_LONG
+    marginHorizontal: Layout.SPACING_LONG
   },
   titleBox: {
     textAlign: 'center'

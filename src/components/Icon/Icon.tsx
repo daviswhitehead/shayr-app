@@ -1,5 +1,7 @@
+import _ from 'lodash';
 import React, { ComponentProps, memo, SFC } from 'react';
 import { Image, View } from 'react-native';
+import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Colors from '../../styles/Colors';
 import Skeleton from '../Skeleton';
 import TouchableWrapper from '../TouchableWrapper';
@@ -16,6 +18,7 @@ export enum names {
   DONE = 'done',
   DISCOVER = 'discover',
   DISCOVER_ACTIVE = 'discover-active',
+  FACEBOOK = 'facebook',
   FLAME = 'flame',
   FRIENDS = 'friends',
   FRIENDS_ACTIVE = 'friends-active',
@@ -48,6 +51,9 @@ const iconMap = {
   [names.DONE]: require('../../assets/icons/icon-done.png'),
   [names.DISCOVER]: require('../../assets/icons/icon-discover.png'),
   [names.DISCOVER_ACTIVE]: require('../../assets/icons/icon-discover-active.png'),
+  [names.FACEBOOK]: (props: any) => (
+    <MaterialCommunityIcon name='facebook-box' size={props.size} />
+  ),
   [names.FLAME]: require('../../assets/icons/icon-flame.png'),
   [names.FRIENDS_ACTIVE]: require('../../assets/icons/icon-friends-active.png'),
   [names.FRIENDS]: require('../../assets/icons/icon-friends.png'),
@@ -69,8 +75,11 @@ const iconMap = {
   [names.X_EXIT]: require('../../assets/icons/icon-x-exit.png')
 };
 
+const specialIcons = [names.FACEBOOK];
+
 interface Props extends ComponentProps<typeof TouchableWrapper> {
   name: names;
+  size?: number;
   isActive?: boolean;
   iconStyle?: any;
   isLoading?: boolean;
@@ -79,6 +88,7 @@ interface Props extends ComponentProps<typeof TouchableWrapper> {
 
 const Icon: SFC<Props> = ({
   name,
+  size,
   isActive = false,
   iconStyle = {},
   isLoading,
@@ -109,7 +119,11 @@ const Icon: SFC<Props> = ({
       onPress={onPress}
       noTouching={noTouching}
     >
-      <Image source={iconMap[name]} style={_iconStyle} />
+      {_.includes(specialIcons, name) ? (
+        iconMap[name]({ style: { _iconStyle }, size })
+      ) : (
+        <Image source={iconMap[name]} style={_iconStyle} />
+      )}
       {hasBadge && <View style={styles.badge} />}
     </TouchableWrapper>
   );

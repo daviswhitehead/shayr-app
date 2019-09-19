@@ -3,8 +3,8 @@ import _ from 'lodash';
 import moment from 'moment';
 import React, { memo, SFC } from 'react';
 import { Text, View } from 'react-native';
+import { UserAvatarWithMyListNavigation } from '../../higherOrderComponents/withConditionalNavigation';
 import Skeleton from '../Skeleton';
-import SmartUserAvatar from '../SmartUserAvatar';
 import TouchableWrapper from '../TouchableWrapper';
 import UserImage from '../UserImage';
 import styles from './styles';
@@ -16,7 +16,6 @@ interface Props {
   onPressContainer?: () => void | undefined;
   noTouching?: boolean;
   isLoading?: boolean;
-  isNotification?: boolean;
 }
 
 const UserTextDate: SFC<Props> = ({
@@ -25,8 +24,7 @@ const UserTextDate: SFC<Props> = ({
   onPressContainer,
   user,
   noTouching = false,
-  isLoading = false,
-  isNotification = false
+  isLoading = false
 }: Props) => {
   if (isLoading) {
     return (
@@ -40,18 +38,12 @@ const UserTextDate: SFC<Props> = ({
     );
   }
 
-  let parsedText = text;
-  if (isNotification) {
-    parsedText = _.replace(text, `${user.shortName} `, '');
-    parsedText = isNotification ? _.upperFirst(parsedText) : parsedText;
-  }
-
   return (
     <TouchableWrapper
       style={styles.container}
       onPress={noTouching ? undefined : onPressContainer}
     >
-      <SmartUserAvatar
+      <UserAvatarWithMyListNavigation
         {...user}
         shouldHideName
         userId={user._id}
@@ -64,7 +56,7 @@ const UserTextDate: SFC<Props> = ({
           </Text>
           <Text style={styles.date}>{moment(createdAt).fromNow()}</Text>
         </View>
-        <Text style={styles.text}>{_.trim(parsedText)}</Text>
+        <Text style={styles.text}>{_.trim(text)}</Text>
       </View>
     </TouchableWrapper>
   );

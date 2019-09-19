@@ -93,6 +93,7 @@ class List extends Component<Props, OwnState> {
 
     return (
       <FlatList
+        overScrollMode='always'
         style={styles.container}
         // data={this.loadingData}
         // data={tempData}

@@ -9,9 +9,11 @@ import { State } from 'src/src/redux/Reducers';
 import ShareModal from '../../components/ShareModal';
 import { retrieveToken } from '../../lib/AppGroupTokens';
 import { getCurrentUser, getFBAuthCredential } from '../../lib/FirebaseLogin';
+import { queryTypes } from '../../lib/FirebaseQueries';
 import { authSubscription } from '../../redux/auth/actions';
 import { selectAuthUserId } from '../../redux/auth/selectors';
-import { subscribeToFriendships } from '../../redux/friendships/actions';
+import { generateListKey } from '../../redux/lists/helpers';
+import { subscribeToFriends } from '../../redux/users/actions';
 import { selectUsersFromList } from '../../redux/users/selectors';
 
 // TESTING
@@ -30,7 +32,7 @@ interface StateProps {
 }
 
 interface DispatchProps {
-  subscribeToFriendships: typeof subscribeToFriendships;
+  subscribeToFriends: typeof subscribeToFriends;
   authSubscription: typeof authSubscription;
 }
 
@@ -52,12 +54,16 @@ const mapStateToProps = (state: State) => {
 
   return {
     authUserId,
-    friends: selectUsersFromList(state, `${authUserId}_Friends`, true)
+    friends: selectUsersFromList(
+      state,
+      generateListKey(authUserId, queryTypes.USER_FRIENDS),
+      'presentation'
+    )
   };
 };
 
 const mapDispatchToProps = {
-  subscribeToFriendships,
+  subscribeToFriends,
   authSubscription
 };
 
@@ -101,7 +107,7 @@ class Share extends Component<Props, OwnState> {
 
       if (this.props.authUserId) {
         this.subscriptions.push(
-          this.props.subscribeToFriendships(this.props.authUserId)
+          this.props.subscribeToFriends(this.props.authUserId)
         );
       }
       firebase
@@ -120,7 +126,7 @@ class Share extends Component<Props, OwnState> {
     // subscribe to friendships
     if (this.props.authUserId && !prevProps.authUserId) {
       this.subscriptions.push(
-        this.props.subscribeToFriendships(this.props.authUserId)
+        this.props.subscribeToFriends(this.props.authUserId)
       );
     }
     firebase.analytics().logEvent('SHARE_EXTENSION__SUBSCRIBE_TO_FRIENDSHIPS');

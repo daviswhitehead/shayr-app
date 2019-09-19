@@ -1,7 +1,6 @@
 import _ from 'lodash';
 import createCachedSelector from 're-reselect';
 import { StateKey } from '../FirebaseRedux';
-import { selectListItems } from '../lists/selectors';
 import { State } from '../Reducers';
 
 const selectDocumentsState = (state: State, stateKey: StateKey) =>
@@ -27,14 +26,39 @@ export const selectDocumentsFromItems = createCachedSelector(
 
 export const selectFlatListReadyDocuments = createCachedSelector(
   selectDocumentsFromItems,
-  (state, stateKey, items, listKey, sortKey) => sortKey,
-  (documents, sortKey) => {
-    if (!documents || !sortKey) {
+  (state, stateKey, items, listKey, options) => options,
+  (documents, options) => {
+    if (!documents) {
       return;
     }
-    return _.reverse(_.sortBy(documents, (value) => value[sortKey]));
+    const defaultOptions = {
+      sortKeys: [],
+      sortDirection: ['desc'],
+      extraData: {},
+      formatting: (o: any) => o,
+      ...options
+    };
+
+    const _options = _.isEmpty(options)
+      ? defaultOptions
+      : { ...defaultOptions, options };
+
+    return _.orderBy(
+      _.reduce(
+        documents,
+        (result, value, key) => {
+          result.push({ ..._options.formatting(value), ..._options.extraData });
+          return result;
+        },
+        []
+      ),
+      _options.sortKeys,
+      _options.sortDirection
+    );
   }
-)(
-  (state, stateKey, items, listKey, sortKey) =>
-    `${stateKey}_${listKey}_${sortKey}`
-);
+)((state, stateKey, items, listKey, options) => {
+  const sortKeys = _.get(options, 'sortKeys', '');
+  const sortDirection = _.get(options, 'sortDirection', '');
+
+  return `${stateKey}_${listKey}_${sortKeys}_${sortDirection}`;
+});

@@ -1,4 +1,4 @@
-import { Dimensions } from 'react-native';
+import { Dimensions, Platform } from 'react-native';
 import { getInset } from 'react-native-safe-area-view';
 
 const width = Dimensions.get('window').width;
@@ -11,6 +11,7 @@ const layout = {
   WINDOW_HEIGHT: height,
   WINDOW_BOTTOM_SAFE_AREA: getInset('bottom', landScape),
   WINDOW_TOP_SAFE_AREA: getInset('top', landScape),
+  HEADER_HEIGHT: Platform.OS === 'ios' ? 44 : 56,
   SPACING_EXTRA_LONG: 32,
   SPACING_LONG: 16,
   SPACING_MEDIUM: 8,

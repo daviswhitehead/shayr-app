@@ -5,8 +5,10 @@ import { View } from 'react-native';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import DoneModal from '../../components/DoneModal';
+import { queryTypes } from '../../lib/FirebaseQueries';
 import { selectAuthUserId } from '../../redux/auth/selectors';
 import { toggleAddDonePost } from '../../redux/dones/actions';
+import { generateListKey } from '../../redux/lists/helpers';
 import { selectUsersFromList } from '../../redux/users/selectors';
 
 interface StateProps {
@@ -30,12 +32,14 @@ interface OwnProps {
 type Props = OwnProps & StateProps & DispatchProps;
 
 const mapStateToProps = (state: any) => {
+  const authUserId = selectAuthUserId(state);
+
   return {
-    authUserId: selectAuthUserId(state),
+    authUserId,
     friends: selectUsersFromList(
       state,
-      `${selectAuthUserId(state)}_Friends`,
-      true
+      generateListKey(authUserId, queryTypes.USER_FRIENDS),
+      'presentation'
     )
   };
 };
@@ -118,10 +122,21 @@ export default compose(
     undefined,
     {
       areStatesEqual: (next, prev) => {
+        const prevAuthUserId = selectAuthUserId(prev);
+        const nextAuthUserId = selectAuthUserId(prev);
+
         return (
-          selectAuthUserId(next) === selectAuthUserId(prev) &&
-          selectUsersFromList(next, `${selectAuthUserId(next)}_Friends`) ===
-            selectUsersFromList(prev, `${selectAuthUserId(prev)}_Friends`)
+          nextAuthUserId === prevAuthUserId &&
+          selectUsersFromList(
+            next,
+            generateListKey(nextAuthUserId, queryTypes.USER_FRIENDS),
+            'presentation'
+          ) ===
+            selectUsersFromList(
+              prev,
+              generateListKey(prevAuthUserId, queryTypes.USER_FRIENDS),
+              'presentation'
+            )
         );
       }
     }

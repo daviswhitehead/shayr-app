@@ -1,5 +1,6 @@
 import { StyleSheet } from 'react-native';
 import Colors from '../../styles/Colors';
+import Stylesheet from '../../styles/Stylesheet';
 
 export default StyleSheet.create({
   screen: {
@@ -7,6 +8,10 @@ export default StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'stretch',
     justifyContent: 'flex-start'
+  },
+  notificationRow: {
+    ...Stylesheet.row,
+    padding: 0
   },
   unreadNotification: {
     backgroundColor: Colors.BLUE20

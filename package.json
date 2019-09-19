@@ -15,6 +15,8 @@
     "release:ios:alpha": "sh scripts/env_manager.sh alpha && fastlane ios beta --env default",
     "release:ios:beta": "sh scripts/env_manager.sh prod && fastlane ios beta",
     "release:ios:prod": "sh scripts/env_manager.sh prod && fastlane ios prod",
+    "release:alpha": "yarn reset && yarn release:ios:alpha && yarn release:android:alpha",
+    "release:beta": "yarn reset && yarn release:ios:beta && yarn release:android:beta",
     "codepush:android:alpha": "appcenter codepush release-react -a whitehead.davis/Shayr-Android -d alpha",
     "codepush:android:prod": "appcenter codepush release-react -a whitehead.davis/Shayr-Android -d prod",
     "codepush:ios:alpha": "appcenter codepush release-react -a whitehead.davis/Shayr-iOS -d alpha",
@@ -33,7 +35,7 @@
     "shayr-resources": "yarn add @daviswhitehead/shayr-resources@latest"
   },
   "dependencies": {
-    "@daviswhitehead/shayr-resources": "^1.2.16",
+    "@daviswhitehead/shayr-resources": "^1.3.1",
     "@welldone-software/why-did-you-render": "^3.3.1",
     "adm-zip": "^0.4.13",
     "bluebird": "^3.5.3",
@@ -41,6 +43,7 @@
     "fb": "^2.0.0",
     "fbjs": "^0.8.16",
     "fsevents": "^1.2.9",
+    "fuzzysort": "^1.1.4",
     "jetifier": "^1.6.3",
     "lodash": "^4.17.5",
     "moment": "^2.24.0",

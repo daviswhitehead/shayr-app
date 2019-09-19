@@ -1,5 +1,5 @@
 import React, { memo, SFC } from 'react';
-import { StatusBar, StatusBarStyle, View } from 'react-native';
+import { StatusBar as RNStatusBar, StatusBarStyle, View } from 'react-native';
 import styles from './styles';
 
 interface Props {
@@ -9,7 +9,7 @@ interface Props {
   hidden?: boolean;
 }
 
-const ShayrStatusBar: SFC<Props> = ({
+const StatusBar: SFC<Props> = ({
   barStyle,
   backgroundColor,
   translucent,
@@ -22,7 +22,7 @@ const ShayrStatusBar: SFC<Props> = ({
         backgroundColor
       }}
     >
-      <StatusBar
+      <RNStatusBar
         barStyle={barStyle}
         translucent={translucent}
         hidden={hidden}
@@ -32,4 +32,4 @@ const ShayrStatusBar: SFC<Props> = ({
   );
 };
 
-export default memo(ShayrStatusBar);
+export default memo(StatusBar);
