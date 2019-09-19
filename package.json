@@ -15,6 +15,8 @@
     "release:ios:alpha": "sh scripts/env_manager.sh alpha && fastlane ios beta --env default",
     "release:ios:beta": "sh scripts/env_manager.sh prod && fastlane ios beta",
     "release:ios:prod": "sh scripts/env_manager.sh prod && fastlane ios prod",
+    "release:alpha": "yarn reset && yarn release:ios:alpha && yarn release:android:alpha",
+    "release:beta": "yarn reset && yarn release:ios:beta && yarn release:android:beta",
     "codepush:android:alpha": "appcenter codepush release-react -a whitehead.davis/Shayr-Android -d alpha",
     "codepush:android:prod": "appcenter codepush release-react -a whitehead.davis/Shayr-Android -d prod",
     "codepush:ios:alpha": "appcenter codepush release-react -a whitehead.davis/Shayr-iOS -d alpha",
