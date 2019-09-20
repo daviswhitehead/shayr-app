@@ -63,7 +63,7 @@ const UserProfile: SFC<Props> = ({
           {firstName} {lastName}
         </Text>
         <View style={styles.iconsContainer}>
-          <IconWithCountFriendsNavigation
+          <IconWithCount
             userId={ownerUserId}
             name={names.FRIENDS}
             count={friendsCount}

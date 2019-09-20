@@ -4,11 +4,12 @@ import React, { Component } from 'react';
 import { Linking, View } from 'react-native';
 import firebase from 'react-native-firebase';
 import { Query } from 'react-native-firebase/firestore';
-import { NavigationScreenProps } from 'react-navigation';
-import { withNavigationFocus } from 'react-navigation';
+// import { NavigationScreenProps } from 'react-navigation';
+// import { withNavigationFocus } from 'react-navigation';
 import { connect } from 'react-redux';
 import Header from '../../components/Header';
 import List from '../../components/List';
+import globalRouter from '../../components/TempRouter/RouterSingleton';
 import UserTextDate from '../../components/UserTextDate';
 import { getQuery, queryTypes } from '../../lib/FirebaseQueries';
 import { selectAuthUserId } from '../../redux/auth/selectors';
@@ -278,7 +279,8 @@ class Notifications extends Component<Props, OwnState> {
           statusBarStyle='dark-content'
           shadow
           title='Notifications'
-          back={() => this.props.navigation.goBack(null)}
+          back={globalRouter.back}
+          // back={() => this.props.navigation.goBack(null)}
         />
         <List
           noSeparator
@@ -309,15 +311,25 @@ class Notifications extends Component<Props, OwnState> {
   }
 }
 
-export default withNavigationFocus(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps,
-    undefined,
-    {
-      areStatePropsEqual: (next: any, prev: any) => {
-        return _.isEqual(next, prev);
-      }
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+  undefined,
+  {
+    areStatePropsEqual: (next: any, prev: any) => {
+      return _.isEqual(next, prev);
     }
-  )(Notifications)
-);
+  }
+)(Notifications);
+// export default withNavigationFocus(
+//   connect(
+//     mapStateToProps,
+//     mapDispatchToProps,
+//     undefined,
+//     {
+//       areStatePropsEqual: (next: any, prev: any) => {
+//         return _.isEqual(next, prev);
+//       }
+//     }
+//   )(Notifications)
+// );

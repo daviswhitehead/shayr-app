@@ -3,6 +3,7 @@ import _ from 'lodash';
 import React, { memo, SFC } from 'react';
 import { ScrollView, View } from 'react-native';
 import { UserAvatarWithMyListNavigation } from '../../higherOrderComponents/withConditionalNavigation';
+import UserAvatar from '../UserAvatar';
 import styles from './styles';
 
 interface Users {
@@ -21,7 +22,7 @@ const UserAvatarsScrollView: SFC<Props> = ({ users }: Props) => {
         (result: Array<JSX.Element>, value: any, key: string) => {
           result.push(
             <View style={styles.avatarContainer} key={key}>
-              <UserAvatarWithMyListNavigation {...value} userId={value._id} />
+              <UserAvatar {...value} userId={value._id} />
             </View>
           );
           return result;

@@ -2,11 +2,11 @@ import { User, UsersPosts } from '@daviswhitehead/shayr-resources';
 import _ from 'lodash';
 import React, { Component } from 'react';
 import { Text, View } from 'react-native';
-import {
-  NavigationScreenProps,
-  NavigationState,
-  withNavigationFocus
-} from 'react-navigation';
+// import {
+//   NavigationScreenProps,
+//   NavigationState,
+//   withNavigationFocus
+// } from 'react-navigation';
 import { connect } from 'react-redux';
 import ActionBar from '../../components/ActionBar';
 import Header from '../../components/Header';
@@ -14,6 +14,7 @@ import Icon, { names } from '../../components/Icon';
 import List from '../../components/List';
 import Loading from '../../components/Loading';
 import PostCard from '../../components/PostCard';
+import globalRouter from '../../components/TempRouter/RouterSingleton';
 import UserAvatarsScrollView from '../../components/UserAvatarsScrollView';
 import UserTextDate from '../../components/UserTextDate';
 import { getQuery, queryTypes } from '../../lib/FirebaseQueries';
@@ -82,10 +83,13 @@ type ActionType = 'shares' | 'adds' | 'dones' | 'comments';
 
 const mapStateToProps = (
   state: any,
-  { navigation }: NavigationScreenProps<NavigationState, NavigationParams>
+  // { navigation }: NavigationScreenProps<NavigationState, NavigationParams>
+  { ownerUserId, postId }
 ) => {
-  const ownerUserId = navigation.state.params.ownerUserId;
-  const postId = navigation.state.params.postId;
+  // const ownerUserId = ownerUserId;
+  // const postId = postId;
+  // const ownerUserId = navigation.state.params.ownerUserId;
+  // const postId = navigation.state.params.postId;
   const authUserId = selectAuthUserId(state);
   const authUser = selectUserFromId(state, authUserId, 'presentation');
   const commentsListKey = generateListKey(
@@ -448,7 +452,7 @@ class PostDetail extends Component<Props, OwnState> {
             backgroundColor={Colors.WHITE}
             statusBarStyle='dark-content'
             title=''
-            back={() => this.props.navigation.goBack(null)}
+            back={globalRouter.back}
           />
         ) : null}
         <List
@@ -503,15 +507,25 @@ class PostDetail extends Component<Props, OwnState> {
   }
 }
 
-export default withNavigationFocus(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps,
-    undefined,
-    {
-      areStatePropsEqual: (next: any, prev: any) => {
-        return _.isEqual(next, prev);
-      }
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+  undefined,
+  {
+    areStatePropsEqual: (next: any, prev: any) => {
+      return _.isEqual(next, prev);
     }
-  )(PostDetail)
-);
+  }
+)(PostDetail);
+// export default withNavigationFocus(
+//   connect(
+//     mapStateToProps,
+//     mapDispatchToProps,
+//     undefined,
+//     {
+//       areStatePropsEqual: (next: any, prev: any) => {
+//         return _.isEqual(next, prev);
+//       }
+//     }
+//   )(PostDetail)
+// );

@@ -13,6 +13,7 @@ import FriendSummaryRow from '../../components/FriendSummaryRow';
 import Header from '../../components/Header';
 import Icon, { names } from '../../components/Icon';
 import List from '../../components/List';
+import globalRouter from '../../components/TempRouter/RouterSingleton';
 import { queryTypes } from '../../lib/FirebaseQueries';
 import { selectAuthUserId } from '../../redux/auth/selectors';
 import { selectFlatListReadyDocuments } from '../../redux/documents/selectors';
@@ -30,6 +31,7 @@ import {
   formatUserForProfile
 } from '../../redux/users/selectors';
 import Colors from '../../styles/Colors';
+import FindFriends from '../FindFriends';
 import styles from './styles';
 
 interface StateProps {
@@ -151,7 +153,7 @@ class Friends extends PureComponent<Props, OwnState> {
   renderListHeader = () => {
     return _.isEmpty(this.props.pendingFriendshipUserIds) ? null : (
       <ActionRow
-        onPress={() => this.props.navigation.navigate('FindFriends', {})}
+        // onPress={() => this.props.navigation.navigate('FindFriends', {})}
         iconName={names.ACCEPT_FRIEND}
         copy={`View your ${
           this.props.pendingFriendshipUserIds.length
@@ -168,18 +170,12 @@ class Friends extends PureComponent<Props, OwnState> {
           statusBarStyle='dark-content'
           shadow
           title={this.props.authIsOwner ? 'My Friends' : 'Their Friends'}
-          back={
-            this.props.navigation.state.key.slice(0, 3) === 'id-'
-              ? undefined
-              : () => this.props.navigation.goBack(null)
-          }
+          back={globalRouter.back}
           rightIcons={
             this.props.authIsOwner ? (
               <Icon
                 name={names.ADD_FRIEND}
-                onPress={() =>
-                  this.props.navigation.navigate('FindFriends', {})
-                }
+                onPress={() => globalRouter.push(FindFriends)}
               />
             ) : (
               undefined

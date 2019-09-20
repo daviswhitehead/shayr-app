@@ -2,7 +2,7 @@ import { User, UsersPosts } from '@daviswhitehead/shayr-resources';
 import _ from 'lodash';
 import React, { PureComponent } from 'react';
 import { View } from 'react-native';
-import { NavigationScreenProps } from 'react-navigation';
+// import { NavigationScreenProps } from 'react-navigation';
 import { connect } from 'react-redux';
 import { subscribe } from 'redux-subscriber';
 import Header from '../../components/Header';
@@ -10,6 +10,7 @@ import Icon, { names } from '../../components/Icon';
 import List from '../../components/List';
 import PostCard from '../../components/PostCard';
 import SwipeCard from '../../components/SwipeCard';
+import globalRouter from '../../components/TempRouter/RouterSingleton';
 import withAdds from '../../higherOrderComponents/withAdds';
 import { getQuery, queryTypes } from '../../lib/FirebaseQueries';
 import { selectAuthUserId } from '../../redux/auth/selectors';
@@ -28,6 +29,8 @@ import {
 } from '../../redux/users/selectors';
 import { loadUsersPosts } from '../../redux/usersPosts/actions';
 import colors from '../../styles/Colors';
+import Notifications from '../Notifications';
+import PostDetail from '../PostDetail';
 import styles from './styles';
 
 interface StateProps {
@@ -260,14 +263,18 @@ class Discover extends PureComponent<Props, OwnState> {
     ownerUserId: string;
     postId: string;
   }) => {
-    this.props.navigation.navigate({
-      routeName: 'PostDetail',
-      params: {
-        ownerUserId,
-        postId
-      },
-      key: `PostDetail:${ownerUserId}_${postId}`
+    globalRouter.push({
+      component: PostDetail,
+      props: { ownerUserId, postId }
     });
+    // this.props.navigation.navigate({
+    //   routeName: 'PostDetail',
+    //   params: {
+    //     ownerUserId,
+    //     postId
+    //   },
+    //   key: `PostDetail:${ownerUserId}_${postId}`
+    // });
   };
 
   renderItem = ({ item }: { item: UsersPosts }) => {
@@ -322,9 +329,10 @@ class Discover extends PureComponent<Props, OwnState> {
                   : names.BELL
               }
               hasBadge={this.props.unreadNotificationsCount > 0}
-              onPress={() =>
-                this.props.navigation.navigate('Notifications', {})
-              }
+              onPress={() => globalRouter.push(Notifications)}
+              // onPress={() =>
+              //   this.props.navigation.navigate('Notifications', {})
+              // }
             />
           }
         />

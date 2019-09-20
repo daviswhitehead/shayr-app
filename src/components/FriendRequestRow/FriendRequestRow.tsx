@@ -46,7 +46,7 @@ const FriendRequestRow: SFC<Props> = ({
 
   return (
     <View style={styles.container}>
-      <UserAvatarWithMyListNavigation
+      <UserAvatar
         facebookProfilePhoto={facebookProfilePhoto}
         firstName={firstName}
         lastName={lastName}

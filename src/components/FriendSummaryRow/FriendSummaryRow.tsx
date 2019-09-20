@@ -56,7 +56,7 @@ const FriendSummaryRow: SFC<Props> = ({
 
   return (
     <View style={styles.container}>
-      <UserImageWithMyListNavigation
+      <UserImage
         uri={facebookProfilePhoto}
         size='medium'
         style={styles.userImage}

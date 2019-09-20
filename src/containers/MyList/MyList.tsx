@@ -3,11 +3,11 @@ import _ from 'lodash';
 import React, { Component } from 'react';
 import { Alert, View } from 'react-native';
 import { Query } from 'react-native-firebase/database';
-import {
-  NavigationScreenProp,
-  NavigationScreenProps,
-  NavigationState
-} from 'react-navigation';
+// import {
+//   NavigationScreenProp,
+//   NavigationScreenProps,
+//   NavigationState
+// } from 'react-navigation';
 import { connect } from 'react-redux';
 import Header from '../../components/Header';
 import Icon, { names } from '../../components/Icon';
@@ -15,6 +15,7 @@ import List from '../../components/List';
 import PostCard from '../../components/PostCard';
 import SegmentedControl from '../../components/SegmentedControl';
 import SwipeCard from '../../components/SwipeCard';
+import globalRouter from '../../components/TempRouter/RouterSingleton';
 import UserProfile from '../../components/UserProfile';
 import withAdds from '../../higherOrderComponents/withAdds';
 import withComments from '../../higherOrderComponents/withComments';
@@ -101,9 +102,10 @@ type Props = OwnProps &
 
 const mapStateToProps = (state: any, props: any) => {
   const authUserId = selectAuthUserId(state);
-  const ownerUserId =
-    _.get(props, ['navigation', 'state', 'params', 'ownerUserId'], undefined) ||
-    authUserId;
+  const ownerUserId = props.ownerUserId || authUserId;
+  // const ownerUserId =
+  //   _.get(props, ['navigation', 'state', 'params', 'ownerUserId'], undefined) ||
+  //   authUserId;
 
   const usersPostsListsViews = {
     adds: generateListKey(ownerUserId, queryTypes.USERS_POSTS_ADDS),
@@ -419,6 +421,22 @@ class MyList extends Component<Props, OwnState> {
     }));
   };
 
+  // onItemPress = ({
+  //   ownerUserId,
+  //   postId
+  // }: {
+  //   ownerUserId: string;
+  //   postId: string;
+  // }) => {
+  //   this.props.navigation.navigate({
+  //     routeName: 'PostDetail',
+  //     params: {
+  //       ownerUserId,
+  //       postId
+  //     },
+  //     key: `PostDetail:${ownerUserId}_${postId}`
+  //   });
+  // };
   onItemPress = ({
     ownerUserId,
     postId
@@ -426,14 +444,18 @@ class MyList extends Component<Props, OwnState> {
     ownerUserId: string;
     postId: string;
   }) => {
-    this.props.navigation.navigate({
-      routeName: 'PostDetail',
-      params: {
-        ownerUserId,
-        postId
-      },
-      key: `PostDetail:${ownerUserId}_${postId}`
+    globalRouter.push({
+      component: PostDetail,
+      props: { ownerUserId, postId }
     });
+    // this.props.navigation.navigate({
+    //   routeName: 'PostDetail',
+    //   params: {
+    //     ownerUserId,
+    //     postId
+    //   },
+    //   key: `PostDetail:${ownerUserId}_${postId}`
+    // });
   };
 
   renderPostCard = (item: UsersPosts) => {
@@ -547,11 +569,12 @@ class MyList extends Component<Props, OwnState> {
           statusBarStyle='dark-content'
           shadow
           title={this.props.authIsOwner ? 'My List' : 'Their List'}
-          back={
-            this.props.navigation.state.key.slice(0, 3) === 'id-'
-              ? undefined
-              : () => this.props.navigation.goBack(null)
-          }
+          back={globalRouter.back}
+          // back={
+          //   this.props.navigation.state.key.slice(0, 3) === 'id-'
+          //     ? undefined
+          //     : () => this.props.navigation.goBack(null)
+          // }
           rightIcons={
             this.props.authIsOwner ? (
               <Icon

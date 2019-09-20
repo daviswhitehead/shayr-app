@@ -3,6 +3,8 @@ import { ActivityIndicator, AppState, Linking, View } from 'react-native';
 import firebase from 'react-native-firebase';
 // import { useScreens } from 'react-native-screens';
 import { connect } from 'react-redux';
+import TabBar from '../../components/TabBarTemp';
+import globalRouter from '../../components/TempRouter/RouterSingleton';
 import RootNavigator from '../../config/Routes';
 import { currentScreenAnalytics } from '../../lib/FirebaseAnalytics';
 import { dynamicLinkListener } from '../../lib/FirebaseDynamicLinks';
@@ -18,6 +20,10 @@ import { isAppReady } from '../../redux/app/actions';
 import { authSubscription, hasAccessToken } from '../../redux/auth/actions';
 import { State } from '../../redux/Reducers';
 import { handleURLRoute } from '../../redux/routing/actions';
+import Discover from '../Discover';
+import Friends from '../Friends';
+import Login from '../Login';
+import MyList from '../MyList';
 import styles from './styles';
 
 interface StateProps {
@@ -55,11 +61,16 @@ class AppLoading extends Component<Props> {
   constructor(props: Props) {
     super(props);
     this.subscriptions = [];
+
+    this.state = {};
   }
 
   async componentDidMount() {
     // listen to app state changes
     AppState.addEventListener('change', this.handleAppStateChange);
+
+    globalRouter.setDefault(Login);
+    globalRouter.listen(this.changeRoute);
 
     // enabling screens support before navigator
     // https://github.com/kmagiera/react-native-screens
@@ -116,6 +127,7 @@ class AppLoading extends Component<Props> {
   }
 
   componentWillUnmount() {
+    globalRouter.unlisten(this.changeRoute);
     AppState.removeEventListener('change', this.handleAppStateChange);
     Linking.removeEventListener('url', this.props.handleURLRoute);
     Object.values(this.subscriptions).forEach((unsubscribe) => {
@@ -134,19 +146,57 @@ class AppLoading extends Component<Props> {
     // firebase.analytics().logEvent('APP_STATE_INACTIVE');
   };
 
+  changeRoute = (Route) => {
+    console.log('changeRoute');
+    console.log('Route');
+    console.log(Route);
+
+    this.setState({ Route });
+  };
+
+  onPress = ({ Route }) => {
+    const { routeIndex } = Route;
+    if (routeIndex === 0) {
+      globalRouter.push({ component: Discover });
+    }
+    if (routeIndex === 1) {
+      globalRouter.push({ component: MyList });
+    }
+    if (routeIndex === 2) {
+      globalRouter.push({ component: Friends });
+    }
+  };
+
   render() {
-    if (this.props.app.isAppReady) {
-      return (
-        <RootNavigator
-          ref={(navigatorRef) => {
-            setTopLevelNavigator(navigatorRef);
-          }}
-          // uriPrefix='shayr://'
-          onNavigationStateChange={(prevState, currentState) => {
-            currentScreenAnalytics(prevState, currentState);
-          }}
-        />
+    const { Route } = this.state;
+
+    if (!!Route) {
+      const {
+        component: Component,
+        props,
+        scaffold,
+        headerLeft,
+        headerRight,
+        title
+      } = Route;
+
+      const componentView = (
+        <View style={{ flex: 1, backgroundColor: 'white' }}>
+          <Component {...props} />
+          {/* <View style={{ height: 50, width: 50, backgroundColor: 'red' }} /> */}
+          <TabBar />
+        </View>
       );
+      return componentView;
+      // <RootNavigator
+      //   ref={(navigatorRef) => {
+      //     setTopLevelNavigator(navigatorRef);
+      //   }}
+      //   // uriPrefix='shayr://'
+      //   onNavigationStateChange={(prevState, currentState) => {
+      //     currentScreenAnalytics(prevState, currentState);
+      //   }}
+      // />
     }
     return (
       <View style={styles.container}>

@@ -5,11 +5,11 @@ export default StyleSheet.create({
     flex: 1,
     flexDirection: 'column',
     alignItems: 'stretch',
-    justifyContent: 'flex-start',
+    justifyContent: 'flex-start'
   },
   container: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'center',
-  },
+    justifyContent: 'center'
+  }
 });

@@ -13,6 +13,7 @@ import ActionRow from '../../components/ActionRow';
 import FriendRequestRow from '../../components/FriendRequestRow';
 import { names } from '../../components/Icon';
 import SearchHeader from '../../components/SearchHeader';
+import globalRouter from '../../components/TempRouter/RouterSingleton';
 import { logEvent } from '../../lib/FirebaseAnalytics';
 import { queryTypes } from '../../lib/FirebaseQueries';
 import { selectAuthUserId } from '../../redux/auth/selectors';
@@ -391,7 +392,8 @@ class FindFriends extends PureComponent<Props, OwnState> {
     return (
       <View style={styles.screen}>
         <SearchHeader
-          back={() => this.props.navigation.goBack(null)}
+          // back={() => this.props.navigation.goBack(null)}
+          back={globalRouter.back}
           onEdit={this.handleSearchTextEdit}
         />
         <SectionList

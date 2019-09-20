@@ -57,9 +57,9 @@ const ActionBar: SFC<Props> = ({
     <View style={styles.container}>
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.actionBar}>
-          <UserAvatarWithMyListNavigation
+          <UserImage
             {...authUser}
-            shouldHideName
+            size={'small'}
             userId={authUser._id}
             style={styles.action}
           />

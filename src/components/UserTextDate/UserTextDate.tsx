@@ -43,7 +43,7 @@ const UserTextDate: SFC<Props> = ({
       style={styles.container}
       onPress={noTouching ? undefined : onPressContainer}
     >
-      <UserAvatarWithMyListNavigation
+      <UserImage
         {...user}
         shouldHideName
         userId={user._id}

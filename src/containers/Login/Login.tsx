@@ -2,19 +2,21 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { Image, Text, TouchableWithoutFeedback, View } from 'react-native';
 import { LoginButton } from 'react-native-fbsdk';
-import {
-  NavigationParams,
-  NavigationScreenProp,
-  NavigationState
-} from 'react-navigation';
+// import {
+//   NavigationParams,
+//   NavigationScreenProp,
+//   NavigationState
+// } from 'react-navigation';
 import { connect } from 'react-redux';
 import vectorLogo from '../../assets/images/VectorLogo.png';
+import globalRouter from '../../components/TempRouter/RouterSingleton';
 import {
   facebookAuth,
   facebookAuthTap,
   signOutUser
 } from '../../redux/auth/actions';
 import { State } from '../../redux/Reducers';
+import Discover from '../Discover';
 import styles from './styles';
 
 interface StateProps {
@@ -57,19 +59,22 @@ class Login extends Component<Props, OwnState> {
 
   constructor(props: Props) {
     super(props);
+    // debugger;
     if (this.props.auth.isSigningOut) {
       // when a user navigates to the login screen with isSigningOut === true, sign out the user
       this.props.signOutUser();
     } else if (this.props.auth.user.uid && this.props.auth.hasAccessToken) {
       // when a user navigates to the login screen already authenticated (app launch), navigate to the app
-      this.props.navigation.navigate('App');
+      // this.props.navigation.navigate('App');
+      globalRouter.push({ component: Discover });
     }
   }
 
   componentDidUpdate() {
     if (this.props.auth.user.uid && this.props.auth.hasAccessToken) {
       // navigate to the app after successful authentication
-      this.props.navigation.navigate('App');
+      // this.props.navigation.navigate('App');
+      globalRouter.push({ component: Discover });
     }
   }
 
