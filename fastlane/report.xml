@@ -5,34 +5,67 @@
     
     
       
-      <testcase classname="fastlane.lanes" name="0: Verifying fastlane version" time="0.005489">
+      <testcase classname="fastlane.lanes" name="00: Verifying fastlane version" time="0.013434">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="1: gradle" time="54.600484">
+      <testcase classname="fastlane.lanes" name="01: gradle" time="14.598921">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="2: increment_version_code" time="0.011701">
+      <testcase classname="fastlane.lanes" name="02: increment_version_code" time="0.006884">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="3: gradle" time="274.600408">
+      <testcase classname="fastlane.lanes" name="03: gradle" time="124.867082">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="4: crashlytics" time="67.443547">
+      <testcase classname="fastlane.lanes" name="04: crashlytics" time="67.629257">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="5: upload_to_play_store" time="76.408905">
+      <testcase classname="fastlane.lanes" name="05: upload_to_play_store" time="80.873858">
         
-          <failure message="/Users/daviswhitehead/.fastlane/bin/bundle/lib/ruby/gems/2.2.0/gems/fastlane-2.130.0/fastlane/lib/fastlane/actions/actions_helper.rb:48:in `execute_action'&#10;/Users/daviswhitehead/.fastlane/bin/bundle/lib/ruby/gems/2.2.0/gems/fastlane-2.130.0/fastlane/lib/fastlane/runner.rb:235:in `block in execute_action'&#10;/Users/daviswhitehead/.fastlane/bin/bundle/lib/ruby/gems/2.2.0/gems/fastlane-2.130.0/fastlane/lib/fastlane/runner.rb:227:in `chdir'&#10;/Users/daviswhitehead/.fastlane/bin/bundle/lib/ruby/gems/2.2.0/gems/fastlane-2.130.0/fastlane/lib/fastlane/runner.rb:227:in `execute_action'&#10;/Users/daviswhitehead/.fastlane/bin/bundle/lib/ruby/gems/2.2.0/gems/fastlane-2.130.0/fastlane/lib/fastlane/runner.rb:157:in `trigger_action_by_name'&#10;/Users/daviswhitehead/.fastlane/bin/bundle/lib/ruby/gems/2.2.0/gems/fastlane-2.130.0/fastlane/lib/fastlane/fast_file.rb:154:in `method_missing'&#10;Fastfile:180:in `block (2 levels) in parsing_binding'&#10;/Users/daviswhitehead/.fastlane/bin/bundle/lib/ruby/gems/2.2.0/gems/fastlane-2.130.0/fastlane/lib/fastlane/lane.rb:33:in `call'&#10;/Users/daviswhitehead/.fastlane/bin/bundle/lib/ruby/gems/2.2.0/gems/fastlane-2.130.0/fastlane/lib/fastlane/lane.rb:33:in `call'&#10;/Users/daviswhitehead/.fastlane/bin/bundle/lib/ruby/gems/2.2.0/gems/fastlane-2.130.0/fastlane/lib/fastlane/runner.rb:49:in `block in execute'&#10;/Users/daviswhitehead/.fastlane/bin/bundle/lib/ruby/gems/2.2.0/gems/fastlane-2.130.0/fastlane/lib/fastlane/runner.rb:45:in `chdir'&#10;/Users/daviswhitehead/.fastlane/bin/bundle/lib/ruby/gems/2.2.0/gems/fastlane-2.130.0/fastlane/lib/fastlane/runner.rb:45:in `execute'&#10;/Users/daviswhitehead/.fastlane/bin/bundle/lib/ruby/gems/2.2.0/gems/fastlane-2.130.0/fastlane/lib/fastlane/lane_manager.rb:56:in `cruise_lane'&#10;/Users/daviswhitehead/.fastlane/bin/bundle/lib/ruby/gems/2.2.0/gems/fastlane-2.130.0/fastlane/lib/fastlane/command_line_handler.rb:36:in `handle'&#10;/Users/daviswhitehead/.fastlane/bin/bundle/lib/ruby/gems/2.2.0/gems/fastlane-2.130.0/fastlane/lib/fastlane/commands_generator.rb:108:in `block (2 levels) in run'&#10;/Users/daviswhitehead/.fastlane/bin/bundle/lib/ruby/gems/2.2.0/gems/commander-fastlane-4.4.6/lib/commander/command.rb:178:in `call'&#10;/Users/daviswhitehead/.fastlane/bin/bundle/lib/ruby/gems/2.2.0/gems/commander-fastlane-4.4.6/lib/commander/command.rb:178:in `call'&#10;/Users/daviswhitehead/.fastlane/bin/bundle/lib/ruby/gems/2.2.0/gems/commander-fastlane-4.4.6/lib/commander/command.rb:153:in `run'&#10;/Users/daviswhitehead/.fastlane/bin/bundle/lib/ruby/gems/2.2.0/gems/commander-fastlane-4.4.6/lib/commander/runner.rb:476:in `run_active_command'&#10;/Users/daviswhitehead/.fastlane/bin/bundle/lib/ruby/gems/2.2.0/gems/fastlane-2.130.0/fastlane_core/lib/fastlane_core/ui/fastlane_runner.rb:76:in `run!'&#10;/Users/daviswhitehead/.fastlane/bin/bundle/lib/ruby/gems/2.2.0/gems/commander-fastlane-4.4.6/lib/commander/delegates.rb:15:in `run!'&#10;/Users/daviswhitehead/.fastlane/bin/bundle/lib/ruby/gems/2.2.0/gems/fastlane-2.130.0/fastlane/lib/fastlane/commands_generator.rb:349:in `run'&#10;/Users/daviswhitehead/.fastlane/bin/bundle/lib/ruby/gems/2.2.0/gems/fastlane-2.130.0/fastlane/lib/fastlane/commands_generator.rb:41:in `start'&#10;/Users/daviswhitehead/.fastlane/bin/bundle/lib/ruby/gems/2.2.0/gems/fastlane-2.130.0/fastlane/lib/fastlane/cli_tools_distributor.rb:119:in `take_off'&#10;/Users/daviswhitehead/.fastlane/bin/bundle/lib/ruby/gems/2.2.0/gems/fastlane-2.130.0/bin/fastlane:23:in `&lt;top (required)&gt;'&#10;/Users/daviswhitehead/.fastlane/bin/bundle/bin/fastlane:22:in `load'&#10;/Users/daviswhitehead/.fastlane/bin/bundle/bin/fastlane:22:in `&lt;main&gt;'&#10;&#10;Google Api Error: apkNotificationMessageKeyUpgradeVersionConflict: APK specifies a version code that has already been used. - APK specifies a version code that has already been used." />
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="06: Switch to android update_codepush_builds lane" time="0.002696">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="07: pwd" time="0.009395">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="08: cd .. &amp;&amp; appcenter codepush release-react -a whitehead.davis/Shayr-Android -d prod" time="13.938091">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="09: Switch to android refresh_dsyms lane" time="0.003938">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="10: pwd" time="0.008445">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="11: cd .. &amp;&amp; react-native bundle --platform android --dev false --entry-file index.js --bundle-output android-release.bundle --sourcemap-output android-release.bundle.map" time="3.886516">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="12: cd .. &amp;&amp; curl https://upload.bugsnag.com/react-native-source-map -F apiKey=e75830d4fa9917c3bb26b070ecd967b5  -F appVersion=3.3.0 -F dev=false -F platform=android -F sourceMap=@android-release.bundle.map -F bundle=@android-release.bundle -F projectRoot=`pwd`" time="27.24613">
         
       </testcase>
     
