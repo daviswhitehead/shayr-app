@@ -173,7 +173,6 @@ class Discover extends PureComponent<Props, OwnState> {
     );
 
     // DEVELOPMENT HELPERS
-    // this.props.navigation.navigate('FindFriends');
     // this.props.navigation.navigate('FindFriends', {});
     // this.props.navigation.navigate('Notifications', {});
     // this.props.navigation.navigate('FriendsTab', {});

@@ -12,6 +12,7 @@ import {
 } from '../../redux/friendships/actions';
 import {
   awaitingRecipientAcceptance,
+  friendRequestStatusIconMap,
   friendshipStatusIconMap,
   getFriendshipIdOrder,
   getFriendshipStatus
@@ -34,6 +35,7 @@ interface DispatchProps {
 
 interface OwnProps {
   userId: string;
+  screen?: 'FindFriends';
 }
 
 type Props = OwnProps & StateProps & DispatchProps;
@@ -78,6 +80,7 @@ const withFriendshipActions = (WrappedComponent: SFC) => (props: Props) => {
     updateFriendship,
     // own
     userId,
+    screen,
     ...passThroughProps
   } = props;
 
@@ -133,7 +136,11 @@ const withFriendshipActions = (WrappedComponent: SFC) => (props: Props) => {
       friendshipStatus={friendshipStatus}
       onPress={onFriendshipStatusPress}
       isActive={friendshipStatus === 'is-friends'}
-      name={friendshipStatusIconMap[friendshipStatus]}
+      name={
+        screen === 'FindFriends'
+          ? friendRequestStatusIconMap[friendshipStatus]
+          : friendshipStatusIconMap[friendshipStatus]
+      }
       {...passThroughProps}
     />
   );
