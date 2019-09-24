@@ -1,5 +1,4 @@
 import React from 'react';
-import { Platform } from 'react-native';
 import {
   createAppContainer,
   createStackNavigator,
@@ -147,10 +146,10 @@ const TabStack = createBottomTabNavigator(
     tabBarOptions: {
       showLabel: false,
       style: {
-        height:
-          Platform.OS === 'ios'
-            ? Layout.WINDOW_BOTTOM_SAFE_AREA + Layout.SPACING_EXTRA_LONG
-            : Layout.WINDOW_BOTTOM_SAFE_AREA + Layout.SPACING_EXTRA_LONG * 2,
+        height: Math.max(
+          Layout.WINDOW_BOTTOM_SAFE_AREA + Layout.SPACING_EXTRA_LONG,
+          Layout.SPACING_EXTRA_LONG * 2
+        ),
         backgroundColor: Colors.YELLOW,
         paddingHorizontal: Layout.SPACING_EXTRA_LONG
       },
