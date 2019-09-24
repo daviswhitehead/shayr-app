@@ -21,9 +21,11 @@ import {
   markNotificationsAsRead
 } from '../../redux/notifications/actions';
 import { State } from '../../redux/Reducers';
+import { getUser } from '../../redux/users/actions';
 import {
   selectAllUsers,
   selectUserFromId,
+  selectUserIdsFromDocumentList,
   selectUsersFromList
 } from '../../redux/users/selectors';
 import colors from '../../styles/Colors';
@@ -50,6 +52,7 @@ interface DispatchProps {
   loadNotifications: typeof loadNotifications;
   markNotificationAsPressed: typeof markNotificationAsPressed;
   markNotificationsAsRead: typeof markNotificationsAsRead;
+  getUser: typeof getUser;
 }
 
 interface OwnProps {
@@ -75,6 +78,16 @@ const mapStateToProps = (state: State) => {
     authUserId,
     queryTypes.NOTIFICATIONS
   );
+  const notificationsMeta = selectListMeta(
+    state,
+    'notificationsLists',
+    notificationsListKey
+  );
+  const notificationsItems = selectListItems(
+    state,
+    'notificationsLists',
+    notificationsListKey
+  );
 
   return {
     authUserId,
@@ -92,11 +105,15 @@ const mapStateToProps = (state: State) => {
       { sortKeys: ['createdAt'], sortDirection: ['desc'] }
     ),
     notificationsListKey,
-    notificationsMeta: selectListMeta(
-      state,
-      'notificationsLists',
-      notificationsListKey
-    ),
+    notificationsMeta,
+    notificationsUsers: notificationsItems
+      ? selectUserIdsFromDocumentList(
+          state,
+          'notifications',
+          notificationsItems,
+          'fromId'
+        )
+      : undefined,
     notificationsQuery: getQuery(queryTypes.NOTIFICATIONS)(authUserId),
     users: selectAllUsers(state, 'presentation')
   };
@@ -105,7 +122,8 @@ const mapStateToProps = (state: State) => {
 const mapDispatchToProps = {
   loadNotifications,
   markNotificationAsPressed,
-  markNotificationsAsRead
+  markNotificationsAsRead,
+  getUser
 };
 
 class Notifications extends Component<Props, OwnState> {
@@ -137,6 +155,7 @@ class Notifications extends Component<Props, OwnState> {
 
   componentDidUpdate(prevProps: Props) {
     this.checkLoading();
+    this.getMissingUsers(prevProps);
     if (
       this.props.isFocused === false &&
       prevProps.isFocused === true &&
@@ -153,6 +172,18 @@ class Notifications extends Component<Props, OwnState> {
       }
     });
   }
+
+  getMissingUsers = (prevProps) => {
+    if (this.props.notificationsUsers === prevProps.notificationsUsers) {
+      return;
+    }
+
+    _.forEach(this.props.notificationsUsers, (userId) => {
+      if (!_.includes(_.keys(this.props.users), userId)) {
+        this.props.getUser(userId);
+      }
+    });
+  };
 
   checkLoading = () => {
     if (
@@ -271,6 +302,11 @@ class Notifications extends Component<Props, OwnState> {
   };
 
   render() {
+    console.log(`Notifications - Render`);
+    console.log('this.props');
+    console.log(this.props);
+    console.log('this.state');
+    console.log(this.state);
     return (
       <View style={styles.screen}>
         <Header
