@@ -14,7 +14,6 @@ export const friendshipStatusIconMap = {
   ['is-friends']: names.PERSON,
   ['can-send-friend-request']: names.ADD_FRIEND,
   ['needs-recipient-acceptance']: names.PENDING_FRIEND,
-  ['can-accept-request-alt']: names.DONE,
   ['can-accept-request']: names.ACCEPT_FRIEND
 };
 

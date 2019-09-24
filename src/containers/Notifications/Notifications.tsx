@@ -302,11 +302,6 @@ class Notifications extends Component<Props, OwnState> {
   };
 
   render() {
-    console.log(`Notifications - Render`);
-    console.log('this.props');
-    console.log(this.props);
-    console.log('this.state');
-    console.log(this.state);
     return (
       <View style={styles.screen}>
         <Header
