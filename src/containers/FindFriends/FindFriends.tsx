@@ -192,21 +192,6 @@ class FindFriends extends PureComponent<Props, OwnState> {
 
   componentDidUpdate() {}
 
-  getMissingUsers = () => {
-    // TODO: refactor when we replace the all user pull
-    // console.log('getMissingUsers');
-    // console.log('this.props.friendRequestUserIds');
-    // console.log(this.props.friendRequestUserIds);
-    // console.log('this.props.localUsersIds');
-    // console.log(this.props.localUsersIds);
-
-    _.forEach(this.props.friendRequestUserIds, (value, key) => {
-      if (!_.includes(this.props.localUsersIds, value)) {
-        this.props.getUser(value);
-      }
-    });
-  };
-
   handleSearchTextEdit = (searchText: string) => {
     const friendRequestSearch = this.searchCollectionData(
       searchText,
