@@ -20,8 +20,7 @@ export default StyleSheet.create({
   actionBar: {
     flexDirection: 'row',
     justifyContent: 'center',
-    alignItems: 'center',
-    marginVertical: Layout.SPACING_MEDIUM
+    alignItems: 'center'
   },
   action: {
     margin: Layout.SPACING_LONG
