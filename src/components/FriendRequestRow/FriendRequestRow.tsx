@@ -54,7 +54,11 @@ const FriendRequestRow: SFC<Props> = ({
         userId={_id}
       />
       <View style={styles.iconsContainer}>
-        <IconWithFriendshipActions userId={_id} style={styles.actionsSpacer} />
+        <IconWithFriendshipActions
+          userId={_id}
+          screen={'FindFriends'}
+          style={styles.actionsSpacer}
+        />
         {shouldRenderX && (
           <IconWithFriendRequestDenial userId={_id} name={names.X_EXIT} />
         )}
