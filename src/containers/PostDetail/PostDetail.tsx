@@ -8,7 +8,6 @@ import {
   withNavigationFocus
 } from 'react-navigation';
 import { connect } from 'react-redux';
-import { threadId } from 'worker_threads';
 import ActionBar from '../../components/ActionBar';
 import Header from '../../components/Header';
 import Icon, { names } from '../../components/Icon';
@@ -137,12 +136,6 @@ const mapDispatchToProps = {
 
 class PostDetail extends Component<Props, OwnState> {
   static whyDidYouRender = true;
-
-  static navigationOptions = ({ navigation }) => {
-    return {
-      tabBarVisible: false
-    };
-  };
 
   subscriptions: Array<any>;
   constructor(props: Props) {

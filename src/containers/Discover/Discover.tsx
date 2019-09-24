@@ -307,10 +307,6 @@ class Discover extends PureComponent<Props, OwnState> {
   };
 
   render() {
-    // console.log(`Discover - Render`);
-    // console.log('this.props');
-    // console.log(this.props.navigation);
-
     return (
       <View style={styles.screen}>
         <Header

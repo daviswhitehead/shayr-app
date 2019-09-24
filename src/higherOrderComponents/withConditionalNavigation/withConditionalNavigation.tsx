@@ -46,9 +46,6 @@ const withConditionalNavigation = (
 
   if (userId) {
     navigateToScreen = () =>
-      // navigation.push(`${route}`, {
-      //   ownerUserId: userId
-      // });
       navigation.navigate({
         routeName: `${route}`,
         params: {
@@ -64,9 +61,6 @@ const withConditionalNavigation = (
             ownerUserId: userId
           })
       : () =>
-          // navigation.push(`${route}`, {
-          //   ownerUserId: userId
-          // });
           navigation.navigate({
             routeName: `${route}`,
             params: {
