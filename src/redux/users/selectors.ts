@@ -5,15 +5,8 @@ import {
 } from '@daviswhitehead/shayr-resources';
 import _ from 'lodash';
 import createCachedSelector from 're-reselect';
+import { selectDocumentsFromItems } from '../documents/selectors';
 import { State } from '../Reducers';
-// import { createSelector } from 'reselect';
-// https://github.com/toomuchdesign/re-reselect
-// https://github.com/reduxjs/reselect#sharing-selectors-with-props-across-multiple-component-instances
-
-const selectUsers = (state: State) => state.users;
-const selectUser = (state: State, userId: string) => state.users[userId];
-const selectUsersLists = (state: State, listKey: string) =>
-  state.usersLists[listKey];
 
 export const formatUserForClient = (user: User) => {
   return {
@@ -66,6 +59,11 @@ const handleFormatting = (user: User, formatType?: FormatType) => {
   }
   return formattedUser;
 };
+
+const selectUsers = (state: State) => state.users;
+const selectUser = (state: State, userId: string) => state.users[userId];
+const selectUsersLists = (state: State, listKey: string) =>
+  state.usersLists[listKey];
 
 export const selectAllUsers = createCachedSelector(
   selectUsers,
@@ -130,3 +128,24 @@ export const selectUsersFromList = createCachedSelector(
     }, {});
   }
 )((state, listKey, formatType) => `${listKey}_${formatType}`);
+
+export const selectUserIdsFromDocumentList = createCachedSelector(
+  selectDocumentsFromItems,
+  (state, stateKey, items, usersKey) => usersKey,
+  (documents, usersKey) => {
+    if (!documents || !usersKey) {
+      return;
+    }
+
+    return _.uniq(
+      _.reduce(
+        documents,
+        (result: any, value: any, key: string) => {
+          result.push(value[usersKey]);
+          return result;
+        },
+        []
+      )
+    );
+  }
+)((state, stateKey, items, usersKey) => `${stateKey}_${usersKey}`);

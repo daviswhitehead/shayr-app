@@ -17,6 +17,13 @@ export const friendshipStatusIconMap = {
   ['can-accept-request']: names.ACCEPT_FRIEND
 };
 
+export const friendRequestStatusIconMap = {
+  ['is-friends']: names.PERSON,
+  ['can-send-friend-request']: names.ADD,
+  ['needs-recipient-acceptance']: names.HOURGLASS,
+  ['can-accept-request']: names.DONE
+};
+
 export const awaitingRecipientAcceptance = () => {
   Toaster(friending.awaiting);
 };

@@ -1,10 +1,11 @@
+import React from 'react';
 import {
   createAppContainer,
   createStackNavigator,
   createSwitchNavigator
 } from 'react-navigation';
 import { createBottomTabNavigator } from 'react-navigation-tabs';
-import TabBar from '../components/TabBar';
+import Icon, { names } from '../components/Icon';
 import Discover from '../containers/Discover';
 import FindFriends from '../containers/FindFriends';
 import Friends from '../containers/Friends';
@@ -12,25 +13,19 @@ import Login from '../containers/Login';
 import MyList from '../containers/MyList';
 import Notifications from '../containers/Notifications';
 import PostDetail from '../containers/PostDetail';
+import { getActiveRouteName } from '../lib/ReactNavigationHelpers';
+import Colors from '../styles/Colors';
+import Layout from '../styles/Layout';
 
 const sharedRoutes = {
-  PostDetail: {
-    screen: PostDetail,
-    navigationOptions: () => ({
-      header: null
-    })
-  },
   MyList: {
-    screen: MyList,
-    navigationOptions: () => ({
-      header: null
-    })
+    screen: MyList
   },
   Friends: {
-    screen: Friends,
-    navigationOptions: () => ({
-      header: null
-    })
+    screen: Friends
+  },
+  PostDetail: {
+    screen: PostDetail
   }
 };
 
@@ -38,20 +33,26 @@ const DiscoverStack = createStackNavigator(
   {
     ...sharedRoutes,
     Discover: {
-      screen: Discover,
-      navigationOptions: () => ({
-        header: null
-      })
+      screen: Discover
     },
     Notifications: {
-      screen: Notifications,
-      navigationOptions: () => ({
-        header: null
-      })
+      screen: Notifications
     }
   },
   {
-    initialRouteName: 'Discover'
+    initialRouteName: 'Discover',
+    headerMode: 'none',
+    navigationOptions: ({ navigation }) => {
+      const activeRoute = getActiveRouteName(navigation.state);
+
+      let tabBarVisible = true;
+
+      if (activeRoute === 'PostDetail') {
+        tabBarVisible = false;
+      }
+
+      return { tabBarVisible };
+    }
   }
 );
 
@@ -60,7 +61,19 @@ const MyListStack = createStackNavigator(
     ...sharedRoutes
   },
   {
-    initialRouteName: 'MyList'
+    initialRouteName: 'MyList',
+    headerMode: 'none',
+    navigationOptions: ({ navigation }) => {
+      const activeRoute = getActiveRouteName(navigation.state);
+
+      let tabBarVisible = true;
+
+      if (activeRoute === 'PostDetail') {
+        tabBarVisible = false;
+      }
+
+      return { tabBarVisible };
+    }
   }
 );
 
@@ -68,25 +81,34 @@ const FriendsStack = createStackNavigator(
   {
     ...sharedRoutes,
     FindFriends: {
-      screen: FindFriends,
-      navigationOptions: () => ({
-        header: null
-      })
+      screen: FindFriends
     }
   },
   {
-    initialRouteName: 'Friends'
+    initialRouteName: 'Friends',
+    headerMode: 'none',
+    navigationOptions: ({ navigation }) => {
+      const activeRoute = getActiveRouteName(navigation.state);
+
+      let tabBarVisible = true;
+
+      if (activeRoute === 'PostDetail' || activeRoute === 'FindFriends') {
+        tabBarVisible = false;
+      }
+
+      return { tabBarVisible };
+    }
   }
 );
 
-const AuthStack = createStackNavigator({
-  Login: {
-    screen: Login,
-    navigationOptions: () => ({
-      header: null
-    })
-  }
-});
+const AuthStack = createStackNavigator(
+  {
+    Login: {
+      screen: Login
+    }
+  },
+  { headerMode: 'none' }
+);
 
 const TabStack = createBottomTabNavigator(
   {
@@ -101,8 +123,41 @@ const TabStack = createBottomTabNavigator(
     }
   },
   {
-    initialRouteName: 'DiscoverTab',
-    tabBarComponent: TabBar
+    defaultNavigationOptions: ({ navigation }) => ({
+      tabBarIcon: ({ focused, horizontal, tintColor }) => {
+        const { routeName } = navigation.state;
+        let iconName;
+        if (routeName === 'DiscoverTab') {
+          iconName = focused ? names.DISCOVER_ACTIVE : names.DISCOVER;
+        }
+        if (routeName === 'MyListTab') {
+          iconName = focused ? names.LIST_ACTIVE : names.LIST;
+        }
+        if (routeName === 'FriendsTab') {
+          iconName = focused ? names.FRIENDS_ACTIVE : names.FRIENDS;
+        }
+
+        if (!iconName) {
+          return;
+        }
+        return <Icon name={iconName} />;
+      }
+    }),
+    tabBarOptions: {
+      showLabel: false,
+      style: {
+        height: Math.max(
+          Layout.WINDOW_BOTTOM_SAFE_AREA + Layout.SPACING_EXTRA_LONG,
+          Layout.SPACING_EXTRA_LONG * 2
+        ),
+        backgroundColor: Colors.YELLOW,
+        paddingHorizontal: Layout.SPACING_EXTRA_LONG
+      },
+      labelStyle: { margin: 0, padding: 0 },
+      iconStyle: { margin: 0, padding: 0 }
+    },
+
+    initialRouteName: 'DiscoverTab'
   }
 );
 

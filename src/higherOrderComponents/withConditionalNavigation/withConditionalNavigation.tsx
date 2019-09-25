@@ -42,10 +42,10 @@ const withConditionalNavigation = (
     ['Discover', 'MyList', 'Friends'].indexOf(navigation.state.routeName) >=
       0 && navigation.state.key.slice(0, 3) === 'id-';
 
-  let navigateToTheirList;
+  let navigateToScreen;
 
   if (userId) {
-    navigateToTheirList = () =>
+    navigateToScreen = () =>
       navigation.navigate({
         routeName: `${route}`,
         params: {
@@ -55,7 +55,7 @@ const withConditionalNavigation = (
       });
   }
   if (userId === authUserId) {
-    navigateToTheirList = isTopLevelRoute
+    navigateToScreen = isTopLevelRoute
       ? () =>
           navigation.navigate(`${route}Tab`, {
             ownerUserId: userId
@@ -70,9 +70,7 @@ const withConditionalNavigation = (
           });
   }
 
-  return (
-    <WrappedComponent onPress={navigateToTheirList} {...passThroughProps} />
-  );
+  return <WrappedComponent onPress={navigateToScreen} {...passThroughProps} />;
 };
 
 export default compose(
