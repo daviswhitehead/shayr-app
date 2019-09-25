@@ -54,6 +54,11 @@ export const fontSystem = {
     color: colors.BLACK,
     fontSize: 18
   },
+  SUBTITLE_ITALICS: {
+    ...fonts.ITALIC,
+    color: colors.BLACK,
+    fontSize: 18
+  },
   BODY_LARGE: {
     ...fonts.EXTRA_LIGHT,
     color: colors.BLACK,
