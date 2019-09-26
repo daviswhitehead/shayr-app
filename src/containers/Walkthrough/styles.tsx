@@ -6,27 +6,19 @@ import Layout from '../../styles/Layout';
 export default StyleSheet.create({
   container: {
     flex: 1,
+    flexDirection: 'column',
+    alignItems: 'center',
     backgroundColor: Colors.YELLOW
+  },
+  spacerContainer: {
+    flex: 1.5
   },
   carouselContainer: {
     flex: 2
   },
   carouselContentContainer: {
     flexDirection: 'row',
-    alignItems: 'flex-end'
-  },
-  image: {
-    resizeMode: 'contain',
-    marginBottom: Layout.SPACING_LONG
-  },
-  title: {
-    ...fontSystem.TITLE,
-    textAlign: 'center',
-    marginBottom: Layout.SPACING_SHORT
-  },
-  subtitle: {
-    ...fontSystem.SUBTITLE_ITALICS,
-    textAlign: 'center'
+    alignItems: 'flex-start'
   },
   cardContainer: {
     flexDirection: 'column',
@@ -39,16 +31,32 @@ export default StyleSheet.create({
     alignItems: 'center',
     width: Layout.WINDOW_WIDTH * Layout.WINDOW_WIDTH_MULTIPLIER
   },
+  image: {
+    resizeMode: 'contain',
+    marginBottom: Layout.SPACING_LONG
+  },
+  title: {
+    ...fontSystem.TITLE,
+    fontSize: 20,
+    textAlign: 'center',
+    marginBottom: Layout.SPACING_SHORT
+  },
+  subtitle: {
+    ...fontSystem.SUBTITLE_ITALICS,
+    textAlign: 'center'
+  },
   paginationContainer: {
-    flex: 1,
+    flex: 1.5,
     flexDirection: 'column',
     justifyContent: 'flex-start',
-    alignItems: 'stretch'
+    alignItems: 'stretch',
+    width: Layout.WINDOW_WIDTH * Layout.WINDOW_WIDTH_MULTIPLIER
   },
   dotContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+    margin: Layout.SPACING_EXTRA_LONG
   },
   paginationDot: {
     width: 12,

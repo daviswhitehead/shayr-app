@@ -6,12 +6,22 @@ import {
   NavigationScreenProp,
   NavigationState
 } from 'react-navigation';
+import { connect } from 'react-redux';
+import PrimaryButton from '../../components/PrimaryButton';
+import SecondaryButton from '../../components/SecondaryButton';
+import { items, setOnboardingStatus } from '../../redux/onboarding/actions';
+import { State as OnboardingState } from '../../redux/onboarding/reducer';
+import { State } from '../../redux/Reducers';
 import Layout from '../../styles/Layout';
 import styles from './styles';
 
-interface StateProps {}
+interface StateProps {
+  onboarding: OnboardingState;
+}
 
-interface DispatchProps {}
+interface DispatchProps {
+  setOnboardingStatus: typeof setOnboardingStatus;
+}
 
 interface OwnProps {
   navigation: NavigationScreenProp<NavigationState, NavigationParams>;
@@ -24,20 +34,32 @@ interface OwnState {
 
 type Props = OwnProps & StateProps & DispatchProps;
 
+const mapStateToProps = (state: State) => ({
+  onboarding: state.onboarding
+});
+
+const mapDispatchToProps = {
+  setOnboardingStatus
+};
+
 class Walkthrough extends Component<Props, OwnState> {
   static whyDidYouRender = true;
 
-  sliderRef: any;
+  carouselRef: any;
   data: Array<any>;
   constructor(props: Props) {
     super(props);
+
+    if (this.props.onboarding.didViewIntro) {
+      this.props.navigation.navigate('Login');
+    }
 
     this.state = {
       carouselActiveItem: 0,
       viewedCarousel: false
     };
 
-    this.sliderRef = React.createRef();
+    this.carouselRef = React.createRef();
     this.data = [
       {
         title: 'Discover Together',
@@ -46,21 +68,19 @@ class Walkthrough extends Component<Props, OwnState> {
         source: require('../../assets/images/walkthrough-discover-together.png')
       },
       {
-        title: 'Discover Together',
+        title: 'All the Best Content',
         subtitle:
-          'Shayr makes it easy to give recommendations and discover great content within your network of close friends.',
-        source: require('../../assets/images/walkthrough-discover-together.png')
+          'Shayr works with all types of content from any of your favorite sources.',
+        source: require('../../assets/images/walkthrough-best-content.png')
       },
       {
-        title: 'Discover Together',
+        title: 'Develop Deeper Connections',
         subtitle:
-          'Shayr makes it easy to give recommendations and discover great content within your network of close friends.',
-        source: require('../../assets/images/walkthrough-discover-together.png')
+          'Get to know the people you care about better through meaningful interactions over your shared interests.',
+        source: require('../../assets/images/walkthrough-deeper-connections.png')
       }
     ];
   }
-
-  componentDidUpdate() {}
 
   renderWalkthroughCard = ({ item, index }: { item: any; index: number }) => {
     return (
@@ -98,14 +118,25 @@ class Walkthrough extends Component<Props, OwnState> {
     });
   };
 
+  onContinuePress = () => {
+    if (this.carouselRef && this.carouselRef.current) {
+      this.carouselRef.current.snapToNext();
+    }
+  };
+
+  onStartPress = () => {
+    this.props.setOnboardingStatus(items.DID_VIEW_INTRO);
+    this.props.navigation.navigate('Login');
+  };
+
   render() {
     const { carouselActiveItem, viewedCarousel } = this.state;
     return (
       <View style={styles.container}>
-        {/* <View> */}
+        <View style={styles.spacerContainer} />
         <View style={styles.carouselContainer}>
           <Carousel
-            ref={this.sliderRef}
+            ref={this.carouselRef}
             data={this.data}
             renderItem={this.renderWalkthroughCard}
             itemWidth={Layout.WINDOW_WIDTH}
@@ -120,12 +151,20 @@ class Walkthrough extends Component<Props, OwnState> {
             dotsLength={this.data.length}
             activeDotIndex={carouselActiveItem}
             renderDots={this.renderDots}
-            containerStyle={{ paddingVertical: 0 }} // this value needs to be explicitly set!
+            containerStyle={[{ paddingVertical: 0 }]} // this value needs to be explicitly set!
           />
+          <PrimaryButton
+            text={viewedCarousel ? 'Start' : 'Continue'}
+            onPress={viewedCarousel ? this.onStartPress : this.onContinuePress}
+          />
+          <SecondaryButton text={'Skip'} onPress={this.onStartPress} />
         </View>
       </View>
     );
   }
 }
 
-export default Walkthrough;
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Walkthrough);

@@ -16,6 +16,7 @@ import {
 import { setTopLevelNavigator } from '../../lib/ReactNavigationHelpers';
 import { isAppReady } from '../../redux/app/actions';
 import { authSubscription, hasAccessToken } from '../../redux/auth/actions';
+import { getOnboardingStatus } from '../../redux/onboarding/actions';
 import { State } from '../../redux/Reducers';
 import { handleURLRoute } from '../../redux/routing/actions';
 import styles from './styles';
@@ -30,6 +31,7 @@ interface DispatchProps {
   hasAccessToken: typeof hasAccessToken;
   isAppReady: typeof isAppReady;
   handleURLRoute: typeof handleURLRoute;
+  getOnboardingStatus: typeof getOnboardingStatus;
 }
 
 interface OwnProps {}
@@ -45,7 +47,8 @@ const mapDispatchToProps = {
   authSubscription,
   hasAccessToken,
   isAppReady,
-  handleURLRoute
+  handleURLRoute,
+  getOnboardingStatus
 };
 
 class AppLoading extends Component<Props> {
@@ -111,6 +114,8 @@ class AppLoading extends Component<Props> {
 
     // apply moment date/time settings
     initializeMoment();
+
+    await this.props.getOnboardingStatus();
 
     this.props.isAppReady(true);
   }

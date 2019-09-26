@@ -102,7 +102,7 @@ const FriendsStack = createStackNavigator(
   }
 );
 
-const AuthStack = createStackNavigator(
+const AuthStack = createSwitchNavigator(
   {
     Walkthrough: {
       screen: Walkthrough
@@ -112,7 +112,6 @@ const AuthStack = createStackNavigator(
     }
   },
   {
-    headerMode: 'none',
     initialRouteName: 'Walkthrough'
   }
 );
