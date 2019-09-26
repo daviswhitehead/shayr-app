@@ -39,6 +39,11 @@ export const fontSystem = {
     color: colors.DARK_GRAY,
     fontSize: 14
   },
+  SUBTITLE_ITALICS: {
+    ...fonts.ITALIC,
+    color: colors.BLACK,
+    fontSize: 16
+  },
   H1: {
     ...fonts.REGULAR,
     color: colors.BLACK,
@@ -67,6 +72,11 @@ export const fontSystem = {
   BOLD_BODY: {
     ...fonts.BOLD,
     color: colors.BLACK,
+    fontSize: 14
+  },
+  SECONDARY_BODY: {
+    ...fonts.EXTRA_LIGHT,
+    color: colors.DARK_GRAY,
     fontSize: 14
   },
   NAME: {

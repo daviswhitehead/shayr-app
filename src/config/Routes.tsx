@@ -9,6 +9,7 @@ import Icon, { names } from '../components/Icon';
 import Discover from '../containers/Discover';
 import FindFriends from '../containers/FindFriends';
 import Friends from '../containers/Friends';
+import Intro from '../containers/Intro';
 import Login from '../containers/Login';
 import MyList from '../containers/MyList';
 import Notifications from '../containers/Notifications';
@@ -101,13 +102,18 @@ const FriendsStack = createStackNavigator(
   }
 );
 
-const AuthStack = createStackNavigator(
+const AuthStack = createSwitchNavigator(
   {
+    Intro: {
+      screen: Intro
+    },
     Login: {
       screen: Login
     }
   },
-  { headerMode: 'none' }
+  {
+    initialRouteName: 'Intro'
+  }
 );
 
 const TabStack = createBottomTabNavigator(

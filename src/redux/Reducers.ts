@@ -3,6 +3,9 @@ import appReducer from './app/reducer';
 import authReducer, { State as AuthState } from './auth/reducer';
 import documentsReducer, { State as DocumentsState } from './documents/reducer';
 import listsReducer, { State as ListsState } from './lists/reducer';
+import onboardingReducer, {
+  State as OnboardingState
+} from './onboarding/reducer';
 import { createNamedWrapperReducer } from './ReducerHelpers';
 import routingReducer, { State as RoutingState } from './routing/reducer';
 
@@ -22,6 +25,7 @@ export interface State {
   notificationsLists: ListsState;
   posts: DocumentsState;
   routing: RoutingState;
+  onboarding: OnboardingState;
   shares: DocumentsState;
   sharesLists: ListsState;
   users: DocumentsState;
@@ -54,6 +58,7 @@ export const makeRootReducer = () =>
     ),
     posts: createNamedWrapperReducer(documentsReducer, 'posts'),
     routing: routingReducer,
+    onboarding: onboardingReducer,
     shares: createNamedWrapperReducer(documentsReducer, 'shares'),
     sharesLists: createNamedWrapperReducer(listsReducer, 'sharesLists'),
     users: createNamedWrapperReducer(documentsReducer, 'users'),
