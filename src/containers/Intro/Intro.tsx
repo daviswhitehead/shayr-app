@@ -42,7 +42,7 @@ const mapDispatchToProps = {
   setOnboardingStatus
 };
 
-class Walkthrough extends Component<Props, OwnState> {
+class Intro extends Component<Props, OwnState> {
   static whyDidYouRender = true;
 
   carouselRef: any;
@@ -82,7 +82,7 @@ class Walkthrough extends Component<Props, OwnState> {
     ];
   }
 
-  renderWalkthroughCard = ({ item, index }: { item: any; index: number }) => {
+  renderIntroCard = ({ item, index }: { item: any; index: number }) => {
     return (
       <View style={styles.cardContainer}>
         <View style={styles.card}>
@@ -138,7 +138,7 @@ class Walkthrough extends Component<Props, OwnState> {
           <Carousel
             ref={this.carouselRef}
             data={this.data}
-            renderItem={this.renderWalkthroughCard}
+            renderItem={this.renderIntroCard}
             itemWidth={Layout.WINDOW_WIDTH}
             sliderWidth={Layout.WINDOW_WIDTH}
             inactiveSlideScale={1}
@@ -167,4 +167,4 @@ class Walkthrough extends Component<Props, OwnState> {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Walkthrough);
+)(Intro);
