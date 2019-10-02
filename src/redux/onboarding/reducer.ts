@@ -3,11 +3,13 @@ import { Actions, items, types } from './actions';
 export interface State {
   [items.DID_VIEW_INTRO]: boolean;
   [items.DID_VIEW_HOW_TO]: boolean;
+  SHAYR_ONBOARDING_POST_ID: string;
 }
 
-const initialState: State = {
+export const initialState: State = {
   [items.DID_VIEW_INTRO]: false,
-  [items.DID_VIEW_HOW_TO]: false
+  [items.DID_VIEW_HOW_TO]: false,
+  SHAYR_ONBOARDING_POST_ID: 'SHAYR_HOW_TO'
 };
 
 function reducer(state = initialState, action: Actions) {

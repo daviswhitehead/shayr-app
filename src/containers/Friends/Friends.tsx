@@ -9,6 +9,7 @@ import {
 } from 'react-navigation';
 import { connect } from 'react-redux';
 import ActionRow from '../../components/ActionRow';
+import EmptyFriends from '../../components/EmptyFriends';
 import FriendSummaryRow from '../../components/FriendSummaryRow';
 import Header from '../../components/Header';
 import Icon, { names } from '../../components/Icon';
@@ -186,20 +187,18 @@ class Friends extends PureComponent<Props, OwnState> {
             )
           }
         />
-        {/* <Button
-          onPress={() =>
-            this.props.createFriendship(
-              'lOnI91XOvdRnQe5Hmdrkf2TY5lH2',
-              '96sTGJfd7RP24MhHslRVryAEkQ72'
-            )
-          }
-          title='Send Friend Request'
-        /> */}
         <List
           isLoading={this.state.isLoading}
           data={this.props.friends}
           renderItem={this.renderItem}
           ListHeaderComponent={() => this.renderListHeader()}
+          ListEmptyComponent={
+            <EmptyFriends
+              onButtonPress={() =>
+                this.props.navigation.navigate('FindFriends', {})
+              }
+            />
+          }
           noSeparator
         />
       </View>
@@ -217,53 +216,3 @@ export default connect(
     }
   }
 )(Friends);
-
-// {/* <Button
-//             onPress={() =>
-//               this.props.createFriendship(
-//                 this.props.authUserId,
-//                 'lOnI91XOvdRnQe5Hmdrkf2TY5lH2'
-//               )
-//             }
-//             title='Send Friend Request'
-//           />
-//           <Button
-//             onPress={() =>
-//               this.props.updateFriendship(
-//                 this.props.authUserId,
-//                 'lOnI91XOvdRnQe5Hmdrkf2TY5lH2',
-//                 'accepted'
-//               )
-//             }
-//             title='Accept Friend Request'
-//           />
-//           <Button
-//             onPress={() =>
-//               this.props.updateFriendship(
-//                 this.props.authUserId,
-//                 'lOnI91XOvdRnQe5Hmdrkf2TY5lH2',
-//                 'rejected'
-//               )
-//             }
-//             title='Reject Friend Request'
-//           />
-//           <Button
-//             onPress={() =>
-//               this.props.updateFriendship(
-//                 this.props.authUserId,
-//                 'lOnI91XOvdRnQe5Hmdrkf2TY5lH2',
-//                 'deleted'
-//               )
-//             }
-//             title='Delete Friend Request'
-//           />
-//           <Button
-//             onPress={() =>
-//               this.props.updateFriendship(
-//                 this.props.authUserId,
-//                 'lOnI91XOvdRnQe5Hmdrkf2TY5lH2',
-//                 'removed'
-//               )
-//             }
-//             title='Remove Friend'
-//           /> */}

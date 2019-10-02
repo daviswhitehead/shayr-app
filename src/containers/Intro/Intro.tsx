@@ -64,7 +64,7 @@ class Intro extends Component<Props, OwnState> {
       {
         title: 'Discover Together',
         subtitle:
-          'Shayr makes it easy to give recommendations and discover great content within your network of close friends.',
+          'Shayr makes it easy to give recommendations for, and discover, great content within your network of close friends.',
         source: require('../../assets/images/walkthrough-discover-together.png')
       },
       {

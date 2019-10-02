@@ -9,6 +9,10 @@ import {
   NavigationState
 } from 'react-navigation';
 import { connect } from 'react-redux';
+import EmptyMyAdds from '../../components/EmptyMyAdds';
+import EmptyMyComments from '../../components/EmptyMyComments';
+import EmptyMyDones from '../../components/EmptyMyDones';
+import EmptyMyShayrs from '../../components/EmptyMyShayrs';
 import Header from '../../components/Header';
 import Icon, { names } from '../../components/Icon';
 import List from '../../components/List';
@@ -26,6 +30,7 @@ import { selectAuthUserId } from '../../redux/auth/selectors';
 import { selectFlatListReadyDocuments } from '../../redux/documents/selectors';
 import { generateListKey } from '../../redux/lists/helpers';
 import { selectListItems, selectListMeta } from '../../redux/lists/selectors';
+import { selectListNeedsOnboarding } from '../../redux/onboarding/selectors';
 import { subscribeToFriends, subscribeToUser } from '../../redux/users/actions';
 import {
   selectUserActionCount,
@@ -48,11 +53,15 @@ interface StateProps {
   ownerSharesCount?: number;
   ownerUser?: User;
   ownerUserId: string;
+  SHAYR_ONBOARDING_POST_ID: string;
   usersPostsListsData?: {
     [listKey: string]: Array<UsersPosts>;
   };
   usersPostsListsMeta?: {
     [listKey: string]: any; // TODO: meta type
+  };
+  usersPostsListsNeedsOnboarding?: {
+    [listKey: string]: boolean;
   };
   usersPostsListsQueries: {
     [listKey: string]: Query;
@@ -118,6 +127,8 @@ const mapStateToProps = (state: any, props: any) => {
     'presentation'
   );
 
+  const SHAYR_ONBOARDING_POST_ID = state.onboarding.SHAYR_ONBOARDING_POST_ID;
+
   return {
     authIsOwner: authUserId === ownerUserId,
     authUser: selectUserFromId(state, authUserId, 'presentation'),
@@ -154,6 +165,33 @@ const mapStateToProps = (state: any, props: any) => {
     ),
     ownerUser: selectUserFromId(state, ownerUserId, 'profile'),
     ownerUserId,
+    SHAYR_ONBOARDING_POST_ID,
+    usersPostsListsNeedsOnboarding: {
+      [usersPostsListsViews.adds]: selectListNeedsOnboarding(
+        state,
+        'usersPostsLists',
+        usersPostsListsViews.adds,
+        SHAYR_ONBOARDING_POST_ID
+      ),
+      [usersPostsListsViews.dones]: selectListNeedsOnboarding(
+        state,
+        'usersPostsLists',
+        usersPostsListsViews.dones,
+        SHAYR_ONBOARDING_POST_ID
+      ),
+      [usersPostsListsViews.comments]: selectListNeedsOnboarding(
+        state,
+        'usersPostsLists',
+        usersPostsListsViews.comments,
+        SHAYR_ONBOARDING_POST_ID
+      ),
+      [usersPostsListsViews.shares]: selectListNeedsOnboarding(
+        state,
+        'usersPostsLists',
+        usersPostsListsViews.shares,
+        SHAYR_ONBOARDING_POST_ID
+      )
+    },
     usersPostsListsData: {
       [usersPostsListsViews.adds]: selectFlatListReadyDocuments(
         state,
@@ -407,6 +445,11 @@ class MyList extends Component<Props, OwnState> {
     return map[index];
   };
 
+  mapIndexToFooter = (index: number) => {
+    const map = [EmptyMyShayrs, EmptyMyAdds, EmptyMyDones, EmptyMyComments];
+    return map[index];
+  };
+
   mapViewToAction = (view: string) => {
     return _.invert(this.props.usersPostsListsViews)[view];
   };
@@ -540,6 +583,14 @@ class MyList extends Component<Props, OwnState> {
       this.state.activeView
     ];
 
+    const onboardingListProps = this.props.usersPostsListsNeedsOnboarding[
+      this.state.activeView
+    ]
+      ? {
+          ListFooterComponent: this.mapIndexToFooter(this.state.selectedIndex)
+        }
+      : {};
+
     return (
       <View style={styles.screen}>
         <Header
@@ -598,6 +649,7 @@ class MyList extends Component<Props, OwnState> {
           commentsCount={this.props.ownerCommentsCount}
         />
         <List
+          {...onboardingListProps}
           data={this.props.usersPostsListsData[this.state.activeView]}
           renderItem={this.renderItem}
           onEndReached={this.paginateList}
