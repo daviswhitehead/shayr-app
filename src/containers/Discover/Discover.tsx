@@ -12,7 +12,6 @@ import PostCard from '../../components/PostCard';
 import SwipeCard from '../../components/SwipeCard';
 import withAdds from '../../higherOrderComponents/withAdds';
 import { getQuery, queryTypes } from '../../lib/FirebaseQueries';
-import { openURL } from '../../lib/Utils';
 import { selectAuthUserId } from '../../redux/auth/selectors';
 import {
   selectDocumentFromId,
@@ -22,7 +21,6 @@ import { subscribeToFriendships } from '../../redux/friendships/actions';
 import { generateListKey } from '../../redux/lists/helpers';
 import { selectListItems, selectListMeta } from '../../redux/lists/selectors';
 import { subscribeNotificationTokenRefresh } from '../../redux/notifications/actions';
-import { selectListNeedsOnboarding } from '../../redux/onboarding/selectors';
 import { getPost } from '../../redux/posts/actions';
 import { State } from '../../redux/Reducers';
 import { navigateToRoute } from '../../redux/routing/actions';
@@ -52,9 +50,6 @@ interface StateProps {
   };
   usersPostsListsMeta?: {
     [listKey: string]: any; // listKey and meta state
-  };
-  usersPostsListsNeedsOnboarding?: {
-    [listKey: string]: boolean;
   };
 }
 
