@@ -11,6 +11,7 @@ export enum names {
   ACCEPT_FRIEND = 'accept-friend',
   ADD = 'add',
   ADD_FRIEND = 'add-friend',
+  ARROW = 'arrow',
   AT_SIGN = 'at-sign',
   BACK = 'back',
   BELL = 'bell',
@@ -38,6 +39,8 @@ export enum names {
   SEARCH_ACTIVE = 'search-active',
   SETTINGS = 'settings',
   SHARE = 'share',
+  SHARE_GOOGLE = 'share-google',
+  SHARE_APPLE = 'share-apple',
   X_EXIT = 'x-exit'
 }
 
@@ -45,6 +48,7 @@ const iconMap = {
   [names.ACCEPT_FRIEND]: require('../../assets/icons/icon-accept-friend.png'),
   [names.ADD_FRIEND]: require('../../assets/icons/icon-add-friend.png'),
   [names.ADD]: require('../../assets/icons/icon-add.png'),
+  [names.ARROW]: require('../../assets/icons/icon-arrow.png'),
   [names.AT_SIGN]: require('../../assets/icons/icon-at-sign.png'),
   [names.BACK]: require('../../assets/icons/icon-back.png'),
   [names.BELL]: require('../../assets/icons/icon-bell.png'),
@@ -74,6 +78,8 @@ const iconMap = {
   [names.SEARCH]: require('../../assets/icons/icon-search.png'),
   [names.SETTINGS]: require('../../assets/icons/icon-settings.png'),
   [names.SHARE]: require('../../assets/icons/icon-share.png'),
+  [names.SHARE_GOOGLE]: require('../../assets/icons/icon-share-google.png'),
+  [names.SHARE_APPLE]: require('../../assets/icons/icon-share-ios.png'),
   [names.X_EXIT]: require('../../assets/icons/icon-x-exit.png')
 };
 

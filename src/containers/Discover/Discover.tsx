@@ -22,6 +22,7 @@ import { subscribeToFriendships } from '../../redux/friendships/actions';
 import { generateListKey } from '../../redux/lists/helpers';
 import { selectListItems, selectListMeta } from '../../redux/lists/selectors';
 import { subscribeNotificationTokenRefresh } from '../../redux/notifications/actions';
+import { selectListNeedsOnboarding } from '../../redux/onboarding/selectors';
 import { getPost } from '../../redux/posts/actions';
 import { State } from '../../redux/Reducers';
 import { navigateToRoute } from '../../redux/routing/actions';
@@ -35,8 +36,6 @@ import { loadUsersPosts } from '../../redux/usersPosts/actions';
 import colors from '../../styles/Colors';
 import styles from './styles';
 
-const SHAYR_ONBOARDING_POST_ID = 'SHAYR_HOW_TO';
-
 interface StateProps {
   authUser?: User;
   authUserId: string;
@@ -45,12 +44,17 @@ interface StateProps {
   };
   onboardingPost: Post;
   routing?: any; // routing state
+  SHAYR_ONBOARDING_POST_ID: string;
   unreadNotificationsCount?: number;
+  usersPostsListsView: string; // TODO: listKey definition
+  usersPostsListsData?: {
+    [listKey: string]: Array<UsersPosts>; // TODO: listKey definition
+  };
   usersPostsListsMeta?: {
     [listKey: string]: any; // listKey and meta state
   };
-  usersPostsListsData?: {
-    [listKey: string]: Array<UsersPosts>; // listKey
+  usersPostsListsNeedsOnboarding?: {
+    [listKey: string]: boolean;
   };
 }
 
@@ -85,6 +89,13 @@ const mapStateToProps = (state: State) => {
 
   const authUserId = selectAuthUserId(state);
 
+  const SHAYR_ONBOARDING_POST_ID = state.onboarding.SHAYR_ONBOARDING_POST_ID;
+
+  const usersPostsListsView = generateListKey(
+    authUserId,
+    queryTypes.USERS_POSTS_ALL
+  );
+
   return {
     authUserId,
     authUser: selectUserFromId(state, authUserId, 'presentation'),
@@ -99,39 +110,33 @@ const mapStateToProps = (state: State) => {
       SHAYR_ONBOARDING_POST_ID
     ),
     routing: state.routing,
+    SHAYR_ONBOARDING_POST_ID,
     unreadNotificationsCount: selectUserActionCount(
       state,
       authUserId,
       'profile',
       'unreadNotificationsCount'
     ),
+    usersPostsListsView,
     usersPostsListsMeta: {
-      [generateListKey(authUserId, queryTypes.USERS_POSTS_ALL)]: selectListMeta(
+      [usersPostsListsView]: selectListMeta(
         state,
         'usersPostsLists',
-        generateListKey(authUserId, queryTypes.USERS_POSTS_ALL)
+        usersPostsListsView
       )
     },
-    usersPostsListsData: []
-    // usersPostsListsData: {
-    //   [generateListKey(
-    //     authUserId,
-    //     queryTypes.USERS_POSTS_ALL
-    //   )]: selectFlatListReadyDocuments(
-    //     state,
-    //     'usersPosts',
-    //     selectListItems(
-    //       state,
-    //       'usersPostsLists',
-    //       generateListKey(authUserId, queryTypes.USERS_POSTS_ALL)
-    //     ),
-    //     generateListKey(authUserId, queryTypes.USERS_POSTS_ALL),
-    //     {
-    //       sortKeys: ['createdAt'],
-    //       sortDirection: ['desc']
-    //     }
-    //   )
-    // }
+    usersPostsListsData: {
+      [usersPostsListsView]: selectFlatListReadyDocuments(
+        state,
+        'usersPosts',
+        selectListItems(state, 'usersPostsLists', usersPostsListsView),
+        usersPostsListsView,
+        {
+          sortKeys: ['createdAt'],
+          sortDirection: ['desc']
+        }
+      )
+    }
   };
 };
 
@@ -153,7 +158,7 @@ class Discover extends PureComponent<Props, OwnState> {
     super(props);
     this.state = {
       isLoading: true,
-      isLoadingOnboardingPost: false
+      isLoadingOnboardingPost: true
     };
     this.subscriptions = [];
   }
@@ -190,10 +195,13 @@ class Discover extends PureComponent<Props, OwnState> {
       getQuery(queryTypes.USERS_POSTS_ALL)!(this.props.authUserId)
     );
 
+    // load onboarding post
+    this.props.getPost(this.props.SHAYR_ONBOARDING_POST_ID);
+
     // DEVELOPMENT HELPERS
     // this.props.navigation.navigate('FindFriends', {});
     // this.props.navigation.navigate('Notifications', {});
-    // this.props.navigation.navigate('FriendsTab', {});
+    this.props.navigation.navigate('FriendsTab', {});
     // this.props.navigation.navigate('PostDetail', {
     //   ownerUserId: this.props.authUserId,
     //   postId: '9JKOMIpbKdSCt4MRomPI'
@@ -214,7 +222,7 @@ class Discover extends PureComponent<Props, OwnState> {
 
   componentDidUpdate(prevProps: Props) {
     this.checkLoading();
-    this.loadOnboardingPost();
+    this.checkOnboardingLoading();
   }
 
   componentWillUnmount() {
@@ -237,23 +245,9 @@ class Discover extends PureComponent<Props, OwnState> {
     }
   };
 
-  loadOnboardingPost = () => {
-    if (
-      this.state.isLoadingOnboardingPost &&
-      !_.isUndefined(this.props.onboardingPost)
-    ) {
+  checkOnboardingLoading = () => {
+    if (this.props.onboardingPost && !_.isEmpty(this.props.onboardingPost)) {
       this.setState({ isLoadingOnboardingPost: false });
-    }
-
-    if (
-      _.isEmpty(this.props.usersPostsListsData) &&
-      !_.isUndefined(this.props.usersPostsListsData) &&
-      _.isUndefined(this.props.onboardingPost) &&
-      !this.state.isLoadingOnboardingPost
-    ) {
-      this.setState({ isLoadingOnboardingPost: true }, () => {
-        this.props.getPost(SHAYR_ONBOARDING_POST_ID);
-      });
     }
   };
 
@@ -308,13 +302,13 @@ class Discover extends PureComponent<Props, OwnState> {
     });
   };
 
-  renderItem = ({ item }: { item: UsersPosts }) => {
+  renderItem = ({ item }: { item: UsersPosts | Post }) => {
     const actionProps = {
       // add/done props
-      ownerUserId: item.userId,
+      ownerUserId: item.userId || this.props.authUserId,
       postId: item.postId,
-      usersPostsAdds: item.adds,
-      usersPostsDones: item.dones
+      usersPostsAdds: item.adds || [],
+      usersPostsDones: item.dones || []
     };
 
     return (
@@ -331,8 +325,8 @@ class Discover extends PureComponent<Props, OwnState> {
           isLoading={this.state.isLoading}
           post={item}
           onPressParameters={{
-            ownerUserId: item.userId,
-            postId: item.postId
+            ownerUserId: actionProps.ownerUserId,
+            postId: actionProps.postId
           }}
           onPress={this.onItemPress}
           users={{
@@ -344,34 +338,7 @@ class Discover extends PureComponent<Props, OwnState> {
     );
   };
 
-  onPressOnboardingPost = ({ url }: { url: string }) => {
-    openURL(url);
-  };
-
-  renderOnboardingItem = ({ item }: { item: Post }) => {
-    console.log('item');
-    console.log(item);
-
-    return (
-      <PostCard
-        key={item._id}
-        isLoading={this.state.isLoadingOnboardingPost}
-        post={item}
-        onPressParameters={{
-          url: item.url
-        }}
-        onPress={this.onPressOnboardingPost}
-      />
-    );
-  };
-
   render() {
-    // console.log(`Discover - Render`);
-    // console.log('this.props');
-    // console.log(this.props);
-    // console.log('this.state');
-    // console.log(this.state);
-
     return (
       <View style={styles.screen}>
         <Header
@@ -393,58 +360,59 @@ class Discover extends PureComponent<Props, OwnState> {
             />
           }
         />
-        {this.props.onboardingPost ? (
-          <List
-            data={[this.props.onboardingPost]}
-            renderItem={this.renderOnboardingItem}
-            isLoading={this.state.isLoadingOnboardingPost}
-          />
-        ) : (
-          <List
-            data={
+        <List
+          data={
+            _.isEmpty(
               this.props.usersPostsListsData![
                 generateListKey(
                   this.props.authUserId,
                   queryTypes.USERS_POSTS_ALL
                 )
               ]
-            }
-            renderItem={this.renderItem}
-            onEndReached={this.paginateList}
-            onRefresh={this.refreshList}
-            isLoading={this.state.isLoading}
-            isRefreshing={
-              this.state.isLoading
-                ? false
-                : this.props.usersPostsListsMeta![
-                    generateListKey(
-                      this.props.authUserId,
-                      queryTypes.USERS_POSTS_ALL
-                    )
-                  ].isRefreshing
-            }
-            isPaginating={
-              this.state.isLoading
-                ? false
-                : this.props.usersPostsListsMeta![
-                    generateListKey(
-                      this.props.authUserId,
-                      queryTypes.USERS_POSTS_ALL
-                    )
-                  ].isLoading
-            }
-            isLoadedAll={
-              this.state.isLoading
-                ? false
-                : this.props.usersPostsListsMeta![
-                    generateListKey(
-                      this.props.authUserId,
-                      queryTypes.USERS_POSTS_ALL
-                    )
-                  ].isLoadedAll
-            }
-          />
-        )}
+            )
+              ? [this.props.onboardingPost]
+              : this.props.usersPostsListsData![
+                  generateListKey(
+                    this.props.authUserId,
+                    queryTypes.USERS_POSTS_ALL
+                  )
+                ]
+          }
+          renderItem={this.renderItem}
+          onEndReached={this.paginateList}
+          onRefresh={this.refreshList}
+          isLoading={this.state.isLoading || this.state.isLoadingOnboardingPost}
+          isRefreshing={
+            this.state.isLoading
+              ? false
+              : this.props.usersPostsListsMeta![
+                  generateListKey(
+                    this.props.authUserId,
+                    queryTypes.USERS_POSTS_ALL
+                  )
+                ].isRefreshing
+          }
+          isPaginating={
+            this.state.isLoading
+              ? false
+              : this.props.usersPostsListsMeta![
+                  generateListKey(
+                    this.props.authUserId,
+                    queryTypes.USERS_POSTS_ALL
+                  )
+                ].isLoading
+          }
+          isLoadedAll={
+            this.state.isLoading
+              ? false
+              : this.props.usersPostsListsMeta![
+                  generateListKey(
+                    this.props.authUserId,
+                    queryTypes.USERS_POSTS_ALL
+                  )
+                ].isLoadedAll
+          }
+        />
       </View>
     );
   }

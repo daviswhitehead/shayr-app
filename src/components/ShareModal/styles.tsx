@@ -39,7 +39,7 @@ export default StyleSheet.create({
     alignItems: 'stretch'
   },
   separator: {
-    height: StyleSheet.hairlineWidth,
+    height: Layout.DIVIDER_WIDTH,
     width: '100%',
     backgroundColor: Colors.DIVIDER
   },

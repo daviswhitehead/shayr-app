@@ -1,4 +1,4 @@
-import { Dimensions, Platform } from 'react-native';
+import { Dimensions, Platform, StyleSheet } from 'react-native';
 import { getInset } from 'react-native-safe-area-view';
 
 const WINDOW_WIDTH = Dimensions.get('window').width;
@@ -20,7 +20,8 @@ const layout = {
   SPACING_SHORT: 4,
   BORDER_RADIUS_SMALL: 2,
   BORDER_RADIUS_MEDIUM: 4,
-  BORDER_RADIUS_LARGE: 8
+  BORDER_RADIUS_LARGE: 8,
+  DIVIDER_WIDTH: StyleSheet.hairlineWidth
 };
 
 export default layout;
