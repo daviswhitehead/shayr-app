@@ -65,6 +65,7 @@
     "react-native-safe-area-view": "^0.14.6",
     "react-native-screens": "^1.0.0-alpha.23",
     "react-native-segmented-control-tab": "^3.4.0",
+    "react-native-share": "^2.0.0",
     "react-native-share-extension": "^2.0.0",
     "react-native-skeleton-placeholder": "^1.0.3",
     "react-native-snap-carousel": "^3.8.1",

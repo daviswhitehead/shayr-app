@@ -20,6 +20,7 @@ export enum names {
   DISCOVER = 'discover',
   DISCOVER_ACTIVE = 'discover-active',
   FACEBOOK = 'facebook',
+  FEEDBACK = 'feedback',
   FLAME = 'flame',
   FRIENDS = 'friends',
   FRIENDS_ACTIVE = 'friends-active',
@@ -59,6 +60,7 @@ const iconMap = {
   [names.FACEBOOK]: (props: any) => (
     <MaterialCommunityIcon name='facebook-box' size={props.size} />
   ),
+  [names.FEEDBACK]: require('../../assets/icons/icon-feedback.png'),
   [names.FLAME]: require('../../assets/icons/icon-flame.png'),
   [names.FRIENDS_ACTIVE]: require('../../assets/icons/icon-friends-active.png'),
   [names.FRIENDS]: require('../../assets/icons/icon-friends.png'),

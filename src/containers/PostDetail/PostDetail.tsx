@@ -17,7 +17,7 @@ import PostCard from '../../components/PostCard';
 import UserAvatarsScrollView from '../../components/UserAvatarsScrollView';
 import UserTextDate from '../../components/UserTextDate';
 import { getQuery, queryTypes } from '../../lib/FirebaseQueries';
-import { openURL } from '../../lib/Utils';
+import { openURL } from '../../lib/LinkingHelpers';
 import { selectAuthUserId } from '../../redux/auth/selectors';
 import { loadCommentsForUsersPosts } from '../../redux/comments/actions';
 import {
