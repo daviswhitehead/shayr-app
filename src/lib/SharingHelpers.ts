@@ -56,14 +56,18 @@ export const sendShayrDownloadInvite = () => {
     });
 };
 
-// Share.shareSingle({
-//   message: 'test',
-//   email: 'whitehead.davis@gmail.com',
-//   social: Share.Social.EMAIL
-// })
-//   .then((res) => {
-//     console.log(res);
-//   })
-//   .catch((err) => {
-//     err && console.log(err);
-//   })
+export const sendShayrPostInvite = (link: string) => {
+  const message = `I think you'd really enjoy checking out this content: ${link}.
+  
+  Also, I'm using Shayr to keep track of content recommendations like these. It's awesome, want to check it out with me? Here's the download link: https://www.google.com`;
+
+  Share.open({
+    message
+  })
+    .then((res) => {
+      console.log(res);
+    })
+    .catch((err) => {
+      err && console.log(err);
+    });
+};

@@ -75,10 +75,11 @@ const withShares = (WrappedComponent: SFC) => {
             ref={this.modalRef}
             authUserId={authUserId}
             ownerUserId={ownerUserId}
-            payload={url}
+            url={url}
             usersPostsId={usersPostsId}
             postId={postId}
             users={friends}
+            showInvite
             {...passThroughProps}
           />
         </View>

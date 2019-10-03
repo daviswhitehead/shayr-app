@@ -18,6 +18,7 @@ import {
 } from 'react-native';
 import Modal from 'react-native-modal';
 import { connect } from 'react-redux';
+import { sendShayrPostInvite } from '../../lib/SharingHelpers';
 import { selectDocumentFromId } from '../../redux/documents/selectors';
 import { getPost } from '../../redux/posts/actions';
 import {
@@ -59,16 +60,16 @@ interface OwnProps {
   ref: any;
   authUserId: documentId;
   ownerUserId: documentId;
-  payload: string;
+  url: string;
   usersPostsId?: documentId;
   postId?: documentId;
-  url?: string;
   users?: Users;
   navigateToLogin?: () => void;
   onModalWillHide?: () => void;
   onModalHide?: () => void;
   hideBackdrop?: boolean;
   isLoading?: boolean;
+  showInvite?: boolean;
 }
 
 type Props = OwnProps & StateProps & DispatchProps;
@@ -138,7 +139,7 @@ class ShareModal extends React.Component<Props, OwnState> {
 
     // create a new share
     const shareId: documentId = await this.props.startShare(
-      this.props.payload,
+      this.props.url,
       this.props.authUserId,
       this.props.postId || ''
     );
@@ -247,16 +248,21 @@ class ShareModal extends React.Component<Props, OwnState> {
     return (
       <View style={styles.friendsContainer}>
         <Text style={styles.sectionHeader}>Shayr with your friends...</Text>
-        {/* <TouchableOpacity style={styles.touchableRow}>
-          <Icon
-            name={names.INVITE}
-            style={styles.iconStyle}
-            iconStyle={styles.iconStyle}
-          />
-          <Text style={styles.friendsRowText}>
-            Invite your friends to Shayr!
-          </Text>
-        </TouchableOpacity> */}
+        {this.props.showInvite ? (
+          <TouchableOpacity
+            style={styles.touchableRow}
+            onPress={() => sendShayrPostInvite(this.props.url)}
+          >
+            <Icon
+              name={names.INVITE}
+              style={styles.iconStyle}
+              iconStyle={styles.iconStyle}
+            />
+            <Text style={styles.friendsRowText}>
+              Invite your friends to Shayr!
+            </Text>
+          </TouchableOpacity>
+        ) : null}
         <TouchableOpacity
           style={styles.touchableRow}
           onPress={() => this.toggleSelectedAllUsers()}
