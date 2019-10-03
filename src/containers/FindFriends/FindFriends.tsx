@@ -35,7 +35,6 @@ const INVITE_SECTION_DATA = [
     iconName: names.INVITE,
     copy: 'Invite your friends to join you on Shayr!',
     onPress: sendShayrDownloadInvite
-    // onPress: () => logEvent('FIND_FRIENDS_INVITE_PRESSED')
   }
 ];
 

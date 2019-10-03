@@ -59,7 +59,7 @@ export const sendShayrDownloadInvite = () => {
 export const sendShayrPostInvite = (link: string) => {
   const message = `I think you'd really enjoy checking out this content: ${link}.
   
-  Also, I'm using Shayr to keep track of content recommendations like these. It's awesome, want to check it out with me? Here's the download link: https://www.google.com`;
+Also, I'm using Shayr to keep track of content recommendations like these. It's awesome, want to check it out with me? Here's the download link: https://www.google.com`;
 
   Share.open({
     message
