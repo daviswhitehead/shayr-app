@@ -1,7 +1,7 @@
 import { documentIds, User, UsersPosts } from '@daviswhitehead/shayr-resources';
 import _ from 'lodash';
 import React, { Component } from 'react';
-import { Alert, Linking, View } from 'react-native';
+import { Alert, View } from 'react-native';
 import { Query } from 'react-native-firebase/database';
 import {
   NavigationScreenProp,
