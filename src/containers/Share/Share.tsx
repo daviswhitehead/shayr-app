@@ -1,4 +1,8 @@
-import { buildAppLink, User } from '@daviswhitehead/shayr-resources';
+import {
+  buildAppLink,
+  getURLFromString,
+  User
+} from '@daviswhitehead/shayr-resources';
 import _ from 'lodash';
 import React, { Component } from 'react';
 import { Linking, Platform, Text, View } from 'react-native';
@@ -39,7 +43,7 @@ interface DispatchProps {
 interface OwnProps {}
 
 interface OwnState {
-  payload: string;
+  url: string;
   isLoading: boolean;
 }
 
@@ -73,7 +77,7 @@ class Share extends Component<Props, OwnState> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      payload: '',
+      url: '',
       isLoading: true
     };
     firebase.analytics().logEvent('SHARE_EXTENSION_LAUNCH');
@@ -103,7 +107,7 @@ class Share extends Component<Props, OwnState> {
       // const value =
       //   'https://medium.com/@khreniak/cloud-firestore-security-rules-basics-fac6b6bea18e';
 
-      this.setState({ payload: value });
+      this.setState({ url: getURLFromString(value) });
 
       if (this.props.authUserId) {
         this.subscriptions.push(
@@ -151,11 +155,11 @@ class Share extends Component<Props, OwnState> {
   };
 
   navigateToLogin = () => {
-    const url = buildAppLink('shayr', 'shayr', 'Login', {});
+    const appLink = buildAppLink('shayr', 'shayr', 'Login', {});
     try {
       Platform.OS === 'ios'
-        ? ShareExtension.openURL(url)
-        : Linking.openURL(url);
+        ? ShareExtension.openURL(appLink)
+        : Linking.openURL(appLink);
     } catch (error) {
       console.error('An error occurred:', error);
     }
@@ -166,7 +170,7 @@ class Share extends Component<Props, OwnState> {
       <ShareModal
         ref={this.modalRef}
         isLoading={this.state.isLoading}
-        payload={this.state.payload}
+        url={this.state.url}
         authUserId={this.props.authUserId}
         ownerUserId={this.props.authUserId}
         users={this.props.friends}
