@@ -15,6 +15,7 @@ import { names } from '../../components/Icon';
 import SearchHeader from '../../components/SearchHeader';
 import { logEvent } from '../../lib/FirebaseAnalytics';
 import { queryTypes } from '../../lib/FirebaseQueries';
+import { sendShayrDownloadInvite } from '../../lib/SharingHelpers';
 import { selectAuthUserId } from '../../redux/auth/selectors';
 import { selectFlatListReadyDocuments } from '../../redux/documents/selectors';
 import { selectPendingFriendshipUserIds } from '../../redux/friendships/selectors';
@@ -33,7 +34,8 @@ const INVITE_SECTION_DATA = [
     type: 'action',
     iconName: names.INVITE,
     copy: 'Invite your friends to join you on Shayr!',
-    onPress: () => logEvent('FIND_FRIENDS_INVITE_PRESSED')
+    onPress: sendShayrDownloadInvite
+    // onPress: () => logEvent('FIND_FRIENDS_INVITE_PRESSED')
   }
 ];
 
