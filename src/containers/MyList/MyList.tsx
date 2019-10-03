@@ -605,7 +605,7 @@ class MyList extends Component<Props, OwnState> {
               : () => this.props.navigation.goBack(null)
           }
           leftIcons={
-            this.props.authIsOwner ? (
+            this.props.navigation.state.key.slice(0, 3) === 'id-' ? (
               <Icon name={names.FEEDBACK} onPress={sendFeedbackEmail} />
             ) : (
               undefined
