@@ -10,15 +10,12 @@ export default StyleSheet.create({
     alignItems: 'center',
     backgroundColor: Colors.YELLOW
   },
-  spacerContainer: {
-    flex: 1.5
-  },
   carouselContainer: {
-    flex: 2
+    flex: 1
   },
   carouselContentContainer: {
     flexDirection: 'row',
-    alignItems: 'flex-start'
+    alignItems: 'flex-end'
   },
   cardContainer: {
     flexDirection: 'column',
@@ -46,11 +43,11 @@ export default StyleSheet.create({
     textAlign: 'center'
   },
   paginationContainer: {
-    flex: 1.5,
     flexDirection: 'column',
-    justifyContent: 'flex-start',
+    justifyContent: 'flex-end',
     alignItems: 'stretch',
-    width: Layout.WINDOW_WIDTH * Layout.WINDOW_WIDTH_MULTIPLIER
+    width: Layout.WINDOW_WIDTH * Layout.WINDOW_WIDTH_MULTIPLIER,
+    marginBottom: Layout.WINDOW_BOTTOM_SAFE_AREA + Layout.SPACING_EXTRA_LONG
   },
   dotContainer: {
     flexDirection: 'row',

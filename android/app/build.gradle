@@ -146,7 +146,7 @@ android {
         applicationIdSuffix project.env.get("APP_ID_SUFFIX_ANDROID")
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 91
+        versionCode 92
         versionName "3.4.1"
         
         // because of firestore https://developer.android.com/studio/build/multidex#mdex-gradle

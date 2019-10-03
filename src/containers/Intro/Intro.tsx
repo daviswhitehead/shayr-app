@@ -51,7 +51,7 @@ class Intro extends Component<Props, OwnState> {
     super(props);
 
     if (this.props.onboarding.didViewIntro) {
-      this.props.navigation.navigate('Login');
+      // this.props.navigation.navigate('Login');
     }
 
     this.state = {
@@ -133,7 +133,7 @@ class Intro extends Component<Props, OwnState> {
     const { carouselActiveItem, viewedCarousel } = this.state;
     return (
       <View style={styles.container}>
-        <View style={styles.spacerContainer} />
+        {/* <View style={styles.spacerContainer} /> */}
         <View style={styles.carouselContainer}>
           <Carousel
             ref={this.carouselRef}

@@ -583,13 +583,13 @@ class MyList extends Component<Props, OwnState> {
       this.state.activeView
     ];
 
-    const onboardingListProps = this.props.usersPostsListsNeedsOnboarding[
-      this.state.activeView
-    ]
-      ? {
-          ListFooterComponent: this.mapIndexToFooter(this.state.selectedIndex)
-        }
-      : {};
+    const onboardingListProps =
+      this.props.usersPostsListsNeedsOnboarding[this.state.activeView] &&
+      this.props.authIsOwner
+        ? {
+            ListFooterComponent: this.mapIndexToFooter(this.state.selectedIndex)
+          }
+        : {};
 
     return (
       <View style={styles.screen}>

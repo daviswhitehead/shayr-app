@@ -27,6 +27,7 @@
     "android:prod": "sh scripts/env_manager.sh prod && ENVFILE=./environments/prod/.env.prod react-native run-android --variant=release --appIdSuffix prod",
     "android:staging": "sh scripts/env_manager.sh staging && ENVFILE=./environments/staging/.env.staging react-native run-android --appIdSuffix staging",
     "ios:alpha": "sh scripts/env_manager.sh alpha && ENVFILE=./environments/alpha/.env.alpha react-native run-ios --scheme shayr-alpha --simulator=\"iPhone X\" --configuration Release",
+    "ios:dev:5s": "sh scripts/env_manager.sh dev && ENVFILE=./environments/dev/.env.dev react-native run-ios --scheme shayr-dev --simulator=\"iPhone 5s\"",
     "ios:dev": "sh scripts/env_manager.sh dev && ENVFILE=./environments/dev/.env.dev react-native run-ios --scheme shayr-dev --simulator=\"iPhone X\"",
     "ios:prod": "sh scripts/env_manager.sh prod && ENVFILE=./environments/prod/.env.prod react-native run-ios --scheme shayr-prod --simulator=\"iPhone X\" --configuration Release",
     "ios:staging": "sh scripts/env_manager.sh staging && ENVFILE=./environments/staging/.env.staging react-native run-ios --scheme shayr-prod --simulator=\"iPhone X\"",
