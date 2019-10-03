@@ -14,6 +14,7 @@ interface Props {
   statusBarTranslucent?: boolean;
   statusBarHidden?: boolean;
   rightIcons?: JSX.Element[] | JSX.Element;
+  leftIcons?: JSX.Element[] | JSX.Element;
 }
 
 const Header: SFC<Props> = ({
@@ -24,7 +25,8 @@ const Header: SFC<Props> = ({
   back,
   statusBarTranslucent = true,
   statusBarHidden = false,
-  rightIcons
+  rightIcons,
+  leftIcons
 }) => {
   const shadowStyle = shadow ? createShadow(4) : {};
 
@@ -52,6 +54,7 @@ const Header: SFC<Props> = ({
           <View style={styles.headerBox}>
             <View style={styles.bookendsBox}>
               {back ? <Icon name={names.BACK} onPress={back} /> : <View />}
+              {!!leftIcons && leftIcons}
             </View>
             <Text style={styles.text}>{title}</Text>
             <View style={styles.bookendsBox}>{!!rightIcons && rightIcons}</View>

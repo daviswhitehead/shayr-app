@@ -1,7 +1,7 @@
 import { documentIds, User, UsersPosts } from '@daviswhitehead/shayr-resources';
 import _ from 'lodash';
 import React, { Component } from 'react';
-import { Alert, View } from 'react-native';
+import { Alert, Linking, View } from 'react-native';
 import { Query } from 'react-native-firebase/database';
 import {
   NavigationScreenProp,
@@ -25,6 +25,7 @@ import withComments from '../../higherOrderComponents/withComments';
 import withDones from '../../higherOrderComponents/withDones';
 import withShares from '../../higherOrderComponents/withShares';
 import { getQuery, queryTypes } from '../../lib/FirebaseQueries';
+import { sendFeedbackEmail } from '../../lib/SharingHelpers';
 import { startSignOut } from '../../redux/auth/actions';
 import { selectAuthUserId } from '../../redux/auth/selectors';
 import { selectFlatListReadyDocuments } from '../../redux/documents/selectors';
@@ -602,6 +603,13 @@ class MyList extends Component<Props, OwnState> {
             this.props.navigation.state.key.slice(0, 3) === 'id-'
               ? undefined
               : () => this.props.navigation.goBack(null)
+          }
+          leftIcons={
+            this.props.authIsOwner ? (
+              <Icon name={names.FEEDBACK} onPress={sendFeedbackEmail} />
+            ) : (
+              undefined
+            )
           }
           rightIcons={
             this.props.authIsOwner ? (

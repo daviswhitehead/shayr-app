@@ -113,7 +113,8 @@ post_install do |installer|
       "React",
       "React-Core",
       "React-DevSupport",
-      "React-RCTLinking"
+      "React-RCTLinking",
+      'RNShare'
     ].include?(target.name)
 
       puts "Updating build configurations on target: #{target.name}"

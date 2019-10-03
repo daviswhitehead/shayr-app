@@ -205,14 +205,14 @@ class Discover extends PureComponent<Props, OwnState> {
     //   ownerUserId: this.props.authUserId,
     //   postId: '48PKLyY71DHin1XuIPop'
     // });
-    // this.props.navigation.navigate({
-    //   // routeName: 'MyList',
-    //   routeName: 'MyListTab',
-    //   params: {
-    //     // ownerUserId: 'lOnI91XOvdRnQe5Hmdrkf2TY5lH2'
-    //     ownerUserId: this.props.authUserId
-    //   }
-    // });
+    this.props.navigation.navigate({
+      // routeName: 'MyList',
+      routeName: 'MyListTab',
+      params: {
+        // ownerUserId: 'lOnI91XOvdRnQe5Hmdrkf2TY5lH2'
+        ownerUserId: this.props.authUserId
+      }
+    });
   }
 
   componentDidUpdate(prevProps: Props) {
