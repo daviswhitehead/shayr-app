@@ -150,7 +150,7 @@ class Friends extends PureComponent<Props, OwnState> {
   };
 
   renderListHeader = () => {
-    return _.isEmpty(this.props.pendingFriendshipUserIds) ? null : (
+    return !_.isEmpty(this.props.pendingFriendshipUserIds) && this.props.authIsOwner ? (
       <ActionRow
         onPress={() => this.props.navigation.navigate('FindFriends', {})}
         iconName={names.ACCEPT_FRIEND}
@@ -158,7 +158,7 @@ class Friends extends PureComponent<Props, OwnState> {
           this.props.pendingFriendshipUserIds.length
         } pending friend requests!`}
       />
-    );
+    ) : null
   };
 
   render() {

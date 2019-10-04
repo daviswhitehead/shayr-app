@@ -6,7 +6,8 @@ fastlane_version '2.96.1'
 fastlane_require 'dotenv/load'
 
 
-# before_all dodesc 'update codepush builds'
+# before_all do
+    # desc 'update codepush builds'
 #   ensure_git_branch
 #   ensure_git_status_clean
 #   git_pull
@@ -111,6 +112,7 @@ platform :ios do
   desc 'ship a release'
   lane :release do
     release_certificates
+    update_bundle_ids
     # get_push_certificate
     # capture_screenshots
     build(method: 'app-store')

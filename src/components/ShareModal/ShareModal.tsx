@@ -317,8 +317,8 @@ class ShareModal extends React.Component<Props, OwnState> {
           value={this.state.commentText}
           onChangeText={(text) => this.setState({ commentText: text })}
           onBlur={() => this.handleBlur()}
-          // returnKeyType='done'
-          // blurOnSubmit
+          returnKeyType='done'
+          blurOnSubmit
           multiline
           onContentSizeChange={(event) => {
             this.setState({
