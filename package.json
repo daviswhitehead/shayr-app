@@ -34,7 +34,9 @@
     "ios:staging": "sh scripts/env_manager.sh staging && ENVFILE=./environments/staging/.env.staging react-native run-ios --scheme shayr-prod --simulator=\"iPhone X\"",
     "reset": "sh scripts/package_reinstaller.sh",
     "android-linux": "react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res",
-    "shayr-resources": "yarn add @daviswhitehead/shayr-resources@latest"
+    "shayr-resources": "yarn add @daviswhitehead/shayr-resources@latest",
+    "android:logs": "react-native log-android",
+    "ios:logs": "react-native log-ios"
   },
   "dependencies": {
     "@daviswhitehead/shayr-resources": "^1.3.2",

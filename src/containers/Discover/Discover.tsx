@@ -11,6 +11,12 @@ import List from '../../components/List';
 import PostCard from '../../components/PostCard';
 import SwipeCard from '../../components/SwipeCard';
 import withAdds from '../../higherOrderComponents/withAdds';
+import {
+  countLabels,
+  eventNames,
+  eventParamaters
+} from '../../lib/AnalyticsDefinitions';
+import { logEvent, setUserProperties } from '../../lib/FirebaseAnalytics';
 import { getQuery, queryTypes } from '../../lib/FirebaseQueries';
 import { selectAuthUserId } from '../../redux/auth/selectors';
 import {
@@ -36,6 +42,7 @@ import styles from './styles';
 
 interface StateProps {
   authUser?: User;
+  authUserProfile?: User;
   authUserId: string;
   friends: {
     [userId: string]: User;
@@ -68,6 +75,7 @@ interface OwnProps {}
 interface OwnState {
   isLoading: boolean;
   isLoadingOnboardingPost: boolean;
+  hasSetUserProperties: boolean;
 }
 
 interface NavigationParams {}
@@ -94,6 +102,7 @@ const mapStateToProps = (state: State) => {
   return {
     authUserId,
     authUser: selectUserFromId(state, authUserId, 'presentation'),
+    authUserProfile: selectUserFromId(state, authUserId, 'profile'),
     friends: selectUsersFromList(
       state,
       generateListKey(authUserId, queryTypes.USER_FRIENDS),
@@ -153,7 +162,8 @@ class Discover extends PureComponent<Props, OwnState> {
     super(props);
     this.state = {
       isLoading: true,
-      isLoadingOnboardingPost: true
+      isLoadingOnboardingPost: true,
+      hasSetUserProperties: false
     };
     this.subscriptions = [];
   }
@@ -218,6 +228,7 @@ class Discover extends PureComponent<Props, OwnState> {
   componentDidUpdate(prevProps: Props) {
     this.checkLoading();
     this.checkOnboardingLoading();
+    this.setUserPropertiesForAnalytics();
   }
 
   componentWillUnmount() {
@@ -243,6 +254,23 @@ class Discover extends PureComponent<Props, OwnState> {
   checkOnboardingLoading = () => {
     if (this.props.onboardingPost && !_.isEmpty(this.props.onboardingPost)) {
       this.setState({ isLoadingOnboardingPost: false });
+    }
+  };
+
+  setUserPropertiesForAnalytics = () => {
+    if (!this.state.hasSetUserProperties && this.props.authUserProfile) {
+      this.setState({ hasSetUserProperties: true }, () => {
+        const authUserProperties = _.pick(
+          this.props.authUserProfile,
+          _.values(countLabels)
+        );
+        setUserProperties(authUserProperties);
+        logEvent(eventNames.FRIENDS_COUNT, {
+          [eventParamaters.COUNT]:
+            authUserProperties[countLabels.FRIENDS_COUNT],
+          [eventParamaters.COUNT_LABEL]: countLabels.FRIENDS_COUNT
+        });
+      });
     }
   };
 

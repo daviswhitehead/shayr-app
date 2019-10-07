@@ -43,7 +43,7 @@ export const sendFeedbackEmail = () => {
 };
 
 export const sendShayrDownloadInvite = () => {
-  const message = `I'm using Shayr to get to know my friends better! It helps keep track of all of the content recommendations I give and receive. Shayr makes it easy to see what someone is interested in and actually have meaningful interactions after finishing a recommendation. Want to check it out with me? Here's the download link: https://www.google.com`;
+  const message = `I'm using Shayr to get to know my friends better! It helps keep track of all of the content recommendations I give and receive. Shayr makes it easy to see what someone is interested in and actually have meaningful interactions after finishing a recommendation. Want to check it out with me? Here's the download link: https://shayr.page.link/download`;
 
   Share.open({
     message
@@ -59,7 +59,7 @@ export const sendShayrDownloadInvite = () => {
 export const sendShayrPostInvite = (link: string) => {
   const message = `I think you'd really enjoy checking out this content: ${link}.
   
-Also, I'm using Shayr to keep track of content recommendations like these. It's awesome, want to check it out with me? Here's the download link: https://www.google.com`;
+Also, I'm using Shayr to keep track of content recommendations like these. It's awesome, want to check it out with me? Here's the download link: https://shayr.page.link/download`;
 
   Share.open({
     message

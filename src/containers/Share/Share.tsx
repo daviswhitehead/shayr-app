@@ -12,6 +12,7 @@ import { connect } from 'react-redux';
 import { State } from 'src/src/redux/Reducers';
 import ShareModal from '../../components/ShareModal';
 import { retrieveToken } from '../../lib/AppGroupTokens';
+import { logEvent, setCurrentScreen } from '../../lib/FirebaseAnalytics';
 import { getCurrentUser, getFBAuthCredential } from '../../lib/FirebaseLogin';
 import { queryTypes } from '../../lib/FirebaseQueries';
 import { authSubscription } from '../../redux/auth/actions';
@@ -80,7 +81,7 @@ class Share extends Component<Props, OwnState> {
       url: '',
       isLoading: true
     };
-    firebase.analytics().logEvent('SHARE_EXTENSION_LAUNCH');
+    logEvent('SHARE_EXTENSION_LAUNCH');
 
     this.modalRef = React.createRef();
     this.subscriptions = [];
@@ -88,22 +89,22 @@ class Share extends Component<Props, OwnState> {
 
   async componentDidMount() {
     this.checkLoading();
-    firebase.analytics().setCurrentScreen('Share');
+    setCurrentScreen('Share');
     this.subscriptions.push(this.props.authSubscription());
-    firebase.analytics().logEvent('SHARE_EXTENSION__AUTH_SUBSCRIPTION');
+    logEvent('SHARE_EXTENSION__AUTH_SUBSCRIPTION');
 
     try {
       const token = await retrieveToken('accessToken');
-      firebase.analytics().logEvent('SHARE_EXTENSION__TOKEN');
+      logEvent('SHARE_EXTENSION__TOKEN');
 
       const credential = getFBAuthCredential(token);
-      firebase.analytics().logEvent('SHARE_EXTENSION__CREDENTIAL');
+      logEvent('SHARE_EXTENSION__CREDENTIAL');
 
       const currentUser = await getCurrentUser(credential);
-      firebase.analytics().logEvent('SHARE_EXTENSION__CURRENT_USER');
+      logEvent('SHARE_EXTENSION__CURRENT_USER');
 
       const { type, value } = await ShareExtension.data();
-      firebase.analytics().logEvent('SHARE_EXTENSION__VALUE');
+      logEvent('SHARE_EXTENSION__VALUE');
       // const value =
       //   'https://medium.com/@khreniak/cloud-firestore-security-rules-basics-fac6b6bea18e';
 
@@ -114,15 +115,13 @@ class Share extends Component<Props, OwnState> {
           this.props.subscribeToFriends(this.props.authUserId)
         );
       }
-      firebase
-        .analytics()
-        .logEvent('SHARE_EXTENSION__SUBSCRIBE_TO_FRIENDSHIPS');
+      logEvent('SHARE_EXTENSION__SUBSCRIBE_TO_FRIENDSHIPS');
 
       this.modalRef.current.toggleModal();
-      firebase.analytics().logEvent('SHARE_EXTENSION__TOGGLE_MODAL');
+      logEvent('SHARE_EXTENSION__TOGGLE_MODAL');
     } catch (error) {
       console.error(error);
-      firebase.analytics().logEvent('SHARE_EXTENSION__ERROR');
+      logEvent('SHARE_EXTENSION__ERROR');
     }
   }
 
@@ -133,7 +132,7 @@ class Share extends Component<Props, OwnState> {
         this.props.subscribeToFriends(this.props.authUserId)
       );
     }
-    firebase.analytics().logEvent('SHARE_EXTENSION__SUBSCRIBE_TO_FRIENDSHIPS');
+    logEvent('SHARE_EXTENSION__SUBSCRIBE_TO_FRIENDSHIPS');
 
     this.checkLoading();
   }

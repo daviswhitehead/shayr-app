@@ -4,7 +4,8 @@ import firebase from 'react-native-firebase';
 // import { useScreens } from 'react-native-screens';
 import { connect } from 'react-redux';
 import RootNavigator from '../../config/Routes';
-import { currentScreenAnalytics } from '../../lib/FirebaseAnalytics';
+import { eventNames } from '../../lib/AnalyticsDefinitions';
+import { currentScreenAnalytics, logEvent } from '../../lib/FirebaseAnalytics';
 import { dynamicLinkListener } from '../../lib/FirebaseDynamicLinks';
 import { initializeMoment } from '../../lib/MomentHelpers';
 import { notificationChannels } from '../../lib/NotificationHelpers';
@@ -132,11 +133,11 @@ class AppLoading extends Component<Props> {
   handleAppStateChange = (nextAppState) => {
     // https://facebook.github.io/react-native/docs/appstate
     if (nextAppState === 'active') {
-      firebase.analytics().logEvent('APP_STATE_ACTIVE');
+      logEvent(eventNames.APP_STATE_ACTIVE);
     } else if (nextAppState === 'background') {
-      firebase.analytics().logEvent('APP_STATE_BACKGROUND');
+      logEvent(eventNames.APP_STATE_BACKGROUND);
     }
-    // firebase.analytics().logEvent('APP_STATE_INACTIVE');
+    // logEvent('APP_STATE_INACTIVE');
   };
 
   render() {

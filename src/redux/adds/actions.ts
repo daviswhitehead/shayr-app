@@ -3,6 +3,8 @@ import _ from 'lodash';
 import firebase from 'react-native-firebase';
 import { Dispatch } from 'redux';
 import { Toaster } from '../../components/Toaster';
+import { eventNames } from '../../lib/AnalyticsDefinitions';
+import { logEvent } from '../../lib/FirebaseAnalytics';
 import { ts } from '../../lib/FirebaseHelpers';
 import { getQuery, queryTypes } from '../../lib/FirebaseQueries';
 import { overwriteUserCounts, updateCounts } from '../../lib/FirebaseWrites';
@@ -38,9 +40,9 @@ export const toggleAddDonePost = (
     type: types.TOGGLE_ADD_DONE_POST_START
   });
 
-  firebase
-    .analytics()
-    .logEvent(`${types.TOGGLE_ADD_DONE_POST_START}`.toUpperCase());
+  logEvent(
+    !isOtherActive && isActive ? eventNames.REMOVE_ADD : eventNames.ADD_TO_LIST
+  );
 
   try {
     // toast

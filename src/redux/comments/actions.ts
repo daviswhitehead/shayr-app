@@ -8,6 +8,7 @@ import firebase from 'react-native-firebase';
 import { Query } from 'react-native-firebase/firestore';
 import { Dispatch } from 'redux';
 import { Toaster } from '../../components/Toaster';
+import { eventNames } from '../../lib/AnalyticsDefinitions';
 import { logEvent } from '../../lib/FirebaseAnalytics';
 import { arrayUnion, ts } from '../../lib/FirebaseHelpers';
 import {
@@ -45,7 +46,7 @@ export const createComment = (
     type: types.CREATE_COMMENT_START
   });
 
-  logEvent(types.CREATE_COMMENT_START);
+  logEvent(eventNames.COMMENT);
 
   try {
     const batcher = existingBatcher || new Batcher(firebase.firestore());

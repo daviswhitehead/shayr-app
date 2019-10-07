@@ -18,6 +18,12 @@ import {
 } from 'react-native';
 import Modal from 'react-native-modal';
 import { connect } from 'react-redux';
+import {
+  countLabels,
+  eventNames,
+  eventParamaters
+} from '../../lib/AnalyticsDefinitions';
+import { logEvent } from '../../lib/FirebaseAnalytics';
 import { sendShayrPostInvite } from '../../lib/SharingHelpers';
 import { selectDocumentFromId } from '../../redux/documents/selectors';
 import { getPost } from '../../redux/posts/actions';
@@ -158,6 +164,8 @@ class ShareModal extends React.Component<Props, OwnState> {
       );
     }
 
+    logEvent(eventNames.START_SHARE);
+
     // trigger an error in 15 sec if there's no post
     setTimeout(() => {
       if ((!this.state.shareId || !this.state.post) && this.state.isVisible) {
@@ -207,6 +215,11 @@ class ShareModal extends React.Component<Props, OwnState> {
     this.setState({ isVisible: !this.state.isVisible });
   };
 
+  onCancelPress = () => {
+    logEvent(eventNames.CANCEL_SHARE);
+    this.toggleModal();
+  };
+
   initiateCommenting = () => {
     this.setState({ isCommenting: !this.state.isCommenting }, () => {
       this.textInputRef.current.focus();
@@ -225,23 +238,47 @@ class ShareModal extends React.Component<Props, OwnState> {
 
   toggleSelectedUser = (userId: documentId) => {
     if (_.includes(this.state.selectedUsers, userId)) {
-      this.setState({
-        selectedUsers: _.pull(this.state.selectedUsers, userId),
-        selectedAllUsers: false
-      });
+      this.setState(
+        {
+          selectedUsers: _.pull(this.state.selectedUsers, userId),
+          selectedAllUsers: false
+        },
+        () => {
+          logEvent(eventNames.TOGGLE_FRIEND, {
+            [eventParamaters.IS_ACTIVE]: 'false'
+          });
+        }
+      );
     } else {
-      this.setState({
-        selectedUsers: _.union(this.state.selectedUsers, [userId]),
-        selectedAllUsers: false
-      });
+      this.setState(
+        {
+          selectedUsers: _.union(this.state.selectedUsers, [userId]),
+          selectedAllUsers: false
+        },
+        () => {
+          logEvent(eventNames.TOGGLE_FRIEND, {
+            [eventParamaters.IS_ACTIVE]: 'true'
+          });
+        }
+      );
     }
   };
 
   toggleSelectedAllUsers = () => {
+    logEvent(eventNames.TOGGLE_ALL_FRIENDS, {
+      [eventParamaters.IS_ACTIVE]: !this.state.selectedAllUsers
+        ? 'true'
+        : 'false'
+    });
     this.setState({
       selectedAllUsers: !this.state.selectedAllUsers,
       selectedUsers: []
     });
+  };
+
+  onInvitePress = () => {
+    logEvent(eventNames.INVITE_FRIEND);
+    sendShayrPostInvite(this.props.url);
   };
 
   renderUsersList = () => {
@@ -251,7 +288,7 @@ class ShareModal extends React.Component<Props, OwnState> {
         {this.props.showInvite ? (
           <TouchableOpacity
             style={styles.touchableRow}
-            onPress={() => sendShayrPostInvite(this.props.url)}
+            onPress={this.onInvitePress}
           >
             <Icon
               name={names.INVITE}
@@ -265,7 +302,7 @@ class ShareModal extends React.Component<Props, OwnState> {
         ) : null}
         <TouchableOpacity
           style={styles.touchableRow}
-          onPress={() => this.toggleSelectedAllUsers()}
+          onPress={this.toggleSelectedAllUsers}
         >
           <Icon
             name={
@@ -288,7 +325,11 @@ class ShareModal extends React.Component<Props, OwnState> {
           this.props.users,
           (result: Array<JSX.Element>, value: any, key: string) => {
             result.push(
-              <View style={styles.touchableRow} key={key}>
+              <TouchableOpacity
+                style={styles.touchableRow}
+                key={key}
+                onPress={() => this.toggleSelectedUser(key)}
+              >
                 <UserAvatar
                   {...value}
                   isVertical={false}
@@ -296,9 +337,8 @@ class ShareModal extends React.Component<Props, OwnState> {
                     _.includes(this.state.selectedUsers, key) &&
                     !this.state.selectedAllUsers
                   }
-                  onPress={() => this.toggleSelectedUser(key)}
                 />
-              </View>
+              </TouchableOpacity>
             );
             return result;
           },
@@ -396,8 +436,16 @@ class ShareModal extends React.Component<Props, OwnState> {
         _.keys(this.props.users),
         _.keys(this.props.users)
       );
+      logEvent(eventNames.CONFIRM_SHARE, {
+        [eventParamaters.COUNT]: (this.state.selectedAllUsers
+          ? _.keys(this.props.users)
+          : this.state.selectedUsers
+        ).length,
+        [eventParamaters.COUNT_LABEL]: countLabels.MENTIONS_COUNT
+      });
       this.toggleModal();
     };
+
     // navigate to login
     if (!this.props.authUserId && this.props.navigateToLogin) {
       onPress = () => this.props.navigateToLogin();
@@ -490,7 +538,7 @@ class ShareModal extends React.Component<Props, OwnState> {
           </View>
           <TouchableOpacity
             style={styles.buttonContainer}
-            onPress={this.toggleModal}
+            onPress={this.onCancelPress}
           >
             <Icon name={names.X_EXIT} />
             <Text style={styles.button}>Cancel</Text>

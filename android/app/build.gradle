@@ -146,8 +146,8 @@ android {
         applicationIdSuffix project.env.get("APP_ID_SUFFIX_ANDROID")
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 94
-        versionName "3.5.0"
+        versionCode 95
+        versionName "3.5.1"
         
         // because of firestore https://developer.android.com/studio/build/multidex#mdex-gradle
         multiDexEnabled true
@@ -257,6 +257,7 @@ dependencies {
     // implementation "com.google.firebase:firebase-storage:16.0.4"
     // // // Dynamic Links
     implementation "com.google.firebase:firebase-dynamic-links:17.0.0"
+    implementation "com.google.firebase:firebase-invites:17.0.0"
     // // // Cloud Firestore
     implementation "com.google.firebase:firebase-firestore:19.0.2"
     // // // Cloud Messaging / FCM
