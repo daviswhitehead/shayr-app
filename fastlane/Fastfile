@@ -110,7 +110,7 @@ platform :ios do
 
 
   desc 'ship a release'
-  lane :release do
+  lane :prod do
     release_certificates
     update_bundle_ids
     # get_push_certificate
@@ -120,7 +120,7 @@ platform :ios do
       api_token: ENV['FABRIC_API_KEY'],
       build_secret: ENV['FABRIC_BUILD_SECRET']
     )
-    upload_to_app_store
+    upload_to_app_store(force: true)
     update_codepush_builds
     
     # bugsnag ios

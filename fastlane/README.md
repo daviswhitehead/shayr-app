@@ -46,9 +46,9 @@ update codepush builds
 fastlane ios beta
 ```
 ship a beta
-### ios release
+### ios prod
 ```
-fastlane ios release
+fastlane ios prod
 ```
 ship a release
 

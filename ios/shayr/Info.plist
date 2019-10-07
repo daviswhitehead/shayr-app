@@ -32,16 +32,6 @@
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>CFBundleURLName</key>
-			<string>com.daviswhitehead.shayr.ios.dev</string>
-			<key>CFBundleURLSchemes</key>
-			<array>
-				<string>https://com.daviswhitehead.shayr.ios.dev</string>
-			</array>
-		</dict>
-		<dict>
-			<key>CFBundleTypeRole</key>
-			<string>Editor</string>
-			<key>CFBundleURLName</key>
 			<string>shayr</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
@@ -50,7 +40,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>91</string>
+	<string>94</string>
 	<key>CodePushDeploymentKey</key>
 	<string>__RN_CONFIG_IOS_CODEPUSH_DEPLOYMENT_KEY</string>
 	<key>Fabric</key>

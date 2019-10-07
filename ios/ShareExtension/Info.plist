@@ -21,7 +21,7 @@
 	<key>CFBundleShortVersionString</key>
 	<string>3.5.0</string>
 	<key>CFBundleVersion</key>
-	<string>91</string>
+	<string>94</string>
 	<key>CodePushDeploymentKey</key>
 	<string>__RN_CONFIG_IOS_CODEPUSH_DEPLOYMENT_KEY</string>
 	<key>Fabric</key>
@@ -54,7 +54,7 @@
 				<key>NSExtensionActivationSupportsText</key>
 				<true/>
 				<key>NSExtensionActivationSupportsWebPageWithMaxCount</key>
-				<string>1</string>
+				<integer>1</integer>
 				<key>NSExtensionActivationSupportsWebURLWithMaxCount</key>
 				<integer>1</integer>
 			</dict>
