@@ -228,7 +228,7 @@ class Discover extends PureComponent<Props, OwnState> {
   componentDidUpdate(prevProps: Props) {
     this.checkLoading();
     this.checkOnboardingLoading();
-    this.setUserPropertiesForAnalytics();
+    // this.setUserPropertiesForAnalytics();
   }
 
   componentWillUnmount() {

@@ -5,7 +5,7 @@ import { getActiveRouteName } from './ReactNavigationHelpers';
 
 export const setUserProperties = (params = {}) => {
   _.forEach(params, (key, value) => {
-    firebase.analytics().setUserProperty(key, `${value}`);
+    firebase.analytics().setUserProperty(key, `${value}`.toString());
   });
 };
 
