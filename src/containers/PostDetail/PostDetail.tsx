@@ -119,7 +119,9 @@ const mapStateToProps = (
     ownerFriends,
     ownerUserId,
     postId,
-    post: selectDocumentFromId(state, 'usersPosts', `${ownerUserId}_${postId}`),
+    post:
+      selectDocumentFromId(state, 'usersPosts', `${ownerUserId}_${postId}`) ||
+      selectDocumentFromId(state, 'posts', `${postId}`),
     users: {
       [authUserId]: authUser,
       ...authFriends,
@@ -441,6 +443,12 @@ class PostDetail extends Component<Props, OwnState> {
   };
 
   render() {
+    console.log(`PostDetail - Render`);
+    console.log('this.props');
+    console.log(this.props);
+    console.log('this.state');
+    console.log(this.state);
+
     return (
       <View style={styles.screen}>
         {this.props.isFocused ? (

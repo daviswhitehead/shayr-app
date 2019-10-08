@@ -57,10 +57,10 @@ PODS:
   - Firebase/Storage (6.5.0):
     - Firebase/CoreOnly
     - FirebaseStorage (~> 3.4.0)
-  - FirebaseABTesting (3.1.1):
+  - FirebaseABTesting (3.1.2):
     - FirebaseAnalyticsInterop (~> 1.3)
     - FirebaseCore (~> 6.1)
-    - Protobuf (~> 3.8)
+    - Protobuf (>= 3.9.2, ~> 3.9)
   - FirebaseAnalytics (6.0.4):
     - FirebaseCore (~> 6.1)
     - FirebaseInstanceID (~> 4.2)
@@ -475,7 +475,7 @@ SPEC CHECKSUMS:
   FBSDKLoginKit: bc0329e10045789e8d40b12d4f15ddbd07a898e2
   FBSDKShareKit: f61d03f36ce4f1b379c7de7dbfe173662e68be44
   Firebase: dedc9e48ea3f3649ad5f6b982f8a0c73508a14b5
-  FirebaseABTesting: 662e8de812ceb5d57ad66381f6402f4d28dc5c91
+  FirebaseABTesting: 0d10f3cdc3fa00f3f175b5b56c1003c8e888299f
   FirebaseAnalytics: 3fb375bc9d13779add4039716f868d233a473fad
   FirebaseAnalyticsInterop: d48b6ab67bcf016a05e55b71fc39c61c0cb6b7f3
   FirebaseAuth: a06ad63e9bf4c86165b54cceb1c14d4f4c38d419

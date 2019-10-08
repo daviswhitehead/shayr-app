@@ -223,6 +223,7 @@ class Discover extends PureComponent<Props, OwnState> {
     //     ownerUserId: this.props.authUserId
     //   }
     // });
+    //
   }
 
   componentDidUpdate(prevProps: Props) {
