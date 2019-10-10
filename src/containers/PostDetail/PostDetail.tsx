@@ -17,7 +17,7 @@ import PostCard from '../../components/PostCard';
 import UserAvatarsScrollView from '../../components/UserAvatarsScrollView';
 import UserTextDate from '../../components/UserTextDate';
 import { getQuery, queryTypes } from '../../lib/FirebaseQueries';
-import { openURL } from '../../lib/Utils';
+import { openURL } from '../../lib/LinkingHelpers';
 import { selectAuthUserId } from '../../redux/auth/selectors';
 import { loadCommentsForUsersPosts } from '../../redux/comments/actions';
 import {
@@ -119,7 +119,9 @@ const mapStateToProps = (
     ownerFriends,
     ownerUserId,
     postId,
-    post: selectDocumentFromId(state, 'usersPosts', `${ownerUserId}_${postId}`),
+    post:
+      selectDocumentFromId(state, 'usersPosts', `${ownerUserId}_${postId}`) ||
+      selectDocumentFromId(state, 'posts', `${postId}`),
     users: {
       [authUserId]: authUser,
       ...authFriends,
@@ -441,6 +443,12 @@ class PostDetail extends Component<Props, OwnState> {
   };
 
   render() {
+    console.log(`PostDetail - Render`);
+    console.log('this.props');
+    console.log(this.props);
+    console.log('this.state');
+    console.log(this.state);
+
     return (
       <View style={styles.screen}>
         {this.props.isFocused ? (

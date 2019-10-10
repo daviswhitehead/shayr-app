@@ -1,9 +1,36 @@
-With shayr, you can share content with friends, view what your friends have shared, and manage your own queue of saved content.
+Shayr makes it easy to discover, and give recommendations for, great content within your network of close friends.
 
-shayr's native share extension allows users to post inbound content for others to consume. Within any native browser, tap on the share button, then on the shayr icon.
+Content is always more meaningful when it comes recommended to us from someone we care about. However, finding time to engage with and actually following up on content recommendations is difficult as they are easily lost amongst our digital clutter. Shayr helps you manage content recommendations of any type from all of your friends. Shayr remembers the list of recommendations you’ve been meaning to check out and makes it easy to let your friends know when you’ve finished with something they recommended. On the flip side, after you’ve made a recommendation, Shayr gives you insight into whether your friend plans to check it out and the peace of mind of knowing that when they do, you’ll hear about it.
+
+Shayr’s goal is to create more meaningful interactions between you and your friends by increasing the likelihood that each of you follows through on content recommendations. More meaningful interactions mean deeper friendships and a happier you.
+
+Discover Together
+- Discover and recommend great content with your friends.
+- Learn what your friends are into by viewing all of their content recommendations.
+- Send personalized content recommendations to your friends when you know they’ll like something.
+
+All the Best Content
+- Shayr all types of content from your favorite sources.
+- Shayr from any app or browser, just tap the share icon.
+- Articles, podcasts, videos, music, books, etc. You can recommend anything you like.
+
+Develop Deeper Connections
+- Have more meaningful interactions with the people you care about.
+- Shayr increases the likelihood you and your friends follow through on a content recommendation, leading to better conversations.
+- Learning more about your friends’ interests results in a more satisfying relationship.
+
+Recommend with Confidence
+- Immediate and ongoing feedback on the recommendations you make.
+- See whether your friends plan on checking out your recommendation.
+- Get notified when they finish and react to your recommendation.
+
+Save Your Lists
+- Keep track of your recommendations and their status.
+- Interested in a recommendation but busy right now? Add it to your list.
+- View a history of everything you’ve recommended, finished, and discussed.
 
 Use Cases
-- Just listened to this awesome Startup podcast episode and I want to share it with my friends. I especially want John to listen to it and want to know what he thinks of it.
+- I just listened to this awesome Startup podcast episode and I want to share it with my friends. I especially want John to listen to it and want to know what he thinks of it.
 - I'm about to go on vacation and am going to download a book before my flight but need a recommendation.
 - I'm always getting good recommendations from my friends for stuff to watch and read, I want an easy place to keep track of them and find new ones to add.
 - There are some amazing This American Life episodes but a lot of mediocre ones I don't want to sit through. I want a good way of finding out which are the good ones.

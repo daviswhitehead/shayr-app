@@ -1,4 +1,4 @@
-import { User, UsersPosts } from '@daviswhitehead/shayr-resources';
+import { Post, User, UsersPosts } from '@daviswhitehead/shayr-resources';
 import _ from 'lodash';
 import React, { PureComponent } from 'react';
 import { View } from 'react-native';
@@ -11,13 +11,23 @@ import List from '../../components/List';
 import PostCard from '../../components/PostCard';
 import SwipeCard from '../../components/SwipeCard';
 import withAdds from '../../higherOrderComponents/withAdds';
+import {
+  countLabels,
+  eventNames,
+  eventParamaters
+} from '../../lib/AnalyticsDefinitions';
+import { logEvent, setUserProperties } from '../../lib/FirebaseAnalytics';
 import { getQuery, queryTypes } from '../../lib/FirebaseQueries';
 import { selectAuthUserId } from '../../redux/auth/selectors';
-import { selectFlatListReadyDocuments } from '../../redux/documents/selectors';
+import {
+  selectDocumentFromId,
+  selectFlatListReadyDocuments
+} from '../../redux/documents/selectors';
 import { subscribeToFriendships } from '../../redux/friendships/actions';
 import { generateListKey } from '../../redux/lists/helpers';
 import { selectListItems, selectListMeta } from '../../redux/lists/selectors';
 import { subscribeNotificationTokenRefresh } from '../../redux/notifications/actions';
+import { getPost } from '../../redux/posts/actions';
 import { State } from '../../redux/Reducers';
 import { navigateToRoute } from '../../redux/routing/actions';
 import { subscribeToFriends, subscribeToUser } from '../../redux/users/actions';
@@ -32,17 +42,21 @@ import styles from './styles';
 
 interface StateProps {
   authUser?: User;
+  authUserProfile?: User;
   authUserId: string;
   friends: {
     [userId: string]: User;
   };
+  onboardingPost: Post;
   routing?: any; // routing state
+  SHAYR_ONBOARDING_POST_ID: string;
   unreadNotificationsCount?: number;
+  usersPostsListsView: string; // TODO: listKey definition
+  usersPostsListsData?: {
+    [listKey: string]: Array<UsersPosts>; // TODO: listKey definition
+  };
   usersPostsListsMeta?: {
     [listKey: string]: any; // listKey and meta state
-  };
-  usersPostsListsData?: {
-    [listKey: string]: Array<UsersPosts>; // listKey
   };
 }
 
@@ -53,12 +67,15 @@ interface DispatchProps {
   subscribeToFriends: typeof subscribeToFriends;
   subscribeToFriendships: typeof subscribeToFriendships;
   subscribeNotificationTokenRefresh: typeof subscribeNotificationTokenRefresh;
+  getPost: typeof getPost;
 }
 
 interface OwnProps {}
 
 interface OwnState {
   isLoading: boolean;
+  isLoadingOnboardingPost: boolean;
+  hasSetUserProperties: boolean;
 }
 
 interface NavigationParams {}
@@ -75,41 +92,49 @@ const mapStateToProps = (state: State) => {
 
   const authUserId = selectAuthUserId(state);
 
+  const SHAYR_ONBOARDING_POST_ID = state.onboarding.SHAYR_ONBOARDING_POST_ID;
+
+  const usersPostsListsView = generateListKey(
+    authUserId,
+    queryTypes.USERS_POSTS_ALL
+  );
+
   return {
     authUserId,
     authUser: selectUserFromId(state, authUserId, 'presentation'),
+    authUserProfile: selectUserFromId(state, authUserId, 'profile'),
     friends: selectUsersFromList(
       state,
       generateListKey(authUserId, queryTypes.USER_FRIENDS),
       'presentation'
     ),
+    onboardingPost: selectDocumentFromId(
+      state,
+      'posts',
+      SHAYR_ONBOARDING_POST_ID
+    ),
     routing: state.routing,
+    SHAYR_ONBOARDING_POST_ID,
     unreadNotificationsCount: selectUserActionCount(
       state,
       authUserId,
       'profile',
       'unreadNotificationsCount'
     ),
+    usersPostsListsView,
     usersPostsListsMeta: {
-      [generateListKey(authUserId, queryTypes.USERS_POSTS_ALL)]: selectListMeta(
+      [usersPostsListsView]: selectListMeta(
         state,
         'usersPostsLists',
-        generateListKey(authUserId, queryTypes.USERS_POSTS_ALL)
+        usersPostsListsView
       )
     },
     usersPostsListsData: {
-      [generateListKey(
-        authUserId,
-        queryTypes.USERS_POSTS_ALL
-      )]: selectFlatListReadyDocuments(
+      [usersPostsListsView]: selectFlatListReadyDocuments(
         state,
         'usersPosts',
-        selectListItems(
-          state,
-          'usersPostsLists',
-          generateListKey(authUserId, queryTypes.USERS_POSTS_ALL)
-        ),
-        generateListKey(authUserId, queryTypes.USERS_POSTS_ALL),
+        selectListItems(state, 'usersPostsLists', usersPostsListsView),
+        usersPostsListsView,
         {
           sortKeys: ['createdAt'],
           sortDirection: ['desc']
@@ -125,7 +150,8 @@ const mapDispatchToProps = {
   subscribeToUser,
   subscribeToFriends,
   subscribeToFriendships,
-  subscribeNotificationTokenRefresh
+  subscribeNotificationTokenRefresh,
+  getPost
 };
 
 class Discover extends PureComponent<Props, OwnState> {
@@ -135,7 +161,9 @@ class Discover extends PureComponent<Props, OwnState> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      isLoading: true
+      isLoading: true,
+      isLoadingOnboardingPost: true,
+      hasSetUserProperties: false
     };
     this.subscriptions = [];
   }
@@ -172,6 +200,9 @@ class Discover extends PureComponent<Props, OwnState> {
       getQuery(queryTypes.USERS_POSTS_ALL)!(this.props.authUserId)
     );
 
+    // load onboarding post
+    this.props.getPost(this.props.SHAYR_ONBOARDING_POST_ID);
+
     // DEVELOPMENT HELPERS
     // this.props.navigation.navigate('FindFriends', {});
     // this.props.navigation.navigate('Notifications', {});
@@ -192,10 +223,13 @@ class Discover extends PureComponent<Props, OwnState> {
     //     ownerUserId: this.props.authUserId
     //   }
     // });
+    //
   }
 
   componentDidUpdate(prevProps: Props) {
     this.checkLoading();
+    this.checkOnboardingLoading();
+    // this.setUserPropertiesForAnalytics();
   }
 
   componentWillUnmount() {
@@ -215,6 +249,29 @@ class Discover extends PureComponent<Props, OwnState> {
       ].isLoaded
     ) {
       this.setState({ isLoading: false });
+    }
+  };
+
+  checkOnboardingLoading = () => {
+    if (this.props.onboardingPost && !_.isEmpty(this.props.onboardingPost)) {
+      this.setState({ isLoadingOnboardingPost: false });
+    }
+  };
+
+  setUserPropertiesForAnalytics = () => {
+    if (!this.state.hasSetUserProperties && this.props.authUserProfile) {
+      this.setState({ hasSetUserProperties: true }, () => {
+        const authUserProperties = _.pick(
+          this.props.authUserProfile,
+          _.values(countLabels)
+        );
+        setUserProperties(authUserProperties);
+        logEvent(eventNames.FRIENDS_COUNT, {
+          [eventParamaters.COUNT]:
+            authUserProperties[countLabels.FRIENDS_COUNT],
+          [eventParamaters.COUNT_LABEL]: countLabels.FRIENDS_COUNT
+        });
+      });
     }
   };
 
@@ -269,13 +326,13 @@ class Discover extends PureComponent<Props, OwnState> {
     });
   };
 
-  renderItem = ({ item }: { item: UsersPosts }) => {
+  renderItem = ({ item }: { item: UsersPosts | Post }) => {
     const actionProps = {
       // add/done props
-      ownerUserId: item.userId,
+      ownerUserId: item.userId || this.props.authUserId,
       postId: item.postId,
-      usersPostsAdds: item.adds,
-      usersPostsDones: item.dones
+      usersPostsAdds: item.adds || [],
+      usersPostsDones: item.dones || []
     };
 
     return (
@@ -292,8 +349,8 @@ class Discover extends PureComponent<Props, OwnState> {
           isLoading={this.state.isLoading}
           post={item}
           onPressParameters={{
-            ownerUserId: item.userId,
-            postId: item.postId
+            ownerUserId: actionProps.ownerUserId,
+            postId: actionProps.postId
           }}
           onPress={this.onItemPress}
           users={{
@@ -329,14 +386,26 @@ class Discover extends PureComponent<Props, OwnState> {
         />
         <List
           data={
-            this.props.usersPostsListsData![
-              generateListKey(this.props.authUserId, queryTypes.USERS_POSTS_ALL)
-            ]
+            _.isEmpty(
+              this.props.usersPostsListsData![
+                generateListKey(
+                  this.props.authUserId,
+                  queryTypes.USERS_POSTS_ALL
+                )
+              ]
+            )
+              ? [this.props.onboardingPost]
+              : this.props.usersPostsListsData![
+                  generateListKey(
+                    this.props.authUserId,
+                    queryTypes.USERS_POSTS_ALL
+                  )
+                ]
           }
           renderItem={this.renderItem}
           onEndReached={this.paginateList}
           onRefresh={this.refreshList}
-          isLoading={this.state.isLoading}
+          isLoading={this.state.isLoading || this.state.isLoadingOnboardingPost}
           isRefreshing={
             this.state.isLoading
               ? false

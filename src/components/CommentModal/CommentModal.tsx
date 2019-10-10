@@ -146,6 +146,8 @@ export default class CommentModal extends PureComponent<Props, State> {
               onFocus={this.onFocus}
               multiline
               onContentSizeChange={this.onContentSizeChange}
+              returnKeyType='done'
+              blurOnSubmit
             />
             <Icon
               name={

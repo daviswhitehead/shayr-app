@@ -87,6 +87,7 @@ export default class SearchBar extends PureComponent<Props, State> {
           onFocus={this.handleFocus}
           autoCompleteType='off'
           autoCorrect={false}
+          returnKeyType='done'
         />
         {this.state.isEditing ? (
           <Icon

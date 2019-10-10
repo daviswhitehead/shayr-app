@@ -9,10 +9,12 @@ import Icon, { names } from '../components/Icon';
 import Discover from '../containers/Discover';
 import FindFriends from '../containers/FindFriends';
 import Friends from '../containers/Friends';
+import Intro from '../containers/Intro';
 import Login from '../containers/Login';
 import MyList from '../containers/MyList';
 import Notifications from '../containers/Notifications';
 import PostDetail from '../containers/PostDetail';
+import { IconWithFriendCount } from '../higherOrderComponents/withFriendCount';
 import { getActiveRouteName } from '../lib/ReactNavigationHelpers';
 import Colors from '../styles/Colors';
 import Layout from '../styles/Layout';
@@ -101,13 +103,18 @@ const FriendsStack = createStackNavigator(
   }
 );
 
-const AuthStack = createStackNavigator(
+const AuthStack = createSwitchNavigator(
   {
+    Intro: {
+      screen: Intro
+    },
     Login: {
       screen: Login
     }
   },
-  { headerMode: 'none' }
+  {
+    initialRouteName: 'Intro'
+  }
 );
 
 const TabStack = createBottomTabNavigator(
@@ -140,7 +147,11 @@ const TabStack = createBottomTabNavigator(
         if (!iconName) {
           return;
         }
-        return <Icon name={iconName} />;
+        return routeName === 'FriendsTab' ? (
+          <IconWithFriendCount name={iconName} />
+        ) : (
+          <Icon name={iconName} />
+        );
       }
     }),
     tabBarOptions: {

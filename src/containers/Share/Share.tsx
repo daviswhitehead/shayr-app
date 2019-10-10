@@ -1,4 +1,8 @@
-import { buildAppLink, User } from '@daviswhitehead/shayr-resources';
+import {
+  buildAppLink,
+  getURLFromString,
+  User
+} from '@daviswhitehead/shayr-resources';
 import _ from 'lodash';
 import React, { Component } from 'react';
 import { Linking, Platform, Text, View } from 'react-native';
@@ -8,11 +12,13 @@ import { connect } from 'react-redux';
 import { State } from 'src/src/redux/Reducers';
 import ShareModal from '../../components/ShareModal';
 import { retrieveToken } from '../../lib/AppGroupTokens';
+import { logEvent, setCurrentScreen } from '../../lib/FirebaseAnalytics';
 import { getCurrentUser, getFBAuthCredential } from '../../lib/FirebaseLogin';
 import { queryTypes } from '../../lib/FirebaseQueries';
 import { authSubscription } from '../../redux/auth/actions';
 import { selectAuthUserId } from '../../redux/auth/selectors';
 import { generateListKey } from '../../redux/lists/helpers';
+import { selectListMeta } from '../../redux/lists/selectors';
 import { subscribeToFriends } from '../../redux/users/actions';
 import { selectUsersFromList } from '../../redux/users/selectors';
 
@@ -29,6 +35,14 @@ interface StateProps {
   friends: {
     [userId: string]: User;
   };
+  friendsMeta: {
+    isEmpty: boolean;
+    isLoaded: boolean;
+    isLoadedAll: boolean;
+    isLoading: boolean;
+    isRefreshing: boolean;
+    lastItem: any;
+  };
 }
 
 interface DispatchProps {
@@ -39,7 +53,7 @@ interface DispatchProps {
 interface OwnProps {}
 
 interface OwnState {
-  payload: string;
+  url: string;
   isLoading: boolean;
 }
 
@@ -51,14 +65,12 @@ const mapStateToProps = (state: State) => {
   }
 
   const authUserId = selectAuthUserId(state);
+  const friendsListKey = generateListKey(authUserId, queryTypes.USER_FRIENDS);
 
   return {
     authUserId,
-    friends: selectUsersFromList(
-      state,
-      generateListKey(authUserId, queryTypes.USER_FRIENDS),
-      'presentation'
-    )
+    friends: selectUsersFromList(state, friendsListKey, 'presentation'),
+    friendsMeta: selectListMeta(state, 'usersLists', friendsListKey)
   };
 };
 
@@ -73,10 +85,10 @@ class Share extends Component<Props, OwnState> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      payload: '',
+      url: '',
       isLoading: true
     };
-    firebase.analytics().logEvent('SHARE_EXTENSION_LAUNCH');
+    logEvent('SHARE_EXTENSION_LAUNCH');
 
     this.modalRef = React.createRef();
     this.subscriptions = [];
@@ -84,41 +96,39 @@ class Share extends Component<Props, OwnState> {
 
   async componentDidMount() {
     this.checkLoading();
-    firebase.analytics().setCurrentScreen('Share');
+    setCurrentScreen('Share');
     this.subscriptions.push(this.props.authSubscription());
-    firebase.analytics().logEvent('SHARE_EXTENSION__AUTH_SUBSCRIPTION');
+    logEvent('SHARE_EXTENSION__AUTH_SUBSCRIPTION');
 
     try {
       const token = await retrieveToken('accessToken');
-      firebase.analytics().logEvent('SHARE_EXTENSION__TOKEN');
+      logEvent('SHARE_EXTENSION__TOKEN');
 
       const credential = getFBAuthCredential(token);
-      firebase.analytics().logEvent('SHARE_EXTENSION__CREDENTIAL');
+      logEvent('SHARE_EXTENSION__CREDENTIAL');
 
       const currentUser = await getCurrentUser(credential);
-      firebase.analytics().logEvent('SHARE_EXTENSION__CURRENT_USER');
+      logEvent('SHARE_EXTENSION__CURRENT_USER');
 
       const { type, value } = await ShareExtension.data();
-      firebase.analytics().logEvent('SHARE_EXTENSION__VALUE');
+      logEvent('SHARE_EXTENSION__VALUE');
       // const value =
       //   'https://medium.com/@khreniak/cloud-firestore-security-rules-basics-fac6b6bea18e';
 
-      this.setState({ payload: value });
+      this.setState({ url: getURLFromString(value) });
 
       if (this.props.authUserId) {
         this.subscriptions.push(
           this.props.subscribeToFriends(this.props.authUserId)
         );
       }
-      firebase
-        .analytics()
-        .logEvent('SHARE_EXTENSION__SUBSCRIBE_TO_FRIENDSHIPS');
+      logEvent('SHARE_EXTENSION__SUBSCRIBE_TO_FRIENDSHIPS');
 
       this.modalRef.current.toggleModal();
-      firebase.analytics().logEvent('SHARE_EXTENSION__TOGGLE_MODAL');
+      logEvent('SHARE_EXTENSION__TOGGLE_MODAL');
     } catch (error) {
       console.error(error);
-      firebase.analytics().logEvent('SHARE_EXTENSION__ERROR');
+      logEvent('SHARE_EXTENSION__ERROR');
     }
   }
 
@@ -129,7 +139,7 @@ class Share extends Component<Props, OwnState> {
         this.props.subscribeToFriends(this.props.authUserId)
       );
     }
-    firebase.analytics().logEvent('SHARE_EXTENSION__SUBSCRIBE_TO_FRIENDSHIPS');
+    logEvent('SHARE_EXTENSION__SUBSCRIBE_TO_FRIENDSHIPS');
 
     this.checkLoading();
   }
@@ -144,18 +154,19 @@ class Share extends Component<Props, OwnState> {
     if (
       this.state.isLoading &&
       this.props.authUserId &&
-      !_.isEmpty(this.props.friends)
+      this.props.friendsMeta &&
+      this.props.friendsMeta.isLoaded
     ) {
       this.setState({ isLoading: false });
     }
   };
 
   navigateToLogin = () => {
-    const url = buildAppLink('shayr', 'shayr', 'Login', {});
+    const appLink = buildAppLink('shayr', 'shayr', 'Login', {});
     try {
       Platform.OS === 'ios'
-        ? ShareExtension.openURL(url)
-        : Linking.openURL(url);
+        ? ShareExtension.openURL(appLink)
+        : Linking.openURL(appLink);
     } catch (error) {
       console.error('An error occurred:', error);
     }
@@ -166,7 +177,7 @@ class Share extends Component<Props, OwnState> {
       <ShareModal
         ref={this.modalRef}
         isLoading={this.state.isLoading}
-        payload={this.state.payload}
+        url={this.state.url}
         authUserId={this.props.authUserId}
         ownerUserId={this.props.authUserId}
         users={this.props.friends}

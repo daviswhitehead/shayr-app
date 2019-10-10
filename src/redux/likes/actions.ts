@@ -3,6 +3,7 @@ import _ from 'lodash';
 import firebase from 'react-native-firebase';
 import { Dispatch } from 'redux';
 import { Toaster } from '../../components/Toaster';
+import { logEvent } from '../../lib/FirebaseAnalytics';
 import { ts } from '../../lib/FirebaseHelpers';
 import { getQuery, queryTypes } from '../../lib/FirebaseQueries';
 import { overwriteUserCounts, updateCounts } from '../../lib/FirebaseWrites';
@@ -35,9 +36,7 @@ export const toggleLikePost = (
     type: types.TOGGLE_LIKE_POST_START
   });
 
-  firebase
-    .analytics()
-    .logEvent(`${types.TOGGLE_LIKE_POST_START}`.toUpperCase());
+  logEvent(`${types.TOGGLE_LIKE_POST_START}`.toUpperCase());
 
   try {
     // toast

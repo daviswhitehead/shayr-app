@@ -48,7 +48,7 @@ class PostCard extends Component<Props> {
   unionUserIds = (post: UsersPosts) => {
     return _.union(
       _.get(post, 'shares', []),
-      _.get(post, 'likes', []),
+      _.get(post, 'comments', []),
       _.get(post, 'dones', []),
       _.get(post, 'adds', [])
     );

@@ -46,8 +46,22 @@ export const selectFlatListReadyDocuments = createCachedSelector(
     return _.orderBy(
       _.reduce(
         documents,
-        (result, value, key) => {
-          result.push({ ..._options.formatting(value), ..._options.extraData });
+        (result: { [key: string]: any }, value, key) => {
+          const data = _options.formatting(value);
+          const sortData = _.reduce(
+            _options.sortKeys,
+            (result: { [key: string]: any }, value: string) => {
+              result[value] = _.get(data, value, 0);
+              return result;
+            },
+            {}
+          );
+
+          result.push({
+            ...data,
+            ...sortData,
+            ..._options.extraData
+          });
           return result;
         },
         []

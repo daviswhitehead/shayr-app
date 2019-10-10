@@ -5,8 +5,8 @@ import Colors from './Colors';
 export default StyleSheet.create({
   row: {
     padding: Layout.SPACING_LONG,
-    borderTopWidth: StyleSheet.hairlineWidth,
-    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderTopWidth: Layout.DIVIDER_WIDTH,
+    borderBottomWidth: Layout.DIVIDER_WIDTH,
     borderColor: Colors.DIVIDER
   }
 });

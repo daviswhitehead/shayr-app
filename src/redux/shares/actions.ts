@@ -54,8 +54,6 @@ export const startShare = (
     type: types.START_SHARE_START
   });
 
-  logEvent(types.START_SHARE_START);
-
   try {
     // shares/{shareId}
     return await firebase
@@ -102,8 +100,6 @@ export const confirmShare = (
   dispatch({
     type: types.CONFIRM_SHARE_START
   });
-
-  logEvent(types.CONFIRM_SHARE_START);
 
   try {
     const batcher = new Batcher(firebase.firestore());

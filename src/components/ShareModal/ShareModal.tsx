@@ -18,6 +18,13 @@ import {
 } from 'react-native';
 import Modal from 'react-native-modal';
 import { connect } from 'react-redux';
+import {
+  countLabels,
+  eventNames,
+  eventParamaters
+} from '../../lib/AnalyticsDefinitions';
+import { logEvent } from '../../lib/FirebaseAnalytics';
+import { sendShayrPostInvite } from '../../lib/SharingHelpers';
 import { selectDocumentFromId } from '../../redux/documents/selectors';
 import { getPost } from '../../redux/posts/actions';
 import {
@@ -59,16 +66,16 @@ interface OwnProps {
   ref: any;
   authUserId: documentId;
   ownerUserId: documentId;
-  payload: string;
+  url: string;
   usersPostsId?: documentId;
   postId?: documentId;
-  url?: string;
   users?: Users;
   navigateToLogin?: () => void;
   onModalWillHide?: () => void;
   onModalHide?: () => void;
   hideBackdrop?: boolean;
   isLoading?: boolean;
+  showInvite?: boolean;
 }
 
 type Props = OwnProps & StateProps & DispatchProps;
@@ -138,7 +145,7 @@ class ShareModal extends React.Component<Props, OwnState> {
 
     // create a new share
     const shareId: documentId = await this.props.startShare(
-      this.props.payload,
+      this.props.url,
       this.props.authUserId,
       this.props.postId || ''
     );
@@ -156,6 +163,8 @@ class ShareModal extends React.Component<Props, OwnState> {
         this.props.usersPostsId
       );
     }
+
+    logEvent(eventNames.START_SHARE);
 
     // trigger an error in 15 sec if there's no post
     setTimeout(() => {
@@ -206,6 +215,11 @@ class ShareModal extends React.Component<Props, OwnState> {
     this.setState({ isVisible: !this.state.isVisible });
   };
 
+  onCancelPress = () => {
+    logEvent(eventNames.CANCEL_SHARE);
+    this.toggleModal();
+  };
+
   initiateCommenting = () => {
     this.setState({ isCommenting: !this.state.isCommenting }, () => {
       this.textInputRef.current.focus();
@@ -224,42 +238,71 @@ class ShareModal extends React.Component<Props, OwnState> {
 
   toggleSelectedUser = (userId: documentId) => {
     if (_.includes(this.state.selectedUsers, userId)) {
-      this.setState({
-        selectedUsers: _.pull(this.state.selectedUsers, userId),
-        selectedAllUsers: false
-      });
+      this.setState(
+        {
+          selectedUsers: _.pull(this.state.selectedUsers, userId),
+          selectedAllUsers: false
+        },
+        () => {
+          logEvent(eventNames.TOGGLE_FRIEND, {
+            [eventParamaters.IS_ACTIVE]: 'false'
+          });
+        }
+      );
     } else {
-      this.setState({
-        selectedUsers: _.union(this.state.selectedUsers, [userId]),
-        selectedAllUsers: false
-      });
+      this.setState(
+        {
+          selectedUsers: _.union(this.state.selectedUsers, [userId]),
+          selectedAllUsers: false
+        },
+        () => {
+          logEvent(eventNames.TOGGLE_FRIEND, {
+            [eventParamaters.IS_ACTIVE]: 'true'
+          });
+        }
+      );
     }
   };
 
   toggleSelectedAllUsers = () => {
+    logEvent(eventNames.TOGGLE_ALL_FRIENDS, {
+      [eventParamaters.IS_ACTIVE]: !this.state.selectedAllUsers
+        ? 'true'
+        : 'false'
+    });
     this.setState({
       selectedAllUsers: !this.state.selectedAllUsers,
       selectedUsers: []
     });
   };
 
+  onInvitePress = () => {
+    logEvent(eventNames.INVITE_FRIEND);
+    sendShayrPostInvite(this.props.url);
+  };
+
   renderUsersList = () => {
     return (
       <View style={styles.friendsContainer}>
         <Text style={styles.sectionHeader}>Shayr with your friends...</Text>
-        {/* <TouchableOpacity style={styles.touchableRow}>
-          <Icon
-            name={names.INVITE}
-            style={styles.iconStyle}
-            iconStyle={styles.iconStyle}
-          />
-          <Text style={styles.friendsRowText}>
-            Invite your friends to Shayr!
-          </Text>
-        </TouchableOpacity> */}
+        {this.props.showInvite ? (
+          <TouchableOpacity
+            style={styles.touchableRow}
+            onPress={this.onInvitePress}
+          >
+            <Icon
+              name={names.INVITE}
+              style={styles.iconStyle}
+              iconStyle={styles.iconStyle}
+            />
+            <Text style={styles.friendsRowText}>
+              Invite your friends to Shayr!
+            </Text>
+          </TouchableOpacity>
+        ) : null}
         <TouchableOpacity
           style={styles.touchableRow}
-          onPress={() => this.toggleSelectedAllUsers()}
+          onPress={this.toggleSelectedAllUsers}
         >
           <Icon
             name={
@@ -282,7 +325,11 @@ class ShareModal extends React.Component<Props, OwnState> {
           this.props.users,
           (result: Array<JSX.Element>, value: any, key: string) => {
             result.push(
-              <View style={styles.touchableRow} key={key}>
+              <TouchableOpacity
+                style={styles.touchableRow}
+                key={key}
+                onPress={() => this.toggleSelectedUser(key)}
+              >
                 <UserAvatar
                   {...value}
                   isVertical={false}
@@ -290,9 +337,8 @@ class ShareModal extends React.Component<Props, OwnState> {
                     _.includes(this.state.selectedUsers, key) &&
                     !this.state.selectedAllUsers
                   }
-                  onPress={() => this.toggleSelectedUser(key)}
                 />
-              </View>
+              </TouchableOpacity>
             );
             return result;
           },
@@ -311,8 +357,8 @@ class ShareModal extends React.Component<Props, OwnState> {
           value={this.state.commentText}
           onChangeText={(text) => this.setState({ commentText: text })}
           onBlur={() => this.handleBlur()}
-          // returnKeyType='done'
-          // blurOnSubmit
+          returnKeyType='done'
+          blurOnSubmit
           multiline
           onContentSizeChange={(event) => {
             this.setState({
@@ -349,7 +395,21 @@ class ShareModal extends React.Component<Props, OwnState> {
         </Text>
         <Text style={[styles.otherText, styles.centerAlign]}>
           We weren’t able to process your shayr, sorry about that! Try again
-          later or drop us a line at shayr@gmail.com.
+          later or drop us a line at shayr.app.developer@gmail.com.
+        </Text>
+      </View>
+    );
+  };
+
+  renderNeedFriends = () => {
+    return (
+      <View style={styles.otherContainer}>
+        <Text style={[styles.sectionHeader, styles.centerAlign]}>
+          Where are your friends?
+        </Text>
+        <Text style={[styles.otherText, styles.centerAlign]}>
+          To Shayr a recommendation, you need to connect with some friends on
+          Shayr!
         </Text>
       </View>
     );
@@ -390,10 +450,21 @@ class ShareModal extends React.Component<Props, OwnState> {
         _.keys(this.props.users),
         _.keys(this.props.users)
       );
+      logEvent(eventNames.CONFIRM_SHARE, {
+        [eventParamaters.COUNT]: (this.state.selectedAllUsers
+          ? _.keys(this.props.users)
+          : this.state.selectedUsers
+        ).length,
+        [eventParamaters.COUNT_LABEL]: countLabels.MENTIONS_COUNT
+      });
       this.toggleModal();
     };
+
     // navigate to login
-    if (!this.props.authUserId && this.props.navigateToLogin) {
+    if (
+      (!this.props.authUserId || _.isEmpty(this.props.users)) &&
+      this.props.navigateToLogin
+    ) {
       onPress = () => this.props.navigateToLogin();
     }
 
@@ -404,7 +475,9 @@ class ShareModal extends React.Component<Props, OwnState> {
       >
         <Icon name={names.SHARE} />
         <Text style={styles.button}>
-          {this.props.authUserId ? 'Shayr' : 'Login'}
+          {!this.props.authUserId || _.isEmpty(this.props.users)
+            ? 'Login'
+            : 'Shayr'}
         </Text>
       </TouchableOpacity>
     );
@@ -419,6 +492,9 @@ class ShareModal extends React.Component<Props, OwnState> {
     }
     if (this.props.isLoading) {
       return <View style={styles.otherContainer}>{this.renderLoading()}</View>;
+    }
+    if (_.isEmpty(this.props.users)) {
+      return this.renderNeedFriends();
     }
 
     return (
@@ -484,7 +560,7 @@ class ShareModal extends React.Component<Props, OwnState> {
           </View>
           <TouchableOpacity
             style={styles.buttonContainer}
-            onPress={this.toggleModal}
+            onPress={this.onCancelPress}
           >
             <Icon name={names.X_EXIT} />
             <Text style={styles.button}>Cancel</Text>

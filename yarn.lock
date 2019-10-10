@@ -830,14 +830,15 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
-"@daviswhitehead/shayr-resources@^1.3.1":
-  version "1.3.1"
-  resolved "https://registry.yarnpkg.com/@daviswhitehead/shayr-resources/-/shayr-resources-1.3.1.tgz#e45a05a5485c75da2e40f1ceb58a40c59474bbbe"
-  integrity sha512-VsZxmfngZBnYgMaFOIzqbdhvqgrdU1oMGBrkDgPZZ+TjWzEFfKwBxjb5itST7st3J2GtE8ITRb0XGHe05cM6MQ==
+"@daviswhitehead/shayr-resources@^1.3.2":
+  version "1.3.2"
+  resolved "https://registry.yarnpkg.com/@daviswhitehead/shayr-resources/-/shayr-resources-1.3.2.tgz#aeea87f96c4ec51a343131e9b4d5d66c50d7f315"
+  integrity sha512-+WxknlRXavbKOLKz1o3Ex5PCg+RKIzERdVTrLLeEEUd8EWWFbXR4+NfLpJjR2N79zgejDvv8RP2UwmvDGURl9A==
   dependencies:
     "@types/lodash" "^4.14.133"
     "@types/urijs" "^1.19.1"
     urijs "^1.19.1"
+    url-regex "^5.0.0"
 
 "@fimbul/bifrost@^0.17.0":
   version "0.17.0"
@@ -1067,6 +1068,11 @@
     "@types/istanbul-reports" "^1.1.1"
     "@types/yargs" "^12.0.9"
 
+"@react-native-community/async-storage@^1.6.2":
+  version "1.6.2"
+  resolved "https://registry.yarnpkg.com/@react-native-community/async-storage/-/async-storage-1.6.2.tgz#a19ca7149c4dfe8216f2330e6b1ebfe2d075ef92"
+  integrity sha512-EJGsbrHubK1mGxPjWB74AaHAd5m9I+Gg2RRPZzMK6org7QOU9WOBnIMFqoeVto3hKOaEPlk8NV74H6G34/2pZQ==
+
 "@react-native-community/cli-platform-android@^2.0.1", "@react-native-community/cli-platform-android@^2.8.3":
   version "2.8.3"
   resolved "https://registry.yarnpkg.com/@react-native-community/cli-platform-android/-/cli-platform-android-2.8.3.tgz#097237769d69400ceaf254a780d645bb8284acd6"
@@ -1254,6 +1260,14 @@
   version "0.6.3"
   resolved "https://registry.yarnpkg.com/@types/react-native-fbsdk/-/react-native-fbsdk-0.6.3.tgz#fa004c7bc008730c64166d4d66e8c647e3350715"
   integrity sha512-cy57X8hRGE33D+cwdzM9pYAymifBhh6FFTOOAhW7O0KWoMrFaSD8QPDzBDpiQQ87FHekNg1nghx13OjFKRcCMQ==
+  dependencies:
+    "@types/react" "*"
+    "@types/react-native" "*"
+
+"@types/react-native-snap-carousel@^3.7.4":
+  version "3.7.4"
+  resolved "https://registry.yarnpkg.com/@types/react-native-snap-carousel/-/react-native-snap-carousel-3.7.4.tgz#1e1ad5b5314715d538f6785b4f3a6590a036a6bd"
+  integrity sha512-Egwj264i8lQtp4O8+TXse2yagW5im8oPzPcfWzIEYspKspPE0NikqWFtpVrecgbd/uwhwEjLXLY5kEXOvpiJjA==
   dependencies:
     "@types/react" "*"
     "@types/react-native" "*"
@@ -2822,6 +2836,19 @@ fbjs@^0.8.16, fbjs@^0.8.9:
     setimmediate "^1.0.5"
     ua-parser-js "^0.7.9"
 
+fbjs@^0.8.4:
+  version "0.8.17"
+  resolved "https://registry.yarnpkg.com/fbjs/-/fbjs-0.8.17.tgz#c4d598ead6949112653d6588b01a5cdcd9f90fdd"
+  integrity sha1-xNWY6taUkRJlPWWIsBpc3Nn5D90=
+  dependencies:
+    core-js "^1.0.0"
+    isomorphic-fetch "^2.1.1"
+    loose-envify "^1.0.0"
+    object-assign "^4.1.0"
+    promise "^7.1.1"
+    setimmediate "^1.0.5"
+    ua-parser-js "^0.7.18"
+
 fbjs@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/fbjs/-/fbjs-1.0.0.tgz#52c215e0883a3c86af2a7a776ed51525ae8e0a5a"
@@ -3426,6 +3453,11 @@ invert-kv@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/invert-kv/-/invert-kv-2.0.0.tgz#7393f5afa59ec9ff5f67a27620d11c226e3eec02"
   integrity sha512-wPVv/y/QQ/Uiirj/vh3oP+1Ww+AWehmi1g5fFWGPF6IpCBCDVrhgHRMvrLfdYcwDh3QJbGXDW4JAuzxElLSqKA==
+
+ip-regex@^4.1.0:
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/ip-regex/-/ip-regex-4.1.0.tgz#5ad62f685a14edb421abebc2fff8db94df67b455"
+  integrity sha512-pKnZpbgCTfH/1NLIlOduP/V+WRXzC2MOz3Qo8xmxk8C5GudJLgK5QyLVXOSWy3ParAH7Eemurl3xjv/WXYFvMA==
 
 ip@^1.1.4, ip@^1.1.5:
   version "1.1.5"
@@ -5674,6 +5706,14 @@ re-reselect@^3.2.0:
   resolved "https://registry.yarnpkg.com/re-reselect/-/re-reselect-3.2.0.tgz#438ac359fbe0c981014fd3e68d2df9014cb00316"
   integrity sha512-vumSb+b0l0FxDrN7iomn8gDJoVyKkN/OA5ZH1L0uHovuy6F5PUvn9ImpSabuDMsNf3EFKhS8CG5h/BLTAAAcNA==
 
+react-addons-shallow-compare@15.6.2:
+  version "15.6.2"
+  resolved "https://registry.yarnpkg.com/react-addons-shallow-compare/-/react-addons-shallow-compare-15.6.2.tgz#198a00b91fc37623db64a28fd17b596ba362702f"
+  integrity sha1-GYoAuR/DdiPbZKKP0XtZa6NicC8=
+  dependencies:
+    fbjs "^0.8.4"
+    object-assign "^4.1.0"
+
 react-deep-force-update@^1.0.0:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/react-deep-force-update/-/react-deep-force-update-1.1.1.tgz#bcd31478027b64b3339f108921ab520b4313dc2c"
@@ -5824,10 +5864,23 @@ react-native-share-extension@^2.0.0:
   resolved "https://registry.yarnpkg.com/react-native-share-extension/-/react-native-share-extension-2.0.0.tgz#c645715ce6c937e1dd527c4df5635df89ca88a44"
   integrity sha512-LWbyGd3Vu5m0TBvSado2NE4MJ5R3iRw4WpoT+6ptHNir19pM/inNQaFh+OiySLNNy5N058pFmWq3LFNA4DPZkg==
 
+react-native-share@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/react-native-share/-/react-native-share-2.0.0.tgz#4543a746013e0d8fa9f765fb8937007cfbcffcf7"
+  integrity sha512-J8Xl3mq0L9KDFtSYtKsQDAnZWw/niZIpAD1PRiNfZFHo44Rc+oS2bEIhskNnoQXKEgBNdPzCl/DenMXYAHXRYg==
+
 react-native-skeleton-placeholder@^1.0.3:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/react-native-skeleton-placeholder/-/react-native-skeleton-placeholder-1.0.3.tgz#bcad48066cd046d8bed73c60446b9bb1de312111"
   integrity sha512-fuuGWUz7e2TTl2p4QFNmWqo60QuS/E4CqXK54UQ2aoasAIWBKkpG4SE9aOaNVveovd1sfJMpXpcKMCNvqrx9XA==
+
+react-native-snap-carousel@^3.8.1:
+  version "3.8.1"
+  resolved "https://registry.yarnpkg.com/react-native-snap-carousel/-/react-native-snap-carousel-3.8.1.tgz#8b1f6835027ec88bce91335571022f5448dfd230"
+  integrity sha512-zxfk7TYfWMnOc4UAK/FCZ1H63f/D3ND6Jy3FASVnHNfhRkP2T119iHMXAjYUia/gVztH57kNpuhEXuWRAuz9iQ==
+  dependencies:
+    prop-types "^15.6.1"
+    react-addons-shallow-compare "15.6.2"
 
 react-native-splash-screen@^3.1.1:
   version "3.1.1"
@@ -7008,6 +7061,11 @@ time-stamp@^1.0.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/time-stamp/-/time-stamp-1.1.0.tgz#764a5a11af50561921b133f3b44e618687e0f5c3"
 
+tlds@^1.203.0:
+  version "1.203.1"
+  resolved "https://registry.yarnpkg.com/tlds/-/tlds-1.203.1.tgz#4dc9b02f53de3315bc98b80665e13de3edfc1dfc"
+  integrity sha512-7MUlYyGJ6rSitEZ3r1Q1QNV8uSIzapS8SmmhSusBuIc7uIxPPwsKllEP0GRp1NS6Ik6F+fRZvnjDWm3ecv2hDw==
+
 tmp@^0.0.29:
   version "0.0.29"
   resolved "https://registry.yarnpkg.com/tmp/-/tmp-0.0.29.tgz#f25125ff0dd9da3ccb0c2dd371ee1288bb9128c0"
@@ -7344,6 +7402,14 @@ urix@^0.1.0:
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/urix/-/urix-0.1.0.tgz#da937f7a62e21fec1fd18d49b35c2935067a6c72"
   integrity sha1-2pN/emLiH+wf0Y1Js1wpNQZ6bHI=
+
+url-regex@^5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/url-regex/-/url-regex-5.0.0.tgz#8f5456ab83d898d18b2f91753a702649b873273a"
+  integrity sha512-O08GjTiAFNsSlrUWfqF1jH0H1W3m35ZyadHrGv5krdnmPPoxP27oDTqux/579PtaroiSGm5yma6KT1mHFH6Y/g==
+  dependencies:
+    ip-regex "^4.1.0"
+    tlds "^1.203.0"
 
 use@^3.1.0:
   version "3.1.1"
