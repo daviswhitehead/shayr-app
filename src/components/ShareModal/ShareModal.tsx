@@ -395,7 +395,21 @@ class ShareModal extends React.Component<Props, OwnState> {
         </Text>
         <Text style={[styles.otherText, styles.centerAlign]}>
           We weren’t able to process your shayr, sorry about that! Try again
-          later or drop us a line at shayr@gmail.com.
+          later or drop us a line at shayr.app.developer@gmail.com.
+        </Text>
+      </View>
+    );
+  };
+
+  renderNeedFriends = () => {
+    return (
+      <View style={styles.otherContainer}>
+        <Text style={[styles.sectionHeader, styles.centerAlign]}>
+          Where are your friends?
+        </Text>
+        <Text style={[styles.otherText, styles.centerAlign]}>
+          To Shayr a recommendation, you need to connect with some friends on
+          Shayr!
         </Text>
       </View>
     );
@@ -447,7 +461,10 @@ class ShareModal extends React.Component<Props, OwnState> {
     };
 
     // navigate to login
-    if (!this.props.authUserId && this.props.navigateToLogin) {
+    if (
+      (!this.props.authUserId || _.isEmpty(this.props.users)) &&
+      this.props.navigateToLogin
+    ) {
       onPress = () => this.props.navigateToLogin();
     }
 
@@ -458,7 +475,9 @@ class ShareModal extends React.Component<Props, OwnState> {
       >
         <Icon name={names.SHARE} />
         <Text style={styles.button}>
-          {this.props.authUserId ? 'Shayr' : 'Login'}
+          {!this.props.authUserId || _.isEmpty(this.props.users)
+            ? 'Login'
+            : 'Shayr'}
         </Text>
       </TouchableOpacity>
     );
@@ -473,6 +492,9 @@ class ShareModal extends React.Component<Props, OwnState> {
     }
     if (this.props.isLoading) {
       return <View style={styles.otherContainer}>{this.renderLoading()}</View>;
+    }
+    if (_.isEmpty(this.props.users)) {
+      return this.renderNeedFriends();
     }
 
     return (

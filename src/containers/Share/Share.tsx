@@ -18,6 +18,7 @@ import { queryTypes } from '../../lib/FirebaseQueries';
 import { authSubscription } from '../../redux/auth/actions';
 import { selectAuthUserId } from '../../redux/auth/selectors';
 import { generateListKey } from '../../redux/lists/helpers';
+import { selectListMeta } from '../../redux/lists/selectors';
 import { subscribeToFriends } from '../../redux/users/actions';
 import { selectUsersFromList } from '../../redux/users/selectors';
 
@@ -33,6 +34,14 @@ interface StateProps {
   authUserId: string;
   friends: {
     [userId: string]: User;
+  };
+  friendsMeta: {
+    isEmpty: boolean;
+    isLoaded: boolean;
+    isLoadedAll: boolean;
+    isLoading: boolean;
+    isRefreshing: boolean;
+    lastItem: any;
   };
 }
 
@@ -56,14 +65,12 @@ const mapStateToProps = (state: State) => {
   }
 
   const authUserId = selectAuthUserId(state);
+  const friendsListKey = generateListKey(authUserId, queryTypes.USER_FRIENDS);
 
   return {
     authUserId,
-    friends: selectUsersFromList(
-      state,
-      generateListKey(authUserId, queryTypes.USER_FRIENDS),
-      'presentation'
-    )
+    friends: selectUsersFromList(state, friendsListKey, 'presentation'),
+    friendsMeta: selectListMeta(state, 'usersLists', friendsListKey)
   };
 };
 
@@ -147,7 +154,8 @@ class Share extends Component<Props, OwnState> {
     if (
       this.state.isLoading &&
       this.props.authUserId &&
-      !_.isEmpty(this.props.friends)
+      this.props.friendsMeta &&
+      this.props.friendsMeta.isLoaded
     ) {
       this.setState({ isLoading: false });
     }

@@ -121,18 +121,18 @@ platform :ios do
       build_secret: ENV['FABRIC_BUILD_SECRET']
     )
     upload_to_app_store(force: true)
-    update_codepush_builds
     
     # bugsnag ios
     refresh_dsyms
     # send_build_to_bugsnag(api_key: ENV['BUGSNAG_KEY'])
-
-
+    
     # commit_version_bump(
-    #   message: 'bump build',
-    #   xcodeproj: './ios/shayr.xcodeproj'
-    # )
-    # push_to_git_remote
+      #   message: 'bump build',
+      #   xcodeproj: './ios/shayr.xcodeproj'
+      # )
+      # push_to_git_remote
+
+      update_codepush_builds
   end
 end
 
@@ -183,13 +183,13 @@ platform :android do
       track: 'alpha',
       package_name: ENV['APP_ID_ANDROID'] + ENV['APP_ID_SUFFIX_ANDROID']
     )
-
-    update_codepush_builds
-
+    
     # bugsnag android
     refresh_dsyms
     # upload_symbols_to_bugsnag(api_key: ENV['BUGSNAG_KEY'])
     # send_build_to_bugsnag(api_key: ENV['BUGSNAG_KEY'])
+
+    update_codepush_builds
 
   end
 end
