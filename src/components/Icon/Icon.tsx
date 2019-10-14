@@ -2,6 +2,7 @@ import _ from 'lodash';
 import React, { ComponentProps, memo, SFC } from 'react';
 import { Image, View } from 'react-native';
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
+import * as AnalyticsDefinitions from '../../lib/AnalyticsDefinitions';
 import Colors from '../../styles/Colors';
 import Skeleton from '../Skeleton';
 import TouchableWrapper from '../TouchableWrapper';
@@ -128,6 +129,14 @@ const Icon: SFC<Props> = ({
       style={_containerStyle}
       onPress={onPress}
       noTouching={noTouching}
+      eventName={AnalyticsDefinitions.category.ACTION}
+      eventParams={{
+        [AnalyticsDefinitions.parameters.LABEL]: name,
+        [AnalyticsDefinitions.parameters.TYPE]: AnalyticsDefinitions.type.PRESS,
+        [AnalyticsDefinitions.parameters.STATUS]: isActive
+          ? AnalyticsDefinitions.status.ACTIVE
+          : AnalyticsDefinitions.status.INACTIVE
+      }}
     >
       {_.includes(specialIcons, name) ? (
         iconMap[name]({ style: { _iconStyle }, size })

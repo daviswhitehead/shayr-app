@@ -4,7 +4,7 @@ import firebase from 'react-native-firebase';
 // import { useScreens } from 'react-native-screens';
 import { connect } from 'react-redux';
 import RootNavigator from '../../config/Routes';
-import { eventNames } from '../../lib/AnalyticsDefinitions';
+import * as AnalyticsDefinitions from '../../lib/AnalyticsDefinitions';
 import { currentScreenAnalytics, logEvent } from '../../lib/FirebaseAnalytics';
 import { dynamicLinkListener } from '../../lib/FirebaseDynamicLinks';
 import { initializeMoment } from '../../lib/MomentHelpers';
@@ -133,11 +133,24 @@ class AppLoading extends Component<Props> {
   handleAppStateChange = (nextAppState) => {
     // https://facebook.github.io/react-native/docs/appstate
     if (nextAppState === 'active') {
-      logEvent(eventNames.APP_STATE_ACTIVE);
+      logEvent(AnalyticsDefinitions.category.STATE, {
+        [AnalyticsDefinitions.parameters.LABEL]:
+          AnalyticsDefinitions.label.APP_STATE_ACTIVE,
+        [AnalyticsDefinitions.parameters.TARGET]:
+          AnalyticsDefinitions.target.APP,
+        [AnalyticsDefinitions.parameters.STATUS]:
+          AnalyticsDefinitions.status.ACTIVE
+      });
     } else if (nextAppState === 'background') {
-      logEvent(eventNames.APP_STATE_BACKGROUND);
+      logEvent(AnalyticsDefinitions.category.STATE, {
+        [AnalyticsDefinitions.parameters.LABEL]:
+          AnalyticsDefinitions.label.APP_STATE_BACKGROUND,
+        [AnalyticsDefinitions.parameters.TARGET]:
+          AnalyticsDefinitions.target.APP,
+        [AnalyticsDefinitions.parameters.STATUS]:
+          AnalyticsDefinitions.status.BACKGROUND
+      });
     }
-    // logEvent('APP_STATE_INACTIVE');
   };
 
   render() {
@@ -147,7 +160,6 @@ class AppLoading extends Component<Props> {
           ref={(navigatorRef) => {
             setTopLevelNavigator(navigatorRef);
           }}
-          // uriPrefix='shayr://'
           onNavigationStateChange={(prevState, currentState) => {
             currentScreenAnalytics(prevState, currentState);
           }}

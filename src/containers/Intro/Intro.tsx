@@ -9,6 +9,8 @@ import {
 import { connect } from 'react-redux';
 import PrimaryButton from '../../components/PrimaryButton';
 import SecondaryButton from '../../components/SecondaryButton';
+import * as AnalyticsDefinitions from '../../lib/AnalyticsDefinitions';
+import { logEvent } from '../../lib/FirebaseAnalytics';
 import { items, setOnboardingStatus } from '../../redux/onboarding/actions';
 import { State as OnboardingState } from '../../redux/onboarding/reducer';
 import { State } from '../../redux/Reducers';
@@ -82,6 +84,16 @@ class Intro extends Component<Props, OwnState> {
     ];
   }
 
+  componentDidMount = () => {
+    logEvent(AnalyticsDefinitions.category.RENDER, {
+      [AnalyticsDefinitions.parameters.LABEL]:
+        AnalyticsDefinitions.label.INTRO_VIEW,
+      [AnalyticsDefinitions.parameters.RESULT]: this.data[
+        this.state.carouselActiveItem
+      ].title
+    });
+  };
+
   renderIntroCard = ({ item, index }: { item: any; index: number }) => {
     return (
       <View style={styles.cardContainer}>
@@ -109,13 +121,22 @@ class Intro extends Component<Props, OwnState> {
 
   onCarouselChange = (index: number) => {
     const viewed = index === this.data.length - 1;
-    this.setState((previousState) => {
-      return {
-        ...previousState,
-        carouselActiveItem: index,
-        viewedCarousel: previousState.viewedCarousel || viewed
-      };
-    });
+    this.setState(
+      (previousState) => {
+        return {
+          ...previousState,
+          carouselActiveItem: index,
+          viewedCarousel: previousState.viewedCarousel || viewed
+        };
+      },
+      () => {
+        logEvent(AnalyticsDefinitions.category.RENDER, {
+          [AnalyticsDefinitions.parameters.LABEL]:
+            AnalyticsDefinitions.label.INTRO_VIEW,
+          [AnalyticsDefinitions.parameters.RESULT]: this.data[index].title
+        });
+      }
+    );
   };
 
   onContinuePress = () => {

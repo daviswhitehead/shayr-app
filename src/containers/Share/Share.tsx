@@ -11,6 +11,7 @@ import ShareExtension from 'react-native-share-extension';
 import { connect } from 'react-redux';
 import { State } from 'src/src/redux/Reducers';
 import ShareModal from '../../components/ShareModal';
+import * as AnalyticsDefinitions from '../../lib/AnalyticsDefinitions';
 import { retrieveToken } from '../../lib/AppGroupTokens';
 import { logEvent, setCurrentScreen } from '../../lib/FirebaseAnalytics';
 import { getCurrentUser, getFBAuthCredential } from '../../lib/FirebaseLogin';
@@ -88,7 +89,13 @@ class Share extends Component<Props, OwnState> {
       url: '',
       isLoading: true
     };
-    logEvent('SHARE_EXTENSION_LAUNCH');
+    logEvent(AnalyticsDefinitions.category.ACTION, {
+      [AnalyticsDefinitions.parameters.LABEL]: AnalyticsDefinitions.label.SHAYR,
+      [AnalyticsDefinitions.parameters.STATUS]:
+        AnalyticsDefinitions.status.LAUNCHED,
+      [AnalyticsDefinitions.parameters.TARGET]:
+        AnalyticsDefinitions.target.SHARE_EXTENSION
+    });
 
     this.modalRef = React.createRef();
     this.subscriptions = [];
@@ -98,20 +105,15 @@ class Share extends Component<Props, OwnState> {
     this.checkLoading();
     setCurrentScreen('Share');
     this.subscriptions.push(this.props.authSubscription());
-    logEvent('SHARE_EXTENSION__AUTH_SUBSCRIPTION');
 
     try {
       const token = await retrieveToken('accessToken');
-      logEvent('SHARE_EXTENSION__TOKEN');
 
       const credential = getFBAuthCredential(token);
-      logEvent('SHARE_EXTENSION__CREDENTIAL');
 
       const currentUser = await getCurrentUser(credential);
-      logEvent('SHARE_EXTENSION__CURRENT_USER');
 
       const { type, value } = await ShareExtension.data();
-      logEvent('SHARE_EXTENSION__VALUE');
       // const value =
       //   'https://medium.com/@khreniak/cloud-firestore-security-rules-basics-fac6b6bea18e';
 
@@ -122,13 +124,10 @@ class Share extends Component<Props, OwnState> {
           this.props.subscribeToFriends(this.props.authUserId)
         );
       }
-      logEvent('SHARE_EXTENSION__SUBSCRIBE_TO_FRIENDSHIPS');
 
       this.modalRef.current.toggleModal();
-      logEvent('SHARE_EXTENSION__TOGGLE_MODAL');
     } catch (error) {
       console.error(error);
-      logEvent('SHARE_EXTENSION__ERROR');
     }
   }
 
@@ -139,7 +138,6 @@ class Share extends Component<Props, OwnState> {
         this.props.subscribeToFriends(this.props.authUserId)
       );
     }
-    logEvent('SHARE_EXTENSION__SUBSCRIBE_TO_FRIENDSHIPS');
 
     this.checkLoading();
   }
@@ -158,11 +156,18 @@ class Share extends Component<Props, OwnState> {
       this.props.friendsMeta.isLoaded
     ) {
       this.setState({ isLoading: false });
+      logEvent(AnalyticsDefinitions.category.STATE, {
+        [AnalyticsDefinitions.parameters.LABEL]:
+          AnalyticsDefinitions.label.SCREEN_LOADING,
+        [AnalyticsDefinitions.parameters.STATUS]:
+          AnalyticsDefinitions.status.SUCCESS
+      });
     }
   };
 
   navigateToLogin = () => {
     const appLink = buildAppLink('shayr', 'shayr', 'Login', {});
+
     try {
       Platform.OS === 'ios'
         ? ShareExtension.openURL(appLink)
@@ -184,6 +189,7 @@ class Share extends Component<Props, OwnState> {
         navigateToLogin={this.navigateToLogin}
         onModalWillHide={() => ShareExtension.close()}
         hideBackdrop
+        fromShareExtension
       />
     );
   }

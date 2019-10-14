@@ -1,6 +1,17 @@
 import _ from 'lodash';
+import Config from 'react-native-config';
 import firebase from 'react-native-firebase'; // https://rnfirebase.io/docs/v5.x.x/analytics/reference/analytics#setAnalyticsCollectionEnabled
 import { NavigationState } from 'react-navigation';
+import { names } from '../components/Icon';
+import {
+  category,
+  label,
+  parameters,
+  result,
+  status,
+  target,
+  type
+} from './AnalyticsDefinitions';
 import { getActiveRouteName } from './ReactNavigationHelpers';
 
 export const setUserProperties = (params = {}) => {
@@ -29,6 +40,17 @@ export const currentScreenAnalytics = (
   }
 };
 
-export const logEvent = (eventName: string, params = {}) => {
-  firebase.analytics().logEvent(`${eventName}`.toUpperCase(), params);
+export type eventName = category;
+export interface params {
+  [key: parameters]: target | label | status | type | result | names;
+}
+export const logEvent = (
+  eventName: eventName,
+  params: params = {},
+  shouldLog: boolean = true
+) => {
+  if (Config.ENV_NAME !== 'prod' && shouldLog) {
+    console.log(eventName, params);
+  }
+  firebase.analytics().logEvent(eventName, params);
 };

@@ -5,6 +5,8 @@ import { View } from 'react-native';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import DoneModal from '../../components/DoneModal';
+import * as AnalyticsDefinitions from '../../lib/AnalyticsDefinitions';
+import { logEvent } from '../../lib/FirebaseAnalytics';
 import { queryTypes } from '../../lib/FirebaseQueries';
 import { selectAuthUserId } from '../../redux/auth/selectors';
 import { toggleAddDonePost } from '../../redux/dones/actions';
@@ -27,6 +29,7 @@ interface OwnProps {
   postId: string;
   usersPostsAdds: Array<string>;
   usersPostsDones: Array<string>;
+  isSwipe: boolean;
 }
 
 type Props = OwnProps & StateProps & DispatchProps;
@@ -67,6 +70,7 @@ const withDones = (WrappedComponent: SFC) => {
         toggleAddDonePost,
         ownerUserId,
         postId,
+        isSwipe = false,
         ...passThroughProps
       } = this.props;
 
@@ -79,6 +83,13 @@ const withDones = (WrappedComponent: SFC) => {
             isActive={isDonesActive}
             onPress={() => {
               if (isDonesActive) {
+                logEvent(AnalyticsDefinitions.category.ACTION, {
+                  [AnalyticsDefinitions.parameters.LABEL]:
+                    AnalyticsDefinitions.label.REMOVE_DONE,
+                  [AnalyticsDefinitions.parameters.TYPE]: isSwipe
+                    ? AnalyticsDefinitions.type.SWIPE
+                    : AnalyticsDefinitions.type.PRESS
+                });
                 toggleAddDonePost(
                   'dones',
                   isDonesActive,
@@ -89,6 +100,15 @@ const withDones = (WrappedComponent: SFC) => {
                   _.keys(friends)
                 );
               } else {
+                logEvent(AnalyticsDefinitions.category.ACTION, {
+                  [AnalyticsDefinitions.parameters.LABEL]:
+                    AnalyticsDefinitions.label.MARK_AS_DONE,
+                  [AnalyticsDefinitions.parameters.TYPE]: isSwipe
+                    ? AnalyticsDefinitions.type.SWIPE
+                    : AnalyticsDefinitions.type.PRESS,
+                  [AnalyticsDefinitions.parameters.STATUS]:
+                    AnalyticsDefinitions.status.START
+                });
                 this.modalRef.current.toggleModal();
               }
             }}
@@ -96,7 +116,16 @@ const withDones = (WrappedComponent: SFC) => {
           />
           <DoneModal
             ref={this.modalRef}
-            onModalHide={() =>
+            onModalHide={() => {
+              logEvent(AnalyticsDefinitions.category.ACTION, {
+                [AnalyticsDefinitions.parameters.LABEL]:
+                  AnalyticsDefinitions.label.MARK_AS_DONE,
+                [AnalyticsDefinitions.parameters.TYPE]: isSwipe
+                  ? AnalyticsDefinitions.type.SWIPE
+                  : AnalyticsDefinitions.type.PRESS,
+                [AnalyticsDefinitions.parameters.STATUS]:
+                  AnalyticsDefinitions.status.SUCCESS
+              });
               toggleAddDonePost(
                 'dones',
                 isDonesActive,
@@ -105,8 +134,8 @@ const withDones = (WrappedComponent: SFC) => {
                 authUserId,
                 isAddsActive,
                 _.keys(friends)
-              )
-            }
+              );
+            }}
             {...this.props}
           />
         </View>

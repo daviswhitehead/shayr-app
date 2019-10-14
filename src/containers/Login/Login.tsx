@@ -9,6 +9,8 @@ import {
 } from 'react-navigation';
 import { connect } from 'react-redux';
 import vectorLogo from '../../assets/images/VectorLogo.png';
+import * as AnalyticsDefinitions from '../../lib/AnalyticsDefinitions';
+import { logEvent } from '../../lib/FirebaseAnalytics';
 import {
   facebookAuth,
   facebookAuthTap,
@@ -78,17 +80,40 @@ class Login extends Component<Props, OwnState> {
       <View style={styles.container}>
         <View style={styles.brandContainer}>
           <Image style={styles.image} source={vectorLogo} />
-          <Text style={styles.brand}>shayr</Text>
-          <Text style={styles.tagline}>discover together</Text>
+          <Text style={styles.brand}>Shayr</Text>
+          <Text style={styles.tagline}>Discover Together</Text>
         </View>
         <View style={styles.loginContainer}>
-          <TouchableWithoutFeedback onPress={this.props.facebookAuthTap}>
+          <TouchableWithoutFeedback
+            onPress={() => {
+              logEvent(AnalyticsDefinitions.category.ACTION, {
+                [AnalyticsDefinitions.parameters.LABEL]:
+                  AnalyticsDefinitions.label.FACEBOOK_LOGIN_BUTTON,
+                [AnalyticsDefinitions.parameters.TYPE]:
+                  AnalyticsDefinitions.type.PRESS
+              });
+            }}
+          >
             <LoginButton
               readPermissions={['public_profile', 'email']}
-              onLoginFinished={(error, result) =>
-                this.props.facebookAuth(error, result)
-              }
-              onLogoutFinished={() => this.props.signOutUser()}
+              onLoginFinished={(error, result) => {
+                logEvent(AnalyticsDefinitions.category.REQUEST, {
+                  [AnalyticsDefinitions.parameters.LABEL]:
+                    AnalyticsDefinitions.label.FACEBOOK_LOGIN,
+                  [AnalyticsDefinitions.parameters.STATUS]:
+                    AnalyticsDefinitions.status.START
+                });
+                this.props.facebookAuth(error, result);
+              }}
+              onLogoutFinished={() => {
+                logEvent(AnalyticsDefinitions.category.REQUEST, {
+                  [AnalyticsDefinitions.parameters.LABEL]:
+                    AnalyticsDefinitions.label.SIGN_OUT,
+                  [AnalyticsDefinitions.parameters.STATUS]:
+                    AnalyticsDefinitions.status.START
+                });
+                this.props.signOutUser();
+              }}
             />
           </TouchableWithoutFeedback>
         </View>

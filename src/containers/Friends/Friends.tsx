@@ -14,6 +14,8 @@ import FriendSummaryRow from '../../components/FriendSummaryRow';
 import Header from '../../components/Header';
 import Icon, { names } from '../../components/Icon';
 import List from '../../components/List';
+import * as AnalyticsDefinitions from '../../lib/AnalyticsDefinitions';
+import { logEvent } from '../../lib/FirebaseAnalytics';
 import { queryTypes } from '../../lib/FirebaseQueries';
 import { selectAuthUserId } from '../../redux/auth/selectors';
 import { selectFlatListReadyDocuments } from '../../redux/documents/selectors';
@@ -142,6 +144,12 @@ class Friends extends PureComponent<Props, OwnState> {
   checkLoading = () => {
     if (this.state.isLoading && this.props.friends !== undefined) {
       this.setState({ isLoading: false });
+      logEvent(AnalyticsDefinitions.category.STATE, {
+        [AnalyticsDefinitions.parameters.LABEL]:
+          AnalyticsDefinitions.label.SCREEN_LOADING,
+        [AnalyticsDefinitions.parameters.STATUS]:
+          AnalyticsDefinitions.status.SUCCESS
+      });
     }
   };
 
@@ -150,15 +158,24 @@ class Friends extends PureComponent<Props, OwnState> {
   };
 
   renderListHeader = () => {
-    return !_.isEmpty(this.props.pendingFriendshipUserIds) && this.props.authIsOwner ? (
+    return !_.isEmpty(this.props.pendingFriendshipUserIds) &&
+      this.props.authIsOwner ? (
       <ActionRow
-        onPress={() => this.props.navigation.navigate('FindFriends', {})}
+        onPress={() => {
+          logEvent(AnalyticsDefinitions.category.ACTION, {
+            [AnalyticsDefinitions.parameters.LABEL]:
+              AnalyticsDefinitions.label.VIEW_PENDING_FRIEND_REQEUSTS,
+            [AnalyticsDefinitions.parameters.TYPE]:
+              AnalyticsDefinitions.type.PRESS
+          });
+          this.props.navigation.navigate('FindFriends', {});
+        }}
         iconName={names.ACCEPT_FRIEND}
         copy={`View your ${
           this.props.pendingFriendshipUserIds.length
         } pending friend requests!`}
       />
-    ) : null
+    ) : null;
   };
 
   render() {
@@ -194,9 +211,15 @@ class Friends extends PureComponent<Props, OwnState> {
           ListHeaderComponent={() => this.renderListHeader()}
           ListEmptyComponent={
             <EmptyFriends
-              onButtonPress={() =>
-                this.props.navigation.navigate('FindFriends', {})
-              }
+              onButtonPress={() => {
+                logEvent(AnalyticsDefinitions.category.ACTION, {
+                  [AnalyticsDefinitions.parameters.LABEL]:
+                    AnalyticsDefinitions.label.FIND_FRIENDS_BUTTON,
+                  [AnalyticsDefinitions.parameters.TYPE]:
+                    AnalyticsDefinitions.type.PRESS
+                });
+                this.props.navigation.navigate('FindFriends', {});
+              }}
             />
           }
           noSeparator
