@@ -47,8 +47,9 @@ export const types = {
 // AUTHENTICATION LISTENERS
 export const authSubscription = () => {
   return (dispatch: Dispatch) => {
-    dispatch({ type: types.AUTH_LISTENER_START });
     return firebase.auth().onAuthStateChanged((user) => {
+      console.log('onAuthStateChanged');
+
       if (user) {
         dispatch({
           type: types.AUTH_STATUS,
@@ -56,14 +57,14 @@ export const authSubscription = () => {
           isSigningOut: false
         });
 
-        // identify user in analytics events
+        // identify user in analytics and bug tracking
         userAnalytics(user.uid);
         setUser(user.uid);
-      } else {
-        dispatch({
-          type: types.AUTH_STATUS,
-          user: {}
-        });
+        // } else {
+        //   dispatch({
+        //     type: types.AUTH_STATUS,
+        //     user: {}
+        //   });
       }
     });
   };
@@ -71,7 +72,7 @@ export const authSubscription = () => {
 
 // TOKEN
 export function hasAccessToken() {
-  return async function _hasAccessToken(dispatch) {
+  return async function _hasAccessToken(dispatch: Dispatch) {
     const token = await retrieveToken('accessToken');
     dispatch({
       type: types.ACCESS_TOKEN_STATUS,
@@ -127,16 +128,11 @@ const saveUser = async (user, data, FBProfile) => {
 };
 
 // FACEBOOK LOGIN
-export function facebookAuthTap() {
-  return {
-    type: types.FACEBOOK_AUTH_TAP
-  };
-}
-
-// FACEBOOK LOGIN
 export function facebookAuth(error, result) {
   return async (dispatch: Dispatch) => {
     try {
+      console.log('here');
+
       dispatch({ type: types.FACEBOOK_AUTH_START });
       const currentAccessToken = await getFBToken(error, result);
       if (!currentAccessToken) throw new Error('undefined access token');

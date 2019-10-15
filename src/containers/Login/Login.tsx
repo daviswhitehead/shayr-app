@@ -1,68 +1,74 @@
-import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { Image, Text, TouchableWithoutFeedback, View } from 'react-native';
-import { LoginButton } from 'react-native-fbsdk';
+import {
+  Button,
+  Image,
+  Text,
+  TouchableWithoutFeedback,
+  View
+} from 'react-native';
+import { LoginButton, LoginManager } from 'react-native-fbsdk';
 import {
   NavigationParams,
   NavigationScreenProp,
   NavigationState
 } from 'react-navigation';
 import { connect } from 'react-redux';
-import vectorLogo from '../../assets/images/VectorLogo.png';
 import * as AnalyticsDefinitions from '../../lib/AnalyticsDefinitions';
+import { loginFacebook, logoutFacebook } from '../../lib/FacebookRequests';
 import { logEvent } from '../../lib/FirebaseAnalytics';
-import {
-  facebookAuth,
-  facebookAuthTap,
-  signOutUser
-} from '../../redux/auth/actions';
+import { loginWithFacebook } from '../../lib/FirebaseLogin';
+import { facebookAuth, signOutUser } from '../../redux/auth/actions';
+import { getPost } from '../../redux/posts/actions';
 import { State } from '../../redux/Reducers';
 import styles from './styles';
+
+const VECTOR_LOGO = require('../../assets/images/VectorLogo.png');
 
 interface StateProps {
   auth: any;
 }
 
 interface DispatchProps {
-  facebookAuthTap: typeof facebookAuthTap;
   facebookAuth: typeof facebookAuth;
   signOutUser: typeof signOutUser;
+  getPost: typeof getPost;
 }
 
 interface OwnProps {
   navigation: NavigationScreenProp<NavigationState, NavigationParams>;
 }
 
-interface OwnState {}
+interface OwnState {
+  skipScreen: boolean;
+}
 
 type Props = OwnProps & StateProps & DispatchProps;
 
 const mapStateToProps = (state: State) => ({
-  auth: state.auth
+  auth: state.auth,
+  posts: state.posts
 });
 
 const mapDispatchToProps = {
-  facebookAuthTap,
   facebookAuth,
-  signOutUser
+  signOutUser,
+  getPost
 };
 
 class Login extends Component<Props, OwnState> {
   static whyDidYouRender = true;
-  static propTypes = {
-    auth: PropTypes.instanceOf(Object).isRequired,
-    navigation: PropTypes.instanceOf(Object).isRequired,
-    facebookAuthTap: PropTypes.func.isRequired,
-    facebookAuth: PropTypes.func.isRequired,
-    signOutUser: PropTypes.func.isRequired
-  };
 
   constructor(props: Props) {
     super(props);
+
+    this.state = {
+      skipScreen: this.props.auth.user.uid && this.props.auth.hasAccessToken
+    };
+
     if (this.props.auth.isSigningOut) {
       // when a user navigates to the login screen with isSigningOut === true, sign out the user
       this.props.signOutUser();
-    } else if (this.props.auth.user.uid && this.props.auth.hasAccessToken) {
+    } else if (this.state.skipScreen) {
       // when a user navigates to the login screen already authenticated (app launch), navigate to the app
       this.props.navigation.navigate('App');
     }
@@ -76,46 +82,42 @@ class Login extends Component<Props, OwnState> {
   }
 
   render() {
+    console.log(`Login - Render`);
+    console.log('this.props');
+    console.log(this.props);
+
     return (
       <View style={styles.container}>
         <View style={styles.brandContainer}>
-          <Image style={styles.image} source={vectorLogo} />
+          <Image style={styles.image} source={VECTOR_LOGO} />
           <Text style={styles.brand}>Shayr</Text>
           <Text style={styles.tagline}>Discover Together</Text>
         </View>
         <View style={styles.loginContainer}>
-          <TouchableWithoutFeedback
-            onPress={() => {
+          <Button
+            title='Login'
+            onPress={async () => {
               logEvent(AnalyticsDefinitions.category.ACTION, {
                 [AnalyticsDefinitions.parameters.LABEL]:
                   AnalyticsDefinitions.label.FACEBOOK_LOGIN_BUTTON,
                 [AnalyticsDefinitions.parameters.TYPE]:
                   AnalyticsDefinitions.type.PRESS
               });
+              const result = await loginWithFacebook();
+              if (result.isSuccessful) {
+                console.log('SUCCESS');
+              } else {
+                console.log('NOT SUCCESSFUL');
+              }
             }}
-          >
-            <LoginButton
-              readPermissions={['public_profile', 'email']}
-              onLoginFinished={(error, result) => {
-                logEvent(AnalyticsDefinitions.category.REQUEST, {
-                  [AnalyticsDefinitions.parameters.LABEL]:
-                    AnalyticsDefinitions.label.FACEBOOK_LOGIN,
-                  [AnalyticsDefinitions.parameters.STATUS]:
-                    AnalyticsDefinitions.status.START
-                });
-                this.props.facebookAuth(error, result);
-              }}
-              onLogoutFinished={() => {
-                logEvent(AnalyticsDefinitions.category.REQUEST, {
-                  [AnalyticsDefinitions.parameters.LABEL]:
-                    AnalyticsDefinitions.label.SIGN_OUT,
-                  [AnalyticsDefinitions.parameters.STATUS]:
-                    AnalyticsDefinitions.status.START
-                });
-                this.props.signOutUser();
-              }}
-            />
-          </TouchableWithoutFeedback>
+          />
+          <Button
+            title='Logout'
+            onPress={() => {
+              console.log('Logout');
+              logoutFacebook();
+            }}
+          />
         </View>
       </View>
     );

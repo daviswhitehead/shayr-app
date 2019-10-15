@@ -247,19 +247,27 @@ export const getDocument = (
 ) => {
   dispatch(getDocumentsStart(stateKey));
 
-  return reference
-    .get({ source: source ? source : 'default' })
-    .then((documentSnapshot: DocumentSnapshot) => {
-      if (documentSnapshot.exists) {
-        const documents = {
-          [documentSnapshot.id]: formatDocumentSnapshot(documentSnapshot)
-        };
-        dispatch(getDocumentsSuccess(stateKey, documents));
-      }
-      return documentSnapshot.id;
-    })
-    .catch((error: SnapshotError) => {
-      console.error(error);
-      dispatch(getDocumentsFail(stateKey, error));
-    });
+  console.log('reference');
+  console.log(reference);
+
+  return (
+    reference
+      .get()
+      // .get({ source: source ? source : 'default' })
+      .then((documentSnapshot: DocumentSnapshot) => {
+        console.log('documentSnapshot');
+        console.log(documentSnapshot);
+        if (documentSnapshot.exists) {
+          const documents = {
+            [documentSnapshot.id]: formatDocumentSnapshot(documentSnapshot)
+          };
+          dispatch(getDocumentsSuccess(stateKey, documents));
+        }
+        return documentSnapshot.id;
+      })
+      .catch((error: SnapshotError) => {
+        console.error(error);
+        dispatch(getDocumentsFail(stateKey, error));
+      })
+  );
 };
