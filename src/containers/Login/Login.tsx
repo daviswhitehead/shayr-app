@@ -1,23 +1,16 @@
 import React, { Component } from 'react';
-import {
-  Button,
-  Image,
-  Text,
-  TouchableWithoutFeedback,
-  View
-} from 'react-native';
-import { LoginButton, LoginManager } from 'react-native-fbsdk';
+import { ActivityIndicator, Image, Text, View } from 'react-native';
 import {
   NavigationParams,
   NavigationScreenProp,
   NavigationState
 } from 'react-navigation';
 import { connect } from 'react-redux';
+import LoginButton from '../../components/LoginButton';
 import * as AnalyticsDefinitions from '../../lib/AnalyticsDefinitions';
-import { loginFacebook, logoutFacebook } from '../../lib/FacebookRequests';
 import { logEvent } from '../../lib/FirebaseAnalytics';
-import { loginWithFacebook } from '../../lib/FirebaseLogin';
-import { facebookAuth, signOutUser } from '../../redux/auth/actions';
+import { loginWithFacebook, saveUser } from '../../lib/FirebaseLogin';
+import { hasAccessToken, signOutUser } from '../../redux/auth/actions';
 import { getPost } from '../../redux/posts/actions';
 import { State } from '../../redux/Reducers';
 import styles from './styles';
@@ -29,7 +22,7 @@ interface StateProps {
 }
 
 interface DispatchProps {
-  facebookAuth: typeof facebookAuth;
+  hasAccessToken: typeof hasAccessToken;
   signOutUser: typeof signOutUser;
   getPost: typeof getPost;
 }
@@ -39,6 +32,8 @@ interface OwnProps {
 }
 
 interface OwnState {
+  isLoading: boolean;
+  didLogin: boolean;
   skipScreen: boolean;
 }
 
@@ -50,7 +45,7 @@ const mapStateToProps = (state: State) => ({
 });
 
 const mapDispatchToProps = {
-  facebookAuth,
+  hasAccessToken,
   signOutUser,
   getPost
 };
@@ -62,7 +57,9 @@ class Login extends Component<Props, OwnState> {
     super(props);
 
     this.state = {
-      skipScreen: this.props.auth.user.uid && this.props.auth.hasAccessToken
+      skipScreen: this.props.auth.user.uid && this.props.auth.hasAccessToken,
+      isLoading: false,
+      didLogin: false
     };
 
     if (this.props.auth.isSigningOut) {
@@ -81,11 +78,59 @@ class Login extends Component<Props, OwnState> {
     }
   }
 
+  onFacebookPress = () => {
+    this.setState(
+      {
+        isLoading: true
+      },
+      async () => {
+        logEvent(AnalyticsDefinitions.category.ACTION, {
+          [AnalyticsDefinitions.parameters.LABEL]:
+            AnalyticsDefinitions.label.FACEBOOK_LOGIN_BUTTON,
+          [AnalyticsDefinitions.parameters.TYPE]:
+            AnalyticsDefinitions.type.PRESS
+        });
+        logEvent(AnalyticsDefinitions.category.REQUEST, {
+          [AnalyticsDefinitions.parameters.LABEL]:
+            AnalyticsDefinitions.label.FACEBOOK_LOGIN,
+          [AnalyticsDefinitions.parameters.STATUS]:
+            AnalyticsDefinitions.status.START
+        });
+        const result = await loginWithFacebook();
+        if (result.isSuccessful) {
+          logEvent(AnalyticsDefinitions.category.REQUEST, {
+            [AnalyticsDefinitions.parameters.LABEL]:
+              AnalyticsDefinitions.label.FACEBOOK_LOGIN,
+            [AnalyticsDefinitions.parameters.STATUS]:
+              AnalyticsDefinitions.status.SUCCESS
+          });
+          saveUser(result.user);
+          this.props.hasAccessToken();
+        } else if (result.needsLink) {
+          this.setState({
+            isLoading: false
+          });
+        } else {
+          logEvent(AnalyticsDefinitions.category.REQUEST, {
+            [AnalyticsDefinitions.parameters.LABEL]:
+              AnalyticsDefinitions.label.FACEBOOK_LOGIN,
+            [AnalyticsDefinitions.parameters.STATUS]:
+              AnalyticsDefinitions.status.FAIL
+          });
+          this.setState({
+            isLoading: false
+          });
+        }
+      }
+    );
+  };
+
   render() {
     console.log(`Login - Render`);
     console.log('this.props');
     console.log(this.props);
-
+    console.log('this.state');
+    console.log(this.state);
     return (
       <View style={styles.container}>
         <View style={styles.brandContainer}>
@@ -94,30 +139,11 @@ class Login extends Component<Props, OwnState> {
           <Text style={styles.tagline}>Discover Together</Text>
         </View>
         <View style={styles.loginContainer}>
-          <Button
-            title='Login'
-            onPress={async () => {
-              logEvent(AnalyticsDefinitions.category.ACTION, {
-                [AnalyticsDefinitions.parameters.LABEL]:
-                  AnalyticsDefinitions.label.FACEBOOK_LOGIN_BUTTON,
-                [AnalyticsDefinitions.parameters.TYPE]:
-                  AnalyticsDefinitions.type.PRESS
-              });
-              const result = await loginWithFacebook();
-              if (result.isSuccessful) {
-                console.log('SUCCESS');
-              } else {
-                console.log('NOT SUCCESSFUL');
-              }
-            }}
-          />
-          <Button
-            title='Logout'
-            onPress={() => {
-              console.log('Logout');
-              logoutFacebook();
-            }}
-          />
+          {this.state.isLoading ? (
+            <ActivityIndicator size='large' color='black' />
+          ) : (
+            <LoginButton type='facebook' onPress={this.onFacebookPress} />
+          )}
         </View>
       </View>
     );

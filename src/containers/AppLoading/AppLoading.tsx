@@ -61,70 +61,55 @@ class AppLoading extends Component<Props> {
   }
 
   async componentDidMount() {
-    // // listen to app state changes
-    // AppState.addEventListener('change', this.handleAppStateChange);
+    // listen to app state changes
+    AppState.addEventListener('change', this.handleAppStateChange);
 
     // check authentication and listen for updates
     this.subscriptions.push(this.props.authSubscription());
     this.props.hasAccessToken();
 
-    // console.log('AppLoading Promise');
-    // const x = await firebase
-    //   .firestore()
-    //   .doc('posts/SHAYR_HOW_TO')
-    //   .get()
-    //   .then((value) => {
-    //     console.log('then');
-    //     console.log(value);
-    //   })
-    //   .catch((value) => {
-    //     console.log('catch');
-    //     console.log(value);
-    //   });
-    // console.log(x);
+    // setup android notification channels
+    notificationChannels.forEach((channel) => {
+      firebase.notifications().android.createChannel(channel);
+    });
 
-    // // setup android notification channels
-    // notificationChannels.forEach((channel) => {
-    //   firebase.notifications().android.createChannel(channel);
-    // });
+    // start notification listeners
+    this.subscriptions.push(notificationDisplayedListener());
+    this.subscriptions.push(notificationListener());
+    this.subscriptions.push(
+      notificationOpenedListener(this.props.handleURLRoute)
+    );
 
-    // // start notification listeners
-    // this.subscriptions.push(notificationDisplayedListener());
-    // this.subscriptions.push(notificationListener());
-    // this.subscriptions.push(
-    //   notificationOpenedListener(this.props.handleURLRoute)
-    // );
+    // app launched by notification tap
+    const notificationOpen = await firebase
+      .notifications()
+      .getInitialNotification();
+    if (notificationOpen) {
+      const { action, notification } = notificationOpen;
 
-    // // app launched by notification tap
-    // const notificationOpen = await firebase
-    //   .notifications()
-    //   .getInitialNotification();
-    // if (notificationOpen) {
-    //   const { action, notification } = notificationOpen;
+      this.props.handleURLRoute(notification.data.appLink);
 
-    //   this.props.handleURLRoute(notification.data.appLink);
+      firebase
+        .notifications()
+        .removeDeliveredNotification(notification.notificationId);
+    }
 
-    //   firebase
-    //     .notifications()
-    //     .removeDeliveredNotification(notification.notificationId);
-    // }
+    // start deep link listeners
+    this.subscriptions.push(dynamicLinkListener(this.props.handleURLRoute)); // Firebase link
+    Linking.addEventListener('url', this.props.handleURLRoute); // App link
 
-    // // start deep link listeners
-    // this.subscriptions.push(dynamicLinkListener(this.props.handleURLRoute)); // Firebase link
-    // Linking.addEventListener('url', this.props.handleURLRoute); // App link
+    // app launched with deep link
+    const dynamicLink = await firebase.links().getInitialLink(); // Firebase link
+    if (dynamicLink) {
+      this.props.handleURLRoute(dynamicLink);
+    }
+    const deepLink = await Linking.getInitialURL(); // App link
+    if (deepLink) {
+      this.props.handleURLRoute(deepLink);
+    }
 
-    // // app launched with deep link
-    // const dynamicLink = await firebase.links().getInitialLink(); // Firebase link
-    // if (dynamicLink) {
-    //   this.props.handleURLRoute(dynamicLink);
-    // }
-    // const deepLink = await Linking.getInitialURL(); // App link
-    // if (deepLink) {
-    //   this.props.handleURLRoute(deepLink);
-    // }
-
-    // // apply moment date/time settings
-    // initializeMoment();
+    // apply moment date/time settings
+    initializeMoment();
 
     await this.props.getOnboardingStatus();
 
@@ -132,8 +117,8 @@ class AppLoading extends Component<Props> {
   }
 
   componentWillUnmount() {
-    // AppState.removeEventListener('change', this.handleAppStateChange);
-    // Linking.removeEventListener('url', this.props.handleURLRoute);
+    AppState.removeEventListener('change', this.handleAppStateChange);
+    Linking.removeEventListener('url', this.props.handleURLRoute);
     Object.values(this.subscriptions).forEach((unsubscribe) => {
       unsubscribe();
     });

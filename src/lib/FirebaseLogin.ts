@@ -1,6 +1,9 @@
+import { ts } from '@daviswhitehead/shayr-resources';
 import _ from 'lodash';
 import { AccessToken } from 'react-native-fbsdk';
 import firebase, { AuthCredential } from 'react-native-firebase';
+import { UserCredential } from 'react-native-firebase/auth';
+import { saveToken } from './AppGroupTokens';
 import { getFacebookEmail, loginFacebook } from './FacebookRequests';
 
 export const fetchSignInMethodsForEmail = async (email: string) => {
@@ -52,8 +55,8 @@ export const signInWithCredential = async (
   }
 };
 
-export const getFacebookAuthCredential = (accessToken: AccessToken) =>
-  firebase.auth.FacebookAuthProvider.credential(accessToken.accessToken);
+export const getFacebookAuthCredential = (accessToken: string) =>
+  firebase.auth.FacebookAuthProvider.credential(accessToken);
 
 export const signOut = () => {
   if (firebase.auth().currentUser) {
@@ -69,26 +72,20 @@ interface LoginResult {
   message?: string;
   method?: string;
 }
-// type LoginResult = LoginResultSuccess | LoginResultLinkNeeded | LoginResultFail;
 
 export const loginWithFacebook = async (): Promise<LoginResult> => {
   try {
     const accessToken = await loginFacebook();
-    console.log('accessToken');
-    console.log(accessToken);
 
     const email = accessToken && (await getFacebookEmail(accessToken));
-    console.log('email');
-    console.log(email);
+
+    accessToken && saveToken('accessToken', accessToken);
 
     const credential = accessToken && getFacebookAuthCredential(accessToken);
-    console.log('credential');
-    console.log(credential);
 
     const result =
       credential && (await signInWithCredential(credential, email));
-    console.log('result');
-    console.log(result);
+
     return result
       ? result
       : {
@@ -99,4 +96,51 @@ export const loginWithFacebook = async (): Promise<LoginResult> => {
     console.error(error);
     throw error;
   }
+};
+
+export const saveUser = async (userCredential: UserCredential) => {
+  const profile = userCredential.additionalUserInfo.profile;
+
+  const ref = firebase
+    .firestore()
+    .collection('users')
+    .doc(userCredential.user.uid);
+  return ref
+    .get()
+    .then((doc) => {
+      if (!doc.exists) {
+        ref.set({
+          createdAt: ts(firebase.firestore),
+          updatedAt: ts(firebase.firestore),
+          firstName: profile.first_name,
+          lastName: profile.last_name,
+          email: profile.email,
+          facebookId: profile.id,
+          facebookProfilePhoto: `https://graph.facebook.com/${
+            profile.id
+          }/picture?type=large`
+        });
+      } else {
+        ref.set(
+          {
+            updatedAt: ts(firebase.firestore),
+            firstName: profile.first_name,
+            lastName: profile.last_name,
+            email: profile.email,
+            facebookId: profile.id,
+            facebookProfilePhoto: `https://graph.facebook.com/${
+              profile.id
+            }/picture?type=large`
+          },
+          {
+            merge: true
+          }
+        );
+      }
+      return true;
+    })
+    .catch((error) => {
+      console.error(error);
+      return false;
+    });
 };

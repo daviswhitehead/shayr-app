@@ -59,7 +59,7 @@ const iconMap = {
   [names.DISCOVER]: require('../../assets/icons/icon-discover.png'),
   [names.DISCOVER_ACTIVE]: require('../../assets/icons/icon-discover-active.png'),
   [names.FACEBOOK]: (props: any) => (
-    <MaterialCommunityIcon name='facebook-box' size={props.size} />
+    <MaterialCommunityIcon name='facebook-box' {...props} />
   ),
   [names.FEEDBACK]: require('../../assets/icons/icon-feedback.png'),
   [names.FLAME]: require('../../assets/icons/icon-flame.png'),
@@ -91,6 +91,7 @@ const specialIcons = [names.FACEBOOK];
 interface Props extends ComponentProps<typeof TouchableWrapper> {
   name: names;
   size?: number;
+  color?: string;
   isActive?: boolean;
   iconStyle?: any;
   isLoading?: boolean;
@@ -104,15 +105,16 @@ const Icon: SFC<Props> = ({
   iconStyle = {},
   isLoading,
   style,
+  color,
   onPress,
   noTouching,
   hasBadge = false
 }: Props) => {
-  const color: string = isActive ? Colors.YELLOW : Colors.BLACK;
+  const tintColor: string = isActive ? Colors.YELLOW : Colors.BLACK;
   const _containerStyle = [styles.container, style];
   const _iconStyle = [
     styles.image,
-    hasBadge ? {} : { tintColor: color },
+    hasBadge ? {} : { tintColor: color || tintColor },
     iconStyle
   ];
 
@@ -139,7 +141,7 @@ const Icon: SFC<Props> = ({
       }}
     >
       {_.includes(specialIcons, name) ? (
-        iconMap[name]({ style: { _iconStyle }, size })
+        iconMap[name]({ size, color })
       ) : (
         <Image source={iconMap[name]} style={_iconStyle} />
       )}

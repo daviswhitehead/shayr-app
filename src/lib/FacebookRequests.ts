@@ -28,7 +28,7 @@ export const getAccessToken = async () => {
     if (!currentAccessToken) {
       throw new Error('Something went wrong obtaining the users access token');
     } else {
-      return currentAccessToken;
+      return currentAccessToken.accessToken;
     }
   } catch (error) {
     console.error(error);
@@ -40,65 +40,7 @@ export const logoutFacebook = () => {
   LoginManager.logOut();
 };
 
-export const getFacebookProfile = (accessToken: AccessToken) =>
-  new Promise((resolve, reject) => {
-    const responseCallback = (error, result) => {
-      if (error) {
-        console.error(`getFBProfile error: ${result.error}`);
-        reject(error);
-      } else {
-        resolve(result);
-      }
-    };
-
-    const profileRequestParams = {
-      accessToken: accessToken.accessToken,
-      parameters: {
-        fields: {
-          string: 'picture.type(large)'
-        }
-      }
-    };
-
-    const profileRequest = new GraphRequest(
-      '/me',
-      profileRequestParams,
-      responseCallback
-    );
-
-    new GraphRequestManager().addRequest(profileRequest).start();
-  });
-
-// export const getFacebookEmail = async (accessToken: AccessToken) => {
-//   try {
-//     const responseCallback = (error, result) => {
-//       if (error) {
-//         throw new Error(result.error);
-//       } else {
-//         return result;
-//       }
-//     };
-
-//     const profileRequest = new GraphRequest(
-//       '/me',
-//       {
-//         accessToken: accessToken.accessToken,
-//         parameters: {
-//           fields: {
-//             string: 'email'
-//           }
-//         }
-//       },
-//       responseCallback
-//     );
-
-//     new GraphRequestManager().addRequest(profileRequest).start();
-//   } catch (error) {
-//     console.error(error);
-//   }
-// };
-
-export const getFacebookEmail = (accessToken: AccessToken): Promise<string> =>
+export const getFacebookEmail = (accessToken: string): Promise<string> =>
   new Promise((resolve, reject) => {
     const responseCallback = (error, result) => {
       if (error) {
@@ -111,7 +53,7 @@ export const getFacebookEmail = (accessToken: AccessToken): Promise<string> =>
     const profileRequest = new GraphRequest(
       '/me',
       {
-        accessToken: accessToken.accessToken,
+        accessToken,
         parameters: {
           fields: {
             string: 'email'
