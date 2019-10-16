@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ActivityIndicator, AppState, Linking, Text, View } from 'react-native';
+import { ActivityIndicator, AppState, Linking, View } from 'react-native';
 import firebase from 'react-native-firebase';
 import { connect } from 'react-redux';
 import RootNavigator from '../../config/Routes';
@@ -52,7 +52,7 @@ const mapDispatchToProps = {
 };
 
 class AppLoading extends Component<Props> {
-  // static whyDidYouRender = true;
+  static whyDidYouRender = true;
 
   subscriptions: Array<any>;
   constructor(props: Props) {

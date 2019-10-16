@@ -12,7 +12,7 @@ import AppLoading from '../AppLoading';
 const store = createStore();
 
 class App extends React.Component<{}> {
-  async componentDidMount() {
+  componentDidMount() {
     if (Platform.OS === 'android') {
       SplashScreen.hide();
     }
@@ -34,5 +34,4 @@ class App extends React.Component<{}> {
   }
 }
 
-export default App;
-// export default codePush()(App);
+export default codePush()(App);
