@@ -14,10 +14,19 @@ import {
 } from './AnalyticsDefinitions';
 import { getActiveRouteName } from './ReactNavigationHelpers';
 
+export const convertParamsToStrings = (params = {}) => {
+  return _.reduce(
+    params,
+    (result, value, key) => {
+      _.assign(result, { [key]: `${value}`.toString() });
+      return result;
+    },
+    {}
+  );
+};
+
 export const setUserProperties = (params = {}) => {
-  _.forEach(params, (key, value) => {
-    firebase.analytics().setUserProperty(key, `${value}`.toString());
-  });
+  firebase.analytics().setUserProperties(convertParamsToStrings(params));
 };
 
 export const userAnalytics = (userId: string, params = {}) => {
@@ -49,8 +58,9 @@ export const logEvent = (
   params: params = {},
   shouldLog: boolean = true
 ) => {
+  const formattedParams = convertParamsToStrings(params);
   if (Config.ENV_NAME !== 'prod' && shouldLog) {
-    console.log(eventName, params);
+    console.log(eventName, formattedParams);
   }
-  firebase.analytics().logEvent(eventName, params);
+  firebase.analytics().logEvent(eventName, formattedParams);
 };

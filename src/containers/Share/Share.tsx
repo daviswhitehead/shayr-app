@@ -14,7 +14,10 @@ import ShareModal from '../../components/ShareModal';
 import * as AnalyticsDefinitions from '../../lib/AnalyticsDefinitions';
 import { retrieveToken } from '../../lib/AppGroupTokens';
 import { logEvent, setCurrentScreen } from '../../lib/FirebaseAnalytics';
-import { getCurrentUser, getFBAuthCredential } from '../../lib/FirebaseLogin';
+import {
+  getFacebookAuthCredential,
+  signInWithCredential
+} from '../../lib/FirebaseLogin';
 import { queryTypes } from '../../lib/FirebaseQueries';
 import { authSubscription } from '../../redux/auth/actions';
 import { selectAuthUserId } from '../../redux/auth/selectors';
@@ -109,9 +112,9 @@ class Share extends Component<Props, OwnState> {
     try {
       const token = await retrieveToken('accessToken');
 
-      const credential = getFBAuthCredential(token);
+      const credential = getFacebookAuthCredential(token);
 
-      const currentUser = await getCurrentUser(credential);
+      const currentUser = await signInWithCredential(credential);
 
       const { type, value } = await ShareExtension.data();
       // const value =

@@ -32,6 +32,7 @@ interface OwnProps {
 interface OwnState {
   carouselActiveItem: number;
   viewedCarousel: boolean;
+  skipScreen: boolean;
 }
 
 type Props = OwnProps & StateProps & DispatchProps;
@@ -52,14 +53,15 @@ class Intro extends Component<Props, OwnState> {
   constructor(props: Props) {
     super(props);
 
-    if (this.props.onboarding.didViewIntro) {
-      this.props.navigation.navigate('Login');
-    }
-
     this.state = {
       carouselActiveItem: 0,
-      viewedCarousel: false
+      viewedCarousel: false,
+      skipScreen: this.props.onboarding.didViewIntro
     };
+
+    if (this.state.skipScreen) {
+      this.props.navigation.navigate('Login');
+    }
 
     this.carouselRef = React.createRef();
     this.data = [
@@ -85,13 +87,15 @@ class Intro extends Component<Props, OwnState> {
   }
 
   componentDidMount = () => {
-    logEvent(AnalyticsDefinitions.category.RENDER, {
-      [AnalyticsDefinitions.parameters.LABEL]:
-        AnalyticsDefinitions.label.INTRO_VIEW,
-      [AnalyticsDefinitions.parameters.RESULT]: this.data[
-        this.state.carouselActiveItem
-      ].title
-    });
+    if (!this.state.skipScreen) {
+      logEvent(AnalyticsDefinitions.category.RENDER, {
+        [AnalyticsDefinitions.parameters.LABEL]:
+          AnalyticsDefinitions.label.INTRO_VIEW,
+        [AnalyticsDefinitions.parameters.RESULT]: this.data[
+          this.state.carouselActiveItem
+        ].title
+      });
+    }
   };
 
   renderIntroCard = ({ item, index }: { item: any; index: number }) => {
