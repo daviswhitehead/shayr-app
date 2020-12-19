@@ -1,5 +1,6 @@
 import React, { ComponentProps, memo, SFC } from 'react';
 import { Text, View } from 'react-native';
+import * as AnalyticsDefinitions from '../../lib/AnalyticsDefinitions';
 import Icon from '../Icon';
 import Skeleton from '../Skeleton';
 import TouchableWrapper from '../TouchableWrapper';
@@ -35,6 +36,15 @@ const IconWithCount: SFC<Props> = ({
       style={_containerStyle}
       onPress={onPress}
       noTouching={noTouching}
+      eventName={AnalyticsDefinitions.category.ACTION}
+      eventParams={{
+        [AnalyticsDefinitions.parameters.LABEL]: name,
+        [AnalyticsDefinitions.parameters.TYPE]: AnalyticsDefinitions.type.PRESS,
+        [AnalyticsDefinitions.parameters.RESULT]: count,
+        [AnalyticsDefinitions.parameters.STATUS]: isActive
+          ? AnalyticsDefinitions.status.ACTIVE
+          : AnalyticsDefinitions.status.INACTIVE
+      }}
     >
       <Icon name={name} isActive={isActive} style={style} />
       <View style={styles.countBox}>

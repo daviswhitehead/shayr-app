@@ -14,7 +14,8 @@ const colors = {
   SHADOW: '#000',
   SKELETON: '#DADADA',
   WHITE: '#FFFFFF',
-  YELLOW: '#F2C94C'
+  YELLOW: '#F2C94C',
+  FACEBOOK: '#3b5998'
 };
 
 export default colors;

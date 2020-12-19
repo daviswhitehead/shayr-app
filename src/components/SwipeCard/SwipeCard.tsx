@@ -118,7 +118,9 @@ class SwipeCard extends PureComponent<Props, State> {
             leftDragDistance > 0 ? {} : { tintColor: 'transparent' }
           ]}
         />
-        {this.leftAction && <this.leftAction {...this.props.leftActionProps} />}
+        {this.leftAction && (
+          <this.leftAction {...this.props.leftActionProps} isSwipe />
+        )}
       </View>
     );
   };
@@ -155,7 +157,7 @@ class SwipeCard extends PureComponent<Props, State> {
           ]}
         />
         {this.rightAction && (
-          <this.rightAction {...this.props.rightActionProps} />
+          <this.rightAction {...this.props.rightActionProps} isSwipe />
         )}
       </View>
     );

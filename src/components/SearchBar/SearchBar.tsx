@@ -1,6 +1,8 @@
 import _ from 'lodash';
 import React, { PureComponent } from 'react';
 import { TextInput, TouchableOpacity, View } from 'react-native';
+import * as AnalyticsDefinitions from '../../lib/AnalyticsDefinitions';
+import { logEvent } from '../../lib/FirebaseAnalytics';
 import Colors from '../../styles/Colors';
 import Icon, { names } from '../Icon';
 import styles from './styles';
@@ -29,10 +31,18 @@ export default class SearchBar extends PureComponent<Props, State> {
     };
 
     this.textInputRef = React.createRef();
-    this.placeholderText = 'Search users by name...';
+    this.placeholderText = 'Search for users by name...';
   }
 
   handleBlur = () => {
+    logEvent(AnalyticsDefinitions.category.ACTION, {
+      [AnalyticsDefinitions.parameters.LABEL]:
+        AnalyticsDefinitions.label.TYPING,
+      [AnalyticsDefinitions.parameters.TARGET]:
+        AnalyticsDefinitions.target.SEARCH,
+      [AnalyticsDefinitions.parameters.STATUS]: AnalyticsDefinitions.status.STOP
+    });
+
     // reset to comment button if comment has no non-whitespace characters
     if (!/\S+/.test(this.state.text)) {
       this.setState({
@@ -54,7 +64,16 @@ export default class SearchBar extends PureComponent<Props, State> {
   };
 
   handleFocus = () => {
-    this.setState({ isEditing: true });
+    this.setState({ isEditing: true }, () => {
+      logEvent(AnalyticsDefinitions.category.ACTION, {
+        [AnalyticsDefinitions.parameters.LABEL]:
+          AnalyticsDefinitions.label.TYPING,
+        [AnalyticsDefinitions.parameters.TARGET]:
+          AnalyticsDefinitions.target.SEARCH,
+        [AnalyticsDefinitions.parameters.STATUS]:
+          AnalyticsDefinitions.status.START
+      });
+    });
   };
 
   onClearPress = () => {

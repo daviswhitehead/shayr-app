@@ -3,6 +3,8 @@ import _ from 'lodash';
 import React, { SFC } from 'react';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
+import * as AnalyticsDefinitions from '../../lib/AnalyticsDefinitions';
+import { logEvent } from '../../lib/FirebaseAnalytics';
 import { queryTypes } from '../../lib/FirebaseQueries';
 import { toggleAddDonePost } from '../../redux/adds/actions';
 import { selectAuthUserId } from '../../redux/auth/selectors';
@@ -25,6 +27,7 @@ interface OwnProps {
   postId: string;
   usersPostsAdds: Array<string>;
   usersPostsDones: Array<string>;
+  isSwipe: boolean;
 }
 
 type Props = OwnProps & StateProps & DispatchProps;
@@ -57,6 +60,7 @@ const withAdds = (WrappedComponent: SFC) => (props: Props) => {
     postId,
     usersPostsAdds,
     usersPostsDones,
+    isSwipe = false,
     ...passThroughProps
   } = props;
 
@@ -66,7 +70,15 @@ const withAdds = (WrappedComponent: SFC) => (props: Props) => {
   return (
     <WrappedComponent
       isActive={isAddsActive}
-      onPress={() =>
+      onPress={() => {
+        logEvent(AnalyticsDefinitions.category.ACTION, {
+          [AnalyticsDefinitions.parameters.LABEL]: isAddsActive
+            ? AnalyticsDefinitions.label.REMOVE_ADD
+            : AnalyticsDefinitions.label.ADD_TO_LIST,
+          [AnalyticsDefinitions.parameters.TYPE]: isSwipe
+            ? AnalyticsDefinitions.type.SWIPE
+            : AnalyticsDefinitions.type.PRESS
+        });
         toggleAddDonePost(
           'adds',
           isAddsActive,
@@ -75,8 +87,8 @@ const withAdds = (WrappedComponent: SFC) => (props: Props) => {
           authUserId,
           isDonesActive,
           _.keys(friends)
-        )
-      }
+        );
+      }}
       {...passThroughProps}
     />
   );

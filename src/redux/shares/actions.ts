@@ -7,7 +7,6 @@ import _ from 'lodash';
 import firebase from 'react-native-firebase';
 import { Dispatch } from 'redux';
 import { Toaster } from '../../components/Toaster';
-import { logEvent } from '../../lib/FirebaseAnalytics';
 import { ts } from '../../lib/FirebaseHelpers';
 import {
   getQuery,

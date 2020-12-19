@@ -16,6 +16,8 @@ import Loading from '../../components/Loading';
 import PostCard from '../../components/PostCard';
 import UserAvatarsScrollView from '../../components/UserAvatarsScrollView';
 import UserTextDate from '../../components/UserTextDate';
+import * as AnalyticsDefinitions from '../../lib/AnalyticsDefinitions';
+import { logEvent } from '../../lib/FirebaseAnalytics';
 import { getQuery, queryTypes } from '../../lib/FirebaseQueries';
 import { openURL } from '../../lib/LinkingHelpers';
 import { selectAuthUserId } from '../../redux/auth/selectors';
@@ -104,6 +106,13 @@ const mapStateToProps = (
     'presentation'
   );
 
+  const usersPost = selectDocumentFromId(
+    state,
+    'usersPosts',
+    `${ownerUserId}_${postId}`
+  );
+  const post = selectDocumentFromId(state, 'posts', `${postId}`);
+
   return {
     authUserId,
     authUser,
@@ -120,8 +129,12 @@ const mapStateToProps = (
     ownerUserId,
     postId,
     post:
-      selectDocumentFromId(state, 'usersPosts', `${ownerUserId}_${postId}`) ||
-      selectDocumentFromId(state, 'posts', `${postId}`),
+      usersPost || post
+        ? {
+            ...(usersPost || {}),
+            ...(post || {})
+          }
+        : undefined,
     users: {
       [authUserId]: authUser,
       ...authFriends,
@@ -201,6 +214,12 @@ class PostDetail extends Component<Props, OwnState> {
       this.props.post
     ) {
       this.setState({ isLoading: false });
+      logEvent(AnalyticsDefinitions.category.STATE, {
+        [AnalyticsDefinitions.parameters.LABEL]:
+          AnalyticsDefinitions.label.SCREEN_LOADING,
+        [AnalyticsDefinitions.parameters.STATUS]:
+          AnalyticsDefinitions.status.SUCCESS
+      });
     }
   };
 
@@ -213,6 +232,12 @@ class PostDetail extends Component<Props, OwnState> {
       this.props.commentsMeta.isLoaded
     ) {
       this.setState({ isCommentsLoading: false });
+      logEvent(AnalyticsDefinitions.category.STATE, {
+        [AnalyticsDefinitions.parameters.LABEL]:
+          AnalyticsDefinitions.label.COMMENTS_LOADING,
+        [AnalyticsDefinitions.parameters.STATUS]:
+          AnalyticsDefinitions.status.SUCCESS
+      });
     }
   };
 
@@ -287,7 +312,15 @@ class PostDetail extends Component<Props, OwnState> {
           onPressParameters={
             this.state.isLoading ? undefined : this.props.post.url
           }
-          onPress={openURL}
+          onPress={(url) => {
+            logEvent(AnalyticsDefinitions.category.ACTION, {
+              [AnalyticsDefinitions.parameters.LABEL]:
+                AnalyticsDefinitions.label.POST_CARD,
+              [AnalyticsDefinitions.parameters.TYPE]:
+                AnalyticsDefinitions.type.PRESS
+            });
+            openURL(url);
+          }}
           noUser
         />
         {this.state.isLoading ? (
@@ -406,6 +439,12 @@ class PostDetail extends Component<Props, OwnState> {
     if (!this.props.commentsMeta) {
       return;
     }
+    logEvent(AnalyticsDefinitions.category.ACTION, {
+      [AnalyticsDefinitions.parameters.LABEL]:
+        AnalyticsDefinitions.label.PAGINATION,
+      [AnalyticsDefinitions.parameters.STATUS]:
+        AnalyticsDefinitions.status.START
+    });
     return this.props.loadCommentsForUsersPosts(
       generateListKey(
         this.props.ownerUserId,
@@ -426,6 +465,12 @@ class PostDetail extends Component<Props, OwnState> {
     if (!this.props.commentsMeta) {
       return;
     }
+    logEvent(AnalyticsDefinitions.category.ACTION, {
+      [AnalyticsDefinitions.parameters.LABEL]:
+        AnalyticsDefinitions.label.REFRESH,
+      [AnalyticsDefinitions.parameters.STATUS]:
+        AnalyticsDefinitions.status.START
+    });
     return this.props.loadCommentsForUsersPosts(
       generateListKey(
         this.props.ownerUserId,
@@ -443,12 +488,6 @@ class PostDetail extends Component<Props, OwnState> {
   };
 
   render() {
-    console.log(`PostDetail - Render`);
-    console.log('this.props');
-    console.log(this.props);
-    console.log('this.state');
-    console.log(this.state);
-
     return (
       <View style={styles.screen}>
         {this.props.isFocused ? (

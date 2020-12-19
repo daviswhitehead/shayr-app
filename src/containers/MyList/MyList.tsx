@@ -24,6 +24,8 @@ import withAdds from '../../higherOrderComponents/withAdds';
 import withComments from '../../higherOrderComponents/withComments';
 import withDones from '../../higherOrderComponents/withDones';
 import withShares from '../../higherOrderComponents/withShares';
+import * as AnalyticsDefinitions from '../../lib/AnalyticsDefinitions';
+import { logEvent } from '../../lib/FirebaseAnalytics';
 import { getQuery, queryTypes } from '../../lib/FirebaseQueries';
 import { sendFeedbackEmail } from '../../lib/SharingHelpers';
 import { startSignOut } from '../../redux/auth/actions';
@@ -281,6 +283,11 @@ class MyList extends Component<Props, OwnState> {
   constructor(props: Props) {
     super(props);
     const startingIndex = this.props.authIsOwner ? 1 : 0;
+    logEvent(AnalyticsDefinitions.category.RENDER, {
+      [AnalyticsDefinitions.parameters.LABEL]: this.mapIndexToEventName(
+        startingIndex
+      )
+    });
 
     this.state = {
       isProfileLoading: true,
@@ -433,6 +440,12 @@ class MyList extends Component<Props, OwnState> {
           [this.state.activeView]: true
         }
       }));
+      logEvent(AnalyticsDefinitions.category.STATE, {
+        [AnalyticsDefinitions.parameters.LABEL]:
+          AnalyticsDefinitions.label.SCREEN_LOADING,
+        [AnalyticsDefinitions.parameters.STATUS]:
+          AnalyticsDefinitions.status.SUCCESS
+      });
     }
   };
 
@@ -451,16 +464,35 @@ class MyList extends Component<Props, OwnState> {
     return map[index];
   };
 
+  mapIndexToEventName = (index: number) => {
+    const map = [
+      AnalyticsDefinitions.label.SHARES_LIST,
+      AnalyticsDefinitions.label.ADDS_LIST,
+      AnalyticsDefinitions.label.DONES_LIST,
+      AnalyticsDefinitions.label.COMMENTS_LIST
+    ];
+    return map[index];
+  };
+
   mapViewToAction = (view: string) => {
     return _.invert(this.props.usersPostsListsViews)[view];
   };
 
   onSegmentedControlChange = (index: number) => {
-    this.setState((previousState) => ({
-      ...previousState,
-      selectedIndex: index,
-      activeView: this.mapIndexToView(index)
-    }));
+    this.setState(
+      (previousState) => ({
+        ...previousState,
+        selectedIndex: index,
+        activeView: this.mapIndexToView(index)
+      }),
+      () => {
+        logEvent(AnalyticsDefinitions.category.RENDER, {
+          [AnalyticsDefinitions.parameters.LABEL]: this.mapIndexToEventName(
+            index
+          )
+        });
+      }
+    );
   };
 
   onItemPress = ({
@@ -470,6 +502,11 @@ class MyList extends Component<Props, OwnState> {
     ownerUserId: string;
     postId: string;
   }) => {
+    logEvent(AnalyticsDefinitions.category.ACTION, {
+      [AnalyticsDefinitions.parameters.LABEL]:
+        AnalyticsDefinitions.label.POST_CARD,
+      [AnalyticsDefinitions.parameters.TYPE]: AnalyticsDefinitions.type.PRESS
+    });
     this.props.navigation.navigate({
       routeName: 'PostDetail',
       params: {
@@ -557,6 +594,12 @@ class MyList extends Component<Props, OwnState> {
     if (!this.props.usersPostsListsMeta[this.state.activeView]) {
       return;
     }
+    logEvent(AnalyticsDefinitions.category.ACTION, {
+      [AnalyticsDefinitions.parameters.LABEL]:
+        AnalyticsDefinitions.label.PAGINATION,
+      [AnalyticsDefinitions.parameters.STATUS]:
+        AnalyticsDefinitions.status.START
+    });
     return this.props.loadUsersPosts(
       this.state.activeView,
       this.props.usersPostsListsQueries[this.state.activeView],
@@ -570,6 +613,12 @@ class MyList extends Component<Props, OwnState> {
     if (!this.props.usersPostsListsMeta[this.state.activeView]) {
       return;
     }
+    logEvent(AnalyticsDefinitions.category.ACTION, {
+      [AnalyticsDefinitions.parameters.LABEL]:
+        AnalyticsDefinitions.label.REFRESH,
+      [AnalyticsDefinitions.parameters.STATUS]:
+        AnalyticsDefinitions.status.START
+    });
     return this.props.loadUsersPosts(
       this.state.activeView,
       this.props.usersPostsListsQueries[this.state.activeView],
@@ -622,9 +671,28 @@ class MyList extends Component<Props, OwnState> {
                     [
                       {
                         text: 'Cancel',
+                        onPress: () => {
+                          logEvent(AnalyticsDefinitions.category.ACTION, {
+                            [AnalyticsDefinitions.parameters.LABEL]:
+                              AnalyticsDefinitions.label.SIGN_OUT,
+                            [AnalyticsDefinitions.parameters.STATUS]:
+                              AnalyticsDefinitions.status.CANCEL
+                          });
+                        },
                         style: 'cancel'
                       },
-                      { text: 'Yes', onPress: this.props.startSignOut }
+                      {
+                        text: 'Yes',
+                        onPress: () => {
+                          logEvent(AnalyticsDefinitions.category.ACTION, {
+                            [AnalyticsDefinitions.parameters.LABEL]:
+                              AnalyticsDefinitions.label.SIGN_OUT,
+                            [AnalyticsDefinitions.parameters.STATUS]:
+                              AnalyticsDefinitions.status.START
+                          });
+                          this.props.startSignOut();
+                        }
+                      }
                     ]
                   )
                 }

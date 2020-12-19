@@ -4,12 +4,14 @@ import React, { Component } from 'react';
 import { Linking, View } from 'react-native';
 import firebase from 'react-native-firebase';
 import { Query } from 'react-native-firebase/firestore';
-import { NavigationScreenProps } from 'react-navigation';
 import { withNavigationFocus } from 'react-navigation';
+import { NavigationScreenProps } from 'react-navigation';
 import { connect } from 'react-redux';
 import Header from '../../components/Header';
 import List from '../../components/List';
 import UserTextDate from '../../components/UserTextDate';
+import * as AnalyticsDefinitions from '../../lib/AnalyticsDefinitions';
+import { logEvent } from '../../lib/FirebaseAnalytics';
 import { getQuery, queryTypes } from '../../lib/FirebaseQueries';
 import { selectAuthUserId } from '../../redux/auth/selectors';
 import { selectFlatListReadyDocuments } from '../../redux/documents/selectors';
@@ -194,6 +196,12 @@ class Notifications extends Component<Props, OwnState> {
       this.props.notificationsMeta.isLoaded
     ) {
       this.setState({ isLoading: false });
+      logEvent(AnalyticsDefinitions.category.STATE, {
+        [AnalyticsDefinitions.parameters.LABEL]:
+          AnalyticsDefinitions.label.SCREEN_LOADING,
+        [AnalyticsDefinitions.parameters.STATUS]:
+          AnalyticsDefinitions.status.SUCCESS
+      });
     }
   };
 
@@ -229,6 +237,11 @@ class Notifications extends Component<Props, OwnState> {
 
   onItemPress = (item: Notification) => {
     this.props.markNotificationAsPressed(item._id);
+    logEvent(AnalyticsDefinitions.category.ACTION, {
+      [AnalyticsDefinitions.parameters.LABEL]:
+        AnalyticsDefinitions.label.NOTIFICATION_CARD,
+      [AnalyticsDefinitions.parameters.TYPE]: AnalyticsDefinitions.type.PRESS
+    });
     Linking.openURL(item.message.data.appLink);
   };
 
@@ -275,6 +288,12 @@ class Notifications extends Component<Props, OwnState> {
     if (!this.props.notificationsMeta) {
       return;
     }
+    logEvent(AnalyticsDefinitions.category.ACTION, {
+      [AnalyticsDefinitions.parameters.LABEL]:
+        AnalyticsDefinitions.label.PAGINATION,
+      [AnalyticsDefinitions.parameters.STATUS]:
+        AnalyticsDefinitions.status.START
+    });
     this.subscriptions.push(
       this.props.loadNotifications(
         this.props.notificationsListKey,
@@ -290,6 +309,12 @@ class Notifications extends Component<Props, OwnState> {
     if (!this.props.notificationsMeta) {
       return;
     }
+    logEvent(AnalyticsDefinitions.category.ACTION, {
+      [AnalyticsDefinitions.parameters.LABEL]:
+        AnalyticsDefinitions.label.REFRESH,
+      [AnalyticsDefinitions.parameters.STATUS]:
+        AnalyticsDefinitions.status.START
+    });
     this.subscriptions.push(
       this.props.loadNotifications(
         this.props.notificationsListKey,

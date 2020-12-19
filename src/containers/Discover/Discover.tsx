@@ -11,11 +11,7 @@ import List from '../../components/List';
 import PostCard from '../../components/PostCard';
 import SwipeCard from '../../components/SwipeCard';
 import withAdds from '../../higherOrderComponents/withAdds';
-import {
-  countLabels,
-  eventNames,
-  eventParamaters
-} from '../../lib/AnalyticsDefinitions';
+import * as AnalyticsDefinitions from '../../lib/AnalyticsDefinitions';
 import { logEvent, setUserProperties } from '../../lib/FirebaseAnalytics';
 import { getQuery, queryTypes } from '../../lib/FirebaseQueries';
 import { selectAuthUserId } from '../../redux/auth/selectors';
@@ -229,7 +225,7 @@ class Discover extends PureComponent<Props, OwnState> {
   componentDidUpdate(prevProps: Props) {
     this.checkLoading();
     this.checkOnboardingLoading();
-    // this.setUserPropertiesForAnalytics();
+    this.setUserPropertiesForAnalytics();
   }
 
   componentWillUnmount() {
@@ -249,12 +245,28 @@ class Discover extends PureComponent<Props, OwnState> {
       ].isLoaded
     ) {
       this.setState({ isLoading: false });
+      logEvent(AnalyticsDefinitions.category.STATE, {
+        [AnalyticsDefinitions.parameters.LABEL]:
+          AnalyticsDefinitions.label.SCREEN_LOADING,
+        [AnalyticsDefinitions.parameters.STATUS]:
+          AnalyticsDefinitions.status.SUCCESS
+      });
     }
   };
 
   checkOnboardingLoading = () => {
-    if (this.props.onboardingPost && !_.isEmpty(this.props.onboardingPost)) {
+    if (
+      this.state.isLoadingOnboardingPost &&
+      this.props.onboardingPost &&
+      !_.isEmpty(this.props.onboardingPost)
+    ) {
       this.setState({ isLoadingOnboardingPost: false });
+      logEvent(AnalyticsDefinitions.category.STATE, {
+        [AnalyticsDefinitions.parameters.LABEL]:
+          AnalyticsDefinitions.label.ONBOARDING_LOADING,
+        [AnalyticsDefinitions.parameters.STATUS]:
+          AnalyticsDefinitions.status.SUCCESS
+      });
     }
   };
 
@@ -263,13 +275,23 @@ class Discover extends PureComponent<Props, OwnState> {
       this.setState({ hasSetUserProperties: true }, () => {
         const authUserProperties = _.pick(
           this.props.authUserProfile,
-          _.values(countLabels)
+          _.values([
+            'addsCount',
+            'commentsCount',
+            'donesCount',
+            'friendsCount',
+            'likesCount',
+            'mentionsCount',
+            'sharesCount',
+            'unreadNotificationsCount'
+          ])
         );
         setUserProperties(authUserProperties);
-        logEvent(eventNames.FRIENDS_COUNT, {
-          [eventParamaters.COUNT]:
-            authUserProperties[countLabels.FRIENDS_COUNT],
-          [eventParamaters.COUNT_LABEL]: countLabels.FRIENDS_COUNT
+        logEvent(AnalyticsDefinitions.category.VALUE, {
+          [AnalyticsDefinitions.parameters.LABEL]:
+            AnalyticsDefinitions.label.FRIENDS_COUNT,
+          [AnalyticsDefinitions.parameters.RESULT]:
+            authUserProperties.friendsCount || 0
         });
       });
     }
@@ -279,6 +301,12 @@ class Discover extends PureComponent<Props, OwnState> {
     if (!this.props.usersPostsListsMeta) {
       return;
     }
+    logEvent(AnalyticsDefinitions.category.ACTION, {
+      [AnalyticsDefinitions.parameters.LABEL]:
+        AnalyticsDefinitions.label.PAGINATION,
+      [AnalyticsDefinitions.parameters.STATUS]:
+        AnalyticsDefinitions.status.START
+    });
     return this.props.loadUsersPosts(
       generateListKey(this.props.authUserId, queryTypes.USERS_POSTS_ALL),
       getQuery(queryTypes.USERS_POSTS_ALL)!(this.props.authUserId),
@@ -296,6 +324,12 @@ class Discover extends PureComponent<Props, OwnState> {
     if (!this.props.usersPostsListsMeta) {
       return;
     }
+    logEvent(AnalyticsDefinitions.category.ACTION, {
+      [AnalyticsDefinitions.parameters.LABEL]:
+        AnalyticsDefinitions.label.REFRESH,
+      [AnalyticsDefinitions.parameters.STATUS]:
+        AnalyticsDefinitions.status.START
+    });
     return this.props.loadUsersPosts(
       generateListKey(this.props.authUserId, queryTypes.USERS_POSTS_ALL),
       getQuery(queryTypes.USERS_POSTS_ALL)!(this.props.authUserId),
@@ -316,6 +350,11 @@ class Discover extends PureComponent<Props, OwnState> {
     ownerUserId: string;
     postId: string;
   }) => {
+    logEvent(AnalyticsDefinitions.category.ACTION, {
+      [AnalyticsDefinitions.parameters.LABEL]:
+        AnalyticsDefinitions.label.POST_CARD,
+      [AnalyticsDefinitions.parameters.TYPE]: AnalyticsDefinitions.type.PRESS
+    });
     this.props.navigation.navigate({
       routeName: 'PostDetail',
       params: {
@@ -378,9 +417,9 @@ class Discover extends PureComponent<Props, OwnState> {
                   : names.BELL
               }
               hasBadge={this.props.unreadNotificationsCount > 0}
-              onPress={() =>
-                this.props.navigation.navigate('Notifications', {})
-              }
+              onPress={() => {
+                this.props.navigation.navigate('Notifications', {});
+              }}
             />
           }
         />

@@ -5,6 +5,8 @@ import { View } from 'react-native';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import ShareModal from '../../components/ShareModal';
+import * as AnalyticsDefinitions from '../../lib/AnalyticsDefinitions';
+import { logEvent } from '../../lib/FirebaseAnalytics';
 import { queryTypes } from '../../lib/FirebaseQueries';
 import { selectAuthUserId } from '../../redux/auth/selectors';
 import { generateListKey } from '../../redux/lists/helpers';
@@ -24,6 +26,7 @@ interface OwnProps {
   url: string;
   usersPostsId: string;
   usersPostsShares: Array<string>;
+  isSwipe: boolean;
 }
 
 type Props = OwnProps & StateProps;
@@ -59,6 +62,7 @@ const withShares = (WrappedComponent: SFC) => {
         url,
         usersPostsId,
         usersPostsShares,
+        isSwipe = false,
         ...passThroughProps
       } = this.props;
 
@@ -68,7 +72,20 @@ const withShares = (WrappedComponent: SFC) => {
         <View>
           <WrappedComponent
             isActive={isSharesActive}
-            onPress={() => this.modalRef.current.toggleModal()}
+            onPress={() => {
+              logEvent(AnalyticsDefinitions.category.ACTION, {
+                [AnalyticsDefinitions.parameters.LABEL]:
+                  AnalyticsDefinitions.label.SHAYR,
+                [AnalyticsDefinitions.parameters.TYPE]: isSwipe
+                  ? AnalyticsDefinitions.type.SWIPE
+                  : AnalyticsDefinitions.type.PRESS,
+                [AnalyticsDefinitions.parameters.STATUS]:
+                  AnalyticsDefinitions.status.LAUNCHED,
+                [AnalyticsDefinitions.parameters.TARGET]:
+                  AnalyticsDefinitions.target.APP
+              });
+              this.modalRef.current.toggleModal();
+            }}
             {...passThroughProps}
           />
           <ShareModal
