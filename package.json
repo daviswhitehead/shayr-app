@@ -55,7 +55,7 @@
     "plist": "^3.0.1",
     "re-reselect": "^3.2.0",
     "react": "^16.6.6",
-    "react-native": "0.60.4",
+    "react-native": "0.62.3",
     "react-native-action-button": "^2.8.4",
     "react-native-code-push": "^5.6.0",
     "react-native-config": "0.11.7",
