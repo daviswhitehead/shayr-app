@@ -52,7 +52,7 @@
     "jetifier": "^1.6.3",
     "lodash": "^4.17.5",
     "moment": "^2.24.0",
-    "plist": "^3.0.1",
+    "plist": "^3.0.4",
     "re-reselect": "^3.2.0",
     "react": "^16.6.6",
     "react-native": "0.60.4",
