@@ -77,6 +77,9 @@
     "react-native-swipeable": "^0.6.0",
     "react-native-swiss-knife": "0.0.5",
     "react-native-vector-icons": "^4.5.0",
+    "react-native-webview": "^7.4.2",
+    "react-native-webview-autoheight": "^1.0.6",
+    "react-native-webview-readability": "^0.1.9",
     "react-navigation": "^3.11.1",
     "react-navigation-tabs": "^2.3.0",
     "react-redux": "^7.1.0",
@@ -85,6 +88,7 @@
     "redux-subscriber": "^1.1.0",
     "redux-thunk": "^2.3.0",
     "reselect": "^4.0.0",
+    "rn-fetch-blob": "^0.11.2",
     "urijs": "^1.19.1",
     "xcode": "^2.0.0"
   },

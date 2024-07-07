@@ -4,7 +4,7 @@ rm -rf node_modules/ && yarn
 
 # fix any pods issues
 cd ./ios
-rm -rf Pods/ && pod update
+rm -rf Pods/ && pod update && pod install
 cd ..
 
 # clear out builds

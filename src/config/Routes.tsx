@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import React from 'react';
 import {
   createAppContainer,
@@ -14,6 +15,7 @@ import Login from '../containers/Login';
 import MyList from '../containers/MyList';
 import Notifications from '../containers/Notifications';
 import PostDetail from '../containers/PostDetail';
+import Readability from '../containers/Readability';
 import { IconWithFriendCount } from '../higherOrderComponents/withFriendCount';
 import { getActiveRouteName } from '../lib/ReactNavigationHelpers';
 import Colors from '../styles/Colors';
@@ -28,6 +30,9 @@ const sharedRoutes = {
   },
   PostDetail: {
     screen: PostDetail
+  },
+  Readability: {
+    screen: Readability
   }
 };
 
@@ -49,7 +54,7 @@ const DiscoverStack = createStackNavigator(
 
       let tabBarVisible = true;
 
-      if (activeRoute === 'PostDetail') {
+      if (_.includes(['PostDetail', 'Readability'], activeRoute)) {
         tabBarVisible = false;
       }
 

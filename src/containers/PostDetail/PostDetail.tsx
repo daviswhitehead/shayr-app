@@ -310,16 +310,25 @@ class PostDetail extends Component<Props, OwnState> {
           isLoading={this.state.isLoading}
           post={this.props.post}
           onPressParameters={
-            this.state.isLoading ? undefined : this.props.post.url
+            this.state.isLoading
+              ? undefined
+              : { url: this.props.post.url, id: this.props.post.postId }
           }
-          onPress={(url) => {
+          onPress={(params) => {
             logEvent(AnalyticsDefinitions.category.ACTION, {
               [AnalyticsDefinitions.parameters.LABEL]:
                 AnalyticsDefinitions.label.POST_CARD,
               [AnalyticsDefinitions.parameters.TYPE]:
                 AnalyticsDefinitions.type.PRESS
             });
-            openURL(url);
+            // openURL(url);
+            this.props.navigation.navigate({
+              routeName: 'Readability',
+              params: {
+                id: params.id,
+                url: params.url
+              }
+            });
           }}
           noUser
         />
