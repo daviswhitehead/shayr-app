@@ -1,5 +1,6 @@
 import React, { memo, SFC } from 'react';
 import { Text, View } from 'react-native';
+import * as AnalyticsDefinitions from '../../lib/AnalyticsDefinitions';
 import Skeleton from '../Skeleton';
 import TouchableWrapper from '../TouchableWrapper';
 import UserImage from '../UserImage';
@@ -61,6 +62,15 @@ const UserAvatar: SFC<Props> = ({
       style={_containerStyle}
       onPress={onPress}
       noTouching={noTouching}
+      eventName={AnalyticsDefinitions.category.ACTION}
+      eventParams={{
+        [AnalyticsDefinitions.parameters.LABEL]:
+          AnalyticsDefinitions.label.USER_AVATAR,
+        [AnalyticsDefinitions.parameters.TYPE]: AnalyticsDefinitions.type.PRESS,
+        [AnalyticsDefinitions.parameters.STATUS]: isSelected
+          ? AnalyticsDefinitions.status.ACTIVE
+          : AnalyticsDefinitions.status.INACTIVE
+      }}
     >
       <UserImage uri={facebookProfilePhoto} size='small' />
       {shouldHideName ? null : (

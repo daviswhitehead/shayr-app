@@ -1,5 +1,6 @@
 import React, { ComponentProps, memo, SFC } from 'react';
 import { Image, View } from 'react-native';
+import * as AnalyticsDefinitions from '../../lib/AnalyticsDefinitions';
 import colors from '../../styles/Colors';
 import Skeleton from '../Skeleton';
 import TouchableWrapper from '../TouchableWrapper';
@@ -38,6 +39,12 @@ const UserImage: SFC<Props> = ({
       onPress={onPress}
       style={_containerStyle}
       noTouching={noTouching}
+      eventName={AnalyticsDefinitions.category.ACTION}
+      eventParams={{
+        [AnalyticsDefinitions.parameters.LABEL]:
+          AnalyticsDefinitions.label.USER_AVATAR,
+        [AnalyticsDefinitions.parameters.TYPE]: AnalyticsDefinitions.type.PRESS
+      }}
     >
       {!!uri ? (
         <Image style={styles[size]} source={{ uri }} />

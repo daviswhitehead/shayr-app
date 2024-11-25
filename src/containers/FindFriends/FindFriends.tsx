@@ -13,6 +13,8 @@ import ActionRow from '../../components/ActionRow';
 import FriendRequestRow from '../../components/FriendRequestRow';
 import { names } from '../../components/Icon';
 import SearchHeader from '../../components/SearchHeader';
+import * as AnalyticsDefinitions from '../../lib/AnalyticsDefinitions';
+import { ComingSoonAlert } from '../../lib/ComingSoonAlert';
 import { logEvent } from '../../lib/FirebaseAnalytics';
 import { queryTypes } from '../../lib/FirebaseQueries';
 import { sendShayrDownloadInvite } from '../../lib/SharingHelpers';
@@ -44,7 +46,14 @@ const SUGGESTED_FRIENDS_SECTION_DATA = [
     type: 'action',
     iconName: names.FACEBOOK,
     copy: 'Find friends from Facebook already on Shayr!',
-    onPress: () => logEvent('FIND_FRIENDS_FACEBOOK_CONNECT_PRESSED')
+    onPress: () => {
+      logEvent(AnalyticsDefinitions.category.ACTION, {
+        [AnalyticsDefinitions.parameters.LABEL]:
+          AnalyticsDefinitions.label.SUGGESTED_FRIENDS_FACEBOOK_CONNECT,
+        [AnalyticsDefinitions.parameters.TYPE]: AnalyticsDefinitions.type.PRESS
+      });
+      ComingSoonAlert();
+    }
   }
 ];
 

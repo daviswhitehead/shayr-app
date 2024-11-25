@@ -120,8 +120,6 @@ export const markNotificationAsPressed = (notificationId: string) => async (
     type: types.MARK_NOTIFICATION_AS_PRESSED_START
   });
 
-  logEvent(types.MARK_NOTIFICATION_AS_PRESSED_START);
-
   try {
     const batcher = new Batcher(firebase.firestore());
 
@@ -171,8 +169,6 @@ export const markNotificationsAsRead = (
   dispatch({
     type: types.MARK_NOTIFICATION_AS_READ_START
   });
-
-  logEvent(types.MARK_NOTIFICATION_AS_READ_START);
 
   try {
     const batcher = new Batcher(firebase.firestore());

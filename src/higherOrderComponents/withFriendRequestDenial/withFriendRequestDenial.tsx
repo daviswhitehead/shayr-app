@@ -3,6 +3,8 @@ import _ from 'lodash';
 import React, { SFC } from 'react';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
+import * as AnalyticsDefinitions from '../../lib/AnalyticsDefinitions';
+import { logEvent } from '../../lib/FirebaseAnalytics';
 import { queryTypes } from '../../lib/FirebaseQueries';
 import { selectAuthUserId } from '../../redux/auth/selectors';
 import { updateFriendship } from '../../redux/friendships/actions';
@@ -89,14 +91,29 @@ const withFriendRequestDenial = (WrappedComponent: SFC) => (props: Props) => {
   if (authUserId === userId) {
     onFriendshipStatusPress = undefined;
   } else if (friendshipStatus === 'is-friends') {
-    onFriendshipStatusPress = () =>
+    onFriendshipStatusPress = () => {
+      logEvent(AnalyticsDefinitions.category.ACTION, {
+        [AnalyticsDefinitions.parameters.LABEL]:
+          AnalyticsDefinitions.label.REMOVE_A_FRIEND
+      });
       updateFriendship(friendshipIdOrder[0], friendshipIdOrder[1], 'removed');
+    };
   } else if (friendshipStatus === 'can-accept-request') {
-    onFriendshipStatusPress = () =>
+    onFriendshipStatusPress = () => {
+      logEvent(AnalyticsDefinitions.category.ACTION, {
+        [AnalyticsDefinitions.parameters.LABEL]:
+          AnalyticsDefinitions.label.REJECT_FRIEND_REQUEST
+      });
       updateFriendship(friendshipIdOrder[0], friendshipIdOrder[1], 'rejected');
+    };
   } else if (friendshipStatus === 'needs-recipient-acceptance') {
-    onFriendshipStatusPress = () =>
+    onFriendshipStatusPress = () => {
+      logEvent(AnalyticsDefinitions.category.ACTION, {
+        [AnalyticsDefinitions.parameters.LABEL]:
+          AnalyticsDefinitions.label.DELETE_FRIEND_REQUEST
+      });
       updateFriendship(friendshipIdOrder[0], friendshipIdOrder[1], 'deleted');
+    };
   } else if (friendshipStatus === 'can-send-friend-request') {
     onFriendshipStatusPress = undefined;
   }

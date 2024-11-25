@@ -5,6 +5,8 @@ import { View } from 'react-native';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import CommentModal from '../../components/CommentModal';
+import * as AnalyticsDefinitions from '../../lib/AnalyticsDefinitions';
+import { logEvent } from '../../lib/FirebaseAnalytics';
 import { queryTypes } from '../../lib/FirebaseQueries';
 import { selectAuthUserId } from '../../redux/auth/selectors';
 import { createComment } from '../../redux/comments/actions';
@@ -27,6 +29,7 @@ interface OwnProps {
   ownerUserId: string;
   postId: string;
   usersPostsComments: Array<string>;
+  isSwipe: boolean;
 }
 
 type Props = OwnProps & StateProps & DispatchProps;
@@ -58,6 +61,15 @@ const withComments = (WrappedComponent: SFC) => {
     }
 
     onSubmit = (comment: string) => {
+      logEvent(AnalyticsDefinitions.category.ACTION, {
+        [AnalyticsDefinitions.parameters.LABEL]:
+          AnalyticsDefinitions.label.COMMENT,
+        [AnalyticsDefinitions.parameters.TYPE]: this.props.isSwipe
+          ? AnalyticsDefinitions.type.SWIPE
+          : AnalyticsDefinitions.type.PRESS,
+        [AnalyticsDefinitions.parameters.STATUS]:
+          AnalyticsDefinitions.status.SUCCESS
+      });
       this.props.createComment(
         this.props.postId,
         comment,
@@ -76,6 +88,7 @@ const withComments = (WrappedComponent: SFC) => {
         ownerUserId,
         postId,
         usersPostsComments,
+        isSwipe = false,
         ...passThroughProps
       } = this.props;
 
@@ -85,7 +98,18 @@ const withComments = (WrappedComponent: SFC) => {
         <View>
           <WrappedComponent
             isActive={isActive}
-            onPress={() => this.modalRef.current.toggleModal()}
+            onPress={() => {
+              logEvent(AnalyticsDefinitions.category.ACTION, {
+                [AnalyticsDefinitions.parameters.LABEL]:
+                  AnalyticsDefinitions.label.COMMENT,
+                [AnalyticsDefinitions.parameters.TYPE]: isSwipe
+                  ? AnalyticsDefinitions.type.SWIPE
+                  : AnalyticsDefinitions.type.PRESS,
+                [AnalyticsDefinitions.parameters.STATUS]:
+                  AnalyticsDefinitions.status.START
+              });
+              this.modalRef.current.toggleModal();
+            }}
             {...passThroughProps}
           />
           <CommentModal

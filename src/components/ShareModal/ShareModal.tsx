@@ -18,11 +18,7 @@ import {
 } from 'react-native';
 import Modal from 'react-native-modal';
 import { connect } from 'react-redux';
-import {
-  countLabels,
-  eventNames,
-  eventParamaters
-} from '../../lib/AnalyticsDefinitions';
+import * as AnalyticsDefinitions from '../../lib/AnalyticsDefinitions';
 import { logEvent } from '../../lib/FirebaseAnalytics';
 import { sendShayrPostInvite } from '../../lib/SharingHelpers';
 import { selectDocumentFromId } from '../../redux/documents/selectors';
@@ -76,6 +72,7 @@ interface OwnProps {
   hideBackdrop?: boolean;
   isLoading?: boolean;
   showInvite?: boolean;
+  fromShareExtension?: boolean;
 }
 
 type Props = OwnProps & StateProps & DispatchProps;
@@ -164,8 +161,6 @@ class ShareModal extends React.Component<Props, OwnState> {
       );
     }
 
-    logEvent(eventNames.START_SHARE);
-
     // trigger an error in 15 sec if there's no post
     setTimeout(() => {
       if ((!this.state.shareId || !this.state.post) && this.state.isVisible) {
@@ -216,7 +211,14 @@ class ShareModal extends React.Component<Props, OwnState> {
   };
 
   onCancelPress = () => {
-    logEvent(eventNames.CANCEL_SHARE);
+    logEvent(AnalyticsDefinitions.category.ACTION, {
+      [AnalyticsDefinitions.parameters.LABEL]: AnalyticsDefinitions.label.SHAYR,
+      [AnalyticsDefinitions.parameters.STATUS]:
+        AnalyticsDefinitions.status.CANCEL,
+      [AnalyticsDefinitions.parameters.TARGET]: this.props.fromShareExtension
+        ? AnalyticsDefinitions.target.SHARE_EXTENSION
+        : AnalyticsDefinitions.target.APP
+    });
     this.toggleModal();
   };
 
@@ -244,8 +246,11 @@ class ShareModal extends React.Component<Props, OwnState> {
           selectedAllUsers: false
         },
         () => {
-          logEvent(eventNames.TOGGLE_FRIEND, {
-            [eventParamaters.IS_ACTIVE]: 'false'
+          logEvent(AnalyticsDefinitions.category.ACTION, {
+            [AnalyticsDefinitions.parameters.LABEL]:
+              AnalyticsDefinitions.label.TOGGLE_FRIEND,
+            [AnalyticsDefinitions.parameters.STATUS]:
+              AnalyticsDefinitions.status.INACTIVE
           });
         }
       );
@@ -256,8 +261,11 @@ class ShareModal extends React.Component<Props, OwnState> {
           selectedAllUsers: false
         },
         () => {
-          logEvent(eventNames.TOGGLE_FRIEND, {
-            [eventParamaters.IS_ACTIVE]: 'true'
+          logEvent(AnalyticsDefinitions.category.ACTION, {
+            [AnalyticsDefinitions.parameters.LABEL]:
+              AnalyticsDefinitions.label.TOGGLE_FRIEND,
+            [AnalyticsDefinitions.parameters.STATUS]:
+              AnalyticsDefinitions.status.ACTIVE
           });
         }
       );
@@ -265,10 +273,12 @@ class ShareModal extends React.Component<Props, OwnState> {
   };
 
   toggleSelectedAllUsers = () => {
-    logEvent(eventNames.TOGGLE_ALL_FRIENDS, {
-      [eventParamaters.IS_ACTIVE]: !this.state.selectedAllUsers
-        ? 'true'
-        : 'false'
+    logEvent(AnalyticsDefinitions.category.ACTION, {
+      [AnalyticsDefinitions.parameters.LABEL]:
+        AnalyticsDefinitions.label.TOGGLE_ALL_FRIENDS,
+      [AnalyticsDefinitions.parameters.STATUS]: !this.state.selectedAllUsers
+        ? AnalyticsDefinitions.status.ACTIVE
+        : AnalyticsDefinitions.status.INACTIVE
     });
     this.setState({
       selectedAllUsers: !this.state.selectedAllUsers,
@@ -277,7 +287,10 @@ class ShareModal extends React.Component<Props, OwnState> {
   };
 
   onInvitePress = () => {
-    logEvent(eventNames.INVITE_FRIEND);
+    logEvent(AnalyticsDefinitions.category.ACTION, {
+      [AnalyticsDefinitions.parameters.LABEL]:
+        AnalyticsDefinitions.label.INVITE_FRIEND
+    });
     sendShayrPostInvite(this.props.url);
   };
 
@@ -450,12 +463,18 @@ class ShareModal extends React.Component<Props, OwnState> {
         _.keys(this.props.users),
         _.keys(this.props.users)
       );
-      logEvent(eventNames.CONFIRM_SHARE, {
-        [eventParamaters.COUNT]: (this.state.selectedAllUsers
+      logEvent(AnalyticsDefinitions.category.ACTION, {
+        [AnalyticsDefinitions.parameters.LABEL]:
+          AnalyticsDefinitions.label.SHAYR,
+        [AnalyticsDefinitions.parameters.STATUS]:
+          AnalyticsDefinitions.status.ACCEPT,
+        [AnalyticsDefinitions.parameters.TARGET]: this.props.fromShareExtension
+          ? AnalyticsDefinitions.target.SHARE_EXTENSION
+          : AnalyticsDefinitions.target.APP,
+        [AnalyticsDefinitions.parameters.RESULT]: (this.state.selectedAllUsers
           ? _.keys(this.props.users)
           : this.state.selectedUsers
-        ).length,
-        [eventParamaters.COUNT_LABEL]: countLabels.MENTIONS_COUNT
+        ).length
       });
       this.toggleModal();
     };

@@ -1,9 +1,11 @@
 import { documentIds } from '@daviswhitehead/shayr-resources';
 import _ from 'lodash';
 import React, { SFC } from 'react';
-import { Alert, View } from 'react-native';
+import { Alert } from 'react-native';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
+import * as AnalyticsDefinitions from '../../lib/AnalyticsDefinitions';
+import { logEvent } from '../../lib/FirebaseAnalytics';
 import { queryTypes } from '../../lib/FirebaseQueries';
 import { selectAuthUserId } from '../../redux/auth/selectors';
 import {
@@ -108,27 +110,58 @@ const withFriendshipActions = (WrappedComponent: SFC) => (props: Props) => {
         [
           {
             text: 'Cancel',
+            onPress: () => {
+              logEvent(AnalyticsDefinitions.category.ACTION, {
+                [AnalyticsDefinitions.parameters.LABEL]:
+                  AnalyticsDefinitions.label.REMOVE_A_FRIEND,
+                [AnalyticsDefinitions.parameters.STATUS]:
+                  AnalyticsDefinitions.status.CANCEL
+              });
+            },
             style: 'cancel'
           },
           {
             text: 'Yes',
-            onPress: () =>
+            onPress: () => {
+              logEvent(AnalyticsDefinitions.category.ACTION, {
+                [AnalyticsDefinitions.parameters.LABEL]:
+                  AnalyticsDefinitions.label.REMOVE_A_FRIEND,
+                [AnalyticsDefinitions.parameters.STATUS]:
+                  AnalyticsDefinitions.status.ACCEPT
+              });
               updateFriendship(
                 friendshipIdOrder[0],
                 friendshipIdOrder[1],
                 'removed'
-              )
+              );
+            }
           }
         ]
       );
   } else if (friendshipStatus === 'can-accept-request') {
-    onFriendshipStatusPress = () =>
+    onFriendshipStatusPress = () => {
+      logEvent(AnalyticsDefinitions.category.ACTION, {
+        [AnalyticsDefinitions.parameters.LABEL]:
+          AnalyticsDefinitions.label.ACCEPT_FRIEND_REQUEST
+      });
       updateFriendship(friendshipIdOrder[0], friendshipIdOrder[1], 'accepted');
+    };
   } else if (friendshipStatus === 'needs-recipient-acceptance') {
-    onFriendshipStatusPress = () => awaitingRecipientAcceptance();
+    onFriendshipStatusPress = () => {
+      logEvent(AnalyticsDefinitions.category.ACTION, {
+        [AnalyticsDefinitions.parameters.LABEL]:
+          AnalyticsDefinitions.label.AWAITING_RECIPIENT_ACCEPTANCE
+      });
+      awaitingRecipientAcceptance();
+    };
   } else if (friendshipStatus === 'can-send-friend-request') {
-    onFriendshipStatusPress = () =>
+    onFriendshipStatusPress = () => {
+      logEvent(AnalyticsDefinitions.category.ACTION, {
+        [AnalyticsDefinitions.parameters.LABEL]:
+          AnalyticsDefinitions.label.SEND_FRIEND_REQUEST
+      });
       createFriendship(friendshipIdOrder[0], friendshipIdOrder[1]);
+    };
   }
 
   return (

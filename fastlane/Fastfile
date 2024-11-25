@@ -83,7 +83,7 @@ platform :ios do
   desc 'update codepush builds'
   lane :update_codepush_builds do
     sh("pwd")
-    sh("cd .. && appcenter codepush release-react -a whitehead.davis/Shayr-iOS -d " + ENV['ENV_NAME'])
+    sh("cd .. && appcenter codepush release-react --disable-duplicate-release-error -a whitehead.davis/Shayr-iOS -d " + ENV['ENV_NAME'])
   end
 
   desc 'ship a beta'
@@ -148,7 +148,7 @@ platform :android do
   desc 'update codepush builds'
   lane :update_codepush_builds do
     sh("pwd")
-    sh("cd .. && appcenter codepush release-react -a whitehead.davis/Shayr-Android -d " + ENV['ENV_NAME'])
+    sh("cd .. && appcenter codepush release-react --disable-duplicate-release-error -a whitehead.davis/Shayr-Android -d " + ENV['ENV_NAME'])
   end
 
   desc 'ship a beta'
